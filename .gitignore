@@ -1,58 +1,63 @@
-*.log
-.DS_Store
+# Environment dan konfigurasi rahasia
+
 .env
 .env.backup
 .env.production
-.phpactor.json
-.phpunit.result.cache
-/.codex
-/.cursor/
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
 /auth.json
-/node_modules
+
+# Dependencies
+
+/vendor/
+/node_modules/
+
+# Log dan cache
+
+*.log
+.phpunit.result.cache
+/.phpunit.cache
+/storage/pail
+
+# File hasil build
+
 /public/build
-/public/fonts-manifest.dev.json
 /public/hot
+/public/fonts-manifest.dev.json
+
+# Storage
+
 /public/storage
 /storage/*.key
-/storage/pail
-/vendor
+
+# Editor dan IDE
+
+/.idea/
+/.vscode/
+/.cursor/
+/.nova/
+/.zed/
+/.codex/
+/.phpactor.json
 _ide_helper.php
+
+# Sistem operasi
+
+.DS_Store
+Thumbs.db
+
+# Konfigurasi virtual machine
+
+/.vagrant
 Homestead.json
 Homestead.yaml
-Thumbs.db
-/vendor/
-node_modules/
+
+# File khusus Laravel versi lama
+
+/bootstrap/compiled.php
+/app/storage/
+/public_html/storage
+/public_html/hot
+
+# File khusus npm dan Yarn
+
 npm-debug.log
 yarn-error.log
-
-# Laravel 4 specific
-bootstrap/compiled.php
-app/storage/
-
-# Laravel 5 & Lumen specific
-public/storage
-public/hot
-
-# Laravel 5 & Lumen specific with changed public path
-public_html/storage
-public_html/hot
-
-storage/*.key
-.env
-Homestead.yaml
-Homestead.json
-/.vagrant
-.phpunit.result.cache
-/.phpunit.cache
-
-/public/build
-/storage/pail
-.env.backup
-.env.production
-.phpactor.json
-auth.json
