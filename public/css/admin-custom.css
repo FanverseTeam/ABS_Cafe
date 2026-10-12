@@ -1,0 +1,174 @@
+/* ==========================================================================
+   ABS CAFE - STYLING ADMIN (CSS ONLY)
+   Tema: Premium Coffee Shop (Tulungagung)
+   Palet Warna:
+     - #4A1F14 : Coklat Tua (Primer, Tombol Utama, Sidebar Aktif)
+     - #7A4A2B : Coklat Sedang (Hover, Aksen)
+     - #D4A76A : Emas / Karamel (Aksen, Badge, Highlight)
+     - #F6EDE0 : Krem Terang (Background Utama)
+     - #EFE0CC : Beige Lembut (Input, Card Border, Baris Zebra)
+     - #FBF6EE : Putih Krem (Kartu Utama)
+     - #3B1E14 : Teks Utama
+     - #8A6A55 : Teks Sekunder
+   ========================================================================== */
+
+:root {
+  --color-dark: #4A1F14;
+  --color-brown: #7A4A2B;
+  --color-gold: #D4A76A;
+  --color-cream: #F6EDE0;
+  --color-beige: #EFE0CC;
+  --color-card: #FBF6EE;
+  --color-text: #3B1E14;
+  --color-muted: #8A6A55;
+  --color-success: #4F7A4A;
+  --color-warning: #C98A2B;
+  --color-danger: #B03A2E;
+  --color-info: #5B7C99;
+
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --shadow-soft: 0 4px 20px -2px rgba(74, 31, 20, 0.06), 0 2px 6px -1px rgba(74, 31, 20, 0.04);
+  --shadow-elevated: 0 10px 25px -3px rgba(74, 31, 20, 0.09), 0 4px 12px -2px rgba(74, 31, 20, 0.05);
+}
+
+/* Base resets & typography */
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-cream);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, .font-serif {
+  font-family: var(--font-serif);
+}
+
+/* Custom Smooth Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(239, 224, 204, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(122, 74, 43, 0.35);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-dark);
+}
+
+/* Button & Badge Utility Classes */
+.btn-primary {
+  background-color: var(--color-dark);
+  color: var(--color-cream);
+  border-radius: 9999px;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(74, 31, 20, 0.15);
+}
+.btn-primary:hover {
+  background-color: var(--color-brown);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 31, 20, 0.22);
+}
+
+.btn-secondary {
+  background-color: var(--color-gold);
+  color: var(--color-dark);
+  border-radius: 9999px;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+.btn-secondary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--color-dark);
+  border: 1px solid var(--color-brown);
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-outline:hover {
+  background-color: var(--color-beige);
+}
+
+/* Cards & Panel Styling */
+.card-cafe {
+  background-color: var(--color-card);
+  border: 1px solid rgba(239, 224, 204, 0.7);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.2s ease;
+}
+.card-cafe:hover {
+  box-shadow: var(--shadow-elevated);
+}
+
+/* Table Zebra Rows */
+.table-cafe tbody tr:nth-child(even) {
+  background-color: rgba(246, 237, 224, 0.35);
+}
+.table-cafe tbody tr:hover {
+  background-color: rgba(212, 167, 106, 0.12);
+}
+
+/* Line-art Coffee Ornament (Optional subtle background) */
+.cafe-pattern {
+  background-image: radial-gradient(#D4A76A 0.75px, transparent 0.75px);
+  background-size: 20px 20px;
+  opacity: 0.4;
+}
+
+/* Print Styling for Receipts */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-receipt, #printable-receipt * {
+    visibility: visible;
+  }
+  #printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80mm;
+    margin: 0 auto;
+    padding: 10px;
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11px !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

@@ -1,95 +1,109 @@
-# ABS Cafe ☕
+# ABS Cafe — Web App Halaman Admin (Back-Office) ☕👜
 
-**ABS Cafe** adalah proyek pengembangan aplikasi pemesanan menu berbasis web yang bekerja sama dengan ABS ACC & Cafe. Aplikasi ini dikembangkan oleh **Fanverse Team, XI RPL 1, SMKN 1 Boyolangu** sebagai proyek sekolah bersama client.
+Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (tagline: *Accessories & Cafe*), Boyolangu, Kabupaten Tulungagung. Dikembangkan menggunakan **Laravel (PHP, Blade, CSS Tailwind, dan JavaScript)** dengan nuansa hangat ala coffee shop premium (palet coklat & krem).
 
-## 🎯 Tujuan Project
+---
 
-* Mempermudah pelanggan dalam melihat dan memesan menu kafe.
-* Membantu pengelolaan menu dan pesanan.
-* Meningkatkan efisiensi pelayanan kafe.
-* Memberikan pengalaman pemesanan yang praktis melalui website.
+## 🎨 Tema & Desain Visual
+- **Nuansa**: Hangat, elegan, clean ala coffee shop modern.
+- **Palet Warna**:
+  - Coklat Tua (Primer, Header, Sidebar Aktif): `#4A1F14`
+  - Coklat Sedang (Hover, Aksen): `#7A4A2B`
+  - Emas / Karamel (Aksen, Badge, Highlight): `#D4A76A`
+  - Krem Terang (Latar Belakang): `#F6EDE0`
+  - Beige (Panel & Input): `#EFE0CC`
+  - Putih Krem (Kartu Utama): `#FBF6EE`
+  - Teks: Utama `#3B1E14`, Sekunder `#8A6A55`
+  - Status: Sukses `#4F7A4A`, Peringatan `#C98A2B`, Bahaya `#B03A2E`, Info `#5B7C99`
+- **Tipografi**:
+  - Judul / Heading: *Playfair Display* (Serif elegan)
+  - Isi / Tabel / Form: *Poppins* (Sans-serif bersih)
+- **Komponen**: Sudut membulat besar (`rounded-2xl` & `rounded-full`), soft shadow, responsif desktop & mobile drawer.
 
-## 👥 Tim Pengembang
+---
 
-**Fanverse Team**
-XI RPL 1 — SMKN 1 Boyolangu
+## 🔑 Kredensial Akun Demo (Administrator)
+| Peran | Email | Username | Password |
+|---|---|---|---|
+| **Admin Utama** | `admin@abscafe.com` | `admin` | `admin123` |
+| **Kasir 1** | `siti.kasir@abscafe.com` | `siti_kasir` | `password` |
+| **Kasir 2** | `budi.kasir@abscafe.com` | `budi_kasir` | `password` |
 
-## 🛠️ Teknologi
+> *Catatan*: Hak akses dashboard back-office dilindungi oleh middleware `admin.auth`, hanya akun dengan peran **Admin** yang diizinkan mengakses menu administrator.
 
-* PHP
-* Laravel
-* MySQL
-* HTML, CSS, dan JavaScript
+---
 
-## ⚙️ Instalasi Project
+## 📋 Fitur & Halaman yang Dibuat
 
-### 1. Clone Repository
+1. **Login Admin (`/admin/login`)**:
+   - Layout 2 kolom estetis dengan foto kafe dan tagline *"Good Coffee, Good Mood"*.
+   - Toggle sembunyikan/tampilkan kata sandi, remember me, dan tombol otomatis isi akun demo.
+2. **Dashboard (`/admin`)**:
+   - Salam personalisasi dan tanggal bahasa Indonesia.
+   - 4 Kartu Statistik (Pesanan Hari Ini, Pendapatan Hari Ini, Menunggu Pembayaran, Menu Stok Menipis).
+   - Grafik interaktif tren pendapatan 7 hari (Chart.js) dan grafik donat penjualan per kategori.
+   - Daftar Top 5 Menu Terlaris dan Tabel Pesanan Terbaru.
+   - Panel peringatan stok di bawah batas minimum.
+3. **Pesanan (`/admin/pesanan`)**:
+   - Tabel pesanan lengkap dengan kode order, customer, meja/tipe, status bayar & alur sajian.
+   - Filter status pembayaran, status pesanan, tipe dine-in/take-away, dan pencarian.
+   - Modal detail pesanan (daftar item, catatan, pajak, diskon, timeline alur sajian, info kasir).
+   - Aksi ubah status pesanan (Diproses / Siap / Selesai), batalkan pesanan (alasan wajib), dan cetak nota struk termal.
+   - Ekspor data pesanan ke format CSV.
+4. **Menu & Aksesoris (`/admin/menu`)**:
+   - Toggle tampilan Grid kartu foto dan Tabel rincian.
+   - Filter kategori (Coffee, Non Coffee, Food, Merch) & sorting (Terlaris, Nama, Harga).
+   - Switch status ketersediaan (Tersedia / Habis) dan tanda *Best Seller*.
+   - Modal form tambah & edit menu dengan URL foto, deskripsi, harga, satuan, dan stok.
+   - Aksi duplikasi menu dan hapus permanen dengan dialog konfirmasi.
+5. **Kategori (`/admin/kategori`)**:
+   - Daftar kategori (Coffee, Non Coffee, Food, Merch) beserta ikon Lucide dan urutan tampil.
+   - Proteksi integritas: kategori yang masih berisi menu tidak dapat dihapus (muncul peringatan keamanan).
+6. **Stok & Inventaris (`/admin/stok`)**:
+   - Status otomatis (Aman, Menipis, Habis).
+   - Modal aksi cepat: Tambah Stok (+ Masuk), Kurangi Stok (- Keluar), dan Atur Stok Minimum.
+   - Modal riwayat lengkap audit pergerakan stok (log masuk/keluar/koreksi beserta pelakunya).
+7. **Promo & Diskon (`/admin/promo`)**:
+   - Kartu banner promo (Buy 2 Get 1, diskon persen, potongan nominal).
+   - Status berjalan/terjadwal/berakhir otomatis berdasarkan tanggal.
+   - Switch aktif/nonaktif promo.
+8. **Pengguna & Staf (`/admin/pengguna`)**:
+   - Tabel akun staf (Admin, Kasir, Staf Barista/Dapur).
+   - Tambah dan edit staf, aktifkan/nonaktifkan akun, serta fitur reset password.
+9. **Denah & Meja (`/admin/meja`)**:
+   - Grid kartu nomor meja dengan status Tersedia, Terpakai, dan Nonaktif.
+   - Kapasitas kursi dan catatan lokasi (Indoor, Outdoor, Lantai 2).
+   - Modal QR Code pemesanan meja dan tombol unduh file QR gambar.
+10. **Pengaturan Cafe (`/admin/pengaturan`)**:
+    - **Tab Profil Cafe**: Nama, tagline, alamat Tulungagung, jam buka hari kerja & akhir pekan.
+    - **Tab Pajak & Biaya**: Persentase pajak PB1 (10%) dan switch Service Charge.
+    - **Tab Pembayaran & QRIS**: Pilihan metode di kasir (Tunai, QRIS, Debit) dan preview QRIS.
+    - **Tab Format Nota**: Pengaturan teks header & footer nota dengan **Pratinjau Langsung (Live Preview)** struk kasir.
+    - **Tab Tampilan**: Banner headline beranda.
+    - **Tab Akun Saya**: Ganti nama, email, dan password admin.
+11. **Log Aktivitas (`/admin/log`)**:
+    - Catatan audit sistem (waktu, nama staf, peran, aksi, alamat IP).
+    - Filter kategori aktivitas & ekspor file CSV.
 
-```bash
-git clone https://github.com/FanverseTeam/ABS_Cafe.git
-cd ABS_Cafe
-```
+---
 
-### 2. Install Dependencies
+## 🚀 Cara Menjalankan Proyek di Laragon
 
-```bash
-composer install
-```
+1. Buka aplikasi **Laragon** dan klik **Start All** (Apache/Nginx & MySQL aktif).
+2. Buka terminal di folder proyek (`d:\laragon\www\ABS_Cafe`):
+   ```bash
+   php artisan migrate --seed
+   ```
+   *(Data migrasi dan seeder awal akan otomatis terisi)*
+3. Jalankan server lokal:
+   ```bash
+   php artisan serve
+   ```
+4. Buka browser dan akses:
+   - **Halaman Login Admin**: [http://127.0.0.1:8000/admin/login](http://127.0.0.1:8000/admin/login) atau [http://abscafe.test/admin/login](http://abscafe.test/admin/login)
+   - Gunakan email `admin@abscafe.com` dan password `admin123`.
 
-### 3. Siapkan File Environment
+---
 
-```bash
-copy .env.example .env
-```
-
-### 4. Generate Application Key
-
-```bash
-php artisan key:generate
-```
-
-### 5. Konfigurasi Database
-
-Buka file `.env`, lalu sesuaikan konfigurasi database MySQL dengan pengaturan lokal masing-masing anggota tim.
-
-### 6. Jalankan Migration
-
-```bash
-php artisan migrate
-```
-
-Jalankan perintah ini setelah database dibuat dan konfigurasi koneksi sudah benar.
-
-### 7. Jalankan Aplikasi
-
-```bash
-php artisan serve
-```
-
-Buka alamat lokal yang ditampilkan di terminal untuk mengakses aplikasi.
-
-## 🤝 Kolaborasi
-
-Project ini dikembangkan secara kolaboratif oleh anggota Fanverse Team menggunakan Git dan GitHub.
-
-Sebelum mengirim perubahan, ambil versi terbaru:
-
-```bash
-git pull origin main
-```
-
-Setelah menyelesaikan perubahan:
-
-```bash
-git add .
-git commit -m "Deskripsi perubahan"
-git push origin main
-```
-
-Pastikan perubahan sudah diuji sebelum dikirim ke branch utama.
-
-## 📄 Lisensi
-
-Project ini dikembangkan untuk kebutuhan proyek sekolah dan kerja sama dengan ABS ACC & Cafe.
-
-Test
+## 👥 Pengembang
+Dikembangkan untuk kerja sama proyek sekolah bersama **ABS Cafe Tulungagung** oleh **Fanverse Team, XI RPL 1, SMKN 1 Boyolangu**.

@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,12 +10,29 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'phone', 'photo_path', 'is_active', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable;
+
+    protected $fillable = [
+        'name',
+        'username',
+        'email',
+        'phone',
+        'password',
+        'role',
+        'status',
+        'avatar',
+        'photo_path',
+        'is_active',
+        'last_login_at',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
     /**
      * @return array<string, string>
@@ -39,7 +54,15 @@ class User extends Authenticatable
 
     public function primaryRole(): string
     {
-        return $this->getRoleNames()->first() ?? 'staf';
+        if (!empty($this->role)) {
+            return $this->role;
+        }
+
+        if (method_exists($this, 'getRoleNames') && $this->getRoleNames()->isNotEmpty()) {
+            return $this->getRoleNames()->first();
+        }
+
+        return 'staf';
     }
 
     public function roleLabel(): string
@@ -54,6 +77,10 @@ class User extends Authenticatable
 
     public function photoUrl(): ?string
     {
+        if ($this->avatar) {
+            return $this->avatar;
+        }
+
         return $this->photo_path ? Storage::disk('public')->url($this->photo_path) : null;
     }
 
@@ -68,5 +95,10 @@ class User extends Authenticatable
             ->implode('');
 
         return $initials !== '' ? $initials : '?';
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->primaryRole() === 'admin';
     }
 }
