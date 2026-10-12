@@ -2,8 +2,168 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
 
 @theme {
+    /* Tipografi */
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-serif: 'Playfair Display', ui-serif, Georgia, 'Times New Roman', serif;
+
+    /* Palet ABS Cafe */
+    --color-beige: #f2f5e2;
+    --color-beige-50: #fafcf3;
+    --color-beige-100: #f2f5e2;
+    --color-beige-200: #e8edd0;
+
+    --color-custard: #e3dea4;
+    --color-custard-100: #f1eecb;
+    --color-custard-200: #e3dea4;
+    --color-custard-300: #d4cd7d;
+
+    --color-apricot: #d4954d;
+    --color-apricot-100: #f6e3c9;
+    --color-apricot-200: #e8bd85;
+    --color-apricot-300: #d4954d;
+    --color-apricot-400: #b87c37;
+    --color-apricot-500: #9a6528;
+
+    --color-olive: #775533;
+    --color-olive-100: #cdbba5;
+    --color-olive-200: #a78b68;
+    --color-olive-300: #775533;
+    --color-olive-400: #5c4127;
+    --color-olive-500: #3f2c1b;
+
+    --color-midnight: #290024;
+    --color-midnight-100: #6b4a63;
+    --color-midnight-200: #4a2440;
+    --color-midnight-300: #290024;
+    --color-midnight-400: #1c0019;
+    --color-midnight-500: #12000f;
+
+    /* Status (turunan lembut) */
+    --color-success-100: #dcf3e2;
+    --color-success-700: #246b3a;
+    --color-warning-100: #fbe8cf;
+    --color-warning-700: #8a5414;
+    --color-danger-100: #f9dcdc;
+    --color-danger-700: #9b2c2c;
+    --color-info-100: #dbe8f9;
+    --color-info-700: #2a4f86;
+}
+
+@layer base {
+    body {
+        @apply bg-beige text-midnight antialiased;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-custard-300);
+        border-radius: 9999px;
+        border: 2px solid var(--color-beige);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-olive-200);
+    }
+}
+
+@layer components {
+    /* Tombol */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-apricot focus-visible:ring-offset-2
+            focus-visible:ring-offset-beige disabled:cursor-not-allowed disabled:opacity-60;
+    }
+
+    .btn-primary {
+        @apply bg-midnight text-beige hover:bg-midnight-400 active:bg-midnight-500;
+    }
+
+    .btn-secondary {
+        @apply bg-custard text-midnight hover:bg-custard-300;
+    }
+
+    .btn-apricot {
+        @apply bg-apricot text-white hover:bg-apricot-400;
+    }
+
+    .btn-ghost {
+        @apply bg-transparent text-olive hover:bg-custard-100;
+    }
+
+    .btn-danger {
+        @apply bg-danger-100 text-danger-700 hover:bg-danger-700 hover:text-white;
+    }
+
+    .btn-sm {
+        @apply px-3 py-1.5 text-xs;
+    }
+
+    .btn-icon {
+        @apply inline-flex h-9 w-9 items-center justify-center rounded-full transition;
+    }
+
+    /* Kartu */
+    .card {
+        @apply rounded-2xl border border-custard-200 bg-white/80 shadow-[0_1px_2px_rgba(41,0,36,0.04)] backdrop-blur;
+    }
+
+    /* Form */
+    .label {
+        @apply mb-1.5 block text-sm font-semibold text-midnight;
+    }
+
+    .input {
+        @apply w-full rounded-xl border border-custard-300 bg-white px-3.5 py-2.5 text-sm text-midnight
+            placeholder:text-olive-200 focus:border-apricot-300 focus:outline-none focus:ring-2 focus:ring-apricot-100;
+    }
+
+    .input-error {
+        @apply border-danger-700 focus:border-danger-700 focus:ring-danger-100;
+    }
+
+    .help {
+        @apply mt-1 text-xs text-olive-200;
+    }
+
+    .error-text {
+        @apply mt-1 text-xs font-medium text-danger-700;
+    }
+
+    /* Badge & pill */
+    .badge {
+        @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold;
+    }
+
+    /* Tabel */
+    .table {
+        @apply w-full text-left text-sm;
+    }
+
+    .table thead th {
+        @apply border-b border-custard-200 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-olive-300;
+    }
+
+    .table tbody td {
+        @apply border-b border-beige-200 px-4 py-3 align-middle text-midnight;
+    }
+
+    .table tbody tr:hover {
+        @apply bg-beige-50;
+    }
 }
