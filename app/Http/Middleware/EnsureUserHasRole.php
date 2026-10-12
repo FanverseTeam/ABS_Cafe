@@ -17,7 +17,11 @@ class EnsureUserHasRole
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         if (! Auth::check()) {
-            $loginRoute = in_array('owner', $roles, true) ? 'owner.login' : 'admin.login';
+            $loginRoute = match (true) {
+                in_array('kasir', $roles, true) => 'kasir.login',
+                in_array('owner', $roles, true) => 'owner.login',
+                default => 'admin.login',
+            };
 
             return redirect()->route($loginRoute)
                 ->with('error', 'Silakan masuk terlebih dahulu untuk melanjutkan.');

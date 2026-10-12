@@ -26,6 +26,11 @@ class TransactionSeeder extends Seeder
 
     public function run(): void
     {
+        // Idempotent: data historis (#ABS...) hanya di-seed sekali.
+        if (Order::where('order_code', 'like', '#ABS%')->exists()) {
+            return;
+        }
+
         mt_srand(20261012);
 
         $kasirs = User::where('role', 'kasir')->where('status', 'aktif')->get();

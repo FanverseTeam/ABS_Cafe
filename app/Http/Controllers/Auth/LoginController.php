@@ -63,8 +63,8 @@ class LoginController extends Controller
                 ->with('error', 'Akun Anda sedang dinonaktifkan. Hubungi administrator.');
         }
 
-        // Peran tanpa portal (kasir) belum bisa masuk.
-        if (! array_key_exists($user->primaryRole(), self::ROLES) || $user->primaryRole() === 'kasir') {
+        // Peran tanpa portal belum bisa masuk.
+        if (! array_key_exists($user->primaryRole(), self::ROLES)) {
             Auth::logout();
 
             return back()->withInput()
@@ -116,6 +116,7 @@ class LoginController extends Controller
         return match ($user->primaryRole()) {
             'owner' => route('owner.dashboard'),
             'admin' => route('admin.dashboard'),
+            'kasir' => route('kasir.dashboard'),
             default => route('login'),
         };
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,6 +11,7 @@ class Promo extends Model
 {
     protected $fillable = [
         'title',
+        'code',
         'description',
         'type',
         'value',
@@ -29,6 +31,7 @@ class Promo extends Model
         'is_active' => 'boolean',
         'start_date' => 'date',
         'end_date' => 'date',
+        'quota' => 'integer',
     ];
 
     public function targetCategory(): BelongsTo
@@ -55,5 +58,43 @@ class Promo extends Model
         }
 
         return 'berjalan';
+    }
+
+    public function scopeRunning(Builder $query): Builder
+    {
+        return $query->where('is_active', true)
+            ->whereDate('start_date', '<=', now())
+            ->whereDate('end_date', '>=', now());
+    }
+
+    public function isRunning(): bool
+    {
+        return $this->is_active
+            && $this->start_date <= now()->startOfDay()
+            && $this->end_date >= now()->startOfDay();
+    }
+
+    public function usedCount(): int
+    {
+        return $this->orders()->where('payment_status', 'lunas')->count();
+    }
+
+    public function remainingQuota(): ?int
+    {
+        if ($this->quota === null) {
+            return null;
+        }
+
+        return max(0, $this->quota - $this->usedCount());
+    }
+
+    public function typeLabel(): string
+    {
+        return match ($this->type) {
+            'persen' => $this->value.'%',
+            'nominal' => 'Rp '.number_format((float) $this->value, 0, ',', '.'),
+            'buy_x_get_y' => 'Beli 2 Gratis 1',
+            default => ucfirst((string) $this->type),
+        };
     }
 }

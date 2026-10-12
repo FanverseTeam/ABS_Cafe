@@ -639,5 +639,8 @@ class DatabaseSeeder extends Seeder
 
         // 10. Riwayat Transaksi Historis (60-90 hari) untuk analitik Owner
         $this->call(TransactionSeeder::class);
+
+        // 11. Pendukung Portal Kasir
+        $this->call(KasirSeeder::class);
     }
 }

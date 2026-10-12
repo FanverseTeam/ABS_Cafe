@@ -18,6 +18,14 @@ use App\Http\Controllers\Owner\CashierController as OwnerCashierController;
 use App\Http\Controllers\Owner\PromoController as OwnerPromoController;
 use App\Http\Controllers\Owner\SettingController as OwnerSettingController;
 use App\Http\Controllers\Owner\ProfileController as OwnerProfileController;
+use App\Http\Controllers\Kasir\DashboardController as KasirDashboardController;
+use App\Http\Controllers\Kasir\ShiftController as KasirShiftController;
+use App\Http\Controllers\Kasir\PosController as KasirPosController;
+use App\Http\Controllers\Kasir\OrderController as KasirOrderController;
+use App\Http\Controllers\Kasir\PaymentController as KasirPaymentController;
+use App\Http\Controllers\Kasir\ReservationController as KasirReservationController;
+use App\Http\Controllers\Kasir\TableController as KasirTableController;
+use App\Http\Controllers\Kasir\ProfileController as KasirProfileController;
 
 // Root diarahkan ke halaman login terpadu (peran admin terpilih secara default)
 Route::get('/', function () {
@@ -26,22 +34,24 @@ Route::get('/', function () {
 
 /*
 |--------------------------------------------------------------------------
-| Login Terpadu (Admin / Owner, siap untuk Kasir)
+| Login Terpadu (Admin / Owner / Kasir)
 |--------------------------------------------------------------------------
-| Satu halaman dengan animasi geser role. URL lama tetap berfungsi:
-| /admin/login membuka halaman yang sama dengan role admin terpilih,
-| /owner/login membuka halaman yang sama dengan role owner terpilih.
+| Satu halaman untuk semua peran. URL lama berfungsi sebagai pengalih:
+| /admin/login, /owner/login, /kasir/login semuanya mengarah ke /login.
 */
 Route::get('/login', [LoginController::class, 'show'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
-Route::get('/admin/login', [LoginController::class, 'show'])->name('admin.login');
+Route::get('/admin/login', fn () => redirect()->route('login'))->name('admin.login');
 Route::post('/admin/login', [LoginController::class, 'login'])->name('admin.login.post');
 Route::post('/admin/logout', [LoginController::class, 'logout'])->name('admin.logout');
 
-Route::get('/owner/login', [LoginController::class, 'show'])->name('owner.login');
+Route::get('/owner/login', fn () => redirect()->route('login'))->name('owner.login');
 Route::post('/owner/login', [LoginController::class, 'login'])->name('owner.login.post');
 Route::post('/owner/logout', [LoginController::class, 'logout'])->name('owner.logout');
+
+Route::get('/kasir/login', fn () => redirect()->route('login'))->name('kasir.login');
+Route::post('/kasir/logout', [LoginController::class, 'logout'])->name('kasir.logout');
 
 /*
 |--------------------------------------------------------------------------
@@ -174,5 +184,76 @@ Route::prefix('owner')->name('owner.')->middleware(['auth', 'role:owner'])->grou
     Route::post('/profil/password', [OwnerProfileController::class, 'updatePassword'])->name('profile.password');
 
     // Logout (nama route khusus owner agar view mudah dipakai)
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Portal Kasir (Operasional Harian)
+|--------------------------------------------------------------------------
+| Kasir menangani shift, POS, pesanan, pembayaran, reservasi & meja.
+| Rute transaksi (POS, pembayaran, ubah status, catat kas) mengharuskan
+| shift aktif melalui middleware 'kasir.shift'.
+*/
+Route::prefix('kasir')->name('kasir.')->middleware(['auth', 'role:kasir'])->group(function () {
+    // 1. Dashboard Shift
+    Route::get('/', [KasirDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/notifikasi/pending', [KasirDashboardController::class, 'pendingCount'])->name('notifications.pending');
+
+    // 2. Shift & Rekap Kas
+    Route::prefix('shift')->name('shift.')->group(function () {
+        Route::get('/', [KasirShiftController::class, 'index'])->name('index');
+        Route::get('/buka', [KasirShiftController::class, 'showOpen'])->name('open');
+        Route::post('/buka', [KasirShiftController::class, 'open'])->name('open.store')->middleware('kasir.shift');
+        Route::get('/tutup', [KasirShiftController::class, 'showClose'])->name('close')->middleware('kasir.shift');
+        Route::post('/tutup', [KasirShiftController::class, 'close'])->name('close.store')->middleware('kasir.shift');
+        Route::post('/kas', [KasirShiftController::class, 'movement'])->name('movement')->middleware('kasir.shift');
+        Route::get('/{cashShift}/struk', [KasirShiftController::class, 'receipt'])->name('receipt');
+        Route::get('/{cashShift}', [KasirShiftController::class, 'history'])->name('show');
+    });
+
+    // 3. POS / Input Pesanan
+    Route::prefix('pos')->name('pos.')->middleware('kasir.shift')->group(function () {
+        Route::get('/', [KasirPosController::class, 'index'])->name('index');
+        Route::post('/totals', [KasirPosController::class, 'totals'])->name('totals');
+        Route::post('/store', [KasirPosController::class, 'store'])->name('store');
+    });
+
+    // 4. Pesanan Masuk & Status
+    Route::prefix('pesanan')->name('orders.')->group(function () {
+        Route::get('/', [KasirOrderController::class, 'index'])->name('index');
+        Route::get('/{order}/data', [KasirOrderController::class, 'show'])->name('data');
+        Route::post('/{order}/terima', [KasirOrderController::class, 'accept'])->name('accept')->middleware('kasir.shift');
+        Route::post('/{order}/status', [KasirOrderController::class, 'status'])->name('status')->middleware('kasir.shift');
+        Route::post('/{order}/batal', [KasirOrderController::class, 'cancel'])->name('cancel')->middleware('kasir.shift');
+    });
+
+    // 5. Pembayaran & Cetak Struk
+    Route::prefix('pembayaran')->name('payments.')->middleware('kasir.shift')->group(function () {
+        Route::get('/', [KasirPaymentController::class, 'index'])->name('index');
+        Route::get('/{order}/bayar', [KasirPaymentController::class, 'checkout'])->name('checkout');
+        Route::post('/{order}/bayar', [KasirPaymentController::class, 'pay'])->name('pay');
+        Route::get('/{order}/struk', [KasirPaymentController::class, 'receipt'])->name('receipt');
+        Route::get('/{order}/data', [KasirPaymentController::class, 'receiptJson'])->name('data');
+    });
+
+    // 6. Reservasi & Meja
+    Route::prefix('reservasi')->name('reservations.')->group(function () {
+        Route::get('/', [KasirReservationController::class, 'index'])->name('index');
+        Route::post('/store', [KasirReservationController::class, 'store'])->name('store');
+        Route::post('/{reservation}/update', [KasirReservationController::class, 'update'])->name('update');
+        Route::post('/{reservation}/status', [KasirReservationController::class, 'status'])->name('status');
+        Route::delete('/{reservation}', [KasirReservationController::class, 'destroy'])->name('destroy');
+    });
+
+    // Meja: ubah status meja
+    Route::post('/meja/{table}/status', [KasirTableController::class, 'update'])->name('tables.status');
+
+    // Profil & Ganti Password
+    Route::get('/profil', [KasirProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profil', [KasirProfileController::class, 'updateProfile'])->name('profile.update');
+    Route::post('/profil/password', [KasirProfileController::class, 'updatePassword'])->name('profile.password');
+
+    // Logout (nama route khusus kasir agar view mudah dipakai)
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });

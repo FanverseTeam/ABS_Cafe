@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin.auth' => \App\Http\Middleware\AdminAuth::class,
             'role' => \App\Http\Middleware\EnsureUserHasRole::class,
+            'kasir.shift' => \App\Http\Middleware\EnsureActiveShift::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

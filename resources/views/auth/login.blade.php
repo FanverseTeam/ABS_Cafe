@@ -99,8 +99,8 @@
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-[#F2F5E2]/90 text-[11px] font-medium">
                         <i data-lucide="crown" class="w-3.5 h-3.5 text-[#D4954D]"></i> Owner
                     </span>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 text-[#F2F5E2]/50 text-[11px] font-medium">
-                        <i data-lucide="calculator" class="w-3.5 h-3.5"></i> Kasir (segera)
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-[#F2F5E2]/90 text-[11px] font-medium">
+                        <i data-lucide="calculator" class="w-3.5 h-3.5 text-[#D4954D]"></i> Kasir
                     </span>
                 </div>
             </div>
@@ -192,7 +192,7 @@
                 <div class="pt-4 border-t border-cafe-beige/60 space-y-2.5">
                     <p class="text-[11px] font-semibold text-cafe-muted uppercase tracking-wide">Akun Demo</p>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                         <div class="p-3 rounded-2xl bg-cafe-beige/40 border border-cafe-beige/70">
                             <div class="flex items-center gap-2">
                                 <i data-lucide="settings" class="w-4 h-4 text-cafe-bronze shrink-0"></i>
@@ -213,6 +213,18 @@
                             <p class="text-[10px] text-cafe-muted mt-1 font-mono">owner@abscafe.com</p>
                             <p class="text-[10px] text-cafe-muted font-mono">owner123</p>
                             <button type="button" onclick="useDemo('owner@abscafe.com', 'owner123')" class="mt-2 w-full text-[11px] font-bold text-cafe-brown hover:text-cafe-dark underline">
+                                Gunakan akun ini
+                            </button>
+                        </div>
+
+                        <div class="p-3 rounded-2xl bg-cafe-beige/40 border border-cafe-beige/70">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="calculator" class="w-4 h-4 text-cafe-warning shrink-0"></i>
+                                <p class="text-[11px] font-bold text-cafe-dark">Kasir</p>
+                            </div>
+                            <p class="text-[10px] text-cafe-muted mt-1 font-mono">kasir@abscafe.com</p>
+                            <p class="text-[10px] text-cafe-muted font-mono">kasir123</p>
+                            <button type="button" onclick="useDemo('kasir@abscafe.com', 'kasir123')" class="mt-2 w-full text-[11px] font-bold text-cafe-brown hover:text-cafe-dark underline">
                                 Gunakan akun ini
                             </button>
                         </div>
@@ -245,7 +257,7 @@
         }
 
         function showDemoHint() {
-            alert('Untuk demonstrasi proyek, gunakan salah satu akun demo yang tersedia di bawah form ini:\n\nAdministrator: admin@abscafe.com / admin123\nOwner: owner@abscafe.com / owner123');
+            alert('Untuk demonstrasi proyek, gunakan salah satu akun demo yang tersedia di bawah form ini:\n\nAdministrator: admin@abscafe.com / admin123\nOwner: owner@abscafe.com / owner123\nKasir: kasir@abscafe.com / kasir123');
         }
     </script>
 </body>

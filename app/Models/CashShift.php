@@ -44,6 +44,11 @@ class CashShift extends Model
         return $this->hasMany(Order::class, 'cash_shift_id');
     }
 
+    public function cashMovements(): HasMany
+    {
+        return $this->hasMany(CashMovement::class);
+    }
+
     public function durationLabel(): string
     {
         if (! $this->opened_at || ! $this->closed_at) {
