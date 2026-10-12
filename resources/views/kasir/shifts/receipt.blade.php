@@ -19,8 +19,8 @@
     <div id="printable-receipt" class="bg-white text-black mx-auto rounded-none" style="width:80mm">
         <div class="text-center px-4 pt-6 pb-4 border-b border-black/20">
             <h1 class="font-serif font-bold text-sm">{{ \App\Models\CafeSetting::get('cafe_name', 'ABS Cafe') }}</h1>
-            <p class="text-[10px] mt-1 leading-tight">{{ \App\Models\CafeSetting::get('address', '') }}</p>
-            <p class="text-[10px]">{{ \App\Models\CafeSetting::get('phone', '') }}</p>
+            <p class="text-[10px] mt-1 leading-tight">{{ \App\Models\CafeSetting::get('cafe_address', '') }}</p>
+            <p class="text-[10px]">{{ \App\Models\CafeSetting::get('cafe_phone', '') }}</p>
             <p class="text-[10px] mt-2">REKAP KAS SHIFT</p>
         </div>
 

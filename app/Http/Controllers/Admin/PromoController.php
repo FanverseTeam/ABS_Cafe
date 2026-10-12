@@ -22,6 +22,7 @@ class PromoController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
+            'code' => 'nullable|string|max:50|unique:promos,code',
             'description' => 'required|string',
             'type' => 'required|in:persen,nominal,buy_x_get_y',
             'value' => 'required|numeric|min:0',
@@ -35,6 +36,7 @@ class PromoController extends Controller
 
         $promo = Promo::create([
             'title' => $request->input('title'),
+            'code' => $request->filled('code') ? strtoupper($request->input('code')) : null,
             'description' => $request->input('description'),
             'type' => $request->input('type'),
             'value' => $request->input('value'),
@@ -62,6 +64,7 @@ class PromoController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
+            'code' => 'nullable|string|max:50|unique:promos,code,'.$id,
             'description' => 'required|string',
             'type' => 'required|in:persen,nominal,buy_x_get_y',
             'value' => 'required|numeric|min:0',
@@ -76,6 +79,7 @@ class PromoController extends Controller
         $promo = Promo::findOrFail($id);
         $promo->update([
             'title' => $request->input('title'),
+            'code' => $request->filled('code') ? strtoupper($request->input('code')) : null,
             'description' => $request->input('description'),
             'type' => $request->input('type'),
             'value' => $request->input('value'),

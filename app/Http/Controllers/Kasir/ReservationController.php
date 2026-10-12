@@ -54,6 +54,8 @@ class ReservationController extends Controller
         $data['status'] = 'menunggu';
         $data['created_by'] = Auth::id();
 
+        $this->assertTableReservation($data);
+
         $reservation = Reservation::create($data);
 
         ActivityLog::create([
@@ -78,6 +80,8 @@ class ReservationController extends Controller
             'table_id' => 'nullable|integer|exists:tables,id',
             'notes' => 'nullable|string|max:500',
         ]);
+
+        $this->assertTableReservation($data, $reservation->id);
 
         $reservation->update($data);
 
@@ -123,6 +127,45 @@ class ReservationController extends Controller
         $reservation->delete();
 
         return back()->with('success', "Reservasi {$code} dihapus.");
+    }
+
+    /**
+     * Meja yang dipilih harus cukup kapasitasnya dan belum dipesan
+     * pada jam yang berdekatan (rentang 2 jam).
+     *
+     * @param  array<string, mixed>  $data
+     */
+    private function assertTableReservation(array $data, ?int $ignoreId = null): void
+    {
+        if (empty($data['table_id'])) {
+            return;
+        }
+
+        $table = Table::find($data['table_id']);
+        if (! $table) {
+            return;
+        }
+
+        if ((int) $data['party_size'] > (int) $table->capacity) {
+            throw ValidationException::withMessages([
+                'table_id' => "Kapasitas meja #{$table->number} hanya {$table->capacity} orang.",
+            ]);
+        }
+
+        $newTime = strtotime((string) $data['reservation_time']);
+
+        $conflict = Reservation::where('table_id', $data['table_id'])
+            ->whereDate('reservation_date', $data['reservation_date'])
+            ->whereIn('status', ['menunggu', 'dikonfirmasi', 'datang'])
+            ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
+            ->get()
+            ->contains(fn ($r) => abs(strtotime((string) $r->reservation_time) - $newTime) < 120 * 60);
+
+        if ($conflict) {
+            throw ValidationException::withMessages([
+                'table_id' => 'Meja ini sudah dipesan pada jam yang berdekatan.',
+            ]);
+        }
     }
 
     private function freeTableIfIdle(?int $tableId, ?int $exceptReservationId = null): void

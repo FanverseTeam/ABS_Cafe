@@ -76,6 +76,10 @@ class TableController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
+        $request->validate([
+            'status' => 'required|in:tersedia,terpakai,nonaktif',
+        ]);
+
         $table = Table::findOrFail($id);
         $status = $request->input('status');
 

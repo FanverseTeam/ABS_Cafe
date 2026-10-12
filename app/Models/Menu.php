@@ -34,6 +34,26 @@ class Menu extends Model
         return $this->belongsTo(Category::class);
     }
 
+    /**
+     * Status stok untuk tampilan & filter: aman, menipis, habis.
+     */
+    public function getStockStatusAttribute(): string
+    {
+        if ($this->stock === null) {
+            return 'aman';
+        }
+
+        if ($this->stock <= 0) {
+            return 'habis';
+        }
+
+        if ($this->min_stock !== null && $this->stock <= $this->min_stock) {
+            return 'menipis';
+        }
+
+        return 'aman';
+    }
+
     public function variants(): HasMany
     {
         return $this->hasMany(MenuVariant::class);

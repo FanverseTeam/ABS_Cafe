@@ -9,9 +9,14 @@ use App\Models\Order;
 use App\Models\OrderTimeline;
 use App\Models\ActivityLog;
 use App\Models\CafeSetting;
+use App\Services\OrderService;
 
 class OrderController extends Controller
 {
+    public function __construct(private readonly OrderService $orders)
+    {
+    }
+
     public function index(Request $request)
     {
         $query = Order::with(['items', 'timelines'])->orderBy('created_at', 'desc');
@@ -108,18 +113,7 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
         $reason = $request->input('cancel_reason');
 
-        $order->update([
-            'payment_status' => 'dibatalkan',
-            'cancel_reason' => $reason,
-        ]);
-
-        OrderTimeline::create([
-            'order_id' => $order->id,
-            'status' => 'DIBATALKAN',
-            'actor' => Auth::user()->name,
-            'description' => "Alasan: {$reason}",
-            'logged_at' => now(),
-        ]);
+        $this->orders->cancel($order, Auth::user(), $reason);
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,

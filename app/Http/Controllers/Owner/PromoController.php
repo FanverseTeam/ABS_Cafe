@@ -52,7 +52,7 @@ class PromoController extends Controller
     public function update(Request $request, int $id)
     {
         $promo = Promo::findOrFail($id);
-        $validated = $this->validatePromo($request);
+        $validated = $this->validatePromo($request, $promo->id);
 
         $promo->update($validated);
 
@@ -87,10 +87,11 @@ class PromoController extends Controller
     /**
      * @return array<string, mixed>
      */
-    private function validatePromo(Request $request): array
+    private function validatePromo(Request $request, ?int $ignoreId = null): array
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'code' => 'nullable|string|max:50|unique:promos,code'.($ignoreId ? ','.$ignoreId : ''),
             'description' => 'required|string',
             'type' => 'required|in:persen,nominal,buy_x_get_y',
             'value' => 'required|numeric|min:0',
@@ -103,6 +104,7 @@ class PromoController extends Controller
             'quota' => 'nullable|integer|min:0',
         ]);
 
+        $validated['code'] = $request->filled('code') ? strtoupper((string) $request->input('code')) : null;
         $validated['is_active'] = $request->boolean('is_active');
         $validated['min_spend'] = $validated['min_spend'] ?? 0;
         $validated['banner'] = $validated['banner'] ?? null;

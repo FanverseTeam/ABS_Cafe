@@ -40,14 +40,14 @@ Route::get('/', function () {
 | /admin/login, /owner/login, /kasir/login semuanya mengarah ke /login.
 */
 Route::get('/login', [LoginController::class, 'show'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+Route::post('/login', [LoginController::class, 'login'])->name('login.post')->middleware('throttle:10,1');
 
 Route::get('/admin/login', fn () => redirect()->route('login'))->name('admin.login');
-Route::post('/admin/login', [LoginController::class, 'login'])->name('admin.login.post');
+Route::post('/admin/login', [LoginController::class, 'login'])->name('admin.login.post')->middleware('throttle:10,1');
 Route::post('/admin/logout', [LoginController::class, 'logout'])->name('admin.logout');
 
 Route::get('/owner/login', fn () => redirect()->route('login'))->name('owner.login');
-Route::post('/owner/login', [LoginController::class, 'login'])->name('owner.login.post');
+Route::post('/owner/login', [LoginController::class, 'login'])->name('owner.login.post')->middleware('throttle:10,1');
 Route::post('/owner/logout', [LoginController::class, 'logout'])->name('owner.logout');
 
 Route::get('/kasir/login', fn () => redirect()->route('login'))->name('kasir.login');
@@ -204,7 +204,7 @@ Route::prefix('kasir')->name('kasir.')->middleware(['auth', 'role:kasir'])->grou
     Route::prefix('shift')->name('shift.')->group(function () {
         Route::get('/', [KasirShiftController::class, 'index'])->name('index');
         Route::get('/buka', [KasirShiftController::class, 'showOpen'])->name('open');
-        Route::post('/buka', [KasirShiftController::class, 'open'])->name('open.store')->middleware('kasir.shift');
+        Route::post('/buka', [KasirShiftController::class, 'open'])->name('open.store');
         Route::get('/tutup', [KasirShiftController::class, 'showClose'])->name('close')->middleware('kasir.shift');
         Route::post('/tutup', [KasirShiftController::class, 'close'])->name('close.store')->middleware('kasir.shift');
         Route::post('/kas', [KasirShiftController::class, 'movement'])->name('movement')->middleware('kasir.shift');

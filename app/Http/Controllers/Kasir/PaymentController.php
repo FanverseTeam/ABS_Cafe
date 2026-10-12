@@ -89,8 +89,8 @@ class PaymentController extends Controller
         $order->load('items', 'promo');
         $setting = [
             'name' => \App\Models\CafeSetting::get('cafe_name', 'ABS Cafe'),
-            'address' => \App\Models\CafeSetting::get('address', ''),
-            'phone' => \App\Models\CafeSetting::get('phone', ''),
+            'address' => \App\Models\CafeSetting::get('cafe_address', ''),
+            'phone' => \App\Models\CafeSetting::get('cafe_phone', ''),
             'footer' => \App\Models\CafeSetting::get('receipt_footer', 'Terima kasih atas kunjungan Anda'),
         ];
 

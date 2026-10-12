@@ -229,6 +229,7 @@ class OrderService
                 OrderItem::create([
                     'order_id' => $order->id,
                     'menu_id' => $item['menu_id'],
+                    'variant_id' => $item['variant_id'] ?? null,
                     'name' => $item['name'],
                     'price' => $item['price'],
                     'quantity' => $item['quantity'],
