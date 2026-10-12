@@ -105,5 +105,37 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (tagline: *Acce
 
 ---
 
+## 🧪 Pengujian Otomatis
+
+Proyek ini memiliki suite pengujian PHPUnit (242 tes, 699 assertion) yang mencakup
+seluruh fitur 3 peran (Admin, Owner, Kasir), logika service (unit), alur lintas-fitur
+(integrasi), serta audit paritas skema `db_abscafe.sql` dengan migrasi.
+
+**Prasyarat**: buat database uji sekali saja —
+
+```sql
+CREATE DATABASE IF NOT EXISTS abs_cafe_test
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+Konfigurasi sudah tertanam di `phpunit.xml`, lalu jalankan:
+
+```bash
+php artisan test      # atau: composer test
+```
+
+Tes berjalan dengan `RefreshDatabase` (data di-rollback) dan memiliki pengaman agar
+tidak menimpa database pengembangan. Laporan lengkap (cakupan, cara menjalankan,
+dan daftar bug yang ditemukan/diperbaiki) tersedia di
+[`docs/TEST_REPORT.md`](docs/TEST_REPORT.md).
+
+**Import data contoh (opsional)**:
+
+```bash
+mysql -u root abs_cafe < db_abscafe.sql
+```
+
+---
+
 ## 👥 Pengembang
 Dikembangkan untuk kerja sama proyek sekolah bersama **ABS Cafe Tulungagung** oleh **Fanverse Team, XI RPL 1, SMKN 1 Boyolangu**.

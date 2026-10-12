@@ -23,6 +23,7 @@ class DashboardController extends Controller
         }
 
         $revenueToday = Order::where('payment_status', 'lunas')
+            ->whereDate('paid_at', $today)
             ->sum('total');
 
         $pendingPaymentsCount = Order::where('payment_status', 'menunggu_pembayaran')->count();

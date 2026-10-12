@@ -137,8 +137,14 @@ class UserController extends Controller
 
     public function resetPassword(Request $request, $id)
     {
+        $data = $request->validate([
+            'new_password' => 'nullable|string|min:6',
+        ], [
+            'new_password.min' => 'Password minimal 6 karakter.',
+        ]);
+
         $user = User::findOrFail($id);
-        $newPass = $request->input('new_password', 'password123');
+        $newPass = $data['new_password'] ?? 'password123';
 
         $user->update(['password' => Hash::make($newPass)]);
 
@@ -150,7 +156,7 @@ class UserController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return back()->with('success', "Password {$user->name} berhasil direset menjadi '{$newPass}'.");
+        return back()->with('success', "Password {$user->name} berhasil direset.");
     }
 
     public function destroy($id)

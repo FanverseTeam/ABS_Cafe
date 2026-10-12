@@ -208,8 +208,8 @@ Route::prefix('kasir')->name('kasir.')->middleware(['auth', 'role:kasir'])->grou
         Route::get('/tutup', [KasirShiftController::class, 'showClose'])->name('close')->middleware('kasir.shift');
         Route::post('/tutup', [KasirShiftController::class, 'close'])->name('close.store')->middleware('kasir.shift');
         Route::post('/kas', [KasirShiftController::class, 'movement'])->name('movement')->middleware('kasir.shift');
-        Route::get('/{cashShift}/struk', [KasirShiftController::class, 'receipt'])->name('receipt');
-        Route::get('/{cashShift}', [KasirShiftController::class, 'history'])->name('show');
+        Route::get('/{shift}/struk', [KasirShiftController::class, 'receipt'])->name('receipt');
+        Route::get('/{shift}', [KasirShiftController::class, 'history'])->name('show');
     });
 
     // 3. POS / Input Pesanan

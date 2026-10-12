@@ -58,7 +58,7 @@ class SettingController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.settings', ['tab' => 'profil'])->with('success', 'Profil Cafe berhasil disimpan.');
+        return redirect()->route('admin.settings.index', ['tab' => 'profil'])->with('success', 'Profil Cafe berhasil disimpan.');
     }
 
     public function updateTax(Request $request)
@@ -75,7 +75,7 @@ class SettingController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.settings', ['tab' => 'pajak'])->with('success', 'Pengaturan Pajak & Biaya berhasil disimpan.');
+        return redirect()->route('admin.settings.index', ['tab' => 'pajak'])->with('success', 'Pengaturan Pajak & Biaya berhasil disimpan.');
     }
 
     public function updatePayment(Request $request)
@@ -95,7 +95,7 @@ class SettingController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.settings', ['tab' => 'pembayaran'])->with('success', 'Pengaturan Pembayaran berhasil disimpan.');
+        return redirect()->route('admin.settings.index', ['tab' => 'pembayaran'])->with('success', 'Pengaturan Pembayaran berhasil disimpan.');
     }
 
     public function updateReceipt(Request $request)
@@ -112,7 +112,7 @@ class SettingController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.settings', ['tab' => 'nota'])->with('success', 'Pengaturan Nota berhasil disimpan.');
+        return redirect()->route('admin.settings.index', ['tab' => 'nota'])->with('success', 'Pengaturan Nota berhasil disimpan.');
     }
 
     public function updateDisplay(Request $request)
@@ -128,7 +128,7 @@ class SettingController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.settings', ['tab' => 'tampilan'])->with('success', 'Pengaturan Tampilan berhasil disimpan.');
+        return redirect()->route('admin.settings.index', ['tab' => 'tampilan'])->with('success', 'Pengaturan Tampilan berhasil disimpan.');
     }
 
     public function updateAccount(Request $request)
@@ -156,6 +156,6 @@ class SettingController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.settings', ['tab' => 'akun'])->with('success', 'Profil akun admin berhasil diperbarui.');
+        return redirect()->route('admin.settings.index', ['tab' => 'akun'])->with('success', 'Profil akun admin berhasil diperbarui.');
     }
 }
