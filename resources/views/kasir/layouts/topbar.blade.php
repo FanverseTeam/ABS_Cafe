@@ -118,7 +118,7 @@
                         <i data-lucide="user" class="w-4 h-4 text-cafe-muted"></i>
                         <span>Profil & Ganti Password</span>
                     </a>
-                    <form action="{{ route('kasir.logout') }}" method="POST" class="pt-1 border-t border-cafe-beige/40">
+                    <form action="{{ route('kasir.logout') }}" method="POST" data-cafe-confirm class="pt-1 border-t border-cafe-beige/40">
                         @csrf
                         <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-cafe-danger hover:bg-cafe-danger/10 rounded-xl transition-colors text-left">
                             <i data-lucide="log-out" class="w-4 h-4"></i>

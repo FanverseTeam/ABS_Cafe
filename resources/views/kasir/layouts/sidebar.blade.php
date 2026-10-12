@@ -91,7 +91,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('kasir.logout') }}" method="POST" class="inline">
+            <form action="{{ route('kasir.logout') }}" method="POST" data-cafe-confirm class="inline">
                 @csrf
                 <button type="submit" title="Keluar" class="p-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-colors">
                     <i data-lucide="log-out" class="w-4 h-4"></i>
