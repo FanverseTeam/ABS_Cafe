@@ -4,7 +4,7 @@
     $totalNotif = $pendingOrders->count() + $lowStockItems->count();
 @endphp
 
-<header class="sticky top-0 z-30 h-20 bg-[#FBF6EE]/90 backdrop-blur-md border-b border-cafe-beige/60 px-4 sm:px-8 flex items-center justify-between gap-4">
+<header class="sticky top-0 z-30 h-20 bg-[#FAFCF3]/90 backdrop-blur-md border-b border-cafe-beige/60 px-4 sm:px-8 flex items-center justify-between gap-4">
     <!-- Left: Hamburger & Title -->
     <div class="flex items-center gap-3 min-w-0">
         <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-2xl bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-dark transition-colors" title="Buka Menu">
@@ -22,7 +22,7 @@
     <div class="flex-1 max-w-md hidden md:block">
         <form action="{{ route('admin.orders.index') }}" method="GET" class="relative">
             <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-            <input type="text" name="search" placeholder="Cari pesanan, menu, atau meja... (tekan Enter)" class="w-full bg-[#EFE0CC]/50 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-10 pr-4 py-2.5 rounded-full border border-cafe-beige/80 focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">
+            <input type="text" name="search" placeholder="Cari pesanan, menu, atau meja... (tekan Enter)" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-10 pr-4 py-2.5 rounded-full border border-cafe-beige/80 focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">
         </form>
     </div>
 
@@ -94,7 +94,7 @@
         <!-- Profile Dropdown -->
         <div class="relative" id="profile-dropdown-wrapper">
             <button onclick="toggleProfileDropdown()" class="flex items-center gap-2 p-1.5 pr-3 rounded-full bg-cafe-beige/40 hover:bg-cafe-beige/70 transition-all border border-cafe-beige/60">
-                <div class="w-8 h-8 rounded-full bg-[#4A1F14] text-[#D4A76A] font-serif font-bold text-xs flex items-center justify-center shadow-sm">
+                <div class="w-8 h-8 rounded-full bg-[#290024] text-[#D4954D] font-serif font-bold text-xs flex items-center justify-center shadow-sm">
                     {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
                 </div>
                 <div class="text-left hidden sm:block">

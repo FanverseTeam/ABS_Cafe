@@ -2,25 +2,25 @@
    ABS CAFE - STYLING ADMIN (CSS ONLY)
    Tema: Premium Coffee Shop (Tulungagung)
    Palet Warna:
-     - #4A1F14 : Coklat Tua (Primer, Tombol Utama, Sidebar Aktif)
-     - #7A4A2B : Coklat Sedang (Hover, Aksen)
-     - #D4A76A : Emas / Karamel (Aksen, Badge, Highlight)
-     - #F6EDE0 : Krem Terang (Background Utama)
-     - #EFE0CC : Beige Lembut (Input, Card Border, Baris Zebra)
-     - #FBF6EE : Putih Krem (Kartu Utama)
-     - #3B1E14 : Teks Utama
-     - #8A6A55 : Teks Sekunder
+     - #290024 : Coklat Tua (Primer, Tombol Utama, Sidebar Aktif)
+     - #775533 : Coklat Sedang (Hover, Aksen)
+     - #D4954D : Emas / Karamel (Aksen, Badge, Highlight)
+     - #F2F5E2 : Krem Terang (Background Utama)
+     - #E3DEA4 : Beige Lembut (Input, Card Border, Baris Zebra)
+     - #FAFCF3 : Putih Krem (Kartu Utama)
+     - #290024 : Teks Utama
+     - #775533 : Teks Sekunder
    ========================================================================== */
 
 :root {
-  --color-dark: #4A1F14;
-  --color-brown: #7A4A2B;
-  --color-gold: #D4A76A;
-  --color-cream: #F6EDE0;
-  --color-beige: #EFE0CC;
-  --color-card: #FBF6EE;
-  --color-text: #3B1E14;
-  --color-muted: #8A6A55;
+  --color-dark: #290024;
+  --color-brown: #775533;
+  --color-gold: #D4954D;
+  --color-cream: #F2F5E2;
+  --color-beige: #E3DEA4;
+  --color-card: #FAFCF3;
+  --color-text: #290024;
+  --color-muted: #775533;
   --color-success: #4F7A4A;
   --color-warning: #C98A2B;
   --color-danger: #B03A2E;
@@ -29,8 +29,8 @@
   --font-serif: 'Playfair Display', Georgia, serif;
   --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  --shadow-soft: 0 4px 20px -2px rgba(74, 31, 20, 0.06), 0 2px 6px -1px rgba(74, 31, 20, 0.04);
-  --shadow-elevated: 0 10px 25px -3px rgba(74, 31, 20, 0.09), 0 4px 12px -2px rgba(74, 31, 20, 0.05);
+  --shadow-soft: 0 4px 20px -2px rgba(41, 0, 36, 0.06), 0 2px 6px -1px rgba(41, 0, 36, 0.04);
+  --shadow-elevated: 0 10px 25px -3px rgba(41, 0, 36, 0.09), 0 4px 12px -2px rgba(41, 0, 36, 0.05);
 }
 
 /* Base resets & typography */
@@ -53,10 +53,10 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(239, 224, 204, 0.5);
+  background: rgba(227, 222, 164, 0.5);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(122, 74, 43, 0.35);
+  background: rgba(119, 85, 51, 0.35);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -77,12 +77,12 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   transition: all 0.2s ease;
   border: none;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(74, 31, 20, 0.15);
+  box-shadow: 0 2px 8px rgba(41, 0, 36, 0.15);
 }
 .btn-primary:hover {
   background-color: var(--color-brown);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(74, 31, 20, 0.22);
+  box-shadow: 0 4px 12px rgba(41, 0, 36, 0.22);
 }
 
 .btn-secondary {
@@ -125,7 +125,7 @@ h1, h2, h3, h4, h5, h6, .font-serif {
 /* Cards & Panel Styling */
 .card-cafe {
   background-color: var(--color-card);
-  border: 1px solid rgba(239, 224, 204, 0.7);
+  border: 1px solid rgba(227, 222, 164, 0.7);
   border-radius: 1rem;
   box-shadow: var(--shadow-soft);
   transition: all 0.2s ease;
@@ -139,12 +139,12 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   background-color: rgba(246, 237, 224, 0.35);
 }
 .table-cafe tbody tr:hover {
-  background-color: rgba(212, 167, 106, 0.12);
+  background-color: rgba(212, 149, 77, 0.12);
 }
 
 /* Line-art Coffee Ornament (Optional subtle background) */
 .cafe-pattern {
-  background-image: radial-gradient(#D4A76A 0.75px, transparent 0.75px);
+  background-image: radial-gradient(#D4954D 0.75px, transparent 0.75px);
   background-size: 20px 20px;
   opacity: 0.4;
 }

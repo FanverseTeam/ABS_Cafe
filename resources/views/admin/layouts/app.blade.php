@@ -19,14 +19,14 @@
                 extend: {
                     colors: {
                         cafe: {
-                            dark: '#4A1F14',    // Coklat tua (primer, tombol utama, sidebar aktif, judul)
-                            brown: '#7A4A2B',   // Coklat sedang (hover, aksen)
-                            gold: '#D4A76A',    // Emas/karamel (tombol sekunder, badge, highlight)
-                            cream: '#F6EDE0',   // Krem terang (background halaman)
-                            beige: '#EFE0CC',   // Beige (kartu, panel, input)
-                            card: '#FBF6EE',    // Putih krem (kartu utama)
-                            text: '#3B1E14',    // Teks utama
-                            muted: '#8A6A55',   // Teks sekunder
+                            dark: '#290024',    // Coklat tua (primer, tombol utama, sidebar aktif, judul)
+                            brown: '#775533',   // Coklat sedang (hover, aksen)
+                            gold: '#D4954D',    // Emas/karamel (tombol sekunder, badge, highlight)
+                            cream: '#F2F5E2',   // Krem terang (background halaman)
+                            beige: '#E3DEA4',   // Beige (kartu, panel, input)
+                            card: '#FAFCF3',    // Putih krem (kartu utama)
+                            text: '#290024',    // Teks utama
+                            muted: '#775533',   // Teks sekunder
                             success: '#4F7A4A', // Sukses
                             warning: '#C98A2B', // Peringatan
                             danger: '#B03A2E',  // Bahaya / batal
@@ -42,8 +42,8 @@
                         '3xl': '1.5rem',
                     },
                     boxShadow: {
-                        'soft': '0 4px 20px -2px rgba(74, 31, 20, 0.06), 0 2px 6px -1px rgba(74, 31, 20, 0.04)',
-                        'soft-lg': '0 10px 25px -3px rgba(74, 31, 20, 0.08), 0 4px 12px -2px rgba(74, 31, 20, 0.04)',
+                        'soft': '0 4px 20px -2px rgba(41, 0, 36, 0.06), 0 2px 6px -1px rgba(41, 0, 36, 0.04)',
+                        'soft-lg': '0 10px 25px -3px rgba(41, 0, 36, 0.08), 0 4px 12px -2px rgba(41, 0, 36, 0.04)',
                     }
                 }
             }
@@ -65,8 +65,8 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #F6EDE0;
-            color: #3B1E14;
+            background-color: #F2F5E2;
+            color: #290024;
         }
         h1, h2, h3, h4, .font-serif {
             font-family: 'Playfair Display', Georgia, serif;
@@ -76,14 +76,14 @@
             height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(239, 224, 204, 0.4);
+            background: rgba(227, 222, 164, 0.4);
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(122, 74, 43, 0.3);
+            background: rgba(119, 85, 51, 0.3);
             border-radius: 9999px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(74, 31, 20, 0.5);
+            background: rgba(41, 0, 36, 0.5);
         }
         @media print {
             body * { visibility: hidden; }
@@ -104,7 +104,7 @@
 <body class="antialiased min-h-screen bg-cafe-cream text-cafe-text">
 
     <!-- Mobile Drawer Backdrop -->
-    <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-[#3B1E14]/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-[#290024]/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
 
     <!-- Sidebar Layout -->
     @include('admin.layouts.sidebar')
@@ -119,8 +119,8 @@
             <!-- Background Line Art Decoration -->
             <div class="fixed bottom-0 right-0 w-96 h-96 pointer-events-none opacity-5 -z-0">
                 <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M40 160 C70 120, 120 120, 160 40 C140 100, 100 140, 40 160 Z" fill="#4A1F14"/>
-                    <path d="M20 180 C80 160, 140 100, 180 20" stroke="#4A1F14" stroke-width="2"/>
+                    <path d="M40 160 C70 120, 120 120, 160 40 C140 100, 100 140, 40 160 Z" fill="#290024"/>
+                    <path d="M20 180 C80 160, 140 100, 180 20" stroke="#290024" stroke-width="2"/>
                 </svg>
             </div>
 
@@ -134,7 +134,7 @@
     <!-- Toast Notifications -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
         @if(session('success'))
-            <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#FBF6EE]/95 border-[#4F7A4A]/30 text-cafe-text backdrop-blur-md animate-in slide-in-from-bottom-5 transition-all">
+            <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#FAFCF3]/95 border-[#4F7A4A]/30 text-cafe-text backdrop-blur-md animate-in slide-in-from-bottom-5 transition-all">
                 <i data-lucide="check-circle-2" class="w-5 h-5 text-cafe-success shrink-0 mt-0.5"></i>
                 <div class="flex-1 min-w-0">
                     <h5 class="font-semibold text-xs text-cafe-dark">Berhasil</h5>
@@ -147,7 +147,7 @@
         @endif
 
         @if(session('error'))
-            <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#FBF6EE]/95 border-[#B03A2E]/30 text-cafe-text backdrop-blur-md animate-in slide-in-from-bottom-5 transition-all">
+            <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#FAFCF3]/95 border-[#B03A2E]/30 text-cafe-text backdrop-blur-md animate-in slide-in-from-bottom-5 transition-all">
                 <i data-lucide="alert-circle" class="w-5 h-5 text-cafe-danger shrink-0 mt-0.5"></i>
                 <div class="flex-1 min-w-0">
                     <h5 class="font-semibold text-xs text-cafe-dark">Peringatan</h5>
@@ -188,7 +188,7 @@
             const iconColor = type === 'success' ? 'text-cafe-success' : (type === 'error' ? 'text-cafe-danger' : 'text-cafe-gold');
             const iconName = type === 'success' ? 'check-circle-2' : (type === 'error' ? 'alert-circle' : 'info');
 
-            item.className = `toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#FBF6EE]/95 ${borderColor} text-cafe-text backdrop-blur-md transition-all duration-300`;
+            item.className = `toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#FAFCF3]/95 ${borderColor} text-cafe-text backdrop-blur-md transition-all duration-300`;
             item.innerHTML = `
                 <i data-lucide="${iconName}" class="w-5 h-5 ${iconColor} shrink-0 mt-0.5"></i>
                 <div class="flex-1 min-w-0">

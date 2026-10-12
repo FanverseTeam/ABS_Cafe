@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Tabel `menus` sudah dibuat oleh migrasi 000001 (skema live).
+        if (Schema::hasTable('menus')) {
+            return;
+        }
+
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
@@ -25,6 +30,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('menus');
+        // Tidak menghapus `menus` milik skema live.
     }
 };

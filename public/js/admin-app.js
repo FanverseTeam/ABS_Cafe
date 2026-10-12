@@ -43,8 +43,8 @@ function showToast(pesan, tipe = 'success') {
   }
 
   const toast = document.createElement('div');
-  const bgClass = tipe === 'success' ? 'bg-[#4F7A4A]' : (tipe === 'error' ? 'bg-[#B03A2E]' : 'bg-[#4A1F14]');
-  toast.className = `${bgClass} text-[#F6EDE0] px-4 py-3 rounded-2xl shadow-xl flex items-center justify-between gap-3 text-xs md:text-sm font-medium transform transition-all duration-300 translate-y-3 opacity-0`;
+  const bgClass = tipe === 'success' ? 'bg-[#4F7A4A]' : (tipe === 'error' ? 'bg-[#B03A2E]' : 'bg-[#290024]');
+  toast.className = `${bgClass} text-[#F2F5E2] px-4 py-3 rounded-2xl shadow-xl flex items-center justify-between gap-3 text-xs md:text-sm font-medium transform transition-all duration-300 translate-y-3 opacity-0`;
   toast.innerHTML = `
     <span>${pesan}</span>
     <button onclick="this.parentElement.remove()" class="text-white/80 hover:text-white">&times;</button>

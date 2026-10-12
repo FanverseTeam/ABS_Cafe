@@ -33,11 +33,11 @@
         <form method="GET" action="{{ route('admin.stock.index') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu/bahan..." class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu/bahan..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
             </div>
 
             <div>
-                <select name="category_id" onchange="this.form.submit()" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="category_id" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Kategori</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
@@ -46,7 +46,7 @@
             </div>
 
             <div>
-                <select name="status" onchange="this.form.submit()" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="status" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Status Stok</option>
                     <option value="aman" {{ request('status') === 'aman' ? 'selected' : '' }}>Aman</option>
                     <option value="menipis" {{ request('status') === 'menipis' ? 'selected' : '' }}>Menipis</option>
@@ -60,7 +60,7 @@
     <div class="bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-                <thead class="bg-[#F6EDE0]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
+                <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
                     <tr>
                         <th class="py-3.5 pl-6">Menu / Bahan</th>
                         <th class="py-3.5 px-3">Kategori</th>
@@ -74,7 +74,7 @@
                 </thead>
                 <tbody class="divide-y divide-cafe-beige/30">
                     @forelse($menus as $idx => $m)
-                        <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FBF6EE]/40' : '' }}">
+                        <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FAFCF3]/40' : '' }}">
                             <td class="py-4 pl-6">
                                 <div class="flex items-center gap-3">
                                     <img src="{{ $m->image }}" alt="{{ $m->name }}" class="w-10 h-10 rounded-xl object-cover bg-cafe-beige shrink-0 shadow-xs">
@@ -128,7 +128,7 @@
 
 <!-- MODAL PENYESUAIAN STOK (TAMBAH / KURANGI / KOREKSI) -->
 <div id="adjust-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#3B1E14]/40 backdrop-blur-sm" onclick="closeAdjustModal()"></div>
+    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeAdjustModal()"></div>
 
     <div class="relative w-full max-w-md bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8 p-6 space-y-4">
         <div>
@@ -140,7 +140,7 @@
             @csrf
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Jenis Penyesuaian *</label>
-                <select name="type" id="adjust-type" required class="w-full bg-[#EFE0CC]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <select name="type" id="adjust-type" required class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     <option value="masuk">Barang Masuk (Restock / Pembelian)</option>
                     <option value="keluar">Barang Keluar (Dipakai / Terjual)</option>
                     <option value="koreksi">Koreksi Fisik (Opname / Cacat)</option>
@@ -149,12 +149,12 @@
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Jumlah (<span id="adjust-unit-label">porsi</span>) *</label>
-                <input type="number" name="quantity" required min="1" placeholder="misal: 20" class="w-full bg-[#EFE0CC]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <input type="number" name="quantity" required min="1" placeholder="misal: 20" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Catatan Alasan</label>
-                <textarea name="notes" rows="2" placeholder="Restock bahan supplier, barang cacat, dll..." class="w-full bg-[#EFE0CC]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
+                <textarea name="notes" rows="2" placeholder="Restock bahan supplier, barang cacat, dll..." class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-3 border-t border-cafe-beige/60">
@@ -167,7 +167,7 @@
 
 <!-- MODAL ATUR STOK MINIMUM -->
 <div id="min-stock-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#3B1E14]/40 backdrop-blur-sm" onclick="closeMinStockModal()"></div>
+    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeMinStockModal()"></div>
 
     <div class="relative w-full max-w-sm bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8 p-6 space-y-4">
         <div>
@@ -179,7 +179,7 @@
             @csrf
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Batas Minimum Peringatan</label>
-                <input type="number" name="min_stock" id="min-stock-input" required min="1" class="w-full bg-[#EFE0CC]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <input type="number" name="min_stock" id="min-stock-input" required min="1" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 <p class="text-[10px] text-cafe-muted">Jika stok berada di bawah angka ini, sistem otomatis menampilkan peringatan.</p>
             </div>
 
@@ -193,10 +193,10 @@
 
 <!-- MODAL RIWAYAT PERGERAKAN STOK -->
 <div id="history-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#3B1E14]/40 backdrop-blur-sm" onclick="closeHistoryLogsModal()"></div>
+    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeHistoryLogsModal()"></div>
 
     <div class="relative w-full max-w-3xl bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8">
-        <div class="flex items-center justify-between px-6 py-5 border-b border-cafe-beige/50 bg-[#F6EDE0]/40">
+        <div class="flex items-center justify-between px-6 py-5 border-b border-cafe-beige/50 bg-[#F2F5E2]/40">
             <div>
                 <h3 class="font-serif text-lg font-bold text-cafe-dark">Riwayat Pergerakan Stok</h3>
                 <p class="text-xs text-cafe-muted mt-0.5">Catatan audit barang masuk, keluar, dan penyesuaian fisik.</p>
@@ -208,7 +208,7 @@
 
         <div class="p-6 max-h-[70vh] overflow-y-auto">
             <table class="w-full text-left text-xs">
-                <thead class="bg-[#F6EDE0]/70 border-b border-cafe-beige text-cafe-muted font-semibold">
+                <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted font-semibold">
                     <tr>
                         <th class="py-2.5 px-3">Waktu</th>
                         <th class="py-2.5 px-3">Nama Menu/Bahan</th>

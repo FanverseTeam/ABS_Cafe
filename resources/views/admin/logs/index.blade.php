@@ -33,11 +33,11 @@
         <form method="GET" action="{{ route('admin.logs.index') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari aktivitas atau nama staf..." class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari aktivitas atau nama staf..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
             </div>
 
             <div>
-                <select name="type" onchange="this.form.submit()" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="type" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Jenis Aktivitas</option>
                     <option value="pesanan" {{ request('type') === 'pesanan' ? 'selected' : '' }}>Pesanan &amp; Kasir</option>
                     <option value="menu" {{ request('type') === 'menu' ? 'selected' : '' }}>Menu &amp; Harga</option>
@@ -49,7 +49,7 @@
             </div>
 
             <div>
-                <select name="user" onchange="this.form.submit()" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="user" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Pengguna</option>
                     @foreach($users as $userName)
                         <option value="{{ $userName }}" {{ request('user') === $userName ? 'selected' : '' }}>{{ $userName }}</option>
@@ -63,7 +63,7 @@
     <div class="bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-                <thead class="bg-[#F6EDE0]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
+                <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
                     <tr>
                         <th class="py-3.5 pl-6">Waktu Kejadian</th>
                         <th class="py-3.5 px-3">Pengguna</th>
@@ -75,7 +75,7 @@
                 </thead>
                 <tbody class="divide-y divide-cafe-beige/30">
                     @forelse($logs as $idx => $log)
-                        <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FBF6EE]/40' : '' }}">
+                        <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FAFCF3]/40' : '' }}">
                             <td class="py-4 pl-6 text-cafe-muted font-mono whitespace-nowrap">
                                 {{ $log->created_at->format('d M Y, H:i:s') }}
                             </td>

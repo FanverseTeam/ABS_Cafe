@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Tabel `activity_logs` sudah dibuat oleh migrasi 000001 (skema live).
+        if (Schema::hasTable('activity_logs')) {
+            return;
+        }
+
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
@@ -28,6 +33,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('activity_logs');
+        // Tidak menghapus `activity_logs` milik skema live.
     }
 };

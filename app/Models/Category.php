@@ -11,13 +11,13 @@ class Category extends Model
 {
     use LogsActivity;
 
-    protected $fillable = ['name', 'slug', 'description', 'sort_order', 'is_active'];
+    protected $fillable = ['name', 'icon', 'order', 'description', 'is_active'];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
-            'sort_order' => 'integer',
+            'order' => 'integer',
         ];
     }
 

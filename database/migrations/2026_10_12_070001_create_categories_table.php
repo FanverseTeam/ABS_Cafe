@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Tabel `categories` sudah dibuat oleh migrasi 000001 (skema live).
+        if (Schema::hasTable('categories')) {
+            return;
+        }
+
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -21,6 +26,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        // Tidak menghapus `categories` milik skema live.
     }
 };

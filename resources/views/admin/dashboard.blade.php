@@ -6,7 +6,7 @@
 @section('content')
 <div class="space-y-8">
     <!-- Top Welcome Banner & Quick Actions -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-[#4A1F14] via-[#5C2B1D] to-[#7A4A2B] text-cafe-cream p-6 sm:p-8 rounded-3xl shadow-soft-lg relative overflow-hidden">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-[#290024] via-[#3D1236] to-[#775533] text-cafe-cream p-6 sm:p-8 rounded-3xl shadow-soft-lg relative overflow-hidden">
         <!-- Line art aesthetic circles -->
         <div class="absolute -top-10 -right-10 w-44 h-44 rounded-full border border-cafe-gold/20 pointer-events-none"></div>
         <div class="absolute top-1/2 -right-20 w-60 h-60 rounded-full border border-cafe-gold/10 pointer-events-none"></div>
@@ -15,7 +15,7 @@
             <span class="text-xs font-medium text-cafe-gold uppercase tracking-wider block mb-1">
                 {{ \Carbon\Carbon::now()->translatedFormat('l, j F Y') }}
             </span>
-            <h2 class="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#FBF6EE]">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#FAFCF3]">
                 Selamat datang, {{ Auth::user()->name }}! 👋
             </h2>
             <p class="text-xs sm:text-sm text-cafe-cream/80 mt-1 max-w-xl">
@@ -28,7 +28,7 @@
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 <span>Kelola Menu</span>
             </a>
-            <a href="{{ route('admin.orders.index') }}" class="px-4 sm:px-5 py-2.5 rounded-full bg-white/15 hover:bg-white/25 text-[#FBF6EE] font-semibold text-xs border border-white/20 transition-all flex items-center gap-1.5">
+            <a href="{{ route('admin.orders.index') }}" class="px-4 sm:px-5 py-2.5 rounded-full bg-white/15 hover:bg-white/25 text-[#FAFCF3] font-semibold text-xs border border-white/20 transition-all flex items-center gap-1.5">
                 <span>Semua Pesanan</span>
                 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </a>
@@ -129,7 +129,7 @@
             <div class="grid grid-cols-2 gap-2 pt-3 border-t border-cafe-beige/50 text-xs">
                 @foreach($categorySales as $idx => $cs)
                     @php
-                        $colors = ['#4A1F14', '#7A4A2B', '#D4A76A', '#8A6A55'];
+                        $colors = ['#290024', '#775533', '#D4954D', '#775533'];
                         $color = $colors[$idx % 4];
                     @endphp
                     <div class="flex items-center gap-2">
@@ -266,8 +266,8 @@
     // Revenue Line/Area Chart with Chart.js
     const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
     const gradient = ctxRevenue.createLinearGradient(0, 0, 0, 300);
-    gradient.addColorStop(0, 'rgba(74, 31, 20, 0.25)');
-    gradient.addColorStop(1, 'rgba(74, 31, 20, 0.0)');
+    gradient.addColorStop(0, 'rgba(41, 0, 36, 0.25)');
+    gradient.addColorStop(1, 'rgba(41, 0, 36, 0.0)');
 
     new Chart(ctxRevenue, {
         type: 'line',
@@ -276,13 +276,13 @@
             datasets: [{
                 label: 'Pendapatan (Rp)',
                 data: {!! json_encode($chartRevenue) !!},
-                borderColor: '#4A1F14',
+                borderColor: '#290024',
                 borderWidth: 2.5,
                 backgroundColor: gradient,
                 fill: true,
                 tension: 0.35,
-                pointBackgroundColor: '#D4A76A',
-                pointBorderColor: '#4A1F14',
+                pointBackgroundColor: '#D4954D',
+                pointBorderColor: '#290024',
                 pointRadius: 4,
             }]
         },
@@ -308,7 +308,7 @@
                         },
                         font: { size: 10 }
                     },
-                    grid: { color: 'rgba(239, 224, 204, 0.6)' }
+                    grid: { color: 'rgba(227, 222, 164, 0.6)' }
                 },
                 x: {
                     ticks: { font: { size: 10 } },
@@ -326,9 +326,9 @@
             labels: {!! json_encode(array_column($categorySales, 'name')) !!},
             datasets: [{
                 data: {!! json_encode(array_column($categorySales, 'count')) !!},
-                backgroundColor: ['#4A1F14', '#7A4A2B', '#D4A76A', '#8A6A55'],
+                backgroundColor: ['#290024', '#775533', '#D4954D', '#775533'],
                 borderWidth: 2,
-                borderColor: '#FBF6EE',
+                borderColor: '#FAFCF3',
             }]
         },
         options: {

@@ -39,7 +39,7 @@
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
-                    <thead class="bg-[#F6EDE0]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px]">
+                    <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px]">
                         <tr>
                             <th class="py-3.5 pl-6">Urutan</th>
                             <th class="py-3.5 px-3">Nama Kategori</th>
@@ -113,10 +113,10 @@
 
 <!-- MODAL FORM TAMBAH / EDIT KATEGORI -->
 <div id="category-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#3B1E14]/40 backdrop-blur-sm" onclick="closeCategoryModal()"></div>
+    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeCategoryModal()"></div>
 
     <div class="relative w-full max-w-md bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8">
-        <div class="flex items-center justify-between px-6 py-5 border-b border-cafe-beige/50 bg-[#F6EDE0]/40">
+        <div class="flex items-center justify-between px-6 py-5 border-b border-cafe-beige/50 bg-[#F2F5E2]/40">
             <div>
                 <h3 class="font-serif text-lg font-bold text-cafe-dark" id="category-modal-title">Tambah Kategori Baru</h3>
                 <p class="text-xs text-cafe-muted mt-0.5">Kelompokkan menu agar rapi saat dipesan pelanggan.</p>
@@ -130,28 +130,28 @@
             @csrf
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Nama Kategori *</label>
-                <input type="text" name="name" id="cat-input-name" required placeholder="misal: Coffee, Artisan Tea" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <input type="text" name="name" id="cat-input-name" required placeholder="misal: Coffee, Artisan Tea" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
             </div>
 
             <div class="grid grid-cols-2 gap-3">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Ikon (Lucide)</label>
-                    <input type="text" name="icon" id="cat-input-icon" value="coffee" placeholder="coffee, utensils" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="icon" id="cat-input-icon" value="coffee" placeholder="coffee, utensils" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Urutan Tampil</label>
-                    <input type="number" name="order" id="cat-input-order" value="1" min="1" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="number" name="order" id="cat-input-order" value="1" min="1" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Deskripsi Singkat</label>
-                <textarea name="description" id="cat-input-desc" rows="2" placeholder="Keterangan singkat kategori ini..." class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
+                <textarea name="description" id="cat-input-desc" rows="2" placeholder="Keterangan singkat kategori ini..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
             </div>
 
             <div class="pt-1">
                 <label class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" name="is_active" id="cat-input-active" value="1" checked class="w-4 h-4 rounded text-cafe-dark accent-[#4A1F14]">
+                    <input type="checkbox" name="is_active" id="cat-input-active" value="1" checked class="w-4 h-4 rounded text-cafe-dark accent-[#290024]">
                     <span class="font-semibold text-cafe-dark">Status Aktif (Tampil di Menu)</span>
                 </label>
             </div>
@@ -166,7 +166,7 @@
 
 <!-- MODAL KONFIRMASI HAPUS KATEGORI -->
 <div id="delete-cat-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#3B1E14]/40 backdrop-blur-sm" onclick="closeDeleteCategoryModal()"></div>
+    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeDeleteCategoryModal()"></div>
 
     <div class="relative w-full max-w-md bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8 p-6 space-y-4">
         <div class="flex items-start gap-3">

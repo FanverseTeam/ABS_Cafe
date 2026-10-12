@@ -36,12 +36,12 @@
             <!-- Search Input -->
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kode (#AB...) atau nama..." class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kode (#AB...) atau nama..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
             </div>
 
             <!-- Filter Status Bayar -->
             <div>
-                <select name="payment_status" onchange="this.form.submit()" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="payment_status" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Status Bayar</option>
                     <option value="menunggu_pembayaran" {{ request('payment_status') == 'menunggu_pembayaran' ? 'selected' : '' }}>Menunggu Pembayaran</option>
                     <option value="lunas" {{ request('payment_status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
@@ -51,7 +51,7 @@
 
             <!-- Filter Status Pesanan -->
             <div>
-                <select name="order_status" onchange="this.form.submit()" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="order_status" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Status Pesanan</option>
                     <option value="diproses" {{ request('order_status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
                     <option value="siap" {{ request('order_status') == 'siap' ? 'selected' : '' }}>Siap</option>
@@ -61,7 +61,7 @@
 
             <!-- Filter Tipe Pesanan -->
             <div>
-                <select name="order_type" onchange="this.form.submit()" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="order_type" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Tipe (Dine-in / Take-away)</option>
                     <option value="dine_in" {{ request('order_type') == 'dine_in' ? 'selected' : '' }}>Dine-in (Makan di Tempat)</option>
                     <option value="take_away" {{ request('order_type') == 'take_away' ? 'selected' : '' }}>Take-away (Bawa Pulang)</option>
@@ -74,7 +74,7 @@
     <div class="bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-                <thead class="bg-[#F6EDE0]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
+                <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
                     <tr>
                         <th class="py-3.5 pl-6">Kode Order</th>
                         <th class="py-3.5 px-3">Tanggal &amp; Jam</th>
@@ -89,7 +89,7 @@
                 </thead>
                 <tbody class="divide-y divide-cafe-beige/30">
                     @forelse($orders as $idx => $order)
-                        <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FBF6EE]/40' : '' }}">
+                        <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FAFCF3]/40' : '' }}">
                             <td class="py-4 pl-6 font-mono font-bold text-cafe-dark">{{ $order->order_code }}</td>
                             <td class="py-4 px-3 text-cafe-muted">{{ $order->created_at->format('d M Y, H:i') }} WIB</td>
                             <td class="py-4 px-3 font-semibold text-cafe-text">{{ $order->customer_name }}</td>
@@ -155,10 +155,10 @@
 
 <!-- MODAL DETAIL PESANAN (Pure JS & Tailwind Modal) -->
 <div id="order-detail-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#3B1E14]/40 backdrop-blur-sm" onclick="closeOrderDetail()"></div>
+    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeOrderDetail()"></div>
 
     <div class="relative w-full max-w-2xl bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8">
-        <div class="flex items-center justify-between px-6 py-5 border-b border-cafe-beige/50 bg-[#F6EDE0]/40">
+        <div class="flex items-center justify-between px-6 py-5 border-b border-cafe-beige/50 bg-[#F2F5E2]/40">
             <div>
                 <h3 class="font-serif text-xl font-bold text-cafe-dark" id="modal-order-code">Detail Pesanan</h3>
                 <p class="text-xs text-cafe-muted mt-0.5" id="modal-order-date">-</p>
@@ -177,7 +177,7 @@
 
 <!-- MODAL BATALKAN PESANAN -->
 <div id="cancel-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#3B1E14]/40 backdrop-blur-sm" onclick="closeCancelModal()"></div>
+    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeCancelModal()"></div>
 
     <div class="relative w-full max-w-md bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8 p-6 space-y-4">
         <div class="flex items-start gap-3">
@@ -194,7 +194,7 @@
             @csrf
             <div class="space-y-1.5 my-3">
                 <label class="block text-xs font-semibold text-cafe-dark">Alasan Pembatalan (Wajib diisi):</label>
-                <textarea name="cancel_reason" required rows="3" placeholder="Tulis alasan jelas pembatalan pesanan..." class="w-full bg-[#EFE0CC]/50 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
+                <textarea name="cancel_reason" required rows="3" placeholder="Tulis alasan jelas pembatalan pesanan..." class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-3 border-t border-cafe-beige/60">
@@ -292,7 +292,7 @@
                         <h4 class="font-serif font-bold text-sm text-cafe-dark mb-2">Item Menu Dipesan</h4>
                         <div class="border border-cafe-beige/60 rounded-2xl overflow-hidden">
                             <table class="w-full text-left text-xs">
-                                <thead class="bg-[#F6EDE0]/70 border-b border-cafe-beige text-cafe-muted">
+                                <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted">
                                     <tr>
                                         <th class="py-2 px-3">Menu</th>
                                         <th class="py-2 px-3">Harga</th>

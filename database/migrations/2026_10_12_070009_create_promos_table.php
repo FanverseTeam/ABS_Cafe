@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Tabel `promos` sudah dibuat oleh migrasi 000001 (skema live).
+        if (Schema::hasTable('promos')) {
+            return;
+        }
+
         Schema::create('promos', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -29,6 +34,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('promos');
+        // Tidak menghapus `promos` milik skema live.
     }
 };

@@ -33,11 +33,11 @@
         <form method="GET" action="{{ route('admin.users.index') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama, email, username..." class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama, email, username..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
             </div>
 
             <div>
-                <select name="role" onchange="this.form.submit()" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="role" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Peran</option>
                     <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="kasir" {{ request('role') === 'kasir' ? 'selected' : '' }}>Kasir</option>
@@ -46,7 +46,7 @@
             </div>
 
             <div>
-                <select name="status" onchange="this.form.submit()" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="status" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Status</option>
                     <option value="aktif" {{ request('status') === 'aktif' ? 'selected' : '' }}>Aktif</option>
                     <option value="nonaktif" {{ request('status') === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
@@ -59,7 +59,7 @@
     <div class="bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-                <thead class="bg-[#F6EDE0]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
+                <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
                     <tr>
                         <th class="py-3.5 pl-6">Foto &amp; Nama</th>
                         <th class="py-3.5 px-3">Email / Username</th>
@@ -72,7 +72,7 @@
                 </thead>
                 <tbody class="divide-y divide-cafe-beige/30">
                     @forelse($users as $idx => $user)
-                        <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FBF6EE]/40' : '' }}">
+                        <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FAFCF3]/40' : '' }}">
                             <td class="py-4 pl-6">
                                 <div class="flex items-center gap-3">
                                     <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="w-9 h-9 rounded-full object-cover bg-cafe-beige border border-cafe-gold/30 shrink-0">
@@ -153,10 +153,10 @@
 
 <!-- MODAL FORM TAMBAH / EDIT USER -->
 <div id="user-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#3B1E14]/40 backdrop-blur-sm" onclick="closeUserModal()"></div>
+    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeUserModal()"></div>
 
     <div class="relative w-full max-w-lg bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8">
-        <div class="flex items-center justify-between px-6 py-5 border-b border-cafe-beige/50 bg-[#F6EDE0]/40">
+        <div class="flex items-center justify-between px-6 py-5 border-b border-cafe-beige/50 bg-[#F2F5E2]/40">
             <div>
                 <h3 class="font-serif text-lg font-bold text-cafe-dark" id="user-modal-title">Tambah Staf Baru</h3>
                 <p class="text-xs text-cafe-muted mt-0.5">Daftarkan akun kasir, barista, atau admin operasional.</p>
@@ -170,24 +170,24 @@
             @csrf
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Nama Lengkap *</label>
-                <input type="text" name="name" id="u-name" required placeholder="misal: Siti Rahma" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <input type="text" name="name" id="u-name" required placeholder="misal: Siti Rahma" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
             </div>
 
             <div class="grid grid-cols-2 gap-3">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Username *</label>
-                    <input type="text" name="username" id="u-username" required placeholder="siti_kasir" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="username" id="u-username" required placeholder="siti_kasir" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Email *</label>
-                    <input type="email" name="email" id="u-email" required placeholder="siti@abscafe.com" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="email" name="email" id="u-email" required placeholder="siti@abscafe.com" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Peran / Jabatan *</label>
-                    <select name="role" id="u-role" required class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <select name="role" id="u-role" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         <option value="kasir">Kasir</option>
                         <option value="staf">Staf (Barista/Kitchen)</option>
                         <option value="admin">Administrator</option>
@@ -195,19 +195,19 @@
                 </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Nomor Telepon (WhatsApp)</label>
-                    <input type="text" name="phone" id="u-phone" placeholder="08123456789" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="phone" id="u-phone" placeholder="08123456789" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="space-y-1" id="u-pass-container">
                 <label class="font-semibold text-cafe-dark">Password Awal *</label>
-                <input type="password" name="password" id="u-pass" placeholder="••••••••" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <input type="password" name="password" id="u-pass" placeholder="••••••••" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 <p class="text-[10px] text-cafe-muted" id="u-pass-note">Kosongkan jika tidak ingin mengubah password saat mengedit.</p>
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Status Akun *</label>
-                <select name="status" id="u-status" required class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <select name="status" id="u-status" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     <option value="aktif">Aktif</option>
                     <option value="nonaktif">Nonaktif</option>
                 </select>
@@ -223,7 +223,7 @@
 
 <!-- MODAL RESET PASSWORD -->
 <div id="reset-pass-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#3B1E14]/40 backdrop-blur-sm" onclick="closeResetPassModal()"></div>
+    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeResetPassModal()"></div>
 
     <div class="relative w-full max-w-sm bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8 p-6 space-y-4">
         <div>
@@ -235,7 +235,7 @@
             @csrf
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Password Baru</label>
-                <input type="text" name="new_password" value="password123" required class="w-full bg-[#EFE0CC]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none font-mono">
+                <input type="text" name="new_password" value="password123" required class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none font-mono">
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-3 border-t border-cafe-beige/60">

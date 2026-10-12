@@ -38,7 +38,7 @@
             <input type="hidden" name="category_id" value="{{ request('category_id') }}">
             <input type="hidden" name="sort" value="{{ request('sort') }}">
             <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu atau deskripsi..." class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu atau deskripsi..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
         </form>
 
         <!-- Category Tabs -->
@@ -88,7 +88,7 @@
 
                             <!-- Category Badge -->
                             <div class="absolute top-3 left-3">
-                                <span class="px-2.5 py-1 rounded-full bg-[#4A1F14]/80 backdrop-blur-md text-[#F6EDE0] text-[10px] font-semibold tracking-wide">
+                                <span class="px-2.5 py-1 rounded-full bg-[#290024]/80 backdrop-blur-md text-[#F2F5E2] text-[10px] font-semibold tracking-wide">
                                     {{ $menu->category->name }}
                                 </span>
                             </div>
@@ -176,7 +176,7 @@
         <div class="bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
-                    <thead class="bg-[#F6EDE0]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px]">
+                    <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px]">
                         <tr>
                             <th class="py-3.5 pl-6">Foto &amp; Nama</th>
                             <th class="py-3.5 px-3">Kategori</th>
@@ -190,7 +190,7 @@
                     </thead>
                     <tbody class="divide-y divide-cafe-beige/30">
                         @foreach($menus as $idx => $menu)
-                            <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FBF6EE]/40' : '' }}">
+                            <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FAFCF3]/40' : '' }}">
                                 <td class="py-3 pl-6">
                                     <div class="flex items-center gap-3">
                                         <img src="{{ $menu->image }}" alt="{{ $menu->name }}" class="w-11 h-11 rounded-xl object-cover bg-cafe-beige shrink-0 shadow-xs">
@@ -252,10 +252,10 @@
 
 <!-- MODAL FORM TAMBAH / EDIT MENU -->
 <div id="menu-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#3B1E14]/40 backdrop-blur-sm" onclick="closeMenuModal()"></div>
+    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeMenuModal()"></div>
 
     <div class="relative w-full max-w-2xl bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8">
-        <div class="flex items-center justify-between px-6 py-5 border-b border-cafe-beige/50 bg-[#F6EDE0]/40">
+        <div class="flex items-center justify-between px-6 py-5 border-b border-cafe-beige/50 bg-[#F2F5E2]/40">
             <div>
                 <h3 class="font-serif text-xl font-bold text-cafe-dark" id="menu-modal-title">Tambah Menu Baru</h3>
                 <p class="text-xs text-cafe-muted mt-0.5">Lengkapi informasi produk, harga, ketersediaan, dan stok kafe.</p>
@@ -270,12 +270,12 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Nama Menu / Produk *</label>
-                    <input type="text" name="name" id="menu-input-name" required placeholder="mis. Caramel Macchiato" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="name" id="menu-input-name" required placeholder="mis. Caramel Macchiato" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
 
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Kategori *</label>
-                    <select name="category_id" id="menu-input-category" required class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none cursor-pointer">
+                    <select name="category_id" id="menu-input-category" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none cursor-pointer">
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                         @endforeach
@@ -286,45 +286,45 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Harga Jual (Rp) *</label>
-                    <input type="number" name="price" id="menu-input-price" required min="0" step="500" placeholder="20000" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="number" name="price" id="menu-input-price" required min="0" step="500" placeholder="20000" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
 
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Satuan Produk</label>
-                    <input type="text" name="unit" id="menu-input-unit" value="porsi" placeholder="porsi, pcs, cup, pack" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="unit" id="menu-input-unit" value="porsi" placeholder="porsi, pcs, cup, pack" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Deskripsi Menu</label>
-                <textarea name="description" id="menu-input-desc" rows="2" placeholder="Deskripsikan cita rasa, bahan baku, atau spesifikasi aksesoris..." class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
+                <textarea name="description" id="menu-input-desc" rows="2" placeholder="Deskripsikan cita rasa, bahan baku, atau spesifikasi aksesoris..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">URL Foto Menu</label>
-                <input type="url" name="image" id="menu-input-image" placeholder="https://images.unsplash.com/..." class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <input type="url" name="image" id="menu-input-image" placeholder="https://images.unsplash.com/..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Stok Awal</label>
-                    <input type="number" name="stock" id="menu-input-stock" value="30" min="0" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="number" name="stock" id="menu-input-stock" value="30" min="0" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
 
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Batas Minimum Peringatan</label>
-                    <input type="number" name="min_stock" id="menu-input-min-stock" value="10" min="1" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="number" name="min_stock" id="menu-input-min-stock" value="10" min="1" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="flex flex-wrap items-center gap-6 pt-2">
                 <label class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" name="is_available" id="menu-input-available" value="1" checked class="w-4 h-4 rounded text-cafe-dark accent-[#4A1F14]">
+                    <input type="checkbox" name="is_available" id="menu-input-available" value="1" checked class="w-4 h-4 rounded text-cafe-dark accent-[#290024]">
                     <span class="font-semibold text-cafe-dark">Status Tersedia (Bisa Dipesan)</span>
                 </label>
 
                 <label class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" name="is_best_seller" id="menu-input-bestseller" value="1" class="w-4 h-4 rounded text-cafe-gold accent-[#D4A76A]">
+                    <input type="checkbox" name="is_best_seller" id="menu-input-bestseller" value="1" class="w-4 h-4 rounded text-cafe-gold accent-[#D4954D]">
                     <span class="font-semibold text-cafe-dark flex items-center gap-1">
                         <i data-lucide="star" class="w-3.5 h-3.5 fill-current text-cafe-gold"></i>
                         <span>Tandai sebagai Best Seller</span>
@@ -342,7 +342,7 @@
 
 <!-- MODAL KONFIRMASI HAPUS -->
 <div id="delete-menu-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#3B1E14]/40 backdrop-blur-sm" onclick="closeDeleteMenuModal()"></div>
+    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeDeleteMenuModal()"></div>
 
     <div class="relative w-full max-w-md bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8 p-6 space-y-4">
         <div class="flex items-start gap-3">

@@ -2,19 +2,19 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
+use App\Models\ActivityLog;
+use App\Models\CafeSetting;
 use App\Models\Category;
 use App\Models\Menu;
-use App\Models\Table;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderTimeline;
-use App\Models\StockLog;
 use App\Models\Promo;
-use App\Models\CafeSetting;
-use App\Models\ActivityLog;
+use App\Models\StockLog;
+use App\Models\Table;
+use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -35,6 +35,20 @@ class DatabaseSeeder extends Seeder
                 'status' => 'aktif',
                 'avatar' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
                 'last_login_at' => now(),
+            ]
+        );
+
+        $owner = User::updateOrCreate(
+            ['email' => 'owner@abscafe.com'],
+            [
+                'name' => 'Owner ABS Cafe',
+                'username' => 'owner',
+                'password' => Hash::make('owner123'),
+                'role' => 'owner',
+                'phone' => '081100112233',
+                'status' => 'aktif',
+                'avatar' => 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&auto=format&fit=crop&q=80',
+                'last_login_at' => now()->subHours(1),
             ]
         );
 
@@ -348,7 +362,7 @@ class DatabaseSeeder extends Seeder
             'Hendra Setiawan', 'Anisa Maulida', 'Yogi Saputra', 'Kurnia Sandy',
             'Bayu Pamungkas', 'Tiara Anggraini', 'Rizky Firmansyah', 'Salsabila Putri',
             'Zaky Alfarizi', 'Nadira Ramadhani', 'Ilham Prasetyo', 'Novi Safitri',
-            'Doni Kusuma', 'Rani Octaviana', 'Eko Purnomo', 'Vina Melati', 'Arif Budiman'
+            'Doni Kusuma', 'Rani Octaviana', 'Eko Purnomo', 'Vina Melati', 'Arif Budiman',
         ];
 
         $paymentMethods = ['qris', 'tunai', 'debit'];
@@ -444,7 +458,7 @@ class DatabaseSeeder extends Seeder
                 'order_id' => $order->id,
                 'status' => 'DIBUAT',
                 'actor' => 'Sistem Meja',
-                'description' => "Pesanan dibuat dari {$type} " . ($tableNum ? "Meja {$tableNum}" : ""),
+                'description' => "Pesanan dibuat dari {$type} ".($tableNum ? "Meja {$tableNum}" : ''),
                 'logged_at' => $order->created_at,
             ]);
 
@@ -463,7 +477,7 @@ class DatabaseSeeder extends Seeder
                     'order_id' => $order->id,
                     'status' => 'SIAP',
                     'actor' => 'Barista / Kitchen',
-                    'description' => "Pesanan siap disajikan ke meja",
+                    'description' => 'Pesanan siap disajikan ke meja',
                     'logged_at' => $paidAt ? $paidAt->addMinutes(10) : now(),
                 ]);
             }
@@ -473,7 +487,7 @@ class DatabaseSeeder extends Seeder
                     'order_id' => $order->id,
                     'status' => 'SELESAI',
                     'actor' => 'Staf Floor',
-                    'description' => "Pelanggan telah menikmati hidangan",
+                    'description' => 'Pelanggan telah menikmati hidangan',
                     'logged_at' => $paidAt ? $paidAt->addMinutes(35) : now(),
                 ]);
             }
@@ -584,6 +598,15 @@ class DatabaseSeeder extends Seeder
             'banner_subtitle' => 'Tempat berkumpul hangat dengan aroma kopi terbaik di Boyolangu Tulungagung',
             'hours_weekday' => '09:00 - 22:00',
             'hours_weekend' => '09:00 - 23:30',
+            // Pengaturan bisnis khusus Owner
+            'target_daily_sales' => '2000000',
+            'target_monthly_sales' => '45000000',
+            'profit_margin_percent' => '40',
+            'price_rounding' => 'none',
+            'default_min_stock' => '10',
+            'notif_low_stock' => '1',
+            'notif_daily_report' => '1',
+            'notif_weekly_report' => '0',
         ];
 
         foreach ($settings as $k => $v) {
@@ -613,5 +636,8 @@ class DatabaseSeeder extends Seeder
                 'created_at' => $act[4],
             ]);
         }
+
+        // 10. Riwayat Transaksi Historis (60-90 hari) untuk analitik Owner
+        $this->call(TransactionSeeder::class);
     }
 }

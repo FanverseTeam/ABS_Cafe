@@ -54,38 +54,38 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Nama Cafe *</label>
-                        <input type="text" name="cafe_name" value="{{ $settings['cafe_name'] }}" required class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="cafe_name" value="{{ $settings['cafe_name'] }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Tagline *</label>
-                        <input type="text" name="cafe_tagline" value="{{ $settings['cafe_tagline'] }}" required class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="cafe_tagline" value="{{ $settings['cafe_tagline'] }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                 </div>
 
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Alamat Lengkap</label>
-                    <textarea name="cafe_address" rows="2" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">{{ $settings['cafe_address'] }}</textarea>
+                    <textarea name="cafe_address" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">{{ $settings['cafe_address'] }}</textarea>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Nomor Telepon / WhatsApp</label>
-                        <input type="text" name="cafe_phone" value="{{ $settings['cafe_phone'] }}" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="cafe_phone" value="{{ $settings['cafe_phone'] }}" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Email Kontak</label>
-                        <input type="email" name="cafe_email" value="{{ $settings['cafe_email'] }}" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="email" name="cafe_email" value="{{ $settings['cafe_email'] }}" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Jam Buka Hari Kerja (Senin - Kamis)</label>
-                        <input type="text" name="hours_weekday" value="{{ $settings['hours_weekday'] }}" placeholder="09:00 - 22:00" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="hours_weekday" value="{{ $settings['hours_weekday'] }}" placeholder="09:00 - 22:00" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Jam Buka Akhir Pekan (Jumat - Minggu)</label>
-                        <input type="text" name="hours_weekend" value="{{ $settings['hours_weekend'] }}" placeholder="09:00 - 23:30" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="hours_weekend" value="{{ $settings['hours_weekend'] }}" placeholder="09:00 - 23:30" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                 </div>
 
@@ -107,7 +107,7 @@
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Pajak Restoran / PB1 (%)</label>
                     <div class="relative w-48">
-                        <input type="number" name="tax_percent" value="{{ $settings['tax_percent'] }}" min="0" max="100" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 pr-8 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="number" name="tax_percent" value="{{ $settings['tax_percent'] }}" min="0" max="100" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 pr-8 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         <span class="absolute right-3 top-1/2 -translate-y-1/2 font-bold text-cafe-muted">%</span>
                     </div>
                     <p class="text-[10px] text-cafe-muted">Standar pajak restoran daerah Kabupaten Tulungagung adalah 10%.</p>
@@ -115,14 +115,14 @@
 
                 <div class="pt-2 border-t border-cafe-beige/40 space-y-3">
                     <label class="flex items-center gap-2 cursor-pointer select-none">
-                        <input type="checkbox" name="service_charge_active" value="1" {{ $settings['service_charge_active'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded text-cafe-dark accent-[#4A1F14]">
+                        <input type="checkbox" name="service_charge_active" value="1" {{ $settings['service_charge_active'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded text-cafe-dark accent-[#290024]">
                         <span class="font-semibold text-cafe-dark">Aktifkan Service Charge (Biaya Layanan)</span>
                     </label>
 
                     <div class="space-y-1 w-48 pl-6">
                         <label class="font-semibold text-cafe-muted">Persentase Service Charge (%)</label>
                         <div class="relative">
-                            <input type="number" name="service_charge_percent" value="{{ $settings['service_charge_percent'] }}" min="0" max="100" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 pr-8 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                            <input type="number" name="service_charge_percent" value="{{ $settings['service_charge_percent'] }}" min="0" max="100" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 pr-8 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                             <span class="absolute right-3 top-1/2 -translate-y-1/2 font-bold text-cafe-muted">%</span>
                         </div>
                     </div>
@@ -147,7 +147,7 @@
                     <label class="font-semibold text-cafe-dark block">Opsi Pembayaran Aktif:</label>
 
                     <label class="flex items-center gap-3 p-3 rounded-xl bg-cafe-cream/60 border border-cafe-beige cursor-pointer select-none">
-                        <input type="checkbox" name="payment_cash" value="1" {{ $settings['payment_cash'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded text-cafe-dark accent-[#4A1F14]">
+                        <input type="checkbox" name="payment_cash" value="1" {{ $settings['payment_cash'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded text-cafe-dark accent-[#290024]">
                         <div>
                             <span class="font-semibold text-cafe-dark block">Uang Tunai (Cash)</span>
                             <span class="text-[10px] text-cafe-muted">Menerima pembayaran tunai langsung di kasir</span>
@@ -155,7 +155,7 @@
                     </label>
 
                     <label class="flex items-center gap-3 p-3 rounded-xl bg-cafe-cream/60 border border-cafe-beige cursor-pointer select-none">
-                        <input type="checkbox" name="payment_qris" value="1" {{ $settings['payment_qris'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded text-cafe-dark accent-[#4A1F14]">
+                        <input type="checkbox" name="payment_qris" value="1" {{ $settings['payment_qris'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded text-cafe-dark accent-[#290024]">
                         <div>
                             <span class="font-semibold text-cafe-dark block">QRIS (Gopay, OVO, ShopeePay, BCA, Mandiri)</span>
                             <span class="text-[10px] text-cafe-muted">Scan QR instan dari meja pelanggan atau kasir</span>
@@ -163,7 +163,7 @@
                     </label>
 
                     <label class="flex items-center gap-3 p-3 rounded-xl bg-cafe-cream/60 border border-cafe-beige cursor-pointer select-none">
-                        <input type="checkbox" name="payment_debit" value="1" {{ $settings['payment_debit'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded text-cafe-dark accent-[#4A1F14]">
+                        <input type="checkbox" name="payment_debit" value="1" {{ $settings['payment_debit'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded text-cafe-dark accent-[#290024]">
                         <div>
                             <span class="font-semibold text-cafe-dark block">Kartu Debit / EDC</span>
                             <span class="text-[10px] text-cafe-muted">Gesek kartu debit perbankan di mesin EDC kasir</span>
@@ -173,7 +173,7 @@
 
                 <div class="space-y-2 pt-2 border-t border-cafe-beige/40">
                     <label class="font-semibold text-cafe-dark">URL Gambar Barcode QRIS Resmi</label>
-                    <input type="url" name="qris_image" value="{{ $settings['qris_image'] }}" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="url" name="qris_image" value="{{ $settings['qris_image'] }}" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     <div class="p-3 bg-white rounded-xl border border-cafe-beige/60 inline-block">
                         <img src="{{ $settings['qris_image'] }}" alt="QRIS ABS Cafe" class="w-36 h-36 mx-auto">
                     </div>
@@ -198,17 +198,17 @@
                     @csrf
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Header Nota (Bagian Atas)</label>
-                        <textarea name="receipt_header" id="receipt-header-input" rows="3" oninput="updateReceiptLivePreview()" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none font-mono">{{ $settings['receipt_header'] }}</textarea>
+                        <textarea name="receipt_header" id="receipt-header-input" rows="3" oninput="updateReceiptLivePreview()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none font-mono">{{ $settings['receipt_header'] }}</textarea>
                     </div>
 
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Footer Nota (Bagian Bawah / Ucapan)</label>
-                        <textarea name="receipt_footer" id="receipt-footer-input" rows="3" oninput="updateReceiptLivePreview()" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none font-mono">{{ $settings['receipt_footer'] }}</textarea>
+                        <textarea name="receipt_footer" id="receipt-footer-input" rows="3" oninput="updateReceiptLivePreview()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none font-mono">{{ $settings['receipt_footer'] }}</textarea>
                     </div>
 
                     <div class="pt-2">
                         <label class="flex items-center gap-2 cursor-pointer select-none">
-                            <input type="checkbox" name="receipt_show_logo" value="1" {{ $settings['receipt_show_logo'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded text-cafe-dark accent-[#4A1F14]">
+                            <input type="checkbox" name="receipt_show_logo" value="1" {{ $settings['receipt_show_logo'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded text-cafe-dark accent-[#290024]">
                             <span class="font-semibold text-cafe-dark">Tampilkan Logo ABS Cafe di Struk</span>
                         </label>
                     </div>
@@ -279,12 +279,12 @@
                 @csrf
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Judul Banner Utama (Heading)</label>
-                    <input type="text" name="banner_title" value="{{ $settings['banner_title'] }}" required class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="banner_title" value="{{ $settings['banner_title'] }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
 
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Subjudul / Deskripsi Banner</label>
-                    <textarea name="banner_subtitle" rows="2" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">{{ $settings['banner_subtitle'] }}</textarea>
+                    <textarea name="banner_subtitle" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">{{ $settings['banner_subtitle'] }}</textarea>
                 </div>
 
                 <div class="pt-4 border-t border-cafe-beige/60 flex justify-end">
@@ -305,11 +305,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Nama Admin *</label>
-                        <input type="text" name="name" value="{{ Auth::user()->name }}" required class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="name" value="{{ Auth::user()->name }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Email Admin *</label>
-                        <input type="email" name="email" value="{{ Auth::user()->email }}" required class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="email" name="email" value="{{ Auth::user()->email }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                 </div>
 
@@ -319,11 +319,11 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="space-y-1">
                             <label class="font-semibold text-cafe-muted">Password Baru</label>
-                            <input type="password" name="password" placeholder="Minimal 6 karakter" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                            <input type="password" name="password" placeholder="Minimal 6 karakter" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         </div>
                         <div class="space-y-1">
                             <label class="font-semibold text-cafe-muted">Ulangi Password Baru</label>
-                            <input type="password" name="password_confirmation" placeholder="Ulangi password baru" class="w-full bg-[#EFE0CC]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                            <input type="password" name="password_confirmation" placeholder="Ulangi password baru" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         </div>
                     </div>
                 </div>
