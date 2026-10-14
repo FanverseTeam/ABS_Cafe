@@ -96,10 +96,10 @@
         </div>
     </div>
 
-    <!-- Charts Row: Penjualan 7 Hari & Kategori Donut -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Revenue Line/Area Chart (2 Cols) -->
-        <div class="lg:col-span-2 bg-cafe-card rounded-2xl p-6 shadow-soft border border-cafe-beige/40">
+    <!-- Charts Row: Penjualan 7 Hari -->
+    <div>
+        <!-- Revenue Line/Area Chart (Full Width) -->
+        <div class="bg-cafe-card rounded-2xl p-6 shadow-soft border border-cafe-beige/40">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                 <div>
                     <h3 class="font-serif text-lg font-bold text-cafe-dark">Tren Penjualan &amp; Pendapatan</h3>
@@ -112,32 +112,6 @@
 
             <div class="h-64 sm:h-72 w-full relative">
                 <canvas id="revenueChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Sales by Category (1 Col) -->
-        <div class="bg-cafe-card rounded-2xl p-6 shadow-soft border border-cafe-beige/40 flex flex-col justify-between">
-            <div>
-                <h3 class="font-serif text-lg font-bold text-cafe-dark">Penjualan per Kategori</h3>
-                <p class="text-xs text-cafe-muted">Kontribusi kategori produk menu ABS Cafe</p>
-            </div>
-
-            <div class="h-48 relative my-3">
-                <canvas id="categoryChart"></canvas>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2 pt-3 border-t border-cafe-beige/50 text-xs">
-                @foreach($categorySales as $idx => $cs)
-                    @php
-                        $colors = ['#290024', '#775533', '#D4954D', '#775533'];
-                        $color = $colors[$idx % 4];
-                    @endphp
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $color }}"></span>
-                        <span class="text-cafe-text truncate">{{ $cs['name'] }}</span>
-                        <span class="font-bold text-cafe-dark ml-auto">{{ $cs['count'] }}</span>
-                    </div>
-                @endforeach
             </div>
         </div>
     </div>
@@ -318,27 +292,6 @@
         }
     });
 
-    // Category Donut Chart
-    const ctxCategory = document.getElementById('categoryChart').getContext('2d');
-    new Chart(ctxCategory, {
-        type: 'doughnut',
-        data: {
-            labels: {!! json_encode(array_column($categorySales, 'name')) !!},
-            datasets: [{
-                data: {!! json_encode(array_column($categorySales, 'count')) !!},
-                backgroundColor: ['#290024', '#775533', '#D4954D', '#775533'],
-                borderWidth: 2,
-                borderColor: '#FAFCF3',
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
-            cutout: '65%'
-        }
-    });
+
 </script>
 @endpush
