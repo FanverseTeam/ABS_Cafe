@@ -50,14 +50,14 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (tagline: *Acce
    - Modal detail pesanan (daftar item, catatan, pajak, diskon, timeline alur sajian, info kasir).
    - Aksi ubah status pesanan (Diproses / Siap / Selesai), batalkan pesanan (alasan wajib), dan cetak nota struk termal.
    - Ekspor data pesanan ke format CSV.
-4. **Menu & Aksesoris (`/admin/menu`)**:
+4. **Katalog Menu (`/admin/menu`)**:
    - Toggle tampilan Grid kartu foto dan Tabel rincian.
-   - Filter kategori (Coffee, Non Coffee, Food, Merch) & sorting (Terlaris, Nama, Harga).
+   - Filter 14 kategori minuman & makanan (Coffee Base, Speciality, Milk, Tea, Snacks, Main Course, dll) & sorting (Terlaris, Nama, Harga).
    - Switch status ketersediaan (Tersedia / Habis) dan tanda *Best Seller*.
    - Modal form tambah & edit menu dengan URL foto, deskripsi, harga, satuan, dan stok.
    - Aksi duplikasi menu dan hapus permanen dengan dialog konfirmasi.
-5. **Kategori (`/admin/kategori`)**:
-   - Daftar kategori (Coffee, Non Coffee, Food, Merch) beserta ikon Lucide dan urutan tampil.
+5. **Kategori Menu (`/admin/kategori`)**:
+   - Daftar 14 kategori kafe lengkap dengan ikon visual Lucide dan urutan tampil di POS.
    - Proteksi integritas: kategori yang masih berisi menu tidak dapat dihapus (muncul peringatan keamanan).
 6. **Stok & Inventaris (`/admin/stok`)**:
    - Status otomatis (Aman, Menipis, Habis).

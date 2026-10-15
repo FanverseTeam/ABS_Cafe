@@ -225,6 +225,7 @@
 
                 <div class="w-72 bg-white p-5 rounded-2xl border border-cafe-beige/80 shadow-md font-mono text-[11px] leading-tight text-black space-y-3">
                     <div class="text-center pb-2 border-b border-dashed border-gray-400">
+                        <img src="{{ asset('images/Logo.png') }}" alt="ABS Cafe Logo" class="w-12 h-12 mx-auto mb-2 rounded-full object-cover">
                         <h4 class="font-bold text-xs uppercase">{{ $settings['cafe_name'] }}</h4>
                         <p class="text-[9px]">{{ $settings['cafe_tagline'] }}</p>
                         <p class="text-[9px] mt-1 whitespace-pre-line text-gray-700" id="preview-receipt-header">{{ $settings['receipt_header'] }}</p>

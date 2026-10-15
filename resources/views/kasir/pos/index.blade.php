@@ -27,7 +27,7 @@
         @foreach($categories as $category)
             <section data-cat-section="{{ $category->id }}" class="menu-cat">
                 <h3 class="font-serif font-bold text-sm text-cafe-dark mb-3 flex items-center gap-2">
-                    <i data-lucide="coffee" class="w-4 h-4 text-cafe-gold"></i>
+                    <i data-lucide="{{ $category->icon ?: 'coffee' }}" class="w-4 h-4 text-cafe-gold"></i>
                     {{ $category->name }}
                 </h3>
 

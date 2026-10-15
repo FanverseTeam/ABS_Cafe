@@ -30,7 +30,7 @@ class SettingController extends Controller
             'receipt_header' => CafeSetting::get('receipt_header', "ABS CAFE - ACCESSORIES & CAFE\nJl. Ki Mangunsarkoro No. 88, Boyolangu, Tulungagung\nTelp: 0812-3456-7890"),
             'receipt_footer' => CafeSetting::get('receipt_footer', "Terima kasih atas kunjungan Anda!\nFollow Instagram kami: @abscafe.tulungagung\n\"Good Coffee, Good Mood\""),
             'receipt_show_logo' => CafeSetting::get('receipt_show_logo', '1'),
-            'banner_title' => CafeSetting::get('banner_title', 'Nikmati Kopi Pilihan & Aksesoris Estetis'),
+            'banner_title' => CafeSetting::get('banner_title', 'Nikmati Kopi Pilihan & Hidangan Spesial'),
             'banner_subtitle' => CafeSetting::get('banner_subtitle', 'Tempat berkumpul hangat dengan aroma kopi terbaik di Boyolangu Tulungagung'),
             'hours_weekday' => CafeSetting::get('hours_weekday', '09:00 - 22:00'),
             'hours_weekend' => CafeSetting::get('hours_weekend', '09:00 - 23:30'),

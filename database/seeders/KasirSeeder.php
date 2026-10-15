@@ -100,12 +100,11 @@ class KasirSeeder extends Seeder
 
         // 5. Contoh pesanan Web yang masuk hari ini (menunggu diterima)
         $kasir = User::where('email', 'siti.kasir@abscafe.com')->first() ?: User::where('email', 'kasir@abscafe.com')->first();
-        $mayor = User::where('email', 'kasir@abscafe.com')->first();
-        $caramel = Menu::where('name', 'Caramel Latte')->first();
-        $croissant = Menu::where('name', 'Butter Croissant')->first();
-        $matcha = Menu::where('name', 'Matcha Latte')->first();
-        $fries = Menu::where('name', 'Kentang Goreng Truffle')->first();
-        $nesmilo = Menu::where('name', 'Nasi Goreng ABS Spesial')->first();
+        $caramel = Menu::where('name', 'like', '%Caramel Latte%')->first() ?: Menu::first();
+        $croissant = Menu::where('name', 'like', '%Churros%')->first() ?: Menu::first();
+        $matcha = Menu::where('name', 'like', '%Matcha%')->first() ?: Menu::first();
+        $fries = Menu::where('name', 'like', '%Kentang%')->first() ?: Menu::first();
+        $nesmilo = Menu::where('name', 'like', '%Nasi Goreng ABS%')->first() ?: Menu::first();
 
         $webOrders = [
             [

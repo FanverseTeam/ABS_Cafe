@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Katalog Menu & Aksesoris')
+@section('title', 'Katalog Menu')
 @section('page_title', 'Menu')
 
 @section('content')
@@ -18,8 +18,8 @@
     <!-- Page Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h2 class="font-serif text-2xl font-bold text-cafe-dark">Katalog Menu &amp; Aksesoris</h2>
-            <p class="text-xs text-cafe-muted mt-0.5">Kelola racikan kopi, makanan, minuman non-kopi, dan merchandise resmi ABS Cafe</p>
+            <h2 class="font-serif text-2xl font-bold text-cafe-dark">Katalog Menu</h2>
+            <p class="text-xs text-cafe-muted mt-0.5">Kelola racikan kopi, minuman segar, camilan, dan aneka hidangan makanan ABS Cafe</p>
         </div>
 
         <div class="flex items-center gap-3">
@@ -297,7 +297,7 @@
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Deskripsi Menu</label>
-                <textarea name="description" id="menu-input-desc" rows="2" placeholder="Deskripsikan cita rasa, bahan baku, atau spesifikasi aksesoris..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
+                <textarea name="description" id="menu-input-desc" rows="2" placeholder="Deskripsikan cita rasa, bahan baku, atau porsi menu..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
             </div>
 
             <div class="space-y-1">

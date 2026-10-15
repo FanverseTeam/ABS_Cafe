@@ -18,11 +18,7 @@
     <!-- Header -->
     <div class="h-20 px-6 flex items-center justify-between border-b border-white/10 shrink-0">
         <a href="{{ route('kasir.dashboard') }}" class="flex items-center gap-3 group">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4954D] via-[#B87C3C] to-[#775533] p-0.5 shadow-sm shrink-0">
-                <div class="w-full h-full rounded-full bg-[#290024] flex items-center justify-center border border-[#D4954D]/40 group-hover:scale-105 transition-transform">
-                    <span class="font-serif font-black tracking-tighter text-xs text-[#D4954D]">ABS</span>
-                </div>
-            </div>
+            <img src="{{ asset('images/Logo.png') }}" alt="ABS Cafe Logo" class="w-10 h-10 rounded-full object-cover shrink-0 group-hover:scale-105 transition-transform shadow-sm">
             <div class="flex flex-col">
                 <span class="font-serif font-bold text-lg tracking-tight leading-none text-[#F2F5E2] group-hover:text-cafe-gold transition-colors">ABS Cafe</span>
                 <span class="text-[10px] tracking-widest uppercase font-medium text-[#D4954D] mt-0.5">Kasir Portal</span>

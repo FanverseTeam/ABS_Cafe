@@ -102,10 +102,10 @@
                 <p class="text-cafe-muted">Kategori yang masih memiliki item menu tidak dapat dihapus untuk mencegah error pesanan pelanggan. Pindahkan atau hapus semua menu di dalamnya terlebih dahulu.</p>
 
                 <p class="pt-2"><strong>2. Ikon Visual Kategori:</strong></p>
-                <p class="text-cafe-muted">Gunakan nama ikon Lucide seperti <code>coffee</code>, <code>cup-soda</code>, <code>utensils</code>, atau <code>shopping-bag</code>.</p>
+                <p class="text-cafe-muted">Gunakan nama ikon Lucide yang sesuai, seperti <code>coffee</code>, <code>sparkles</code>, <code>flame</code>, <code>milk</code>, <code>popcorn</code>, atau <code>utensils</code>.</p>
 
-                <p class="pt-2"><strong>3. Kategori Aksesoris / Merch:</strong></p>
-                <p class="text-cafe-muted">Kategori <strong>Merch</strong> khusus menampung produk non-makanan seperti Tumbler, Biji Kopi, dan Tote Bag eksklusif ABS Cafe.</p>
+                <p class="pt-2"><strong>3. Urutan Tampilan Menu:</strong></p>
+                <p class="text-cafe-muted">Atur nomor urutan kategori agar kelompok minuman dan makanan tersusun rapi serta mudah dipilih oleh kasir di halaman POS.</p>
             </div>
         </div>
     </div>
