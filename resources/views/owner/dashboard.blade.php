@@ -35,61 +35,61 @@
             @include('owner.partials.period-filter', ['period' => $period])
         </div>
 
-        <!-- Summary Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 relative overflow-hidden">
-                <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-cafe-gold/10"></div>
+        <!-- Summary Cards (2 Kolom di Mobile Sesuai Panduan) -->
+        <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+            <div class="bg-cafe-card rounded-2xl sm:rounded-3xl border border-cafe-beige/60 shadow-soft p-4 sm:p-5 relative overflow-hidden flex flex-col justify-between">
+                <div class="absolute -right-6 -top-6 w-20 h-20 rounded-full bg-cafe-gold/10 pointer-events-none"></div>
                 <div class="relative">
-                    <div class="flex items-center justify-between">
-                        <div class="w-10 h-10 rounded-2xl bg-cafe-gold/15 text-cafe-bronze flex items-center justify-center">
-                            <i data-lucide="wallet" class="w-5 h-5"></i>
+                    <div class="flex items-center justify-between gap-1">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-cafe-gold/15 text-cafe-bronze flex items-center justify-center">
+                            <i data-lucide="wallet" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                         {!! $changeBadge($summary['sales']['change']) !!}
                     </div>
-                    <p class="text-[11px] uppercase tracking-wide text-cafe-muted font-semibold mt-4">Total Penjualan</p>
-                    <p class="font-serif text-2xl font-bold text-cafe-dark mt-1">{{ $rp($summary['sales']['value']) }}</p>
+                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wide text-cafe-muted font-semibold mt-3">Total Penjualan</p>
+                    <p class="font-serif text-base sm:text-2xl font-bold text-cafe-dark mt-0.5 truncate">{{ $rp($summary['sales']['value']) }}</p>
                 </div>
             </div>
 
-            <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 relative overflow-hidden">
-                <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-cafe-success/10"></div>
+            <div class="bg-cafe-card rounded-2xl sm:rounded-3xl border border-cafe-beige/60 shadow-soft p-4 sm:p-5 relative overflow-hidden flex flex-col justify-between">
+                <div class="absolute -right-6 -top-6 w-20 h-20 rounded-full bg-cafe-success/10 pointer-events-none"></div>
                 <div class="relative">
-                    <div class="flex items-center justify-between">
-                        <div class="w-10 h-10 rounded-2xl bg-cafe-success/15 text-cafe-success flex items-center justify-center">
-                            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    <div class="flex items-center justify-between gap-1">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-cafe-success/15 text-cafe-success flex items-center justify-center">
+                            <i data-lucide="shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                         {!! $changeBadge($summary['orders']['change']) !!}
                     </div>
-                    <p class="text-[11px] uppercase tracking-wide text-cafe-muted font-semibold mt-4">Jumlah Pesanan</p>
-                    <p class="font-serif text-2xl font-bold text-cafe-dark mt-1">{{ number_format($summary['orders']['value'], 0, ',', '.') }}</p>
+                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wide text-cafe-muted font-semibold mt-3">Jumlah Pesanan</p>
+                    <p class="font-serif text-base sm:text-2xl font-bold text-cafe-dark mt-0.5 truncate">{{ number_format($summary['orders']['value'], 0, ',', '.') }}</p>
                 </div>
             </div>
 
-            <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 relative overflow-hidden">
-                <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-cafe-info/10"></div>
+            <div class="bg-cafe-card rounded-2xl sm:rounded-3xl border border-cafe-beige/60 shadow-soft p-4 sm:p-5 relative overflow-hidden flex flex-col justify-between">
+                <div class="absolute -right-6 -top-6 w-20 h-20 rounded-full bg-cafe-info/10 pointer-events-none"></div>
                 <div class="relative">
-                    <div class="flex items-center justify-between">
-                        <div class="w-10 h-10 rounded-2xl bg-cafe-info/15 text-cafe-info flex items-center justify-center">
-                            <i data-lucide="receipt" class="w-5 h-5"></i>
+                    <div class="flex items-center justify-between gap-1">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-cafe-info/15 text-cafe-info flex items-center justify-center">
+                            <i data-lucide="receipt" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                         {!! $changeBadge($summary['avg']['change']) !!}
                     </div>
-                    <p class="text-[11px] uppercase tracking-wide text-cafe-muted font-semibold mt-4">Rata-rata / Pesanan</p>
-                    <p class="font-serif text-2xl font-bold text-cafe-dark mt-1">{{ $rp($summary['avg']['value']) }}</p>
+                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wide text-cafe-muted font-semibold mt-3">Rata-rata Order</p>
+                    <p class="font-serif text-base sm:text-2xl font-bold text-cafe-dark mt-0.5 truncate">{{ $rp($summary['avg']['value']) }}</p>
                 </div>
             </div>
 
-            <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 relative overflow-hidden">
-                <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-cafe-warning/10"></div>
+            <div class="bg-cafe-card rounded-2xl sm:rounded-3xl border border-cafe-beige/60 shadow-soft p-4 sm:p-5 relative overflow-hidden flex flex-col justify-between">
+                <div class="absolute -right-6 -top-6 w-20 h-20 rounded-full bg-cafe-warning/10 pointer-events-none"></div>
                 <div class="relative">
-                    <div class="flex items-center justify-between">
-                        <div class="w-10 h-10 rounded-2xl bg-cafe-warning/15 text-cafe-warning flex items-center justify-center">
-                            <i data-lucide="trending-up" class="w-5 h-5"></i>
+                    <div class="flex items-center justify-between gap-1">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-cafe-warning/15 text-cafe-warning flex items-center justify-center">
+                            <i data-lucide="trending-up" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                         </div>
                         {!! $changeBadge($summary['profit']['change']) !!}
                     </div>
-                    <p class="text-[11px] uppercase tracking-wide text-cafe-muted font-semibold mt-4">Estimasi Laba ({{ $summary['margin'] }}%)</p>
-                    <p class="font-serif text-2xl font-bold text-cafe-dark mt-1">{{ $rp($summary['profit']['value']) }}</p>
+                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wide text-cafe-muted font-semibold mt-3">Laba ({{ $summary['margin'] }}%)</p>
+                    <p class="font-serif text-base sm:text-2xl font-bold text-cafe-dark mt-0.5 truncate">{{ $rp($summary['profit']['value']) }}</p>
                 </div>
             </div>
         </div>
@@ -175,13 +175,20 @@
                 </h3>
                 <div class="space-y-3">
                     @forelse($topMenus as $i => $menu)
-                        <div class="flex items-center gap-3">
-                            <span class="w-6 h-6 rounded-lg bg-cafe-beige/60 text-cafe-dark text-[11px] font-bold flex items-center justify-center shrink-0">{{ $i + 1 }}</span>
+                        <div class="flex items-center gap-3 p-2 rounded-2xl hover:bg-cafe-beige/30 transition-colors">
+                            <span class="w-6 h-6 rounded-lg bg-cafe-beige/60 text-cafe-dark text-[11px] font-bold flex items-center justify-center shrink-0">#{{ $i + 1 }}</span>
+                            <div class="w-10 h-10 rounded-xl bg-cafe-beige overflow-hidden shrink-0 flex items-center justify-center border border-cafe-beige">
+                                @if(!empty($menu['image']))
+                                    <img src="{{ $menu['image'] }}" alt="{{ $menu['name'] }}" class="w-full h-full object-cover">
+                                @else
+                                    <i data-lucide="coffee" class="w-5 h-5 text-cafe-gold"></i>
+                                @endif
+                            </div>
                             <div class="min-w-0 flex-1">
                                 <p class="text-xs font-semibold text-cafe-dark truncate">{{ $menu['name'] }}</p>
                                 <p class="text-[10px] text-cafe-muted">{{ number_format($menu['quantity'], 0, ',', '.') }} terjual</p>
                             </div>
-                            <span class="text-xs font-semibold text-cafe-bronze whitespace-nowrap">{{ $rp($menu['revenue']) }}</span>
+                            <span class="text-xs font-serif font-bold text-cafe-dark whitespace-nowrap">{{ $rp($menu['revenue']) }}</span>
                         </div>
                     @empty
                         <p class="text-xs text-cafe-muted">Belum ada data penjualan.</p>

@@ -4,15 +4,15 @@
     $totalNotif = $pendingOrders->count() + $lowStockItems->count();
 @endphp
 
-<header class="sticky top-0 z-30 h-20 bg-[#FAFCF3]/90 backdrop-blur-md border-b border-cafe-beige/60 px-4 sm:px-8 flex items-center justify-between gap-4">
-    <!-- Left: Hamburger & Title -->
-    <div class="flex items-center gap-3 min-w-0">
-        <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-2xl bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-dark transition-colors" title="Buka Menu">
-            <i data-lucide="menu" class="w-5 h-5"></i>
-        </button>
+<header class="sticky top-0 z-30 h-16 sm:h-20 bg-[#FAFCF3]/95 backdrop-blur-md border-b border-cafe-beige/60 px-3.5 sm:px-8 flex items-center justify-between gap-3 sm:gap-4 shadow-sm">
+    <!-- Left: Mobile Logo & Title -->
+    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <a href="{{ route('admin.dashboard') }}" class="lg:hidden shrink-0" title="ABS Cafe Beranda">
+            <img src="{{ asset('images/Logo.png') }}" alt="ABS Cafe Logo" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border border-[#E3DEA4] shadow-sm">
+        </a>
 
-        <div class="hidden sm:block">
-            <h1 class="font-serif text-xl font-bold text-cafe-dark truncate">
+        <div class="min-w-0">
+            <h1 class="font-serif text-sm sm:text-xl font-bold text-cafe-dark truncate leading-tight">
                 @yield('page_title', 'Dashboard Back-Office')
             </h1>
         </div>

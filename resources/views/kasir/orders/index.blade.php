@@ -7,7 +7,7 @@
 <div class="space-y-5">
     <!-- Tabs & Filter -->
     <div class="flex flex-wrap items-center justify-between gap-3">
-        <div class="flex gap-2">
+        <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 -mx-2 px-2">
             @php
                 $tabs = [
                     'aktif' => ['label' => 'Aktif', 'badge' => $counts['aktif']],
@@ -18,10 +18,10 @@
             @endphp
             @foreach($tabs as $key => $tab)
                 <a href="{{ route('kasir.orders.index', ['tab' => $key]) }}"
-                   class="px-4 py-2 rounded-full text-[11px] font-semibold transition-colors flex items-center gap-1.5 {{ $tab == $key ? 'bg-cafe-dark text-white shadow-md' : 'bg-cafe-beige/50 text-cafe-brown hover:bg-cafe-beige' }}">
+                   class="shrink-0 px-4 py-2 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 {{ $currentTab == $key ? 'bg-[#290024] text-[#F2F5E2] shadow-sm' : 'bg-[#FAFCF3] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]/60' }}">
                     {{ $tab['label'] }}
                     @if($tab['badge'])
-                        <span class="px-1.5 py-0.5 rounded-full text-[9px] font-bold {{ $tab == $key ? 'bg-white/20 text-white' : 'bg-cafe-dark text-white' }}">{{ $tab['badge'] }}</span>
+                        <span class="px-1.5 py-0.5 rounded-full text-[9px] font-bold {{ $currentTab == $key ? 'bg-[#D4954D] text-[#290024]' : 'bg-[#290024] text-white' }}">{{ $tab['badge'] }}</span>
                     @endif
                 </a>
             @endforeach
@@ -140,16 +140,21 @@
     @endif
 </div>
 
-<!-- Modal Detail -->
-<div id="order-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div class="absolute inset-0 bg-[#290024]/60 backdrop-blur-sm" onclick="closeOrderModal()"></div>
-    <div class="relative bg-cafe-card rounded-3xl shadow-soft-lg w-full max-w-lg border border-cafe-beige/60 animate-in fade-in max-h-[90vh] overflow-y-auto">
-        <div class="px-6 py-4 border-b border-cafe-beige/50 flex items-center justify-between sticky top-0 bg-cafe-card z-10">
+<!-- Modal Detail (Bottom Sheet on Mobile, Centered Modal on Tablet/Desktop) -->
+<div id="order-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="fixed inset-0 bg-[#290024]/60 backdrop-blur-sm" onclick="closeOrderModal()"></div>
+    <div class="relative bg-[#FAFCF3] rounded-t-[2rem] sm:rounded-3xl shadow-soft-lg w-full max-w-lg border-t sm:border border-[#E3DEA4] z-10 max-h-[90vh] overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <!-- Handle for mobile -->
+        <div class="sm:hidden w-full pt-3 pb-1 flex justify-center cursor-pointer" onclick="closeOrderModal()">
+            <div class="w-12 h-1 bg-[#775533]/30 rounded-full"></div>
+        </div>
+
+        <div class="px-6 py-4 border-b border-[#E3DEA4]/60 flex items-center justify-between sticky top-0 bg-[#FAFCF3] z-10">
             <div>
-                <h3 class="font-serif font-bold text-sm text-cafe-dark" id="om-code">Pesanan</h3>
-                <p class="text-[10px] text-cafe-muted" id="om-meta"></p>
+                <h3 class="font-serif font-bold text-base text-[#290024]" id="om-code">Pesanan</h3>
+                <p class="text-[10px] text-[#775533]" id="om-meta"></p>
             </div>
-            <button onclick="closeOrderModal()" class="p-1.5 rounded-full bg-cafe-cream text-cafe-muted hover:text-cafe-dark"><i data-lucide="x" class="w-4 h-4"></i></button>
+            <button onclick="closeOrderModal()" class="w-8 h-8 rounded-full bg-[#E3DEA4]/50 hover:bg-[#E3DEA4] text-[#290024] flex items-center justify-center transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
         </div>
         <div class="p-6 space-y-5" id="om-body"></div>
     </div>

@@ -55,55 +55,72 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="antialiased min-h-screen bg-cafe-cream flex items-center justify-center p-4 sm:p-6 lg:p-10 font-sans text-cafe-text">
+<body class="antialiased min-h-screen bg-cafe-cream flex flex-col lg:flex-row items-center justify-center p-0 sm:p-6 lg:p-10 font-sans text-cafe-text">
 
-    <div class="w-full max-w-5xl bg-cafe-card rounded-3xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden grid grid-cols-1 lg:grid-cols-2">
-        <!-- Kolom Kiri: Ilustrasi Suasana Kafe & Tagline -->
-        <div class="relative bg-[#290024] text-[#F2F5E2] p-8 sm:p-12 flex flex-col justify-between overflow-hidden">
-            <div class="absolute inset-0 opacity-30 bg-cover bg-center mix-blend-overlay" style="background-image: url('https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1000&auto=format&fit=crop&q=80')"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-[#290024] via-[#290024]/90 to-transparent"></div>
+    <div class="w-full max-w-5xl bg-cafe-card sm:rounded-3xl shadow-soft-lg border-0 sm:border border-cafe-beige/60 overflow-hidden grid grid-cols-1 lg:grid-cols-2 min-h-screen sm:min-h-0">
+        <!-- Kolom Kiri: Ilustrasi Suasana Kafe & Tagline (Di mobile: Header Organik Atas) -->
+        <div class="relative bg-[#290024] text-[#F2F5E2] p-6 sm:p-10 lg:p-12 flex flex-col justify-between overflow-hidden shrink-0 pb-12 lg:pb-12">
+            <!-- Background Texture & Gradient Overlay -->
+            <div class="absolute inset-0 opacity-25 bg-cover bg-center mix-blend-overlay" style="background-image: url('https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1000&auto=format&fit=crop&q=80')"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-[#290024]/80 via-[#290024] to-[#290024]"></div>
+            
+            <!-- Organic Curve Line Art (Khas ABS Cafe Referensi) -->
+            <div class="absolute -bottom-10 -right-10 w-64 h-64 pointer-events-none opacity-20">
+                <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="100" cy="100" r="80" stroke="#D4954D" stroke-width="2"/>
+                    <path d="M30 150 C60 80, 140 120, 170 50" stroke="#E3DEA4" stroke-width="2"/>
+                </svg>
+            </div>
 
-            <!-- Top Logo -->
-            <div class="relative z-10 flex items-center gap-3">
-                <img src="{{ asset('images/Logo.png') }}" alt="ABS Cafe Logo" class="w-10 h-10 rounded-full object-cover shrink-0 shadow-sm">
-                <div class="flex flex-col">
-                    <span class="font-serif font-bold text-lg tracking-tight leading-none text-[#F2F5E2]">ABS Cafe</span>
-                    <span class="text-[10px] tracking-widest uppercase font-medium text-[#D4954D] mt-0.5">Accessories & Cafe</span>
+            <!-- Top Logo & Brand -->
+            <div class="relative z-10 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="{{ asset('images/Logo.png') }}" alt="ABS Cafe Logo" class="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover shrink-0 shadow-md border border-[#D4954D]/40">
+                    <div class="flex flex-col">
+                        <span class="font-serif font-bold text-lg sm:text-xl tracking-tight leading-none text-[#F2F5E2]">ABS Cafe</span>
+                        <span class="text-[9px] sm:text-[10px] tracking-widest uppercase font-medium text-[#D4954D] mt-0.5">Accessories & Cafe</span>
+                    </div>
+                </div>
+
+                <div class="lg:hidden inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-[#D4954D] text-[10px] font-medium border border-[#D4954D]/20">
+                    <i data-lucide="shield-check" class="w-3 h-3"></i>
+                    <span>Portal Staf</span>
                 </div>
             </div>
 
             <!-- Middle Tagline & Info -->
-            <div class="relative z-10 my-10 lg:my-16 space-y-4">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-[#D4954D] text-xs font-medium border border-[#D4954D]/20">
+            <div class="relative z-10 my-6 sm:my-10 lg:my-16 space-y-3 sm:space-y-4">
+                <div class="hidden lg:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-[#D4954D] text-xs font-medium border border-[#D4954D]/20">
                     <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
                     <span>Satu Akses untuk Semua Peran</span>
                 </div>
 
-                <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#FAFCF3] leading-tight">
-                    Good Coffee, <br>
+                <h2 class="font-serif text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#FAFCF3] leading-tight">
+                    Good Coffee, <br class="hidden sm:inline">
                     <span class="text-[#D4954D] italic font-serif">Good Mood.</span>
                 </h2>
 
-                <p class="text-xs sm:text-sm text-[#F2F5E2]/80 max-w-md leading-relaxed">
-                    Portal resmi ABS Cafe Boyolangu, Tulungagung. Masuk dengan satu akun untuk mengelola operasional maupun
+                <p class="text-xs sm:text-sm text-[#F2F5E2]/80 max-w-md leading-relaxed hidden sm:block">
+                    Portal resmi ABS Cafe Boyolangu, Tulungagung. Masuk dengan akun Staf untuk mengelola operasional maupun
                     memantau performa bisnis Anda.
                 </p>
 
-                <div class="flex flex-wrap gap-2 pt-2">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-[#F2F5E2]/90 text-[11px] font-medium">
-                        <i data-lucide="settings" class="w-3.5 h-3.5 text-[#D4954D]"></i> Administrator
+                <!-- Role Pills -->
+                <div class="flex flex-wrap gap-2 pt-1 sm:pt-2">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-[#F2F5E2]/90 text-[10px] sm:text-[11px] font-medium">
+                        <i data-lucide="settings" class="w-3 h-3 text-[#D4954D]"></i> Admin
                     </span>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-[#F2F5E2]/90 text-[11px] font-medium">
-                        <i data-lucide="crown" class="w-3.5 h-3.5 text-[#D4954D]"></i> Owner
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-[#F2F5E2]/90 text-[10px] sm:text-[11px] font-medium">
+                        <i data-lucide="crown" class="w-3 h-3 text-[#D4954D]"></i> Owner
                     </span>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-[#F2F5E2]/90 text-[11px] font-medium">
-                        <i data-lucide="calculator" class="w-3.5 h-3.5 text-[#D4954D]"></i> Kasir
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-[#F2F5E2]/90 text-[10px] sm:text-[11px] font-medium">
+                        <i data-lucide="calculator" class="w-3 h-3 text-[#D4954D]"></i> Kasir
                     </span>
                 </div>
             </div>
 
             <!-- Footer Badge -->
-            <div class="relative z-10 pt-6 border-t border-white/10 flex items-center justify-between text-xs text-[#F2F5E2]/60">
+            <div class="relative z-10 pt-4 sm:pt-6 border-t border-white/10 hidden sm:flex items-center justify-between text-xs text-[#F2F5E2]/60">
                 <div class="flex items-center gap-2">
                     <i data-lucide="coffee" class="w-4 h-4 text-[#D4954D]"></i>
                     <span>ABS Cafe &bull; Tulungagung</span>
@@ -112,8 +129,8 @@
             </div>
         </div>
 
-        <!-- Kolom Kanan: Form Login -->
-        <div class="p-8 sm:p-12 lg:p-16 flex flex-col justify-center bg-[#FAFCF3]">
+        <!-- Kolom Kanan: Form Login (Di mobile: Kartu krem naik membulat) -->
+        <div class="p-6 sm:p-12 lg:p-16 flex flex-col justify-center bg-[#FAFCF3] -mt-6 sm:mt-0 rounded-t-3xl sm:rounded-none relative z-20 shadow-lg sm:shadow-none flex-1">
             <div class="max-w-md w-full mx-auto space-y-6">
                 <div>
                     <h3 class="font-serif text-2xl sm:text-3xl font-bold text-cafe-dark">Masuk ke Dashboard</h3>

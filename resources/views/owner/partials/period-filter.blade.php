@@ -15,17 +15,17 @@
         <span>Periode: <strong class="text-cafe-dark">{{ $period->label }}</strong></span>
     </div>
 
-    <div class="flex flex-wrap items-center gap-2">
-        <div class="inline-flex items-center gap-1 p-1 rounded-full bg-cafe-beige/50 border border-cafe-beige">
+    <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+        <div class="flex items-center gap-1 p-1 rounded-full bg-cafe-beige/50 border border-cafe-beige overflow-x-auto no-scrollbar max-w-full">
             @foreach($periods as $key => $label)
                 <a href="{{ $baseUrl . '?' . http_build_query(array_merge($preserve, ['periode' => $key])) }}"
-                   class="px-3.5 py-1.5 rounded-full text-xs font-medium transition-all {{ $period->key === $key ? 'bg-cafe-dark text-cafe-cream shadow-sm' : 'text-cafe-muted hover:bg-cafe-beige hover:text-cafe-dark' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all {{ $period->key === $key ? 'bg-cafe-dark text-cafe-cream shadow-sm font-semibold' : 'text-cafe-muted hover:bg-cafe-beige hover:text-cafe-dark' }}">
                     {{ $label }}
                 </a>
             @endforeach
         </div>
 
-        <form action="{{ $baseUrl }}" method="GET" class="flex items-center gap-1.5 bg-cafe-card border border-cafe-beige rounded-full px-2 py-1">
+        <form action="{{ $baseUrl }}" method="GET" class="flex items-center justify-between gap-1.5 bg-cafe-card border border-cafe-beige rounded-full px-3 py-1 text-xs">
             @foreach($preserve as $k => $v)
                 <input type="hidden" name="{{ $k }}" value="{{ $v }}">
             @endforeach
@@ -35,7 +35,7 @@
             <span class="text-cafe-muted text-[11px]">&ndash;</span>
             <input type="date" name="selesai" value="{{ $period->key === 'kustom' ? $period->end->toDateString() : now()->toDateString() }}"
                    class="bg-transparent text-[11px] text-cafe-text focus:outline-none cursor-pointer">
-            <button type="submit" class="px-2.5 py-1 rounded-full bg-cafe-gold hover:bg-cafe-bronze text-white text-[11px] font-semibold transition-colors">
+            <button type="submit" class="px-2.5 py-1 rounded-full bg-cafe-gold hover:bg-cafe-bronze text-[#290024] text-[11px] font-bold transition-colors">
                 Terapkan
             </button>
         </form>

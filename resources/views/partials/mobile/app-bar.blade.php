@@ -1,0 +1,40 @@
+@props([
+    'title' => 'ABS Cafe',
+    'subtitle' => null,
+    'backUrl' => null,
+    'showLogo' => true,
+    'rightAction' => null,
+])
+
+<!-- Mobile Top App Bar (Only visible on < lg screens) -->
+<header class="lg:hidden sticky top-0 z-30 h-16 bg-[#FAFCF3]/95 backdrop-blur-md border-b border-[#E3DEA4]/70 px-4 flex items-center justify-between gap-3 shadow-sm">
+    <div class="flex items-center gap-2.5 min-w-0">
+        @if($backUrl)
+            <a href="{{ $backUrl }}" class="w-10 h-10 -ml-1 rounded-full flex items-center justify-center text-[#290024] hover:bg-[#E3DEA4]/50 active:scale-95 transition-all" aria-label="Kembali">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </a>
+        @elseif($showLogo)
+            <a href="javascript:void(0)" onclick="toggleSidebar()" class="flex items-center gap-2 group">
+                <img src="{{ asset('images/Logo.png') }}" alt="ABS Cafe" class="w-9 h-9 rounded-full object-cover border border-[#E3DEA4] shadow-sm">
+            </a>
+        @endif
+
+        <div class="min-w-0">
+            <h1 class="font-serif font-bold text-base sm:text-lg text-[#290024] truncate leading-tight">
+                {{ $title }}
+            </h1>
+            @if($subtitle)
+                <p class="text-[10px] text-[#775533] truncate leading-none mt-0.5">{{ $subtitle }}</p>
+            @endif
+        </div>
+    </div>
+
+    <!-- Right Side Actions -->
+    <div class="flex items-center gap-1.5 shrink-0">
+        {{ $rightAction ?? '' }}
+
+        <button type="button" onclick="toggleSidebar()" class="w-10 h-10 rounded-full flex items-center justify-center text-[#290024] hover:bg-[#E3DEA4]/50 active:scale-95 transition-all" aria-label="Buka Menu Tambahan">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+    </div>
+</header>

@@ -15,16 +15,29 @@
         <span class="font-semibold text-cafe-dark">Menu &amp; Produk</span>
     </nav>
 
+    <!-- Sub-Navigation Pills (Menu | Kategori | Stok) -->
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+        <a href="{{ route('admin.menu.index') }}" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-[#290024] text-[#FAFCF3] shadow-sm">
+            Katalog Menu
+        </a>
+        <a href="{{ route('admin.category.index') }}" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-[#FAFCF3] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]">
+            Kategori
+        </a>
+        <a href="{{ route('admin.stock.index') }}" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-[#FAFCF3] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]">
+            Stok &amp; Opname
+        </a>
+    </div>
+
     <!-- Page Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-            <h2 class="font-serif text-2xl font-bold text-cafe-dark">Katalog Menu</h2>
-            <p class="text-xs text-cafe-muted mt-0.5">Kelola racikan kopi, minuman segar, camilan, dan aneka hidangan makanan ABS Cafe</p>
+            <h2 class="font-serif text-xl sm:text-2xl font-bold text-cafe-dark">Katalog Menu</h2>
+            <p class="text-xs text-cafe-muted mt-0.5">Kelola racikan kopi, minuman segar, camilan, dan aneka hidangan ABS Cafe</p>
         </div>
 
-        <div class="flex items-center gap-3">
-            <button onclick="openMenuModal()" class="px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all flex items-center gap-2">
-                <i data-lucide="plus" class="w-4 h-4"></i>
+        <div class="flex items-center gap-2">
+            <button onclick="openMenuModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                <i data-lucide="plus" class="w-4 h-4 text-[#D4954D]"></i>
                 <span>Tambah Menu Baru</span>
             </button>
         </div>
@@ -78,12 +91,12 @@
 
     <!-- Content: Grid View or Table View -->
     @if($viewMode === 'grid')
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
             @forelse($menus as $menu)
                 <div class="bg-cafe-card rounded-2xl shadow-soft hover:shadow-soft-lg border border-cafe-beige/50 overflow-hidden flex flex-col justify-between transition-all group">
                     <div>
                         <!-- Image Container -->
-                        <div class="relative h-44 w-full bg-cafe-beige overflow-hidden">
+                        <div class="relative h-32 sm:h-44 w-full bg-cafe-beige overflow-hidden">
                             <img src="{{ $menu->image }}" alt="{{ $menu->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
 
                             <!-- Category Badge -->
@@ -250,15 +263,20 @@
     @endif
 </div>
 
-<!-- MODAL FORM TAMBAH / EDIT MENU -->
-<div id="menu-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeMenuModal()"></div>
+<!-- MODAL FORM TAMBAH / EDIT MENU (Bottom Sheet on Mobile) -->
+<div id="menu-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 overflow-y-auto hidden">
+    <div class="fixed inset-0 bg-[#290024]/60 backdrop-blur-sm" onclick="closeMenuModal()"></div>
 
-    <div class="relative w-full max-w-2xl bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8">
-        <div class="flex items-center justify-between px-6 py-5 border-b border-cafe-beige/50 bg-[#F2F5E2]/40">
+    <div class="relative w-full max-w-2xl bg-cafe-card rounded-t-[2rem] sm:rounded-2xl shadow-soft-lg border-t sm:border border-cafe-beige/60 overflow-hidden z-10 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <!-- Handle for mobile -->
+        <div class="sm:hidden w-full pt-3 pb-1 flex justify-center cursor-pointer" onclick="closeMenuModal()">
+            <div class="w-12 h-1 bg-[#775533]/30 rounded-full"></div>
+        </div>
+
+        <div class="flex items-center justify-between px-6 py-4 border-b border-cafe-beige/50 bg-[#F2F5E2]/40">
             <div>
-                <h3 class="font-serif text-xl font-bold text-cafe-dark" id="menu-modal-title">Tambah Menu Baru</h3>
-                <p class="text-xs text-cafe-muted mt-0.5">Lengkapi informasi produk, harga, ketersediaan, dan stok kafe.</p>
+                <h3 class="font-serif text-lg sm:text-xl font-bold text-cafe-dark" id="menu-modal-title">Tambah Menu Baru</h3>
+                <p class="text-[10px] sm:text-xs text-cafe-muted mt-0.5">Lengkapi informasi produk, harga, ketersediaan, dan stok kafe.</p>
             </div>
             <button onclick="closeMenuModal()" class="w-8 h-8 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-muted hover:text-cafe-dark flex items-center justify-center transition-colors">
                 <i data-lucide="x" class="w-4 h-4"></i>

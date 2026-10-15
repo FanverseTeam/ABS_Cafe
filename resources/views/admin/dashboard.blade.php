@@ -35,63 +35,71 @@
         </div>
     </div>
 
-    <!-- 4 Stat Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    <!-- 4 Stat Cards (2 Kolom di Mobile Sesuai Panduan) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <!-- Stat 1: Pesanan Hari Ini -->
-        <div class="bg-cafe-card rounded-2xl p-6 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex items-start justify-between relative overflow-hidden">
-            <div class="flex-1 pr-4">
-                <p class="text-xs font-medium uppercase tracking-wider text-cafe-muted mb-1">Pesanan Hari Ini</p>
-                <h3 class="text-2xl lg:text-3xl font-serif font-bold text-cafe-text tracking-tight">{{ $ordersTodayCount }} Pesanan</h3>
-                <div class="flex items-center gap-2 mt-2 text-xs">
-                    <span class="font-medium text-cafe-success bg-cafe-success/10 px-2 py-0.5 rounded-full">↑ 14.2%</span>
-                    <span class="text-cafe-muted">transaksi aktif</span>
+        <div class="bg-cafe-card rounded-2xl p-4 sm:p-6 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between relative overflow-hidden">
+            <div class="flex items-center justify-between gap-2">
+                <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-cafe-muted truncate">Pesanan Hari Ini</p>
+                <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-cafe-beige/80 flex items-center justify-center text-cafe-dark shadow-xs shrink-0">
+                    <i data-lucide="shopping-cart" class="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]"></i>
                 </div>
             </div>
-            <div class="w-12 h-12 rounded-2xl bg-cafe-beige/80 flex items-center justify-center text-cafe-dark shadow-sm shrink-0">
-                <i data-lucide="shopping-cart" class="w-6 h-6 stroke-[2.2]"></i>
+            <div class="mt-2 sm:mt-3">
+                <h3 class="text-lg sm:text-2xl lg:text-3xl font-serif font-bold text-cafe-text tracking-tight">{{ $ordersTodayCount }}</h3>
+                <div class="flex items-center gap-1.5 mt-1 text-[10px] sm:text-xs">
+                    <span class="font-medium text-cafe-success bg-cafe-success/10 px-1.5 py-0.5 rounded-full">↑ 14.2%</span>
+                    <span class="text-cafe-muted hidden sm:inline">transaksi</span>
+                </div>
             </div>
         </div>
 
         <!-- Stat 2: Pendapatan Hari Ini -->
-        <div class="bg-cafe-card rounded-2xl p-6 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex items-start justify-between relative overflow-hidden">
-            <div class="flex-1 pr-4">
-                <p class="text-xs font-medium uppercase tracking-wider text-cafe-muted mb-1">Pendapatan Hari Ini</p>
-                <h3 class="text-2xl lg:text-3xl font-serif font-bold text-cafe-text tracking-tight">Rp {{ number_format($revenueToday, 0, ',', '.') }}</h3>
-                <div class="flex items-center gap-2 mt-2 text-xs">
-                    <span class="font-medium text-cafe-success bg-cafe-success/10 px-2 py-0.5 rounded-full">↑ 8.5%</span>
-                    <span class="text-cafe-muted">dari pesanan lunas</span>
+        <div class="bg-cafe-card rounded-2xl p-4 sm:p-6 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between relative overflow-hidden">
+            <div class="flex items-center justify-between gap-2">
+                <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-cafe-muted truncate">Pendapatan</p>
+                <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-cafe-beige/80 flex items-center justify-center text-cafe-dark shadow-xs shrink-0">
+                    <i data-lucide="dollar-sign" class="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]"></i>
                 </div>
             </div>
-            <div class="w-12 h-12 rounded-2xl bg-cafe-beige/80 flex items-center justify-center text-cafe-dark shadow-sm shrink-0">
-                <i data-lucide="dollar-sign" class="w-6 h-6 stroke-[2.2]"></i>
+            <div class="mt-2 sm:mt-3">
+                <h3 class="text-base sm:text-2xl lg:text-3xl font-serif font-bold text-cafe-text tracking-tight truncate">Rp {{ number_format($revenueToday, 0, ',', '.') }}</h3>
+                <div class="flex items-center gap-1.5 mt-1 text-[10px] sm:text-xs">
+                    <span class="font-medium text-cafe-success bg-cafe-success/10 px-1.5 py-0.5 rounded-full">↑ 8.5%</span>
+                    <span class="text-cafe-muted hidden sm:inline">lunas</span>
+                </div>
             </div>
         </div>
 
         <!-- Stat 3: Menunggu Pembayaran -->
-        <div class="bg-cafe-card rounded-2xl p-6 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex items-start justify-between relative overflow-hidden">
-            <div class="flex-1 pr-4">
-                <p class="text-xs font-medium uppercase tracking-wider text-cafe-muted mb-1">Menunggu Pembayaran</p>
-                <h3 class="text-2xl lg:text-3xl font-serif font-bold text-cafe-text tracking-tight">{{ $pendingPaymentsCount }} Pesanan</h3>
-                <div class="flex items-center gap-2 mt-2 text-xs">
-                    <span class="font-medium text-cafe-warning bg-cafe-warning/10 px-2 py-0.5 rounded-full">Perlu Verifikasi</span>
+        <div class="bg-cafe-card rounded-2xl p-4 sm:p-6 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between relative overflow-hidden">
+            <div class="flex items-center justify-between gap-2">
+                <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-cafe-muted truncate">Menunggu Bayar</p>
+                <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-cafe-beige/80 flex items-center justify-center text-cafe-dark shadow-xs shrink-0">
+                    <i data-lucide="clock" class="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]"></i>
                 </div>
             </div>
-            <div class="w-12 h-12 rounded-2xl bg-cafe-beige/80 flex items-center justify-center text-cafe-dark shadow-sm shrink-0">
-                <i data-lucide="clock" class="w-6 h-6 stroke-[2.2]"></i>
+            <div class="mt-2 sm:mt-3">
+                <h3 class="text-lg sm:text-2xl lg:text-3xl font-serif font-bold text-cafe-text tracking-tight">{{ $pendingPaymentsCount }}</h3>
+                <div class="flex items-center gap-1.5 mt-1 text-[10px] sm:text-xs">
+                    <span class="font-medium text-cafe-warning bg-cafe-warning/10 px-1.5 py-0.5 rounded-full">Verifikasi</span>
+                </div>
             </div>
         </div>
 
         <!-- Stat 4: Menu Stok Menipis -->
-        <div class="bg-cafe-card rounded-2xl p-6 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex items-start justify-between relative overflow-hidden">
-            <div class="flex-1 pr-4">
-                <p class="text-xs font-medium uppercase tracking-wider text-cafe-muted mb-1">Menu Stok Menipis</p>
-                <h3 class="text-2xl lg:text-3xl font-serif font-bold text-cafe-text tracking-tight">{{ $lowStockMenus->count() }} Menu</h3>
-                <div class="flex items-center gap-2 mt-2 text-xs">
-                    <span class="font-medium text-cafe-danger bg-cafe-danger/10 px-2 py-0.5 rounded-full">Perlu Restock</span>
+        <div class="bg-cafe-card rounded-2xl p-4 sm:p-6 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between relative overflow-hidden">
+            <div class="flex items-center justify-between gap-2">
+                <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-cafe-muted truncate">Stok Menipis</p>
+                <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-cafe-beige/80 flex items-center justify-center text-cafe-dark shadow-xs shrink-0">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]"></i>
                 </div>
             </div>
-            <div class="w-12 h-12 rounded-2xl bg-cafe-beige/80 flex items-center justify-center text-cafe-dark shadow-sm shrink-0">
-                <i data-lucide="alert-triangle" class="w-6 h-6 stroke-[2.2]"></i>
+            <div class="mt-2 sm:mt-3">
+                <h3 class="text-lg sm:text-2xl lg:text-3xl font-serif font-bold text-cafe-text tracking-tight">{{ $lowStockMenus->count() }} Menu</h3>
+                <div class="flex items-center gap-1.5 mt-1 text-[10px] sm:text-xs">
+                    <span class="font-medium text-cafe-danger bg-cafe-danger/10 px-1.5 py-0.5 rounded-full">Restock</span>
+                </div>
             </div>
         </div>
     </div>

@@ -105,7 +105,7 @@
         @include('owner.layouts.topbar')
 
         <!-- Main Body -->
-        <main class="flex-1 p-4 sm:p-6 lg:p-8 relative">
+        <main class="flex-1 p-3.5 sm:p-6 lg:p-8 pb-24 lg:pb-8 relative min-w-0">
             <!-- Background Line Art Decoration -->
             <div class="fixed bottom-0 right-0 w-96 h-96 pointer-events-none opacity-5 -z-0">
                 <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -121,8 +121,11 @@
         </main>
     </div>
 
-    <!-- Toast Notifications -->
-    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+    <!-- Mobile Bottom Navigation Bar -->
+    @include('partials.mobile.bottom-nav', ['role' => 'owner'])
+
+    <!-- Toast Notifications (elevated above bottom nav on mobile) -->
+    <div id="toast-container" class="fixed bottom-20 lg:bottom-5 right-3 sm:right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
         @if(session('success'))
             <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#FAFCF3]/95 border-[#4F7A4A]/30 text-cafe-text backdrop-blur-md transition-all">
                 <i data-lucide="check-circle-2" class="w-5 h-5 text-cafe-success shrink-0 mt-0.5"></i>
@@ -197,6 +200,7 @@
     </script>
 
     @include('partials.confirm-modal')
+    @include('components.mobile.confirm-sheet')
 
     @stack('scripts')
 </body>

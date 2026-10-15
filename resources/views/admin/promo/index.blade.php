@@ -120,15 +120,20 @@
     </div>
 </div>
 
-<!-- MODAL FORM TAMBAH / EDIT PROMO -->
-<div id="promo-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closePromoModal()"></div>
+<!-- MODAL FORM TAMBAH / EDIT PROMO (Bottom Sheet on Mobile) -->
+<div id="promo-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 overflow-y-auto hidden">
+    <div class="fixed inset-0 bg-[#290024]/60 backdrop-blur-sm" onclick="closePromoModal()"></div>
 
-    <div class="relative w-full max-w-xl bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8">
-        <div class="flex items-center justify-between px-6 py-5 border-b border-cafe-beige/50 bg-[#F2F5E2]/40">
+    <div class="relative w-full max-w-xl bg-cafe-card rounded-t-[2rem] sm:rounded-2xl shadow-soft-lg border-t sm:border border-cafe-beige/60 overflow-hidden z-10 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <!-- Handle for mobile -->
+        <div class="sm:hidden w-full pt-3 pb-1 flex justify-center cursor-pointer" onclick="closePromoModal()">
+            <div class="w-12 h-1 bg-[#775533]/30 rounded-full"></div>
+        </div>
+
+        <div class="flex items-center justify-between px-6 py-4 border-b border-cafe-beige/50 bg-[#F2F5E2]/40">
             <div>
                 <h3 class="font-serif text-lg font-bold text-cafe-dark" id="promo-modal-title">Buat Promo Baru</h3>
-                <p class="text-xs text-cafe-muted mt-0.5">Tentukan nilai diskon, masa berlaku, dan target menu kafe.</p>
+                <p class="text-[10px] sm:text-xs text-cafe-muted mt-0.5">Tentukan nilai diskon, masa berlaku, dan target menu kafe.</p>
             </div>
             <button onclick="closePromoModal()" class="w-8 h-8 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-muted hover:text-cafe-dark flex items-center justify-center">
                 <i data-lucide="x" class="w-4 h-4"></i>
