@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use App\Models\CashShift;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureActiveShift
@@ -16,7 +15,7 @@ class EnsureActiveShift
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $shift = CashShift::where('user_id', Auth::id())->where('status', 'buka')->exists();
+        $shift = CashShift::where('status', 'buka')->exists();
 
         if (! $shift) {
             if ($request->expectsJson()) {

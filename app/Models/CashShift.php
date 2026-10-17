@@ -17,12 +17,14 @@ class CashShift extends Model
         'opened_at',
         'closed_at',
         'opening_cash',
+        'opening_cash_source',
         'expected_cash',
         'closing_cash',
         'cash_difference',
         'total_sales',
         'total_transactions',
         'status',
+        'is_auto_closed',
         'notes',
     ];
 
@@ -35,6 +37,7 @@ class CashShift extends Model
         'cash_difference' => 'decimal:2',
         'total_sales' => 'decimal:2',
         'total_transactions' => 'integer',
+        'is_auto_closed' => 'boolean',
     ];
 
     public function user(): BelongsTo
@@ -50,6 +53,11 @@ class CashShift extends Model
     public function cashMovements(): HasMany
     {
         return $this->hasMany(CashMovement::class);
+    }
+
+    public function adjustments(): HasMany
+    {
+        return $this->hasMany(CashAdjustment::class, 'applied_to_shift_id');
     }
 
     public function durationLabel(): string

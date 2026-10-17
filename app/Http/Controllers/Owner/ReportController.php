@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Models\CafeSetting;
+use App\Models\CashAdjustment;
 use App\Models\CashShift;
 use App\Models\Menu;
 use App\Models\Order;
+use App\Models\Stock;
 use App\Models\StockLog;
+use App\Models\StockMovement;
 use App\Support\PeriodFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -54,22 +57,47 @@ class ReportController extends Controller
                 ->whereBetween('opened_at', [$period->start, $period->end])
                 ->orderBy('opened_at', 'desc')
                 ->get(),
+            'adjustments' => CashAdjustment::with('user')
+                ->whereBetween('created_at', [$period->start, $period->end])
+                ->orderBy('created_at', 'desc')
+                ->get(),
+            'requirePhysical' => CafeSetting::get('require_physical_cash_count', '0') === '1',
             'cancelled' => Order::where('payment_status', 'dibatalkan')
                 ->whereBetween('created_at', [$period->start, $period->end])
                 ->count(),
             'margin' => (float) CafeSetting::get('profit_margin_percent', '40'),
         ];
 
+        $logs = StockLog::with('menu')
+            ->whereBetween('created_at', [$period->start, $period->end])
+            ->get()
+            ->map(fn ($l) => (object) [
+                'item_name' => $l->item_name,
+                'type' => $l->type,
+                'quantity' => (string) $l->quantity,
+                'created_at' => $l->created_at,
+            ]);
+
+        $rawMovements = StockMovement::with('stock')
+            ->whereBetween('created_at', [$period->start, $period->end])
+            ->get()
+            ->map(fn ($m) => (object) [
+                'item_name' => ($m->stock?->name ?? 'Bahan').' (Bahan)',
+                'type' => $m->type,
+                'quantity' => ((float) $m->quantity).' '.($m->stock?->unit ?? ''),
+                'created_at' => $m->created_at,
+            ]);
+
+        $movements = $logs->concat($rawMovements)->sortByDesc('created_at')->values();
+
         $stock = [
             'totalItems' => Menu::count(),
             'stockValue' => (float) Menu::sum(DB::raw('stock * price')),
             'lowStock' => Menu::with('category')->whereNotNull('min_stock')->whereColumn('stock', '<=', 'min_stock')->orderBy('stock')->get(),
             'outOfStock' => Menu::with('category')->where('stock', '<=', 0)->get(),
-            'movements' => StockLog::with('menu')
-                ->whereBetween('created_at', [$period->start, $period->end])
-                ->orderBy('created_at', 'desc')
-                ->get(),
+            'movements' => $movements,
             'usage' => $this->stockUsage($period),
+            'ingredientUsage' => $this->ingredientUsage($period),
         ];
 
         return view('owner.reports.index', array_merge(compact('tab', 'period', 'sales'), [
@@ -335,6 +363,26 @@ class ReportController extends Controller
         return $rows;
     }
 
+    private function ingredientUsage(PeriodFilter $period)
+    {
+        return StockMovement::with('stock')
+            ->where('type', 'keluar')
+            ->whereBetween('created_at', [$period->start, $period->end])
+            ->get()
+            ->groupBy('stock_id')
+            ->map(function ($rows) {
+                $stock = $rows->first()->stock;
+
+                return [
+                    'name' => $stock?->name ?? 'Bahan Baku',
+                    'used' => (float) $rows->sum('quantity'),
+                    'remaining' => (float) ($stock?->quantity ?? 0),
+                    'unit' => $stock?->unit ?? 'pcs',
+                ];
+            })
+            ->values();
+    }
+
     /**
      * @return array<int, array<int, string|int|float>>
      */
@@ -344,7 +392,7 @@ class ReportController extends Controller
             ['Laporan Stok & Bahan'],
             ['Nilai Stok (harga jual)', (float) Menu::sum(DB::raw('stock * price'))],
             [],
-            ['Menu', 'Stok', 'Min. Stok', 'Satuan', 'Status'],
+            ['Menu / Produk', 'Stok', 'Min. Stok', 'Satuan', 'Status'],
         ];
         foreach (Menu::orderBy('stock')->get() as $menu) {
             $rows[] = [
@@ -352,7 +400,20 @@ class ReportController extends Controller
                 (int) $menu->stock,
                 (int) $menu->min_stock,
                 $menu->unit ?? 'pcs',
-                $menu->stock <= 0 ? 'Habis' : ($menu->stock <= $menu->min_stock ? 'Menipis' : 'Aman'),
+                $menu->stock_status === 'habis' ? 'Habis' : ($menu->stock_status === 'menipis' ? 'Menipis' : 'Aman'),
+            ];
+        }
+
+        $rows[] = [];
+        $rows[] = ['Bahan Baku (Resep)', 'Stok Tersisa', 'Min. Stok', 'Satuan', 'Status'];
+        foreach (Stock::where('is_active', true)->orderBy('name')->get() as $stk) {
+            $status = $stk->stockStatus();
+            $rows[] = [
+                $stk->name,
+                (float) $stk->quantity,
+                (float) $stk->min_quantity,
+                $stk->unit,
+                $status['label'],
             ];
         }
 

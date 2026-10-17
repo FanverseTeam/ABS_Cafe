@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\ActivityLog;
 use App\Models\CafeSetting;
-use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -378,6 +377,8 @@ class DatabaseSeeder extends Seeder
             'notif_low_stock' => '1',
             'notif_daily_report' => '1',
             'notif_weekly_report' => '0',
+            'default_opening_cash' => '100000',
+            'require_physical_cash_count' => '0',
         ];
 
         foreach ($settings as $k => $v) {

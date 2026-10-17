@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\ActivityLog;
+use App\Models\CafeSetting;
+use App\Models\CashAdjustment;
 use App\Models\CashMovement;
 use App\Models\CashShift;
 use App\Models\Order;
@@ -11,32 +14,112 @@ use Illuminate\Validation\ValidationException;
 
 class ShiftService
 {
-    public function activeFor(User $user): ?CashShift
+    /**
+     * Dapatkan shift aktif di laci saat ini (satu laci kas bersama untuk semua kasir).
+     */
+    public function activeDrawerShift(): ?CashShift
     {
-        return CashShift::where('user_id', $user->id)
+        return CashShift::with('user')
             ->where('status', 'buka')
             ->latest('opened_at')
             ->first();
     }
 
-    public function open(User $user, float $openingCash, ?string $notes = null): CashShift
+    /**
+     * Shift aktif untuk user saat ini atau laci aktif.
+     */
+    public function activeFor(User $user): ?CashShift
     {
-        if ($this->activeFor($user)) {
-            throw ValidationException::withMessages(['shift' => 'Anda masih memiliki shift yang belum ditutup.']);
+        return CashShift::where('status', 'buka')
+            ->where('user_id', $user->id)
+            ->latest('opened_at')
+            ->first() ?? $this->activeDrawerShift();
+    }
+
+    /**
+     * Hitung kas awal otomatis untuk shift berikutnya beserta sumber keterangannya.
+     *
+     * @return array{amount: float, source_text: string, source_key: string, last_shift: ?CashShift, adjustments_total: float}
+     */
+    public function calculateNextOpeningCash(): array
+    {
+        $lastClosed = CashShift::with('user')
+            ->where('status', 'tutup')
+            ->latest('closed_at')
+            ->first();
+
+        $unappliedAdjustments = CashAdjustment::whereNull('applied_to_shift_id')->get();
+        $adjustmentsTotal = (float) $unappliedAdjustments->sum('amount');
+
+        if ($lastClosed) {
+            $baseCash = (float) $lastClosed->closing_cash;
+            $cashierName = $lastClosed->user?->name ?? 'Kasir sebelumnya';
+            $timeString = $lastClosed->closed_at
+                ? $lastClosed->closed_at->translatedFormat('d M Y, H:i')
+                : '-';
+            $sourceText = "Dari shift sebelumnya oleh {$cashierName}, {$timeString}";
+            $sourceKey = 'shift:'.$lastClosed->id;
+        } else {
+            $baseCash = (float) CafeSetting::get('default_opening_cash', 100000);
+            $sourceText = 'Modal Awal Laci dari Pengaturan Bisnis';
+            $sourceKey = 'setting:default_opening_cash';
         }
 
-        return CashShift::create([
-            'user_id' => $user->id,
-            'opened_at' => now(),
-            'opening_cash' => $openingCash,
-            'expected_cash' => $openingCash,
-            'closing_cash' => 0,
-            'cash_difference' => 0,
-            'total_sales' => 0,
-            'total_transactions' => 0,
-            'status' => 'buka',
-            'notes' => $notes,
-        ]);
+        if ($adjustmentsTotal != 0) {
+            $adjFormatted = ($adjustmentsTotal > 0 ? '+' : '').'Rp '.number_format($adjustmentsTotal, 0, ',', '.');
+            $sourceText .= " (penyesuaian kas: {$adjFormatted})";
+        }
+
+        $finalOpening = max(0, $baseCash + $adjustmentsTotal);
+
+        return [
+            'amount' => $finalOpening,
+            'source_text' => $sourceText,
+            'source_key' => $sourceKey,
+            'last_shift' => $lastClosed,
+            'adjustments_total' => $adjustmentsTotal,
+        ];
+    }
+
+    /**
+     * Buka shift kasir dengan kas awal otomatis (atau manual jika diberikan).
+     */
+    public function open(User $user, ?float $openingCash = null, ?string $notes = null): CashShift
+    {
+        return DB::transaction(function () use ($user, $openingCash, $notes) {
+            $active = CashShift::where('status', 'buka')->lockForUpdate()->first();
+            if ($active) {
+                $activeName = $active->user?->name ?? 'kasir lain';
+                throw ValidationException::withMessages([
+                    'shift' => "Laci kas masih memiliki shift aktif oleh {$activeName}. Selesaikan atau tutup shift tersebut terlebih dahulu.",
+                ]);
+            }
+
+            $calc = $this->calculateNextOpeningCash();
+            $finalOpening = $openingCash !== null ? (float) $openingCash : (float) $calc['amount'];
+            $sourceText = $calc['source_text'];
+
+            $shift = CashShift::create([
+                'user_id' => $user->id,
+                'opened_at' => now(),
+                'opening_cash' => $finalOpening,
+                'opening_cash_source' => $sourceText,
+                'expected_cash' => $finalOpening,
+                'closing_cash' => 0,
+                'cash_difference' => 0,
+                'total_sales' => 0,
+                'total_transactions' => 0,
+                'status' => 'buka',
+                'is_auto_closed' => false,
+                'notes' => $notes,
+            ]);
+
+            // Tautkan penyesuaian kas yang belum terpakai ke shift baru ini
+            CashAdjustment::whereNull('applied_to_shift_id')
+                ->update(['applied_to_shift_id' => $shift->id]);
+
+            return $shift;
+        });
     }
 
     /**
@@ -59,6 +142,9 @@ class ShiftService
     }
 
     /**
+     * Rekap kas berjalan shift.
+     * Kas tunai berjalan = kas awal + penjualan tunai + kas masuk - kas keluar (kembalian sudah terhitung).
+     *
      * @return array<string, mixed>
      */
     public function summary(CashShift $shift): array
@@ -95,7 +181,12 @@ class ShiftService
         ]);
     }
 
-    public function close(CashShift $shift, float $closingCash, ?string $notes = null): CashShift
+    /**
+     * Tutup shift kasir.
+     * Bila mode wajib hitung fisik aktif dan closingCash diberikan, hitung selisih.
+     * Bila mode otomatis, closing_cash = expected_cash, cash_difference = 0.
+     */
+    public function close(CashShift $shift, ?float $closingCash = null, ?string $notes = null): CashShift
     {
         if ($shift->status !== 'buka') {
             throw ValidationException::withMessages(['shift' => 'Shift ini sudah ditutup.']);
@@ -109,20 +200,72 @@ class ShiftService
         }
 
         return DB::transaction(function () use ($shift, $closingCash, $notes) {
-            $summary = $this->summary($shift);
+            $lockedShift = CashShift::where('id', $shift->id)->lockForUpdate()->firstOrFail();
+            if ($lockedShift->status !== 'buka') {
+                throw ValidationException::withMessages(['shift' => 'Shift ini sudah ditutup.']);
+            }
 
-            $shift->update([
+            $summary = $this->summary($lockedShift);
+            $requirePhysical = (bool) CafeSetting::get('require_physical_cash_count', '0');
+
+            if ($closingCash !== null) {
+                $finalClosing = round((float) $closingCash, 2);
+                $difference = round($finalClosing - $summary['expected_cash'], 2);
+                $isAuto = false;
+            } else {
+                $finalClosing = $summary['expected_cash'];
+                $difference = 0.00;
+                $isAuto = true;
+            }
+
+            $lockedShift->update([
                 'closed_at' => now(),
                 'expected_cash' => $summary['expected_cash'],
-                'closing_cash' => $closingCash,
-                'cash_difference' => round($closingCash - $summary['expected_cash'], 2),
+                'closing_cash' => $finalClosing,
+                'cash_difference' => $difference,
                 'total_sales' => $summary['sales'],
                 'total_transactions' => $summary['orders_count'],
                 'status' => 'tutup',
-                'notes' => $notes ?: $shift->notes,
+                'is_auto_closed' => $isAuto,
+                'notes' => $notes ?: $lockedShift->notes,
             ]);
 
-            return $shift->fresh();
+            return $lockedShift->fresh();
+        });
+    }
+
+    /**
+     * Buat penyesuaian kas laci oleh Owner atau Admin.
+     */
+    public function createAdjustment(User $user, float $amount, string $reason): CashAdjustment
+    {
+        if (! in_array($user->primaryRole(), ['admin', 'owner'], true)) {
+            abort(403, 'Hanya Owner atau Admin yang dapat membuat penyesuaian kas.');
+        }
+
+        if (empty(trim($reason))) {
+            throw ValidationException::withMessages(['reason' => 'Alasan penyesuaian kas wajib diisi.']);
+        }
+
+        return DB::transaction(function () use ($user, $amount, $reason) {
+            $adjustment = CashAdjustment::create([
+                'user_id' => $user->id,
+                'amount' => round($amount, 2),
+                'reason' => trim($reason),
+                'applied_to_shift_id' => null,
+            ]);
+
+            $formattedAmount = ($amount >= 0 ? '+' : '').'Rp '.number_format($amount, 0, ',', '.');
+
+            ActivityLog::create([
+                'user_name' => $user->name,
+                'role' => $user->primaryRole(),
+                'activity' => "Penyesuaian kas laci {$formattedAmount} (Alasan: {$reason})",
+                'activity_type' => 'sistem',
+                'ip_address' => request()->ip(),
+            ]);
+
+            return $adjustment;
         });
     }
 }

@@ -54,6 +54,12 @@ class TransactionSeeder extends Seeder
         $days = 80;
         $start = Carbon::today()->subDays($days - 1);
 
+        // Track kas laci antar shift agar membentuk rantai konsisten
+        $drawerCash = 100000.0; // Modal awal laci dari setting default
+        $lastShiftId = null;
+        $lastShiftUser = null;
+        $lastShiftClosed = null;
+
         for ($d = 0; $d < $days; $d++) {
             $date = $start->copy()->addDays($d);
             $isWeekend = in_array($date->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY], true);
@@ -65,16 +71,26 @@ class TransactionSeeder extends Seeder
             }
 
             // Dua shift per hari: pagi (09:00-15:00) & sore (15:00-21:30)
-            $openingPagi = mt_rand(3, 5) * 100000;
-            $openingSore = mt_rand(3, 5) * 100000;
+            // Kas awal diambil dari penutupan shift sebelumnya
+            $sourceTextPagi = $lastShiftId
+                ? "Dari shift sebelumnya oleh {$lastShiftUser}, ".($lastShiftClosed ? $lastShiftClosed->translatedFormat('d M Y, H:i') : '-')
+                : 'Modal Awal Laci dari Pengaturan Bisnis';
 
-            $pagi = $this->createShift($kasirs->random(), $date, '09:00', '15:00', $openingPagi);
-            $sore = $this->createShift($kasirs->random(), $date, '15:00', '21:30', $openingSore);
+            $pagi = $this->createShift($kasirs->random(), $date, '09:00', '15:00', (int) $drawerCash, $sourceTextPagi);
+            $lastShiftId = $pagi->id;
+            $lastShiftUser = $pagi->user->name;
+            $lastShiftClosed = $pagi->closed_at;
 
             $shiftStats = [
-                $pagi->id => ['cash' => 0.0, 'sales' => 0.0, 'count' => 0, 'opening' => (float) $openingPagi],
-                $sore->id => ['cash' => 0.0, 'sales' => 0.0, 'count' => 0, 'opening' => (float) $openingSore],
+                $pagi->id => ['cash' => 0.0, 'sales' => 0.0, 'count' => 0, 'opening' => $drawerCash],
             ];
+
+            // Sore shift starts after pagi finalized (below), placeholder cash
+            $soreCash = $drawerCash; // will recalc after pagi stats
+            $sourceTextSore = "Dari shift sebelumnya oleh {$lastShiftUser}, ".($lastShiftClosed ? $lastShiftClosed->translatedFormat('d M Y, H:i') : '-');
+            $sore = $this->createShift($kasirs->random(), $date, '15:00', '21:30', (int) $soreCash, $sourceTextSore);
+
+            $shiftStats[$sore->id] = ['cash' => 0.0, 'sales' => 0.0, 'count' => 0, 'opening' => $soreCash];
 
             $sequence = 0;
 
@@ -218,21 +234,34 @@ class TransactionSeeder extends Seeder
                 }
             }
 
-            // Finalisasi rekap shift
+            // Finalisasi rekap shift — mode otomatis: closing = expected, selisih 0, chain tersambung
             foreach ([$pagi, $sore] as $shift) {
                 $stat = $shiftStats[$shift->id];
-                $expected = $stat['opening'] + $stat['cash'];
-                $variance = mt_rand(1, 100) <= 75 ? 0 : (mt_rand(0, 1) ? -mt_rand(500, 5000) : mt_rand(500, 5000));
-                $closing = $expected + $variance;
+                $expected = round($stat['opening'] + $stat['cash'], 2);
 
                 $shift->update([
                     'expected_cash' => $expected,
-                    'closing_cash' => $closing,
-                    'cash_difference' => $closing - $expected,
+                    'closing_cash' => $expected,
+                    'cash_difference' => 0,
                     'total_sales' => $stat['sales'],
                     'total_transactions' => $stat['count'],
                     'status' => 'tutup',
+                    'is_auto_closed' => true,
                 ]);
+
+                // Kas awal shift berikutnya = kas akhir shift ini
+                $drawerCash = $expected;
+                $lastShiftId = $shift->id;
+                $lastShiftUser = $shift->user->name;
+                $lastShiftClosed = $shift->closed_at;
+
+                // Perbarui kas awal shift sore agar akurat setelah pagi selesai
+                if ($shift->id === $pagi->id) {
+                    $sore->update(['opening_cash' => $expected, 'expected_cash' => $expected]);
+                    $shiftStats[$sore->id]['opening'] = $expected;
+                    $sourceTextSore2 = "Dari shift sebelumnya oleh {$lastShiftUser}, ".($lastShiftClosed ? $lastShiftClosed->translatedFormat('d M Y, H:i') : '-');
+                    $sore->update(['opening_cash_source' => $sourceTextSore2]);
+                }
             }
         }
 
@@ -245,7 +274,7 @@ class TransactionSeeder extends Seeder
         ]);
     }
 
-    private function createShift(User $user, Carbon $date, string $openTime, string $closeTime, int $openingCash): CashShift
+    private function createShift(User $user, Carbon $date, string $openTime, string $closeTime, int $openingCash, string $sourceText = 'Seeder data historis'): CashShift
     {
         $opened = $date->copy()->setTime(...array_map('intval', explode(':', $openTime)));
         $closed = $date->copy()->setTime(...array_map('intval', explode(':', $closeTime)));
@@ -263,11 +292,13 @@ class TransactionSeeder extends Seeder
             'opened_at' => $opened,
             'closed_at' => $closed,
             'opening_cash' => $openingCash,
+            'opening_cash_source' => $sourceText,
             'expected_cash' => $openingCash,
             'closing_cash' => $openingCash,
             'cash_difference' => 0,
             'total_sales' => 0,
             'total_transactions' => 0,
+            'is_auto_closed' => false,
             'status' => $closed->lt(now()) ? 'tutup' : 'buka',
         ]);
         $shift->created_at = $opened;

@@ -137,6 +137,26 @@
                     </label>
                 </div>
 
+                <!-- Kas Shift -->
+                <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 space-y-4">
+                    <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2"><i data-lucide="vault" class="w-4 h-4 text-cafe-gold"></i> Pengaturan Kas Shift</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-cafe-text">Modal Awal Laci (Rp)</label>
+                            <p class="text-[10px] text-cafe-muted leading-snug">Dipakai sebagai kas awal bila belum ada shift yang pernah ditutup.</p>
+                            <input type="number" step="1000" min="0" name="default_opening_cash" value="{{ old('default_opening_cash', $settings['default_opening_cash']) }}" class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-semibold text-cafe-text block">Mode Hitung Kas Fisik</label>
+                            <p class="text-[10px] text-cafe-muted leading-snug">Jika aktif, kasir wajib menghitung uang fisik saat tutup shift dan selisih ditampilkan.</p>
+                            <label class="flex items-center gap-2 cursor-pointer text-xs text-cafe-text select-none mt-2">
+                                <input type="checkbox" name="require_physical_cash_count" value="1" {{ $settings['require_physical_cash_count'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded accent-[#290024]">
+                                <span>Wajib hitung kas fisik saat tutup shift</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="flex justify-end">
                     <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold transition-colors">
                         <i data-lucide="save" class="w-4 h-4"></i> Simpan Pengaturan

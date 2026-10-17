@@ -9,6 +9,7 @@
     <div class="flex flex-wrap items-center justify-between gap-3">
         <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 -mx-2 px-2">
             @php
+                $currentTab = $tab ?? 'aktif';
                 $tabs = [
                     'aktif' => ['label' => 'Aktif', 'badge' => $counts['aktif']],
                     'web' => ['label' => 'Web', 'badge' => $counts['web']],

@@ -11,9 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 class PaymentService
 {
-    public function __construct(private readonly OrderService $orders)
-    {
-    }
+    public function __construct(private readonly OrderService $orders) {}
 
     /**
      * @param  array{method: string, cash_received?: float, reference?: string|null}  $data
@@ -36,8 +34,16 @@ class PaymentService
         }
 
         return DB::transaction(function () use ($order, $cashier, $method, $total, $cashReceived, $data) {
+            $lockedOrder = Order::where('id', $order->id)->lockForUpdate()->firstOrFail();
+            if ($lockedOrder->isCancelled()) {
+                throw ValidationException::withMessages(['payment' => 'Pesanan sudah dibatalkan.']);
+            }
+            if ($lockedOrder->isPaid()) {
+                throw ValidationException::withMessages(['payment' => 'Pesanan ini sudah dibayar.']);
+            }
+
             $payment = Payment::create([
-                'order_id' => $order->id,
+                'order_id' => $lockedOrder->id,
                 'cashier_id' => $cashier->id,
                 'method' => $method,
                 'amount' => $total,
@@ -48,23 +54,23 @@ class PaymentService
                 'paid_at' => now(),
             ]);
 
-            $order->update([
+            $lockedOrder->update([
                 'payment_status' => 'lunas',
                 'payment_method' => $method,
                 'paid_at' => now(),
-                'cashier_id' => $order->cashier_id ?: $cashier->id,
-                'cashier_name' => $order->cashier_name ?: $cashier->name,
+                'cashier_id' => $lockedOrder->cashier_id ?: $cashier->id,
+                'cashier_name' => $lockedOrder->cashier_name ?: $cashier->name,
             ]);
 
-            $this->orders->decrementStock($order->fresh('items'), $cashier);
-            $this->orders->addTimeline($order, 'LUNAS', $cashier->name,
+            $this->orders->decrementStock($lockedOrder->fresh('items'), $cashier);
+            $this->orders->addTimeline($lockedOrder, 'LUNAS', $cashier->name,
                 'Pembayaran '.strtoupper($method).' lunas diverifikasi kasir');
-            $this->orders->releaseTable($order);
+            $this->orders->releaseTable($lockedOrder);
 
             ActivityLog::create([
                 'user_name' => $cashier->name,
                 'role' => $cashier->primaryRole(),
-                'activity' => "Menerima pembayaran {$order->order_code} sebesar Rp ".number_format($total, 0, ',', '.')." via ".strtoupper($method),
+                'activity' => "Menerima pembayaran {$lockedOrder->order_code} sebesar Rp ".number_format($total, 0, ',', '.').' via '.strtoupper($method),
                 'activity_type' => 'transaksi',
                 'ip_address' => request()->ip(),
             ]);

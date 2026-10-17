@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\CafeSetting;
 use App\Models\CashShift;
 use App\Models\Menu;
 use App\Models\MenuVariant;
@@ -9,8 +10,12 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderTimeline;
 use App\Models\Promo;
+use App\Models\Recipe;
+use App\Models\Stock;
+use App\Models\StockLog;
+use App\Models\StockMovement;
+use App\Models\Table;
 use App\Models\User;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -197,9 +202,9 @@ class OrderService
             $promo = $this->findPromo($data['voucher'] ?? null);
             ['discount' => $discount] = $this->calculateDiscount($promo, $built['items'], $built['subtotal']);
 
-            $taxPercent = (float) \App\Models\CafeSetting::get('tax_percent', 10);
-            $serviceActive = (bool) \App\Models\CafeSetting::get('service_charge_active', 0);
-            $servicePercent = $serviceActive ? (float) \App\Models\CafeSetting::get('service_charge_percent', 5) : 0;
+            $taxPercent = (float) CafeSetting::get('tax_percent', 10);
+            $serviceActive = (bool) CafeSetting::get('service_charge_active', 0);
+            $servicePercent = $serviceActive ? (float) CafeSetting::get('service_charge_percent', 5) : 0;
 
             $tax = round(($built['subtotal'] - $discount) * $taxPercent / 100, 2);
             $service = round(($built['subtotal'] - $discount) * $servicePercent / 100, 2);
@@ -299,16 +304,33 @@ class OrderService
 
     public function cancel(Order $order, User $actor, string $reason): Order
     {
-        $order->update([
-            'payment_status' => 'dibatalkan',
-            'order_status' => 'dibatalkan',
-            'cancel_reason' => $reason,
-        ]);
+        return DB::transaction(function () use ($order, $actor, $reason) {
+            $lockedOrder = Order::where('id', $order->id)->lockForUpdate()->firstOrFail();
+            if ($lockedOrder->isCancelled()) {
+                return $lockedOrder;
+            }
 
-        $this->addTimeline($order, 'DIBATALKAN', $actor->name, "Alasan: {$reason}");
-        $this->releaseTable($order);
+            // Kembalikan stok jika pesanan pernah lunas atau stok telah terpotong
+            if ($lockedOrder->isPaid() || $lockedOrder->stock_deducted) {
+                $this->restoreStock($lockedOrder, $actor, $reason);
+            }
 
-        return $order->fresh();
+            $lockedOrder->update([
+                'payment_status' => 'dibatalkan',
+                'order_status' => 'dibatalkan',
+                'cancel_reason' => $reason,
+            ]);
+
+            $this->addTimeline($lockedOrder, 'DIBATALKAN', $actor->name, "Alasan: {$reason}");
+            $this->releaseTable($lockedOrder);
+
+            return $lockedOrder->fresh();
+        });
+    }
+
+    public function refund(Order $order, User $actor, string $reason): Order
+    {
+        return $this->cancel($order, $actor, $reason);
     }
 
     public function releaseTable(Order $order): void
@@ -323,40 +345,267 @@ class OrderService
             ->exists();
 
         if (! $stillOccupied) {
-            \App\Models\Table::where('number', $order->table_number)->update(['status' => 'tersedia']);
+            Table::where('number', $order->table_number)->update(['status' => 'tersedia']);
         }
     }
 
+    /**
+     * Kurangi stok otomatis saat pesanan lunas (berdasarkan resep bahan & stok menu).
+     */
     public function decrementStock(Order $order, User $actor): void
     {
-        foreach ($order->items as $item) {
+        $lockedOrder = Order::where('id', $order->id)->lockForUpdate()->first();
+        if (! $lockedOrder || $lockedOrder->stock_deducted) {
+            return;
+        }
+
+        // 1. Kumpulkan seluruh kebutuhan bahan baku resep
+        $neededStocks = [];
+
+        foreach ($lockedOrder->items as $item) {
             if (! $item->menu_id) {
                 continue;
             }
 
-            $menu = Menu::lockForUpdate()->find($item->menu_id);
-            if (! $menu || $menu->stock === null) {
+            // Cari resep spesifik untuk varian, jika tidak ada cari resep dasar (variant_id null)
+            $recipes = Recipe::where('menu_id', $item->menu_id)
+                ->when($item->variant_id, fn ($q) => $q->where('menu_variant_id', $item->variant_id))
+                ->get();
+
+            if ($recipes->isEmpty() && $item->variant_id) {
+                $recipes = Recipe::where('menu_id', $item->menu_id)
+                    ->whereNull('menu_variant_id')
+                    ->get();
+            }
+
+            if ($recipes->isNotEmpty()) {
+                foreach ($recipes as $recipe) {
+                    $qty = (float) $recipe->amount * (int) $item->quantity;
+                    $neededStocks[$recipe->stock_id] = ($neededStocks[$recipe->stock_id] ?? 0.0) + $qty;
+                }
+            }
+        }
+
+        // 2. Validasi stok bahan baku mencukupi (stok tidak boleh minus)
+        foreach ($neededStocks as $stockId => $needed) {
+            $stock = Stock::where('id', $stockId)->lockForUpdate()->first();
+            if (! $stock) {
                 continue;
             }
 
-            $before = (int) $menu->stock;
-            $after = max(0, $before - (int) $item->quantity);
+            if ((float) $stock->quantity < $needed) {
+                if ((float) $stock->quantity <= 0) {
+                    $this->markMenusUnavailableForStock($stock);
+                }
+                throw ValidationException::withMessages([
+                    'stock' => "Stok bahan \"{$stock->name}\" tidak mencukupi untuk pesanan {$lockedOrder->order_code} (dibutuhkan {$needed} {$stock->unit}, tersisa {$stock->quantity} {$stock->unit}).",
+                ]);
+            }
+        }
 
-            $menu->update([
-                'stock' => $after,
-                'sold_count' => (int) $menu->sold_count + (int) $item->quantity,
-            ]);
+        // Validasi stok langsung pada tabel menus jika menu memiliki batasan stok
+        foreach ($lockedOrder->items as $item) {
+            if (! $item->menu_id) {
+                continue;
+            }
+            $menu = Menu::where('id', $item->menu_id)->lockForUpdate()->first();
+            if ($menu && $menu->stock !== null && $menu->stock < (int) $item->quantity) {
+                $menu->update(['is_available' => false]);
+                throw ValidationException::withMessages([
+                    'stock' => "Stok menu \"{$menu->name}\" tidak mencukupi (tersisa {$menu->stock} {$menu->unit}).",
+                ]);
+            }
+        }
 
-            \App\Models\StockLog::create([
-                'menu_id' => $menu->id,
-                'item_name' => $menu->name,
+        // 3. Eksekusi pengurangan bahan baku & catat StockMovement
+        foreach ($neededStocks as $stockId => $needed) {
+            $stock = Stock::where('id', $stockId)->lockForUpdate()->first();
+            if (! $stock) {
+                continue;
+            }
+
+            $newQty = max(0.0, (float) $stock->quantity - $needed);
+            $stock->update(['quantity' => $newQty]);
+
+            StockMovement::create([
+                'stock_id' => $stock->id,
+                'user_id' => $actor->id,
                 'type' => 'keluar',
-                'quantity' => (int) $item->quantity,
-                'stock_before' => $before,
-                'stock_after' => $after,
-                'notes' => 'Terjual pada pesanan '.$order->order_code,
-                'actor' => $actor->name,
+                'quantity' => $needed,
+                'stock_after' => $newQty,
+                'note' => "Pengurangan otomatis pesanan {$lockedOrder->order_code}",
             ]);
+
+            // Jika bahan habis (0), otomatis tandai menu yang membutuhkan bahan ini sebagai 'Habis'
+            if ($newQty <= 0) {
+                $this->markMenusUnavailableForStock($stock);
+            }
+        }
+
+        // 4. Kurangi stok menu jika ada (kompatibilitas modul katalog lama)
+        foreach ($lockedOrder->items as $item) {
+            if (! $item->menu_id) {
+                continue;
+            }
+
+            $menu = Menu::where('id', $item->menu_id)->lockForUpdate()->first();
+            if (! $menu) {
+                continue;
+            }
+
+            if ($menu->stock !== null) {
+                $before = (int) $menu->stock;
+                $after = max(0, $before - (int) $item->quantity);
+
+                $menu->update([
+                    'stock' => $after,
+                    'sold_count' => (int) $menu->sold_count + (int) $item->quantity,
+                    'is_available' => $after > 0,
+                ]);
+
+                StockLog::create([
+                    'menu_id' => $menu->id,
+                    'item_name' => $menu->name,
+                    'type' => 'keluar',
+                    'quantity' => (int) $item->quantity,
+                    'stock_before' => $before,
+                    'stock_after' => $after,
+                    'notes' => 'Terjual pada pesanan '.$lockedOrder->order_code,
+                    'actor' => $actor->name,
+                ]);
+            } else {
+                $menu->increment('sold_count', (int) $item->quantity);
+            }
+        }
+
+        $lockedOrder->update(['stock_deducted' => true]);
+    }
+
+    /**
+     * Kembalikan stok saat pesanan lunas dibatalkan atau direfund (tanpa duplikasi).
+     */
+    public function restoreStock(Order $order, User $actor, string $reason): void
+    {
+        $lockedOrder = Order::where('id', $order->id)->lockForUpdate()->first();
+        if (! $lockedOrder || ! $lockedOrder->stock_deducted || $lockedOrder->stock_returned) {
+            return;
+        }
+
+        // 1. Kumpulkan bahan baku yang perlu dikembalikan
+        $returnedStocks = [];
+        foreach ($lockedOrder->items as $item) {
+            if (! $item->menu_id) {
+                continue;
+            }
+
+            $recipes = Recipe::where('menu_id', $item->menu_id)
+                ->when($item->variant_id, fn ($q) => $q->where('menu_variant_id', $item->variant_id))
+                ->get();
+
+            if ($recipes->isEmpty() && $item->variant_id) {
+                $recipes = Recipe::where('menu_id', $item->menu_id)
+                    ->whereNull('menu_variant_id')
+                    ->get();
+            }
+
+            foreach ($recipes as $recipe) {
+                $qty = (float) $recipe->amount * (int) $item->quantity;
+                $returnedStocks[$recipe->stock_id] = ($returnedStocks[$recipe->stock_id] ?? 0.0) + $qty;
+            }
+        }
+
+        // 2. Kembalikan stok bahan baku & catat StockMovement
+        foreach ($returnedStocks as $stockId => $qty) {
+            $stock = Stock::where('id', $stockId)->lockForUpdate()->first();
+            if (! $stock) {
+                continue;
+            }
+
+            $newQty = (float) $stock->quantity + $qty;
+            $stock->update(['quantity' => $newQty]);
+
+            StockMovement::create([
+                'stock_id' => $stock->id,
+                'user_id' => $actor->id,
+                'type' => 'masuk',
+                'quantity' => $qty,
+                'stock_after' => $newQty,
+                'note' => "Pengembalian stok pesanan {$lockedOrder->order_code} (dibatalkan: {$reason})",
+            ]);
+
+            $this->syncMenuAvailabilityForStock($stock);
+        }
+
+        // 3. Kembalikan stok menu jika ada
+        foreach ($lockedOrder->items as $item) {
+            if (! $item->menu_id) {
+                continue;
+            }
+
+            $menu = Menu::where('id', $item->menu_id)->lockForUpdate()->first();
+            if (! $menu) {
+                continue;
+            }
+
+            if ($menu->stock !== null) {
+                $before = (int) $menu->stock;
+                $after = $before + (int) $item->quantity;
+
+                $menu->update([
+                    'stock' => $after,
+                    'sold_count' => max(0, (int) $menu->sold_count - (int) $item->quantity),
+                    'is_available' => $after > 0,
+                ]);
+
+                StockLog::create([
+                    'menu_id' => $menu->id,
+                    'item_name' => $menu->name,
+                    'type' => 'masuk',
+                    'quantity' => (int) $item->quantity,
+                    'stock_before' => $before,
+                    'stock_after' => $after,
+                    'notes' => 'Pengembalian stok pesanan '.$lockedOrder->order_code.' dibatalkan',
+                    'actor' => $actor->name,
+                ]);
+            } else {
+                $menu->decrement('sold_count', min((int) $menu->sold_count, (int) $item->quantity));
+            }
+        }
+
+        $lockedOrder->update(['stock_returned' => true]);
+    }
+
+    public function markMenusUnavailableForStock(Stock $stock): void
+    {
+        $menuIds = Recipe::where('stock_id', $stock->id)->pluck('menu_id')->unique();
+        if ($menuIds->isNotEmpty()) {
+            Menu::whereIn('id', $menuIds)->update(['is_available' => false]);
+        }
+    }
+
+    public function syncMenuAvailabilityForStock(Stock $stock): void
+    {
+        if ((float) $stock->quantity <= 0) {
+            $this->markMenusUnavailableForStock($stock);
+
+            return;
+        }
+
+        $menuIds = Recipe::where('stock_id', $stock->id)->pluck('menu_id')->unique();
+        foreach ($menuIds as $menuId) {
+            $menu = Menu::find($menuId);
+            if (! $menu) {
+                continue;
+            }
+
+            $allAvailable = Recipe::where('menu_id', $menuId)
+                ->with('stock')
+                ->get()
+                ->every(fn ($r) => $r->stock && (float) $r->stock->quantity > 0);
+
+            if ($allAvailable && ($menu->stock === null || $menu->stock > 0)) {
+                $menu->update(['is_available' => true]);
+            }
         }
     }
 }

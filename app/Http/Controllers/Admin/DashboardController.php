@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Order;
-use App\Models\Menu;
 use App\Models\Category;
+use App\Models\Menu;
+use App\Models\Order;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -28,9 +28,11 @@ class DashboardController extends Controller
 
         $pendingPaymentsCount = Order::where('payment_status', 'menunggu_pembayaran')->count();
 
-        $lowStockMenus = Menu::whereColumn('stock', '<=', 'min_stock')
-            ->orderBy('stock', 'asc')
-            ->get();
+        $lowStockMenus = Menu::where(function ($q) {
+            $q->whereColumn('stock', '<=', 'min_stock')
+                ->orWhere('stock', '<=', 0)
+                ->orWhere('is_available', false);
+        })->orderBy('stock', 'asc')->get();
 
         // Top 5 Menu Terlaris
         $topMenus = Menu::with('category')

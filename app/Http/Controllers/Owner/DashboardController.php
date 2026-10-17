@@ -71,8 +71,13 @@ class DashboardController extends Controller
 
         // Stok menipis
         $lowStockMenus = Menu::with('category')
-            ->whereNotNull('min_stock')
-            ->whereColumn('stock', '<=', 'min_stock')
+            ->where(function ($q) {
+                $q->where(function ($sub) {
+                    $sub->whereNotNull('min_stock')
+                        ->whereColumn('stock', '<=', 'min_stock');
+                })->orWhere('stock', '<=', 0)
+                    ->orWhere('is_available', false);
+            })
             ->orderBy('stock', 'asc')
             ->take(6)
             ->get();

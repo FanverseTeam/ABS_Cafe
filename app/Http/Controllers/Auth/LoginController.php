@@ -7,6 +7,7 @@ use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class LoginController extends Controller
 {
@@ -25,7 +26,20 @@ class LoginController extends Controller
     public function show(Request $request)
     {
         if (Auth::check()) {
-            return redirect($this->dashboardFor(Auth::user()));
+            $user = Auth::user();
+
+            if ($user->status !== 'aktif') {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                $recallerName = Auth::guard()->getRecallerName();
+                Cookie::queue(Cookie::forget($recallerName));
+
+                return view('auth.login')->with('error', 'Akun Anda sedang dinonaktifkan. Hubungi administrator.');
+            }
+
+            return redirect($this->dashboardFor($user));
         }
 
         return view('auth.login');
@@ -92,21 +106,27 @@ class LoginController extends Controller
         $role = 'admin';
 
         if (Auth::check()) {
-            $role = Auth::user()->primaryRole();
+            $user = Auth::user();
+            $role = $user->primaryRole();
 
             ActivityLog::create([
-                'user_name' => Auth::user()->name,
+                'user_name' => $user->name,
                 'role' => $role,
-                'activity' => ucfirst($role).' '.Auth::user()->name.' keluar dari sistem',
+                'activity' => ucfirst($role).' '.$user->name.' keluar dari sistem',
                 'activity_type' => 'sistem',
                 'ip_address' => $request->ip(),
             ]);
 
             Auth::logout();
+        } else {
+            Auth::logout();
         }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        $recallerName = Auth::guard()->getRecallerName();
+        Cookie::queue(Cookie::forget($recallerName));
 
         return redirect()->route('login')->with('success', 'Anda telah berhasil keluar.');
     }

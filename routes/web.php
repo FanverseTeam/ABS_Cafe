@@ -1,31 +1,32 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Admin\MenuController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\StockController;
-use App\Http\Controllers\Admin\PromoController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\TableController;
-use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ActivityLogController;
-use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
-use App\Http\Controllers\Owner\ReportController as OwnerReportController;
-use App\Http\Controllers\Owner\CashierController as OwnerCashierController;
-use App\Http\Controllers\Owner\PromoController as OwnerPromoController;
-use App\Http\Controllers\Owner\SettingController as OwnerSettingController;
-use App\Http\Controllers\Owner\ProfileController as OwnerProfileController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\PromoController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\StockController;
+use App\Http\Controllers\Admin\TableController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Kasir\DashboardController as KasirDashboardController;
-use App\Http\Controllers\Kasir\ShiftController as KasirShiftController;
-use App\Http\Controllers\Kasir\PosController as KasirPosController;
 use App\Http\Controllers\Kasir\OrderController as KasirOrderController;
 use App\Http\Controllers\Kasir\PaymentController as KasirPaymentController;
-use App\Http\Controllers\Kasir\ReservationController as KasirReservationController;
-use App\Http\Controllers\Kasir\TableController as KasirTableController;
+use App\Http\Controllers\Kasir\PosController as KasirPosController;
 use App\Http\Controllers\Kasir\ProfileController as KasirProfileController;
+use App\Http\Controllers\Kasir\ReservationController as KasirReservationController;
+use App\Http\Controllers\Kasir\ShiftController as KasirShiftController;
+use App\Http\Controllers\Kasir\TableController as KasirTableController;
+use App\Http\Controllers\Owner\CashAdjustmentController as OwnerCashAdjustmentController;
+use App\Http\Controllers\Owner\CashierController as OwnerCashierController;
+use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
+use App\Http\Controllers\Owner\ProfileController as OwnerProfileController;
+use App\Http\Controllers\Owner\PromoController as OwnerPromoController;
+use App\Http\Controllers\Owner\ReportController as OwnerReportController;
+use App\Http\Controllers\Owner\SettingController as OwnerSettingController;
+use Illuminate\Support\Facades\Route;
 
 // Root diarahkan ke halaman login terpadu (peran admin terpilih secara default)
 Route::get('/', function () {
@@ -79,6 +80,8 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
         Route::post('/{id}/duplicate', [MenuController::class, 'duplicate'])->name('duplicate');
         Route::post('/{id}/toggle-available', [MenuController::class, 'toggleAvailable'])->name('toggle.available');
         Route::post('/{id}/toggle-bestseller', [MenuController::class, 'toggleBestSeller'])->name('toggle.bestseller');
+        Route::get('/{id}/resep', [MenuController::class, 'recipes'])->name('recipes');
+        Route::post('/{id}/resep', [MenuController::class, 'saveRecipes'])->name('recipes.save');
         Route::delete('/{id}', [MenuController::class, 'destroy'])->name('destroy');
     });
 
@@ -177,6 +180,10 @@ Route::prefix('owner')->name('owner.')->middleware(['auth', 'role:owner'])->grou
     // 5. Pengaturan Bisnis
     Route::get('/pengaturan', [OwnerSettingController::class, 'index'])->name('settings.index');
     Route::post('/pengaturan', [OwnerSettingController::class, 'update'])->name('settings.update');
+
+    // 6. Penyesuaian Kas Laci
+    Route::get('/penyesuaian-kas', [OwnerCashAdjustmentController::class, 'index'])->name('cash_adjustments.index');
+    Route::post('/penyesuaian-kas', [OwnerCashAdjustmentController::class, 'store'])->name('cash_adjustments.store');
 
     // Profil & Ganti Password
     Route::get('/profil', [OwnerProfileController::class, 'index'])->name('profile.index');

@@ -1,5 +1,5 @@
 @php
-    $hasActiveShift = \App\Models\CashShift::where('user_id', Auth::id())->where('status', 'buka')->exists();
+    $hasActiveShift = \App\Models\CashShift::where('status', 'buka')->exists();
     $newWebOrdersCount = \App\Models\Order::where('source', 'web')->where('order_status', 'baru')->count();
     $unpaidOrdersCount = \App\Models\Order::where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
     $totalNotif = $newWebOrdersCount + $unpaidOrdersCount;

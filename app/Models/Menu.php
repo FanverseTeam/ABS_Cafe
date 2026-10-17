@@ -40,16 +40,32 @@ class Menu extends Model
      */
     public function getStockStatusAttribute(): string
     {
-        if ($this->stock === null) {
-            return 'aman';
-        }
-
-        if ($this->stock <= 0) {
+        if (! $this->is_available) {
             return 'habis';
         }
 
-        if ($this->min_stock !== null && $this->stock <= $this->min_stock) {
-            return 'menipis';
+        if ($this->stock !== null) {
+            if ($this->stock <= 0) {
+                return 'habis';
+            }
+
+            if ($this->min_stock !== null && $this->stock <= $this->min_stock) {
+                return 'menipis';
+            }
+        }
+
+        if ($this->relationLoaded('recipes') ? $this->recipes->isNotEmpty() : $this->recipes()->exists()) {
+            $recipes = $this->relationLoaded('recipes') ? $this->recipes : $this->recipes()->with('stock')->get();
+            foreach ($recipes as $r) {
+                if ($r->stock) {
+                    if ((float) $r->stock->quantity <= 0) {
+                        return 'habis';
+                    }
+                    if ((float) $r->stock->min_quantity > 0 && (float) $r->stock->quantity <= (float) $r->stock->min_quantity) {
+                        return 'menipis';
+                    }
+                }
+            }
         }
 
         return 'aman';
@@ -58,6 +74,11 @@ class Menu extends Model
     public function variants(): HasMany
     {
         return $this->hasMany(MenuVariant::class);
+    }
+
+    public function recipes(): HasMany
+    {
+        return $this->hasMany(Recipe::class);
     }
 
     public function imageUrl(): ?string

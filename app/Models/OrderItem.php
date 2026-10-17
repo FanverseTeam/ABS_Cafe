@@ -36,4 +36,9 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Menu::class);
     }
+
+    public function variant(): BelongsTo
+    {
+        return $this->belongsTo(MenuVariant::class, 'variant_id');
+    }
 }

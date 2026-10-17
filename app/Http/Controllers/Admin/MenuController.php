@@ -3,26 +3,29 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
+use App\Models\Category;
+use App\Models\Menu;
+use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Menu;
-use App\Models\Category;
-use App\Models\ActivityLog;
+use Illuminate\Support\Facades\DB;
 
 class MenuController extends Controller
 {
     public function index(Request $request)
     {
         $categories = Category::where('is_active', true)->orderBy('order', 'asc')->get();
+        $stocks = Stock::where('is_active', true)->orderBy('name')->get();
 
-        $query = Menu::with('category');
+        $query = Menu::with(['category', 'variants', 'recipes.stock', 'recipes.variant']);
 
         // Search
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -43,7 +46,7 @@ class MenuController extends Controller
         $menus = $query->get();
         $viewMode = $request->input('view', 'grid');
 
-        return view('admin.menu.index', compact('menus', 'categories', 'viewMode'));
+        return view('admin.menu.index', compact('menus', 'categories', 'stocks', 'viewMode'));
     }
 
     public function store(Request $request)
@@ -76,7 +79,7 @@ class MenuController extends Controller
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Menambahkan menu baru: {$menu->name} (Rp " . number_format($menu->price, 0, ',', '.') . ")",
+            'activity' => "Menambahkan menu baru: {$menu->name} (Rp ".number_format($menu->price, 0, ',', '.').')',
             'activity_type' => 'menu',
             'ip_address' => $request->ip(),
         ]);
@@ -145,7 +148,7 @@ class MenuController extends Controller
     public function toggleAvailable($id)
     {
         $menu = Menu::findOrFail($id);
-        $menu->is_available = !$menu->is_available;
+        $menu->is_available = ! $menu->is_available;
         $menu->save();
 
         $statusStr = $menu->is_available ? 'Tersedia' : 'Habis';
@@ -164,7 +167,7 @@ class MenuController extends Controller
     public function toggleBestSeller($id)
     {
         $menu = Menu::findOrFail($id);
-        $menu->is_best_seller = !$menu->is_best_seller;
+        $menu->is_best_seller = ! $menu->is_best_seller;
         $menu->save();
 
         $tag = $menu->is_best_seller ? 'ditandai sebagai' : 'dihapus dari';
@@ -195,5 +198,58 @@ class MenuController extends Controller
         ]);
 
         return back()->with('success', "Menu {$name} telah berhasil dihapus.");
+    }
+
+    public function recipes($id)
+    {
+        $menu = Menu::with(['variants', 'recipes.stock', 'recipes.variant'])->findOrFail($id);
+        $stocks = Stock::where('is_active', true)->orderBy('name')->get();
+
+        return response()->json([
+            'menu' => $menu,
+            'variants' => $menu->variants,
+            'recipes' => $menu->recipes,
+            'stocks' => $stocks,
+        ]);
+    }
+
+    public function saveRecipes(Request $request, $id)
+    {
+        $menu = Menu::findOrFail($id);
+
+        $data = $request->validate([
+            'recipes' => 'nullable|array',
+            'recipes.*.stock_id' => 'required|exists:stocks,id',
+            'recipes.*.menu_variant_id' => 'nullable|exists:menu_variants,id',
+            'recipes.*.amount' => 'required|numeric|min:0.01',
+        ]);
+
+        DB::transaction(function () use ($menu, $data) {
+            $menu->recipes()->delete();
+
+            if (! empty($data['recipes'])) {
+                foreach ($data['recipes'] as $item) {
+                    $menu->recipes()->create([
+                        'menu_variant_id' => ! empty($item['menu_variant_id']) ? $item['menu_variant_id'] : null,
+                        'stock_id' => $item['stock_id'],
+                        'amount' => $item['amount'],
+                    ]);
+                }
+            }
+        });
+
+        ActivityLog::create([
+            'user_name' => Auth::user()->name,
+            'role' => Auth::user()->primaryRole(),
+            'activity' => "Memperbarui resep bahan untuk menu {$menu->name}",
+            'activity_type' => 'menu',
+            'ip_address' => $request->ip(),
+        ]);
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => "Resep untuk menu {$menu->name} berhasil disimpan."]);
+        }
+
+        return back()->with('success', "Resep untuk menu {$menu->name} berhasil diperbarui.");
     }
 }

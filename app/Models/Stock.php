@@ -33,6 +33,11 @@ class Stock extends Model
         return $this->hasMany(StockMovement::class)->latest();
     }
 
+    public function recipes(): HasMany
+    {
+        return $this->hasMany(Recipe::class);
+    }
+
     public function scopeSearch(Builder $query, ?string $term): Builder
     {
         return $query->when($term, fn ($q) => $q->where('name', 'like', "%{$term}%"));

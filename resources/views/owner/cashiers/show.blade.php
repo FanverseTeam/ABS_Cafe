@@ -47,7 +47,12 @@
             <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
                 <div class="w-9 h-9 rounded-xl bg-cafe-warning/15 text-cafe-warning flex items-center justify-center mb-3"><i data-lucide="coins" class="w-4 h-4"></i></div>
                 <p class="text-[10px] uppercase tracking-wide text-cafe-muted font-semibold">Selisih Kas</p>
-                <p class="font-serif text-xl font-bold {{ abs($metrics['cash_difference']) < 1 ? 'text-cafe-success' : 'text-cafe-danger' }} mt-0.5">{{ $rp($metrics['cash_difference']) }}</p>
+                @if(\App\Models\CafeSetting::get('require_physical_cash_count', '0') == '0')
+                    <p class="font-serif text-xl font-bold text-cafe-success mt-0.5">–</p>
+                    <p class="text-[10px] text-cafe-muted mt-0.5">Mode otomatis</p>
+                @else
+                    <p class="font-serif text-xl font-bold {{ abs($metrics['cash_difference']) < 1 ? 'text-cafe-success' : 'text-cafe-danger' }} mt-0.5">{{ $rp($metrics['cash_difference']) }}</p>
+                @endif
             </div>
         </div>
 
@@ -83,12 +88,16 @@
                                 <td class="py-2 text-right text-cafe-muted">{{ $shift->total_transactions }}</td>
                                 <td class="py-2 text-right font-semibold text-cafe-dark">{{ $rp($shift->total_sales) }}</td>
                                 <td class="py-2 text-right">
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
-                                        {{ $diff['color'] === 'success' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
-                                        {{ $diff['color'] === 'warning' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
-                                        {{ $diff['color'] === 'danger' ? 'bg-cafe-danger/15 text-cafe-danger' : '' }}">
-                                        {{ $rp($shift->cash_difference) }}
-                                    </span>
+                                    @if($shift->is_auto_closed)
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cafe-success/15 text-cafe-success">Rp 0 (auto)</span>
+                                    @else
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
+                                            {{ $diff['color'] === 'success' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
+                                            {{ $diff['color'] === 'warning' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
+                                            {{ $diff['color'] === 'danger' ? 'bg-cafe-danger/15 text-cafe-danger' : '' }}">
+                                            {{ $rp($shift->cash_difference) }}
+                                        </span>
+                                    @endif
                                 </td>
                                 <td class="py-2 text-center">
                                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $status['color'] === 'success' ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-beige/60 text-cafe-muted' }}">

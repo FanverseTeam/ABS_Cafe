@@ -49,10 +49,16 @@ class ShiftTest extends TestCase
         ]);
     }
 
-    public function test_open_shift_requires_opening_cash(): void
+    public function test_open_shift_uses_automatic_opening_cash(): void
     {
         $this->actingAsKasir()->post('/kasir/shift/buka', [])
-            ->assertSessionHasErrors('opening_cash');
+            ->assertRedirect(route('kasir.dashboard'))
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('cash_shifts', [
+            'status' => 'buka',
+            'opening_cash' => 100000,
+        ]);
     }
 
     public function test_cannot_open_second_shift_while_active(): void

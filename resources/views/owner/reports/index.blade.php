@@ -214,7 +214,11 @@
                 </div>
 
                 <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
-                    <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="coins" class="w-4 h-4 text-cafe-gold"></i> Rekap Kas per Shift</h3>
+                    <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="coins" class="w-4 h-4 text-cafe-gold"></i> Rekap Kas per Shift
+                        @if(!$finance['requirePhysical'])
+                            <span class="ml-2 text-[10px] bg-cafe-success/15 text-cafe-success font-semibold px-2 py-0.5 rounded-full">Mode Otomatis</span>
+                        @endif
+                    </h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-xs">
                             <thead>
@@ -232,14 +236,18 @@
                                         <td class="py-2 text-cafe-muted">{{ $shift->opened_at?->format('d/m H:i') }}</td>
                                         <td class="py-2 text-right font-semibold text-cafe-dark">{{ $rp($shift->total_sales) }}</td>
                                         <td class="py-2 text-right">
-                                            @php $badge = $shift->differenceBadge(); @endphp
-                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
-                                                {{ $badge['color'] === 'success' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
-                                                {{ $badge['color'] === 'warning' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
-                                                {{ $badge['color'] === 'danger' ? 'bg-cafe-danger/15 text-cafe-danger' : '' }}
-                                                {{ $badge['color'] === 'muted' ? 'bg-cafe-beige/60 text-cafe-muted' : '' }}">
-                                                {{ $badge['label'] }} {{ $rp($shift->cash_difference) }}
-                                            </span>
+                                            @if($shift->is_auto_closed)
+                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cafe-success/15 text-cafe-success">Rp 0 (auto)</span>
+                                            @else
+                                                @php $badge = $shift->differenceBadge(); @endphp
+                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
+                                                    {{ $badge['color'] === 'success' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
+                                                    {{ $badge['color'] === 'warning' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
+                                                    {{ $badge['color'] === 'danger' ? 'bg-cafe-danger/15 text-cafe-danger' : '' }}
+                                                    {{ $badge['color'] === 'muted' ? 'bg-cafe-beige/60 text-cafe-muted' : '' }}">
+                                                    {{ $badge['label'] }} {{ $rp($shift->cash_difference) }}
+                                                </span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty
@@ -249,6 +257,42 @@
                         </table>
                     </div>
                     <p class="text-[11px] text-cafe-muted mt-3">Pesanan dibatalkan: <strong class="text-cafe-danger">{{ $finance['cancelled'] }}</strong></p>
+
+                    @if($finance['adjustments']->isNotEmpty())
+                        <div class="mt-4 pt-4 border-t border-cafe-beige/50">
+                            <h4 class="text-xs font-bold text-cafe-dark mb-2 flex items-center gap-2"><i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-cafe-bronze"></i> Penyesuaian Kas Laci</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-xs">
+                                    <thead><tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">
+                                        <th class="text-left py-1.5">Dibuat</th>
+                                        <th class="text-left py-1.5">Oleh</th>
+                                        <th class="text-right py-1.5">Jumlah</th>
+                                        <th class="text-left py-1.5">Alasan</th>
+                                        <th class="text-left py-1.5">Shift</th>
+                                    </tr></thead>
+                                    <tbody class="divide-y divide-cafe-beige/30">
+                                        @foreach($finance['adjustments'] as $adj)
+                                            <tr>
+                                                <td class="py-1.5 text-cafe-muted">{{ $adj->created_at->format('d/m H:i') }}</td>
+                                                <td class="py-1.5 font-medium text-cafe-text">{{ $adj->user?->name ?? '-' }}</td>
+                                                <td class="py-1.5 text-right font-bold {{ $adj->amount >= 0 ? 'text-cafe-success' : 'text-cafe-danger' }}">
+                                                    {{ ($adj->amount >= 0 ? '+' : '') . $rp($adj->amount) }}
+                                                </td>
+                                                <td class="py-1.5 text-cafe-muted">{{ $adj->reason }}</td>
+                                                <td class="py-1.5 text-cafe-muted">
+                                                    @if($adj->applied_to_shift_id)
+                                                        Shift #{{ $adj->applied_to_shift_id }}
+                                                    @else
+                                                        <span class="text-cafe-warning">Menunggu</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         @else
@@ -336,6 +380,32 @@
                         </table>
                     </div>
                 </div>
+
+                @if(isset($stock['ingredientUsage']) && $stock['ingredientUsage']->isNotEmpty())
+                    <div class="col-span-1 lg:col-span-2 bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
+                        <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="beaker" class="w-4 h-4 text-cafe-gold"></i> Pemakaian Bahan Baku Resep dari Penjualan</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs">
+                                <thead>
+                                    <tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">
+                                        <th class="text-left py-2">Bahan Baku</th>
+                                        <th class="text-right py-2">Total Terpakai</th>
+                                        <th class="text-right py-2">Sisa Stok Bahan</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-cafe-beige/40">
+                                    @foreach($stock['ingredientUsage'] as $iu)
+                                        <tr>
+                                            <td class="py-2 font-medium text-cafe-text">{{ $iu['name'] }}</td>
+                                            <td class="py-2 text-right text-cafe-muted">{{ number_format($iu['used'], 2, ',', '.') }} {{ $iu['unit'] }}</td>
+                                            <td class="py-2 text-right font-semibold {{ $iu['remaining'] <= 0 ? 'text-cafe-danger' : 'text-cafe-dark' }}">{{ number_format($iu['remaining'], 2, ',', '.') }} {{ $iu['unit'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @endif
             </div>
         @endif
     </div>

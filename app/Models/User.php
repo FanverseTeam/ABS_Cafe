@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -47,6 +48,19 @@ class User extends Authenticatable
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::updating(function (User $user): void {
+            if ($user->isDirty('password')) {
+                $user->setRememberToken(Str::random(60));
+            }
+
+            if ($user->isDirty('status') && $user->status !== 'aktif') {
+                $user->setRememberToken(Str::random(60));
+            }
+        });
+    }
+
     public function activityLogs(): HasMany
     {
         return $this->hasMany(ActivityLog::class);
@@ -54,7 +68,7 @@ class User extends Authenticatable
 
     public function primaryRole(): string
     {
-        if (!empty($this->role)) {
+        if (! empty($this->role)) {
             return $this->role;
         }
 

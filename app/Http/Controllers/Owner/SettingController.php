@@ -35,6 +35,8 @@ class SettingController extends Controller
             'receipt_header' => "ABS CAFE - ACCESSORIES & CAFE\nJl. Ki Mangunsarkoro No. 88, Boyolangu, Tulungagung\nTelp: 0812-3456-7890",
             'receipt_footer' => "Terima kasih atas kunjungan Anda!\nFollow Instagram kami: @abscafe.tulungagung",
             'receipt_show_logo' => '1',
+            'default_opening_cash' => '100000',
+            'require_physical_cash_count' => '0',
         ];
     }
 
@@ -71,6 +73,7 @@ class SettingController extends Controller
             'hours_weekend' => 'nullable|string|max:100',
             'receipt_header' => 'nullable|string',
             'receipt_footer' => 'nullable|string',
+            'default_opening_cash' => 'nullable|numeric|min:0',
         ]);
 
         foreach ([
@@ -85,6 +88,7 @@ class SettingController extends Controller
             'hours_weekend',
             'receipt_header',
             'receipt_footer',
+            'default_opening_cash',
         ] as $key) {
             if (array_key_exists($key, $validated)) {
                 CafeSetting::set($key, (string) $validated[$key]);
@@ -96,6 +100,7 @@ class SettingController extends Controller
         CafeSetting::set('notif_low_stock', $request->boolean('notif_low_stock') ? '1' : '0');
         CafeSetting::set('notif_daily_report', $request->boolean('notif_daily_report') ? '1' : '0');
         CafeSetting::set('notif_weekly_report', $request->boolean('notif_weekly_report') ? '1' : '0');
+        CafeSetting::set('require_physical_cash_count', $request->boolean('require_physical_cash_count') ? '1' : '0');
 
         $this->log($request, 'Memperbarui Pengaturan Bisnis');
 
