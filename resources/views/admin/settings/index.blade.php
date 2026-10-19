@@ -63,6 +63,15 @@
                 </div>
 
                 <div class="space-y-1">
+                    <label class="font-semibold text-cafe-dark">Logo Website</label>
+                    <div class="flex flex-col gap-3 rounded-xl border border-cafe-beige bg-[#F2F5E2]/60 p-3 sm:flex-row sm:items-center">
+                        <x-logo size="sm" :show-text="false" />
+                        <input type="text" name="cafe_logo" value="{{ $settings['cafe_logo'] }}" placeholder="images/logo.png" class="w-full bg-white focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    </div>
+                    <p class="text-[10px] text-cafe-muted">Path lokal atau URL gambar. Default: <span class="font-mono">images/logo.png</span>.</p>
+                </div>
+
+                <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Alamat Lengkap</label>
                     <textarea name="cafe_address" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">{{ $settings['cafe_address'] }}</textarea>
                 </div>
@@ -225,7 +234,7 @@
 
                 <div class="w-72 bg-white p-5 rounded-2xl border border-cafe-beige/80 shadow-md font-mono text-[11px] leading-tight text-black space-y-3">
                     <div class="text-center pb-2 border-b border-dashed border-gray-400">
-                        <img src="{{ asset('images/Logo.png') }}" alt="ABS Cafe Logo" class="w-12 h-12 mx-auto mb-2 rounded-full object-cover">
+                        <x-logo :show-text="false" size="md" thermal loading="eager" class="mx-auto mb-2" />
                         <h4 class="font-bold text-xs uppercase">{{ $settings['cafe_name'] }}</h4>
                         <p class="text-[9px]">{{ $settings['cafe_tagline'] }}</p>
                         <p class="text-[9px] mt-1 whitespace-pre-line text-gray-700" id="preview-receipt-header">{{ $settings['receipt_header'] }}</p>

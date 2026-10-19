@@ -1,15 +1,21 @@
 <?php
 
+use App\Http\Controllers\Admin\ActivityController;
 use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\CatalogController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\OperationsController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PromoController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VoucherController;
+use App\Http\Controllers\Admin\WebsiteController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Kasir\DashboardController as KasirDashboardController;
 use App\Http\Controllers\Kasir\OrderController as KasirOrderController;
@@ -28,9 +34,14 @@ use App\Http\Controllers\Owner\ReportController as OwnerReportController;
 use App\Http\Controllers\Owner\SettingController as OwnerSettingController;
 use Illuminate\Support\Facades\Route;
 
-// Root diarahkan ke halaman login terpadu (peran admin terpilih secara default)
+// Landing Page Staf (Portal Staf ABS Cafe)
+Route::get('/staf', function () {
+    return view('landing');
+})->name('staf.landing');
+
+// Root redirect ke halaman staf (sementara; nanti untuk customer landing)
 Route::get('/', function () {
-    return redirect()->route('login');
+    return redirect()->route('staf.landing');
 });
 
 /*
@@ -56,95 +67,198 @@ Route::post('/kasir/logout', [LoginController::class, 'logout'])->name('kasir.lo
 
 /*
 |--------------------------------------------------------------------------
-| Back-Office Admin
+| Back-Office Admin (6 active features)
 |--------------------------------------------------------------------------
+| Admin hanya memiliki enam modul aktif. Halaman lama tetap tersedia di
+| bawah sebagai grup LEGACY ADMIN yang dikendalikan FEATURE_LEGACY_ADMIN.
 */
 Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function () {
-    // Dashboard
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-
-    // Pesanan
-    Route::prefix('pesanan')->name('orders.')->group(function () {
-        Route::get('/', [OrderController::class, 'index'])->name('index');
-        Route::get('/export', [OrderController::class, 'exportCsv'])->name('export');
-        Route::get('/{id}', [OrderController::class, 'show'])->name('show');
-        Route::post('/{id}/status', [OrderController::class, 'updateStatus'])->name('status');
-        Route::post('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
+    // 1. Manajemen User Staf & Hak Akses
+    Route::prefix('staf')->name('staff.')->group(function () {
+        Route::get('/', [StaffController::class, 'index'])->name('index');
+        Route::post('/store', [StaffController::class, 'store'])->name('store');
+        Route::post('/{id}/update', [StaffController::class, 'update'])->name('update');
+        Route::post('/{id}/toggle-status', [StaffController::class, 'toggleStatus'])->name('toggle.status');
+        Route::post('/{id}/reset-password', [StaffController::class, 'resetPassword'])->name('reset_password');
+        Route::delete('/{id}', [StaffController::class, 'destroy'])->name('destroy');
     });
 
-    // Menu
-    Route::prefix('menu')->name('menu.')->group(function () {
-        Route::get('/', [MenuController::class, 'index'])->name('index');
-        Route::post('/store', [MenuController::class, 'store'])->name('store');
-        Route::post('/{id}/update', [MenuController::class, 'update'])->name('update');
-        Route::post('/{id}/duplicate', [MenuController::class, 'duplicate'])->name('duplicate');
-        Route::post('/{id}/toggle-available', [MenuController::class, 'toggleAvailable'])->name('toggle.available');
-        Route::post('/{id}/toggle-bestseller', [MenuController::class, 'toggleBestSeller'])->name('toggle.bestseller');
-        Route::get('/{id}/resep', [MenuController::class, 'recipes'])->name('recipes');
-        Route::post('/{id}/resep', [MenuController::class, 'saveRecipes'])->name('recipes.save');
-        Route::delete('/{id}', [MenuController::class, 'destroy'])->name('destroy');
+    // 2. Manajemen Menu (Menu & Kategori | Stok & Supplier)
+    Route::prefix('katalog')->name('catalog.')->group(function () {
+        Route::get('/', [CatalogController::class, 'index'])->name('index');
+
+        Route::prefix('menu')->name('menu.')->group(function () {
+            Route::post('/store', [CatalogController::class, 'storeMenu'])->name('store');
+            Route::post('/{id}/update', [CatalogController::class, 'updateMenu'])->name('update');
+            Route::post('/{id}/duplicate', [CatalogController::class, 'duplicateMenu'])->name('duplicate');
+            Route::post('/{id}/toggle-available', [CatalogController::class, 'toggleMenuAvailable'])->name('toggle.available');
+            Route::post('/{id}/toggle-bestseller', [CatalogController::class, 'toggleMenuBestSeller'])->name('toggle.bestseller');
+            Route::get('/{id}/resep', [CatalogController::class, 'recipes'])->name('recipes');
+            Route::post('/{id}/resep', [CatalogController::class, 'saveRecipes'])->name('recipes.save');
+            Route::delete('/{id}', [CatalogController::class, 'destroyMenu'])->name('destroy');
+        });
+
+        Route::prefix('kategori')->name('category.')->group(function () {
+            Route::post('/store', [CatalogController::class, 'storeCategory'])->name('store');
+            Route::post('/{id}/update', [CatalogController::class, 'updateCategory'])->name('update');
+            Route::delete('/{id}', [CatalogController::class, 'destroyCategory'])->name('destroy');
+        });
+
+        Route::prefix('stok')->name('stock.')->group(function () {
+            Route::post('/{id}/adjust', [CatalogController::class, 'adjustStock'])->name('adjust');
+            Route::post('/{id}/min-stock', [CatalogController::class, 'setMinStock'])->name('min_stock');
+        });
+
+        Route::prefix('supplier')->name('supplier.')->group(function () {
+            Route::post('/store', [CatalogController::class, 'storeSupplier'])->name('store');
+            Route::post('/{id}/update', [CatalogController::class, 'updateSupplier'])->name('update');
+            Route::post('/{id}/toggle-status', [CatalogController::class, 'toggleSupplierStatus'])->name('toggle.status');
+            Route::delete('/{id}', [CatalogController::class, 'destroySupplier'])->name('destroy');
+        });
     });
 
-    // Kategori
-    Route::prefix('kategori')->name('category.')->group(function () {
-        Route::get('/', [CategoryController::class, 'index'])->name('index');
-        Route::post('/store', [CategoryController::class, 'store'])->name('store');
-        Route::post('/{id}/update', [CategoryController::class, 'update'])->name('update');
-        Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+    // 3. Meja & Metode Pembayaran
+    Route::prefix('operasional')->name('operations.')->group(function () {
+        Route::get('/', [OperationsController::class, 'index'])->name('index');
+
+        Route::prefix('meja')->name('tables.')->group(function () {
+            Route::post('/store', [OperationsController::class, 'storeTable'])->name('store');
+            Route::post('/{id}/update', [OperationsController::class, 'updateTable'])->name('update');
+            Route::post('/{id}/status', [OperationsController::class, 'updateTableStatus'])->name('status');
+            Route::delete('/{id}', [OperationsController::class, 'destroyTable'])->name('destroy');
+        });
+
+        Route::prefix('pembayaran')->name('payments.')->group(function () {
+            Route::post('/store', [OperationsController::class, 'storePaymentMethod'])->name('store');
+            Route::post('/{id}/update', [OperationsController::class, 'updatePaymentMethod'])->name('update');
+            Route::post('/{id}/toggle-active', [OperationsController::class, 'togglePaymentMethod'])->name('toggle.active');
+            Route::delete('/{id}', [OperationsController::class, 'destroyPaymentMethod'])->name('destroy');
+        });
     });
 
-    // Stok
-    Route::prefix('stok')->name('stock.')->group(function () {
-        Route::get('/', [StockController::class, 'index'])->name('index');
-        Route::post('/{id}/adjust', [StockController::class, 'adjust'])->name('adjust');
-        Route::post('/{id}/min-stock', [StockController::class, 'setMinStock'])->name('min_stock');
+    // 4. Promo / Voucher
+    Route::prefix('promo-voucher')->name('vouchers.')->group(function () {
+        Route::get('/', [VoucherController::class, 'index'])->name('index');
+        Route::post('/store', [VoucherController::class, 'store'])->name('store');
+        Route::post('/{id}/update', [VoucherController::class, 'update'])->name('update');
+        Route::post('/{id}/toggle-active', [VoucherController::class, 'toggleActive'])->name('toggle.active');
+        Route::delete('/{id}', [VoucherController::class, 'destroy'])->name('destroy');
     });
 
-    // Promo
-    Route::prefix('promo')->name('promo.')->group(function () {
-        Route::get('/', [PromoController::class, 'index'])->name('index');
-        Route::post('/store', [PromoController::class, 'store'])->name('store');
-        Route::post('/{id}/update', [PromoController::class, 'update'])->name('update');
-        Route::post('/{id}/toggle-active', [PromoController::class, 'toggleActive'])->name('toggle.active');
-        Route::delete('/{id}', [PromoController::class, 'destroy'])->name('destroy');
+    // 5. Pengaturan Website
+    Route::prefix('website')->name('website.')->group(function () {
+        Route::get('/', [WebsiteController::class, 'index'])->name('index');
+        Route::post('/profile', [WebsiteController::class, 'updateProfile'])->name('profile');
+        Route::post('/tax', [WebsiteController::class, 'updateTax'])->name('tax');
+        Route::post('/payment', [WebsiteController::class, 'updatePayment'])->name('payment');
+        Route::post('/receipt', [WebsiteController::class, 'updateReceipt'])->name('receipt');
+        Route::post('/display', [WebsiteController::class, 'updateDisplay'])->name('display');
+        Route::post('/account', [WebsiteController::class, 'updateAccount'])->name('account');
     });
 
-    // Pengguna (Staf/Kasir/Admin)
-    Route::prefix('pengguna')->name('users.')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->name('index');
-        Route::post('/store', [UserController::class, 'store'])->name('store');
-        Route::post('/{id}/update', [UserController::class, 'update'])->name('update');
-        Route::post('/{id}/toggle-status', [UserController::class, 'toggleStatus'])->name('toggle.status');
-        Route::post('/{id}/reset-password', [UserController::class, 'resetPassword'])->name('reset_password');
-        Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
-    });
-
-    // Meja
-    Route::prefix('meja')->name('tables.')->group(function () {
-        Route::get('/', [TableController::class, 'index'])->name('index');
-        Route::post('/store', [TableController::class, 'store'])->name('store');
-        Route::post('/{id}/update', [TableController::class, 'update'])->name('update');
-        Route::post('/{id}/status', [TableController::class, 'updateStatus'])->name('status');
-        Route::delete('/{id}', [TableController::class, 'destroy'])->name('destroy');
-    });
-
-    // Pengaturan Cafe
-    Route::prefix('pengaturan')->name('settings.')->group(function () {
-        Route::get('/', [SettingController::class, 'index'])->name('index');
-        Route::post('/profile', [SettingController::class, 'updateProfile'])->name('profile');
-        Route::post('/tax', [SettingController::class, 'updateTax'])->name('tax');
-        Route::post('/payment', [SettingController::class, 'updatePayment'])->name('payment');
-        Route::post('/receipt', [SettingController::class, 'updateReceipt'])->name('receipt');
-        Route::post('/display', [SettingController::class, 'updateDisplay'])->name('display');
-        Route::post('/account', [SettingController::class, 'updateAccount'])->name('account');
-    });
-
-    // Log Aktivitas
-    Route::prefix('log')->name('logs.')->group(function () {
-        Route::get('/', [ActivityLogController::class, 'index'])->name('index');
-        Route::get('/export', [ActivityLogController::class, 'exportCsv'])->name('export');
+    // 6. Log Aktivitas
+    Route::prefix('aktivitas')->name('activity.')->group(function () {
+        Route::get('/', [ActivityController::class, 'index'])->name('index');
+        Route::get('/export', [ActivityController::class, 'exportCsv'])->name('export');
     });
 });
+
+/*
+|--------------------------------------------------------------------------
+| LEGACY ADMIN
+|--------------------------------------------------------------------------
+| Old back-office pages. Disabled by default so their URLs return 404 and
+| their controllers/views/queries are never reached. Set
+| FEATURE_LEGACY_ADMIN=true to restore the previous admin experience.
+*/
+if (config('features.legacy_admin')) {
+    Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function () {
+        // LEGACY ADMIN: Dashboard
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+        // LEGACY ADMIN: Pesanan
+        Route::prefix('pesanan')->name('orders.')->group(function () {
+            Route::get('/', [OrderController::class, 'index'])->name('index');
+            Route::get('/export', [OrderController::class, 'exportCsv'])->name('export');
+            Route::get('/{id}', [OrderController::class, 'show'])->name('show');
+            Route::post('/{id}/status', [OrderController::class, 'updateStatus'])->name('status');
+            Route::post('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
+        });
+
+        // LEGACY ADMIN: Menu standalone
+        Route::prefix('menu')->name('menu.')->group(function () {
+            Route::get('/', [MenuController::class, 'index'])->name('index');
+            Route::post('/store', [MenuController::class, 'store'])->name('store');
+            Route::post('/{id}/update', [MenuController::class, 'update'])->name('update');
+            Route::post('/{id}/duplicate', [MenuController::class, 'duplicate'])->name('duplicate');
+            Route::post('/{id}/toggle-available', [MenuController::class, 'toggleAvailable'])->name('toggle.available');
+            Route::post('/{id}/toggle-bestseller', [MenuController::class, 'toggleBestSeller'])->name('toggle.bestseller');
+            Route::get('/{id}/resep', [MenuController::class, 'recipes'])->name('recipes');
+            Route::post('/{id}/resep', [MenuController::class, 'saveRecipes'])->name('recipes.save');
+            Route::delete('/{id}', [MenuController::class, 'destroy'])->name('destroy');
+        });
+
+        // LEGACY ADMIN: Kategori standalone
+        Route::prefix('kategori')->name('category.')->group(function () {
+            Route::get('/', [CategoryController::class, 'index'])->name('index');
+            Route::post('/store', [CategoryController::class, 'store'])->name('store');
+            Route::post('/{id}/update', [CategoryController::class, 'update'])->name('update');
+            Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+        });
+
+        // LEGACY ADMIN: Stok standalone
+        Route::prefix('stok')->name('stock.')->group(function () {
+            Route::get('/', [StockController::class, 'index'])->name('index');
+            Route::post('/{id}/adjust', [StockController::class, 'adjust'])->name('adjust');
+            Route::post('/{id}/min-stock', [StockController::class, 'setMinStock'])->name('min_stock');
+        });
+
+        // LEGACY ADMIN: Promo standalone
+        Route::prefix('promo')->name('promo.')->group(function () {
+            Route::get('/', [PromoController::class, 'index'])->name('index');
+            Route::post('/store', [PromoController::class, 'store'])->name('store');
+            Route::post('/{id}/update', [PromoController::class, 'update'])->name('update');
+            Route::post('/{id}/toggle-active', [PromoController::class, 'toggleActive'])->name('toggle.active');
+            Route::delete('/{id}', [PromoController::class, 'destroy'])->name('destroy');
+        });
+
+        // LEGACY ADMIN: Pengguna (Staf) standalone
+        Route::prefix('pengguna')->name('users.')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('index');
+            Route::post('/store', [UserController::class, 'store'])->name('store');
+            Route::post('/{id}/update', [UserController::class, 'update'])->name('update');
+            Route::post('/{id}/toggle-status', [UserController::class, 'toggleStatus'])->name('toggle.status');
+            Route::post('/{id}/reset-password', [UserController::class, 'resetPassword'])->name('reset_password');
+            Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
+        });
+
+        // LEGACY ADMIN: Meja standalone
+        Route::prefix('meja')->name('tables.')->group(function () {
+            Route::get('/', [TableController::class, 'index'])->name('index');
+            Route::post('/store', [TableController::class, 'store'])->name('store');
+            Route::post('/{id}/update', [TableController::class, 'update'])->name('update');
+            Route::post('/{id}/status', [TableController::class, 'updateStatus'])->name('status');
+            Route::delete('/{id}', [TableController::class, 'destroy'])->name('destroy');
+        });
+
+        // LEGACY ADMIN: Pengaturan Cafe standalone
+        Route::prefix('pengaturan')->name('settings.')->group(function () {
+            Route::get('/', [SettingController::class, 'index'])->name('index');
+            Route::post('/profile', [SettingController::class, 'updateProfile'])->name('profile');
+            Route::post('/tax', [SettingController::class, 'updateTax'])->name('tax');
+            Route::post('/payment', [SettingController::class, 'updatePayment'])->name('payment');
+            Route::post('/receipt', [SettingController::class, 'updateReceipt'])->name('receipt');
+            Route::post('/display', [SettingController::class, 'updateDisplay'])->name('display');
+            Route::post('/account', [SettingController::class, 'updateAccount'])->name('account');
+        });
+
+        // LEGACY ADMIN: Log Aktivitas standalone
+        Route::prefix('log')->name('logs.')->group(function () {
+            Route::get('/', [ActivityLogController::class, 'index'])->name('index');
+            Route::get('/export', [ActivityLogController::class, 'exportCsv'])->name('export');
+        });
+    });
+}
 
 /*
 |--------------------------------------------------------------------------

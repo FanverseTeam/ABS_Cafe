@@ -189,7 +189,8 @@ INSERT INTO `cafe_settings` (`id`, `key`, `value`, `created_at`, `updated_at`) V
 (23, 'default_min_stock', '10', '2026-10-12 09:43:05', '2026-10-12 09:43:05'),
 (24, 'notif_low_stock', '1', '2026-10-12 09:43:05', '2026-10-12 09:43:05'),
 (25, 'notif_daily_report', '1', '2026-10-12 09:43:05', '2026-10-12 09:43:05'),
-(26, 'notif_weekly_report', '0', '2026-10-12 09:43:05', '2026-10-12 09:43:05');
+(26, 'notif_weekly_report', '0', '2026-10-12 09:43:05', '2026-10-12 09:43:05'),
+(27, 'cafe_logo', 'images/logo.png', '2026-10-19 00:00:00', '2026-10-19 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -9422,7 +9423,7 @@ ALTER TABLE `activity_logs`
 -- AUTO_INCREMENT for table `cafe_settings`
 --
 ALTER TABLE `cafe_settings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `cafe_tables`

@@ -17,9 +17,9 @@ class LoginTest extends TestCase
         $this->get('/login')->assertOk()->assertSee('login', false);
     }
 
-    public function test_root_redirects_to_login(): void
+    public function test_root_redirects_to_staf_landing(): void
     {
-        $this->get('/')->assertRedirect(route('login'));
+        $this->get('/')->assertRedirect(route('staf.landing'));
     }
 
     public function test_admin_can_login_with_email_and_is_redirected_to_admin_dashboard(): void
@@ -34,7 +34,7 @@ class LoginTest extends TestCase
             'password' => 'secret123',
         ]);
 
-        $response->assertRedirect(route('admin.dashboard'));
+        $response->assertRedirect($this->adminHomeRoute());
         $this->assertAuthenticatedAs($admin);
         $this->assertNotNull($admin->fresh()->last_login_at);
         $this->assertDatabaseHas('activity_logs', ['user_name' => $admin->name, 'role' => 'admin']);
@@ -126,14 +126,14 @@ class LoginTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)->get('/login')->assertRedirect(route('admin.dashboard'));
+        $this->actingAs($admin)->get('/login')->assertRedirect($this->adminHomeRoute());
     }
 
     public function test_user_can_logout(): void
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)->post('/admin/logout')->assertRedirect(route('login'));
+        $this->actingAs($admin)->post('/admin/logout')->assertRedirect(route('staf.landing'));
 
         $this->assertGuest();
     }

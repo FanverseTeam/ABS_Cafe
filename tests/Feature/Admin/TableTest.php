@@ -4,11 +4,15 @@ namespace Tests\Feature\Admin;
 
 use App\Models\Table;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Concerns\RequiresLegacyAdmin;
 use Tests\TestCase;
 
+#[Group('legacy')]
 class TableTest extends TestCase
 {
     use RefreshDatabase;
+    use RequiresLegacyAdmin;
 
     public function test_table_index_loads(): void
     {

@@ -12,7 +12,7 @@ class AccessControlTest extends TestCase
 
     public function test_guests_are_redirected_from_admin_area(): void
     {
-        $this->get('/admin')->assertRedirect(route('admin.login'));
+        $this->get($this->adminHomePath())->assertRedirect(route('admin.login'));
     }
 
     public function test_guests_are_redirected_from_owner_area(): void
@@ -29,14 +29,14 @@ class AccessControlTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)->get('/admin')->assertOk();
+        $this->actingAs($admin)->get($this->adminHomePath())->assertOk();
     }
 
     public function test_kasir_cannot_access_admin_area(): void
     {
         $kasir = User::factory()->kasir()->create();
 
-        $this->actingAs($kasir)->get('/admin')->assertRedirect(route('admin.login'));
+        $this->actingAs($kasir)->get($this->adminHomePath())->assertRedirect(route('admin.login'));
         $this->assertGuest();
     }
 
@@ -44,7 +44,7 @@ class AccessControlTest extends TestCase
     {
         $owner = User::factory()->owner()->create();
 
-        $this->actingAs($owner)->get('/admin')->assertRedirect(route('admin.login'));
+        $this->actingAs($owner)->get($this->adminHomePath())->assertRedirect(route('admin.login'));
         $this->assertGuest();
     }
 

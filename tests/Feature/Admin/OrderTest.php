@@ -2,17 +2,19 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\ActivityLog;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\OrderTimeline;
 use App\Models\Table;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Concerns\RequiresLegacyAdmin;
 use Tests\TestCase;
 
+#[Group('legacy')]
 class OrderTest extends TestCase
 {
     use RefreshDatabase;
+    use RequiresLegacyAdmin;
 
     public function test_order_index_loads_with_filters(): void
     {

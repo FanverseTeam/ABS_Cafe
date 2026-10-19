@@ -6,11 +6,15 @@ use App\Models\CafeSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Concerns\RequiresLegacyAdmin;
 use Tests\TestCase;
 
+#[Group('legacy')]
 class SettingTest extends TestCase
 {
     use RefreshDatabase;
+    use RequiresLegacyAdmin;
 
     public function test_settings_index_loads_for_tabs(): void
     {

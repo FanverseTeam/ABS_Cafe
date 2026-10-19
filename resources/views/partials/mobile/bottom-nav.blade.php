@@ -1,46 +1,89 @@
 @php
     $role = $role ?? 'admin';
     $currentRoute = Route::currentRouteName();
+    $legacyAdmin = config('features.legacy_admin');
 
     if ($role === 'admin') {
-        $pendingOrders = \App\Models\Order::where('payment_status', 'menunggu_pembayaran')->count();
-        $navItems = [
-            [
-                'label' => 'Beranda',
-                'route' => 'admin.dashboard',
-                'icon'  => 'layout-dashboard',
-                'match' => 'admin.dashboard',
-                'badge' => null,
-            ],
-            [
-                'label' => 'Menu',
-                'route' => 'admin.menu.index',
-                'icon'  => 'coffee',
-                'match' => 'admin.menu',
-                'badge' => null,
-            ],
-            [
-                'label' => 'Staf',
-                'route' => 'admin.users.index',
-                'icon'  => 'users',
-                'match' => 'admin.users',
-                'badge' => null,
-            ],
-            [
-                'label' => 'Promo',
-                'route' => 'admin.promo.index',
-                'icon'  => 'tag',
-                'match' => 'admin.promo',
-                'badge' => null,
-            ],
-            [
-                'label' => 'Lainnya',
-                'action' => 'toggleSidebar()',
-                'icon'  => 'menu',
-                'match' => null,
-                'badge' => $pendingOrders > 0 ? $pendingOrders : null,
-            ],
-        ];
+        if ($legacyAdmin) {
+            $pendingOrders = \App\Models\Order::where('payment_status', 'menunggu_pembayaran')->count();
+
+            // LEGACY ADMIN: old mobile navigation.
+            $navItems = [
+                [
+                    'label' => 'Beranda',
+                    'route' => 'admin.dashboard',
+                    'icon'  => 'layout-dashboard',
+                    'match' => 'admin.dashboard',
+                    'badge' => null,
+                ],
+                [
+                    'label' => 'Menu',
+                    'route' => 'admin.menu.index',
+                    'icon'  => 'coffee',
+                    'match' => 'admin.menu',
+                    'badge' => null,
+                ],
+                [
+                    'label' => 'Staf',
+                    'route' => 'admin.users.index',
+                    'icon'  => 'users',
+                    'match' => 'admin.users',
+                    'badge' => null,
+                ],
+                [
+                    'label' => 'Promo',
+                    'route' => 'admin.promo.index',
+                    'icon'  => 'tag',
+                    'match' => 'admin.promo',
+                    'badge' => null,
+                ],
+                [
+                    'label' => 'Lainnya',
+                    'action' => 'toggleSidebar()',
+                    'icon'  => 'menu',
+                    'match' => null,
+                    'badge' => $pendingOrders > 0 ? $pendingOrders : null,
+                ],
+            ];
+        } else {
+            $navItems = [
+                [
+                    'label' => 'Staf',
+                    'route' => 'admin.staff.index',
+                    'icon'  => 'users',
+                    'match' => 'admin.staff',
+                    'badge' => null,
+                ],
+                [
+                    'label' => 'Menu',
+                    'route' => 'admin.catalog.index',
+                    'icon'  => 'coffee',
+                    'match' => 'admin.catalog',
+                    'badge' => null,
+                ],
+                [
+                    'label' => 'Meja',
+                    'route' => 'admin.operations.index',
+                    'icon'  => 'grid-3x3',
+                    'match' => 'admin.operations',
+                    'badge' => null,
+                ],
+                [
+                    'label' => 'Promo',
+                    'route' => 'admin.vouchers.index',
+                    'icon'  => 'tag',
+                    'match' => 'admin.vouchers',
+                    'badge' => null,
+                ],
+                [
+                    'label' => 'Lainnya',
+                    'action' => 'toggleAdminMore()',
+                    'icon'  => 'menu',
+                    'match' => null,
+                    'badge' => null,
+                ],
+            ];
+        }
     } elseif ($role === 'owner') {
         $activePromoCount = \App\Models\Promo::where('is_active', true)->whereDate('start_date', '<=', now())->whereDate('end_date', '>=', now())->count();
         $navItems = [
@@ -172,3 +215,57 @@
         @endforeach
     </div>
 </nav>
+
+@if($role === 'admin' && ! $legacyAdmin)
+    <!-- Active admin "Lainnya" sheet (website settings, activity log, profile, logout) -->
+    <div id="admin-more-backdrop" onclick="toggleAdminMore()" class="fixed inset-0 z-40 bg-[#290024]/50 backdrop-blur-sm hidden lg:hidden"></div>
+
+    <div id="admin-more-sheet" class="fixed left-0 right-0 bottom-0 z-50 hidden lg:hidden rounded-t-[2rem] bg-[#FAFCF3] border-t border-[#E3DEA4] shadow-[0_-12px_40px_rgba(41,0,36,0.18)] px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div class="mx-auto mb-3 h-1.5 w-12 rounded-full bg-[#775533]/25"></div>
+
+        <div class="max-w-md mx-auto space-y-1">
+            <a href="{{ route('admin.website.index') }}" class="flex items-center gap-3 px-3 py-3 rounded-2xl text-xs font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors">
+                <span class="w-9 h-9 rounded-xl bg-[#E3DEA4]/70 text-[#775533] flex items-center justify-center">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                </span>
+                <span>Pengaturan Website</span>
+            </a>
+
+            <a href="{{ route('admin.activity.index') }}" class="flex items-center gap-3 px-3 py-3 rounded-2xl text-xs font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors">
+                <span class="w-9 h-9 rounded-xl bg-[#E3DEA4]/70 text-[#775533] flex items-center justify-center">
+                    <i data-lucide="history" class="w-4 h-4"></i>
+                </span>
+                <span>Log Aktivitas</span>
+            </a>
+
+            <a href="{{ route('admin.website.index', ['tab' => 'profil']) }}" class="flex items-center gap-3 px-3 py-3 rounded-2xl text-xs font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors">
+                <span class="w-9 h-9 rounded-xl bg-[#E3DEA4]/70 text-[#775533] flex items-center justify-center">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                </span>
+                <span>Profil</span>
+            </a>
+
+            <form action="{{ route('admin.logout') }}" method="POST" data-cafe-confirm>
+                @csrf
+                <button type="submit" class="w-full flex items-center gap-3 px-3 py-3 rounded-2xl text-xs font-semibold text-[#B03A2E] hover:bg-[#B03A2E]/10 transition-colors text-left">
+                    <span class="w-9 h-9 rounded-xl bg-[#B03A2E]/10 text-[#B03A2E] flex items-center justify-center">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </span>
+                    <span>Keluar</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleAdminMore() {
+            const backdrop = document.getElementById('admin-more-backdrop');
+            const sheet = document.getElementById('admin-more-sheet');
+            if (!backdrop || !sheet) return;
+
+            const isHidden = sheet.classList.contains('hidden');
+            backdrop.classList.toggle('hidden', !isHidden);
+            sheet.classList.toggle('hidden', !isHidden);
+        }
+    </script>
+@endif

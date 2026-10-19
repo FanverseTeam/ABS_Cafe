@@ -32,6 +32,9 @@
     </div>
 
     <div class="header">
+        <div style="display:flex;justify-content:center;margin-bottom:8px;">
+            <x-logo :show-text="false" size="md" thermal loading="eager" />
+        </div>
         <h1>{{ $cafe['name'] }}</h1>
         <p>{{ $cafe['tagline'] }}</p>
         <p>{{ $cafe['address'] }} @if($cafe['phone']) &bull; {{ $cafe['phone'] }} @endif</p>

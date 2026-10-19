@@ -11,7 +11,7 @@
     <!-- Left: Mobile Logo & Title -->
     <div class="flex items-center gap-2 sm:gap-3 min-w-0">
         <a href="{{ route('kasir.dashboard') }}" class="lg:hidden shrink-0" title="ABS Cafe Beranda">
-            <img src="{{ asset('images/Logo.png') }}" alt="ABS Cafe Logo" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover border border-[#E3DEA4] shadow-sm">
+            <x-logo :show-text="false" size="sm" loading="eager" class="shrink-0" />
         </a>
 
         <div class="min-w-0">

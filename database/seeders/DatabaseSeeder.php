@@ -352,6 +352,7 @@ class DatabaseSeeder extends Seeder
         $settings = [
             'cafe_name' => 'ABS Cafe',
             'cafe_tagline' => 'Accessories & Cafe',
+            'cafe_logo' => 'images/logo.png',
             'cafe_address' => 'Jl. Ki Mangunsarkoro No. 88, Beji, Kec. Boyolangu, Kabupaten Tulungagung, Jawa Timur 66233',
             'cafe_phone' => '0812-3456-7890',
             'cafe_email' => 'halo@abscafe.com',

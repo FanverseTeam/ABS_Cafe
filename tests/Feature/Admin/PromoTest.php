@@ -4,11 +4,15 @@ namespace Tests\Feature\Admin;
 
 use App\Models\Promo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Concerns\RequiresLegacyAdmin;
 use Tests\TestCase;
 
+#[Group('legacy')]
 class PromoTest extends TestCase
 {
     use RefreshDatabase;
+    use RequiresLegacyAdmin;
 
     private function payload(array $overrides = []): array
     {

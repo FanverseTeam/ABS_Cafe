@@ -1,33 +1,45 @@
 @php
     $currentRoute = Route::currentRouteName();
-    $pendingOrdersCount = \App\Models\Order::where('payment_status', 'menunggu_pembayaran')->count();
-    $lowStockCount = \App\Models\Menu::whereColumn('stock', '<=', 'min_stock')->count();
+    $legacyAdmin = config('features.legacy_admin');
 
-    $menus = [
-        ['route' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'layout-dashboard', 'badge' => null],
-        ['route' => 'admin.orders.index', 'label' => 'Pesanan', 'icon' => 'shopping-cart', 'badge' => $pendingOrdersCount],
-        ['route' => 'admin.menu.index', 'label' => 'Menu', 'icon' => 'coffee', 'badge' => null],
-        ['route' => 'admin.category.index', 'label' => 'Kategori', 'icon' => 'tags', 'badge' => null],
-        ['route' => 'admin.stock.index', 'label' => 'Stok', 'icon' => 'boxes', 'badge' => $lowStockCount],
-        ['route' => 'admin.promo.index', 'label' => 'Promo', 'icon' => 'percent', 'badge' => null],
-        ['route' => 'admin.users.index', 'label' => 'Pengguna (Staf)', 'icon' => 'users', 'badge' => null],
-        ['route' => 'admin.tables.index', 'label' => 'Meja', 'icon' => 'grid-3x3', 'badge' => null],
-        ['route' => 'admin.settings.index', 'label' => 'Pengaturan Cafe', 'icon' => 'settings', 'badge' => null],
-        ['route' => 'admin.logs.index', 'label' => 'Log Aktivitas', 'icon' => 'history', 'badge' => null],
-    ];
+    if ($legacyAdmin) {
+        $pendingOrdersCount = \App\Models\Order::where('payment_status', 'menunggu_pembayaran')->count();
+        $lowStockCount = \App\Models\Menu::whereColumn('stock', '<=', 'min_stock')->count();
+
+        // LEGACY ADMIN: old standalone navigation, restored only when FEATURE_LEGACY_ADMIN=true.
+        $menus = [
+            ['route' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'layout-dashboard', 'badge' => null],
+            ['route' => 'admin.orders.index', 'label' => 'Pesanan', 'icon' => 'shopping-cart', 'badge' => $pendingOrdersCount],
+            ['route' => 'admin.menu.index', 'label' => 'Menu', 'icon' => 'coffee', 'badge' => null],
+            ['route' => 'admin.category.index', 'label' => 'Kategori', 'icon' => 'tags', 'badge' => null],
+            ['route' => 'admin.stock.index', 'label' => 'Stok', 'icon' => 'boxes', 'badge' => $lowStockCount],
+            ['route' => 'admin.promo.index', 'label' => 'Promo', 'icon' => 'percent', 'badge' => null],
+            ['route' => 'admin.users.index', 'label' => 'Pengguna (Staf)', 'icon' => 'users', 'badge' => null],
+            ['route' => 'admin.tables.index', 'label' => 'Meja', 'icon' => 'grid-3x3', 'badge' => null],
+            ['route' => 'admin.settings.index', 'label' => 'Pengaturan Cafe', 'icon' => 'settings', 'badge' => null],
+            ['route' => 'admin.logs.index', 'label' => 'Log Aktivitas', 'icon' => 'history', 'badge' => null],
+        ];
+
+        $homeRoute = 'admin.dashboard';
+    } else {
+        $menus = [
+            ['route' => 'admin.staff.index', 'label' => 'Manajemen User Staf & Hak Akses', 'icon' => 'users', 'badge' => null],
+            ['route' => 'admin.catalog.index', 'label' => 'Manajemen Menu', 'icon' => 'coffee', 'badge' => null],
+            ['route' => 'admin.operations.index', 'label' => 'Meja & Metode Pembayaran', 'icon' => 'grid-3x3', 'badge' => null],
+            ['route' => 'admin.vouchers.index', 'label' => 'Promo / Voucher', 'icon' => 'percent', 'badge' => null],
+            ['route' => 'admin.website.index', 'label' => 'Pengaturan Website', 'icon' => 'settings', 'badge' => null],
+            ['route' => 'admin.activity.index', 'label' => 'Log Aktivitas', 'icon' => 'history', 'badge' => null],
+        ];
+
+        $homeRoute = 'admin.staff.index';
+    }
 @endphp
 
 <aside id="admin-sidebar" class="fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#290024] text-[#F2F5E2] flex flex-col transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none -translate-x-full lg:translate-x-0">
     <!-- Header with Monogram Logo -->
     <div class="h-20 px-6 flex items-center justify-between border-b border-white/10 shrink-0">
-        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 group">
-            <!-- Logo -->
-            <img src="{{ asset('images/Logo.png') }}" alt="ABS Cafe Logo" class="w-10 h-10 rounded-full object-cover shrink-0 group-hover:scale-105 transition-transform shadow-sm">
-            <!-- Title and Tagline -->
-            <div class="flex flex-col">
-                <span class="font-serif font-bold text-lg tracking-tight leading-none text-[#F2F5E2] group-hover:text-cafe-gold transition-colors">ABS Cafe</span>
-                <span class="text-[10px] tracking-widest uppercase font-medium text-[#D4954D] mt-0.5">Accessories & Cafe</span>
-            </div>
+        <a href="{{ route($homeRoute) }}" class="flex items-center gap-3 group">
+            <x-logo on-dark size="md" loading="eager" class="transition-transform group-hover:scale-105" />
         </a>
 
         <button onclick="toggleSidebar()" class="lg:hidden w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-[#F2F5E2] flex items-center justify-center transition-colors">
@@ -35,7 +47,7 @@
         </button>
     </div>
 
-    <!-- Navigation List (10 Menu Navigasi) -->
+    <!-- Navigation List -->
     <nav class="flex-1 overflow-y-auto px-4 py-5 space-y-1.5 scrollbar-thin scrollbar-thumb-white/10">
         <div class="px-3 pb-2 text-[10px] font-semibold tracking-wider uppercase text-[#D4954D]/80">
             Menu Utama
@@ -43,7 +55,10 @@
 
         @foreach($menus as $item)
             @php
-                $isActive = request()->routeIs($item['route']) || (str_contains($item['route'], 'index') && str_contains($currentRoute, explode('.', $item['route'])[1]));
+                $routePrefix = explode('.', $item['route'])[1] ?? '';
+                $routeName = (string) Route::currentRouteName();
+                $isActive = request()->routeIs($item['route'])
+                    || ($routePrefix !== '' && str_starts_with($routeName, 'admin.'.$routePrefix.'.'));
             @endphp
             <a href="{{ route($item['route']) }}" class="group flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs font-medium transition-all duration-200 {{ $isActive ? 'bg-[#D4954D] text-[#290024] font-semibold shadow-md translate-x-1' : 'text-[#F2F5E2]/85 hover:bg-white/10 hover:text-[#F2F5E2]' }}">
                 <div class="flex items-center gap-3 min-w-0">

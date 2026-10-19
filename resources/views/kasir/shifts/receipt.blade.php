@@ -18,7 +18,7 @@
 
     <div id="printable-receipt" class="bg-white text-black mx-auto rounded-none" style="width:80mm">
         <div class="text-center px-4 pt-6 pb-4 border-b border-black/20">
-            <img src="{{ asset('images/Logo.png') }}" alt="ABS Cafe Logo" class="w-12 h-12 mx-auto mb-2 rounded-full object-cover">
+            <x-logo :show-text="false" size="md" thermal loading="eager" class="mx-auto mb-2" />
             <h1 class="font-serif font-bold text-sm">{{ \App\Models\CafeSetting::get('cafe_name', 'ABS Cafe') }}</h1>
             <p class="text-[10px] mt-1 leading-tight">{{ \App\Models\CafeSetting::get('cafe_address', '') }}</p>
             <p class="text-[10px]">{{ \App\Models\CafeSetting::get('cafe_phone', '') }}</p>

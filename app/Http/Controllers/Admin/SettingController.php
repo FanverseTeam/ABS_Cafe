@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
+use App\Models\CafeSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\CafeSetting;
-use App\Models\ActivityLog;
 
 class SettingController extends Controller
 {
@@ -18,6 +18,7 @@ class SettingController extends Controller
         $settings = [
             'cafe_name' => CafeSetting::get('cafe_name', 'ABS Cafe'),
             'cafe_tagline' => CafeSetting::get('cafe_tagline', 'Accessories & Cafe'),
+            'cafe_logo' => CafeSetting::get('cafe_logo', 'images/logo.png'),
             'cafe_address' => CafeSetting::get('cafe_address', 'Jl. Ki Mangunsarkoro No. 88, Boyolangu, Tulungagung'),
             'cafe_phone' => CafeSetting::get('cafe_phone', '0812-3456-7890'),
             'cafe_email' => CafeSetting::get('cafe_email', 'halo@abscafe.com'),
@@ -44,6 +45,7 @@ class SettingController extends Controller
     {
         CafeSetting::set('cafe_name', $request->input('cafe_name'));
         CafeSetting::set('cafe_tagline', $request->input('cafe_tagline'));
+        CafeSetting::set('cafe_logo', $request->input('cafe_logo') ?: 'images/logo.png');
         CafeSetting::set('cafe_address', $request->input('cafe_address'));
         CafeSetting::set('cafe_phone', $request->input('cafe_phone'));
         CafeSetting::set('cafe_email', $request->input('cafe_email'));
@@ -53,7 +55,7 @@ class SettingController extends Controller
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Memperbarui Profil Cafe & Jam Operasional",
+            'activity' => 'Memperbarui Profil Cafe & Jam Operasional',
             'activity_type' => 'sistem',
             'ip_address' => $request->ip(),
         ]);
@@ -70,7 +72,7 @@ class SettingController extends Controller
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Memperbarui Pengaturan Pajak & Service Charge",
+            'activity' => 'Memperbarui Pengaturan Pajak & Service Charge',
             'activity_type' => 'sistem',
             'ip_address' => $request->ip(),
         ]);
@@ -90,7 +92,7 @@ class SettingController extends Controller
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Memperbarui Metode Pembayaran Kasir & QRIS",
+            'activity' => 'Memperbarui Metode Pembayaran Kasir & QRIS',
             'activity_type' => 'sistem',
             'ip_address' => $request->ip(),
         ]);
@@ -107,7 +109,7 @@ class SettingController extends Controller
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Memperbarui Format Teks Nota Kasir",
+            'activity' => 'Memperbarui Format Teks Nota Kasir',
             'activity_type' => 'sistem',
             'ip_address' => $request->ip(),
         ]);
@@ -123,7 +125,7 @@ class SettingController extends Controller
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Memperbarui Pengaturan Banner & Tampilan",
+            'activity' => 'Memperbarui Pengaturan Banner & Tampilan',
             'activity_type' => 'sistem',
             'ip_address' => $request->ip(),
         ]);
@@ -137,7 +139,7 @@ class SettingController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
             'password' => 'nullable|string|min:6|confirmed',
         ]);
 
@@ -151,7 +153,7 @@ class SettingController extends Controller
         ActivityLog::create([
             'user_name' => $user->name,
             'role' => $user->role,
-            'activity' => "Memperbarui Profil & Akun Admin",
+            'activity' => 'Memperbarui Profil & Akun Admin',
             'activity_type' => 'sistem',
             'ip_address' => $request->ip(),
         ]);

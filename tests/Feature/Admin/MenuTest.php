@@ -5,11 +5,15 @@ namespace Tests\Feature\Admin;
 use App\Models\Category;
 use App\Models\Menu;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Concerns\RequiresLegacyAdmin;
 use Tests\TestCase;
 
+#[Group('legacy')]
 class MenuTest extends TestCase
 {
     use RefreshDatabase;
+    use RequiresLegacyAdmin;
 
     public function test_menu_index_loads(): void
     {

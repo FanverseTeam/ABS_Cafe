@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masuk - ABS Cafe (Accessories & Cafe)</title>
-    <link rel="icon" type="image/png" href="{{ asset('images/Logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-badge.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo-badge.png') }}">
 
     <!-- Google Fonts: Playfair Display & Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -75,11 +76,7 @@
             <!-- Top Logo & Brand -->
             <div class="relative z-10 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <img src="{{ asset('images/Logo.png') }}" alt="ABS Cafe Logo" class="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover shrink-0 shadow-md border border-[#D4954D]/40">
-                    <div class="flex flex-col">
-                        <span class="font-serif font-bold text-lg sm:text-xl tracking-tight leading-none text-[#F2F5E2]">ABS Cafe</span>
-                        <span class="text-[9px] sm:text-[10px] tracking-widest uppercase font-medium text-[#D4954D] mt-0.5">Accessories & Cafe</span>
-                    </div>
+                    <x-logo on-dark size="md" loading="eager" />
                 </div>
 
                 <div class="lg:hidden inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-[#D4954D] text-[10px] font-medium border border-[#D4954D]/20">

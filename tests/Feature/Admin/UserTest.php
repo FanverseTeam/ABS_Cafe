@@ -5,11 +5,15 @@ namespace Tests\Feature\Admin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Concerns\RequiresLegacyAdmin;
 use Tests\TestCase;
 
+#[Group('legacy')]
 class UserTest extends TestCase
 {
     use RefreshDatabase;
+    use RequiresLegacyAdmin;
 
     private function payload(array $overrides = []): array
     {

@@ -25,7 +25,7 @@ class RememberMeTest extends TestCase
             'remember' => '1',
         ]);
 
-        $response->assertRedirect(route('admin.dashboard'));
+        $response->assertRedirect($this->adminHomeRoute());
 
         $recallerName = Auth::guard('web')->getRecallerName();
         $response->assertCookie($recallerName);
@@ -54,7 +54,7 @@ class RememberMeTest extends TestCase
             'password' => 'secret123',
         ]);
 
-        $response->assertRedirect(route('admin.dashboard'));
+        $response->assertRedirect($this->adminHomeRoute());
 
         $recallerName = Auth::guard('web')->getRecallerName();
         $response->assertCookieMissing($recallerName);
@@ -83,7 +83,7 @@ class RememberMeTest extends TestCase
 
         // Mengakses halaman terproteksi dengan membawa cookie remember saja
         $response = $this->withCookie($recallerName, $recallerCookie->getValue())
-            ->get(route('admin.dashboard'));
+            ->get($this->adminHomeRoute());
 
         $response->assertOk();
         $this->assertAuthenticatedAs($admin);
@@ -111,7 +111,7 @@ class RememberMeTest extends TestCase
         $logoutResponse = $this->withCookie($recallerName, $recallerCookie->getValue())
             ->post('/admin/logout');
 
-        $logoutResponse->assertRedirect(route('login'));
+        $logoutResponse->assertRedirect(route('staf.landing'));
         $this->assertGuest();
 
         // remember_token harus diganti (cycled)
@@ -122,7 +122,7 @@ class RememberMeTest extends TestCase
         Auth::forgetGuards();
 
         $this->withCookie($recallerName, $recallerCookie->getValue())
-            ->get(route('admin.dashboard'))
+            ->get($this->adminHomeRoute())
             ->assertRedirect(route('admin.login'));
 
         $this->assertGuest();
@@ -153,7 +153,7 @@ class RememberMeTest extends TestCase
         Auth::forgetGuards();
 
         $response = $this->withCookie($recallerName, $recallerCookie->getValue())
-            ->get(route('admin.dashboard'));
+            ->get($this->adminHomeRoute());
 
         $response->assertRedirect(route('admin.login'));
         $this->assertGuest();
@@ -194,7 +194,7 @@ class RememberMeTest extends TestCase
 
         // Request dengan cookie recaller lama harus ditolak
         $response = $this->withCookie($recallerName, $recallerCookie->getValue())
-            ->get(route('admin.dashboard'));
+            ->get($this->adminHomeRoute());
 
         $response->assertRedirect(route('admin.login'));
         $this->assertGuest();
@@ -203,7 +203,10 @@ class RememberMeTest extends TestCase
     public function test_remember_me_works_for_all_roles_with_correct_redirects(): void
     {
         $roles = [
-            'admin' => ['factory' => 'admin', 'route' => 'admin.dashboard'],
+            'admin' => [
+                'factory' => 'admin',
+                'route' => config('features.legacy_admin') ? 'admin.dashboard' : 'admin.staff.index',
+            ],
             'owner' => ['factory' => 'owner', 'route' => 'owner.dashboard'],
             'kasir' => ['factory' => 'kasir', 'route' => 'kasir.dashboard'],
         ];

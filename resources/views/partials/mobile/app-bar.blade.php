@@ -15,7 +15,7 @@
             </a>
         @elseif($showLogo)
             <a href="javascript:void(0)" onclick="toggleSidebar()" class="flex items-center gap-2 group">
-                <img src="{{ asset('images/Logo.png') }}" alt="ABS Cafe" class="w-9 h-9 rounded-full object-cover border border-[#E3DEA4] shadow-sm">
+                <x-logo :show-text="false" size="sm" loading="eager" class="shrink-0" />
             </a>
         @endif
 

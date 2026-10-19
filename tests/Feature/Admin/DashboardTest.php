@@ -6,11 +6,15 @@ use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Concerns\RequiresLegacyAdmin;
 use Tests\TestCase;
 
+#[Group('legacy')]
 class DashboardTest extends TestCase
 {
     use RefreshDatabase;
+    use RequiresLegacyAdmin;
 
     public function test_admin_dashboard_loads(): void
     {

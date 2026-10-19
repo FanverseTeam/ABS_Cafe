@@ -4,11 +4,15 @@ namespace Tests\Feature\Admin;
 
 use App\Models\ActivityLog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Concerns\RequiresLegacyAdmin;
 use Tests\TestCase;
 
+#[Group('legacy')]
 class ActivityLogTest extends TestCase
 {
     use RefreshDatabase;
+    use RequiresLegacyAdmin;
 
     private function makeLog(array $overrides = []): ActivityLog
     {

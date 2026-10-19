@@ -209,7 +209,7 @@
 <div id="printable-receipt" class="hidden font-mono text-xs leading-tight">
     <div class="text-center pb-2 border-b border-black">
         @if(\App\Models\CafeSetting::get('receipt_show_logo', '1') == '1')
-            <img src="{{ asset('images/Logo.png') }}" alt="ABS Cafe Logo" class="w-12 h-12 mx-auto mb-2 rounded-full object-cover">
+            <x-logo :show-text="false" size="md" thermal loading="eager" class="mx-auto mb-2" />
         @endif
         <h2 class="font-bold text-sm">{{ $cafeSettings['name'] }}</h2>
         <p class="text-[10px]">{{ $cafeSettings['tagline'] }}</p>

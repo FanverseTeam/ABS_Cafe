@@ -128,14 +128,16 @@ class LoginController extends Controller
         $recallerName = Auth::guard()->getRecallerName();
         Cookie::queue(Cookie::forget($recallerName));
 
-        return redirect()->route('login')->with('success', 'Anda telah berhasil keluar.');
+        return redirect()->route('staf.landing')->with('success', 'Anda telah berhasil keluar.');
     }
 
     private function dashboardFor(User $user): string
     {
         return match ($user->primaryRole()) {
             'owner' => route('owner.dashboard'),
-            'admin' => route('admin.dashboard'),
+            'admin' => config('features.legacy_admin')
+                ? route('admin.dashboard')
+                : route('admin.staff.index'),
             'kasir' => route('kasir.dashboard'),
             default => route('login'),
         };

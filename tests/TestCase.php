@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\CashShift;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use RuntimeException;
@@ -38,6 +39,20 @@ abstract class TestCase extends BaseTestCase
         return $this;
     }
 
+    protected function adminHomeRoute(): string
+    {
+        return config('features.legacy_admin')
+            ? route('admin.dashboard')
+            : route('admin.staff.index');
+    }
+
+    protected function adminHomePath(): string
+    {
+        return config('features.legacy_admin')
+            ? '/admin'
+            : '/admin/staf';
+    }
+
     protected function actingAsOwner(): static
     {
         $this->actingAs(User::factory()->owner()->create());
@@ -52,9 +67,9 @@ abstract class TestCase extends BaseTestCase
         return $this;
     }
 
-    protected function openShift(array $attributes = []): \App\Models\CashShift
+    protected function openShift(array $attributes = []): CashShift
     {
-        return \App\Models\CashShift::factory()->create(array_merge([
+        return CashShift::factory()->create(array_merge([
             'user_id' => auth()->id(),
             'status' => 'buka',
             'opened_at' => now(),

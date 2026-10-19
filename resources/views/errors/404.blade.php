@@ -7,8 +7,10 @@
             $backUrl = route('owner.dashboard');
             $backLabel = 'Kembali ke Dashboard Owner';
         } elseif ($role === 'admin') {
-            $backUrl = route('admin.dashboard');
-            $backLabel = 'Kembali ke Dashboard Admin';
+            $backUrl = config('features.legacy_admin')
+                ? route('admin.dashboard')
+                : route('admin.staff.index');
+            $backLabel = 'Kembali ke Portal Admin';
         }
     }
 @endphp
@@ -18,7 +20,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Halaman Tidak Ditemukan - ABS Cafe</title>
-    <link rel="icon" type="image/png" href="{{ asset('images/Logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-badge.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo-badge.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -39,9 +42,7 @@
 </head>
 <body class="antialiased min-h-screen bg-cafe-cream text-cafe-text font-sans flex items-center justify-center p-6">
     <div class="max-w-lg w-full bg-cafe-card rounded-3xl shadow-lg border border-cafe-beige/60 p-8 sm:p-10 text-center">
-        <div class="w-16 h-16 rounded-2xl bg-cafe-gold/15 text-cafe-gold flex items-center justify-center mx-auto">
-            <i data-lucide="coffee" class="w-8 h-8"></i>
-        </div>
+        <x-logo size="lg" loading="eager" class="mx-auto" />
         <p class="font-serif text-5xl font-bold text-cafe-dark mt-6">404</p>
         <h1 class="font-serif text-xl font-bold text-cafe-dark mt-2">Halaman Tidak Ditemukan</h1>
         <p class="text-sm text-cafe-muted mt-2 leading-relaxed">
