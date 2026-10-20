@@ -15,16 +15,12 @@
     $homeRoute = 'admin.dashboard';
 @endphp
 
-<aside id="admin-sidebar" class="fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#290024] text-[#F2F5E2] flex flex-col transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none -translate-x-full lg:translate-x-0">
+<aside id="admin-sidebar" class="hidden md:flex fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#290024] text-[#F2F5E2] flex-col shadow-2xl md:shadow-none">
     <!-- Header with Monogram Logo -->
     <div class="h-20 px-6 flex items-center justify-between border-b border-white/10 shrink-0">
         <a href="{{ route($homeRoute) }}" class="flex items-center gap-3 group">
             <x-logo on-dark size="md" loading="eager" class="transition-transform group-hover:scale-105" />
         </a>
-
-        <button onclick="toggleSidebar()" class="lg:hidden w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-[#F2F5E2] flex items-center justify-center transition-colors">
-            <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
     </div>
 
     <!-- Navigation List -->

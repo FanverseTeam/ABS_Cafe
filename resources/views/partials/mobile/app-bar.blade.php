@@ -3,18 +3,19 @@
     'subtitle' => null,
     'backUrl' => null,
     'showLogo' => true,
+    'homeUrl' => '/',
     'rightAction' => null,
 ])
 
-<!-- Mobile Top App Bar (Only visible on < lg screens) -->
-<header class="lg:hidden sticky top-0 z-30 h-16 bg-[#FAFCF3]/95 backdrop-blur-md border-b border-[#E3DEA4]/70 px-4 flex items-center justify-between gap-3 shadow-sm">
+<!-- Mobile Top App Bar (only visible below the md breakpoint) -->
+<header class="md:hidden sticky top-0 z-30 h-16 bg-[#FAFCF3]/95 backdrop-blur-md border-b border-[#E3DEA4]/70 px-4 flex items-center justify-between gap-3 shadow-sm">
     <div class="flex items-center gap-2.5 min-w-0">
         @if($backUrl)
             <a href="{{ $backUrl }}" class="w-10 h-10 -ml-1 rounded-full flex items-center justify-center text-[#290024] hover:bg-[#E3DEA4]/50 active:scale-95 transition-all" aria-label="Kembali">
                 <i data-lucide="arrow-left" class="w-5 h-5"></i>
             </a>
         @elseif($showLogo)
-            <a href="javascript:void(0)" onclick="toggleSidebar()" class="flex items-center gap-2 group">
+            <a href="{{ $homeUrl }}" class="flex items-center gap-2 group" aria-label="Beranda">
                 <x-logo :show-text="false" size="sm" loading="eager" class="shrink-0" />
             </a>
         @endif
@@ -29,12 +30,9 @@
         </div>
     </div>
 
-    <!-- Right Side Actions -->
-    <div class="flex items-center gap-1.5 shrink-0">
-        {{ $rightAction ?? '' }}
-
-        <button type="button" onclick="toggleSidebar()" class="w-10 h-10 rounded-full flex items-center justify-center text-[#290024] hover:bg-[#E3DEA4]/50 active:scale-95 transition-all" aria-label="Buka Menu Tambahan">
-            <i data-lucide="menu" class="w-5 h-5"></i>
-        </button>
-    </div>
+    @if($rightAction)
+        <div class="flex items-center gap-1.5 shrink-0">
+            {{ $rightAction }}
+        </div>
+    @endif
 </header>

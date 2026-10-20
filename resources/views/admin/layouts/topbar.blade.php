@@ -1,4 +1,5 @@
 @php
+    $backUrl = \App\Support\MobileNavigation::backUrlForCurrentRoute();
     $legacyAdmin = config('features.legacy_admin');
     $homeRoute = 'admin.dashboard';
     $settingsRoute = 'admin.website.index';
@@ -13,9 +14,15 @@
 <header class="sticky top-0 z-30 h-16 sm:h-20 bg-[#FAFCF3]/95 backdrop-blur-md border-b border-cafe-beige/60 px-3.5 sm:px-8 flex items-center justify-between gap-3 sm:gap-4 shadow-sm">
     <!-- Left: Mobile Logo & Title -->
     <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
-        <a href="{{ route($homeRoute) }}" class="lg:hidden shrink-0" title="ABS Cafe">
-            <x-logo :show-text="false" size="sm" loading="eager" class="shrink-0" />
-        </a>
+        @if($backUrl)
+            <a href="{{ $backUrl }}" class="md:hidden flex h-10 w-10 -ml-1 shrink-0 items-center justify-center rounded-full text-cafe-dark transition-colors hover:bg-cafe-beige/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70" aria-label="Kembali">
+                <i data-lucide="arrow-left" class="h-5 w-5"></i>
+            </a>
+        @else
+            <a href="{{ route($homeRoute) }}" class="md:hidden shrink-0" title="ABS Cafe">
+                <x-logo :show-text="false" size="sm" loading="eager" class="shrink-0" />
+            </a>
+        @endif
 
         <div class="min-w-0">
             <h1 class="font-serif text-sm sm:text-xl font-bold text-cafe-dark truncate leading-tight">
@@ -141,6 +148,10 @@
     @else
         <!-- Active admin mode: no order/stock widgets from the legacy dashboard. -->
         <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+            <a href="{{ route('admin.activity.index') }}" class="relative p-2.5 rounded-full bg-cafe-beige/50 hover:bg-cafe-beige text-cafe-dark transition-colors" title="Notifikasi Aktivitas" aria-label="Notifikasi Aktivitas">
+                <i data-lucide="bell" class="w-4 h-4"></i>
+            </a>
+
             <div class="relative" id="profile-dropdown-wrapper">
                 <button onclick="toggleProfileDropdown()" class="flex items-center gap-2 p-1.5 pr-3 rounded-full bg-cafe-beige/40 hover:bg-cafe-beige/70 transition-all border border-cafe-beige/60">
                     <div class="w-8 h-8 rounded-full bg-[#290024] text-[#D4954D] font-serif font-bold text-xs flex items-center justify-center shadow-sm">

@@ -308,7 +308,7 @@
 </div>
 
 <!-- FLOATING CART BAR (Melayang di atas Bottom Nav pada Mobile) -->
-<div id="mobile-floating-cart" class="xl:hidden fixed bottom-16 inset-x-3 z-30 hidden transition-all duration-300">
+<div id="mobile-floating-cart" class="xl:hidden fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] md:bottom-5 inset-x-3 z-30 hidden transition-all duration-300">
     <div class="bg-[#290024] text-[#FAFCF3] p-3 rounded-2xl shadow-xl border border-[#D4954D]/40 flex items-center justify-between gap-3 backdrop-blur-md">
         <div class="flex items-center gap-2.5 min-w-0">
             <div class="relative w-9 h-9 rounded-xl bg-[#D4954D] text-[#290024] flex items-center justify-center shrink-0 font-bold">

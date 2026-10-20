@@ -104,19 +104,16 @@
 </head>
 <body class="antialiased min-h-screen bg-cafe-cream text-cafe-text">
 
-    <!-- Mobile Drawer Backdrop -->
-    <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-[#290024]/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
-
-    <!-- Sidebar Layout -->
+    <!-- Sidebar Layout: tablet/desktop only -->
     @include('admin.layouts.sidebar')
 
     <!-- Main Content Container -->
-    <div class="flex-1 flex flex-col min-w-0 lg:pl-72 transition-all min-h-screen">
+    <div class="flex-1 flex flex-col min-w-0 md:pl-72 transition-all min-h-screen">
         <!-- Topbar -->
         @include('admin.layouts.topbar')
 
         <!-- Main Body -->
-        <main class="flex-1 p-3.5 sm:p-6 lg:p-8 pb-24 lg:pb-8 relative min-w-0">
+        <main class="flex-1 p-3.5 sm:p-6 md:p-8 pb-[calc(5.75rem+env(safe-area-inset-bottom))] md:pb-8 relative min-w-0">
             <!-- Background Line Art Decoration -->
             <div class="fixed bottom-0 right-0 w-96 h-96 pointer-events-none opacity-5 -z-0">
                 <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -133,10 +130,10 @@
     </div>
 
     <!-- Mobile Bottom Navigation Bar -->
-    @include('partials.mobile.bottom-nav', ['role' => 'admin'])
+    <x-bottom-nav role="admin" />
 
     <!-- Toast Notifications (elevated above bottom nav on mobile) -->
-    <div id="toast-container" class="fixed bottom-20 lg:bottom-5 right-3 sm:right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+    <div id="toast-container" class="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] md:bottom-5 right-3 sm:right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
         @if(session('success'))
             <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#FAFCF3]/95 border-[#4F7A4A]/30 text-cafe-text backdrop-blur-md animate-in slide-in-from-bottom-5 transition-all">
                 <i data-lucide="check-circle-2" class="w-5 h-5 text-cafe-success shrink-0 mt-0.5"></i>
@@ -168,21 +165,6 @@
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
-
-        // Mobile Sidebar Toggle
-        function toggleSidebar() {
-            const sidebar = document.getElementById('admin-sidebar');
-            const backdrop = document.getElementById('sidebar-backdrop');
-            if (sidebar.classList.contains('-translate-x-full')) {
-                sidebar.classList.remove('-translate-x-full');
-                sidebar.classList.add('translate-x-0');
-                backdrop.classList.remove('hidden');
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                sidebar.classList.remove('translate-x-0');
-                backdrop.classList.add('hidden');
-            }
-        }
 
         // Global Toast Notification Helper
         function showToast(title, message, type = 'success') {

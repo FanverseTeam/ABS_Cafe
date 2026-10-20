@@ -1,4 +1,5 @@
 @php
+    $backUrl = \App\Support\MobileNavigation::backUrlForCurrentRoute();
     $hasActiveShift = \App\Models\CashShift::where('status', 'buka')->exists();
     $newWebOrdersCount = \App\Models\Order::where('source', 'web')->where('order_status', 'baru')->count();
     $unpaidOrdersCount = \App\Models\Order::where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
@@ -10,9 +11,15 @@
 <header class="sticky top-0 z-30 h-16 sm:h-20 bg-[#FAFCF3]/95 backdrop-blur-md border-b border-cafe-beige/60 px-3.5 sm:px-8 flex items-center justify-between gap-2.5 sm:gap-4 shadow-sm">
     <!-- Left: Mobile Logo & Title -->
     <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-        <a href="{{ route('kasir.dashboard') }}" class="lg:hidden shrink-0" title="ABS Cafe Beranda">
-            <x-logo :show-text="false" size="sm" loading="eager" class="shrink-0" />
-        </a>
+        @if($backUrl)
+            <a href="{{ $backUrl }}" class="md:hidden flex h-10 w-10 -ml-1 shrink-0 items-center justify-center rounded-full text-cafe-dark transition-colors hover:bg-cafe-beige/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70" aria-label="Kembali">
+                <i data-lucide="arrow-left" class="h-5 w-5"></i>
+            </a>
+        @else
+            <a href="{{ route('kasir.dashboard') }}" class="md:hidden shrink-0" title="ABS Cafe Beranda">
+                <x-logo :show-text="false" size="sm" loading="eager" class="shrink-0" />
+            </a>
+        @endif
 
         <div class="min-w-0">
             <h1 class="font-serif text-sm sm:text-xl font-bold text-cafe-dark truncate leading-tight">

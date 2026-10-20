@@ -223,7 +223,7 @@ Pastikan database tujuan sudah sesuai dan memiliki konfigurasi yang benar sebelu
 
 ---
 
-## 👥 Pengembang
+## Pengembang
 
 Dikembangkan untuk kerja sama proyek sekolah bersama **ABS Cafe Tulungagung** oleh **Fanverse Team, XI RPL 1, SMKN 1 Boyolangu**.
 
