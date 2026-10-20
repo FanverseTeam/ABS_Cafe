@@ -8,7 +8,7 @@
     /* Tipografi */
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-serif: 'Playfair Display', ui-serif, Georgia, 'Times New Roman', serif;
+    --font-serif: 'Noto Serif', Georgia, serif;
 
     /* Palet ABS Cafe */
     --color-beige: #f2f5e2;
@@ -56,6 +56,17 @@
 @layer base {
     body {
         @apply bg-beige text-midnight antialiased;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .font-serif {
+        font-variant-numeric: lining-nums tabular-nums;
+        font-feature-settings: 'lnum' 1, 'tnum' 1;
     }
 
     [x-cloak] {

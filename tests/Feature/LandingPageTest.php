@@ -106,7 +106,7 @@ class LandingPageTest extends TestCase
         $this->assertSame(1, substr_count($html, '>Login<'));
     }
 
-    public function test_admin_sees_one_dashboard_button_linking_to_admin_home(): void
+    public function test_admin_sees_one_dashboard_button_linking_to_staff_management(): void
     {
         $admin = User::factory()->admin()->create();
 
@@ -116,8 +116,12 @@ class LandingPageTest extends TestCase
 
         $html = $response->getContent();
 
+        $adminDashboardRoute = config('features.legacy_admin')
+            ? route('admin.dashboard')
+            : route('admin.staff.index');
+
         $this->assertSame(1, substr_count($html, '>Buka Dashboard<'));
-        $this->assertSame(1, substr_count($html, 'href="'.$this->adminHomeRoute().'"'));
+        $this->assertSame(1, substr_count($html, 'href="'.$adminDashboardRoute.'"'));
         $this->assertSame(0, substr_count($html, 'href="'.route('login').'"'));
     }
 

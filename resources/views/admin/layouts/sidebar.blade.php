@@ -1,38 +1,18 @@
 @php
     $currentRoute = Route::currentRouteName();
-    $legacyAdmin = config('features.legacy_admin');
 
-    if ($legacyAdmin) {
-        $pendingOrdersCount = \App\Models\Order::where('payment_status', 'menunggu_pembayaran')->count();
-        $lowStockCount = \App\Models\Menu::whereColumn('stock', '<=', 'min_stock')->count();
+    // ACTIVE ADMIN: Dashboard is always first, followed by the six active modules.
+    $menus = [
+        ['route' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'layout-dashboard', 'badge' => null],
+        ['route' => 'admin.staff.index', 'label' => 'Manajemen User Staf & Hak Akses', 'icon' => 'users', 'badge' => null],
+        ['route' => 'admin.catalog.index', 'label' => 'Manajemen Menu', 'icon' => 'coffee', 'badge' => null],
+        ['route' => 'admin.operations.index', 'label' => 'Meja & Metode Pembayaran', 'icon' => 'grid-3x3', 'badge' => null],
+        ['route' => 'admin.vouchers.index', 'label' => 'Promo / Voucher', 'icon' => 'percent', 'badge' => null],
+        ['route' => 'admin.website.index', 'label' => 'Pengaturan Website', 'icon' => 'settings', 'badge' => null],
+        ['route' => 'admin.activity.index', 'label' => 'Log Aktivitas', 'icon' => 'history', 'badge' => null],
+    ];
 
-        // LEGACY ADMIN: old standalone navigation, restored only when FEATURE_LEGACY_ADMIN=true.
-        $menus = [
-            ['route' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'layout-dashboard', 'badge' => null],
-            ['route' => 'admin.orders.index', 'label' => 'Pesanan', 'icon' => 'shopping-cart', 'badge' => $pendingOrdersCount],
-            ['route' => 'admin.menu.index', 'label' => 'Menu', 'icon' => 'coffee', 'badge' => null],
-            ['route' => 'admin.category.index', 'label' => 'Kategori', 'icon' => 'tags', 'badge' => null],
-            ['route' => 'admin.stock.index', 'label' => 'Stok', 'icon' => 'boxes', 'badge' => $lowStockCount],
-            ['route' => 'admin.promo.index', 'label' => 'Promo', 'icon' => 'percent', 'badge' => null],
-            ['route' => 'admin.users.index', 'label' => 'Pengguna (Staf)', 'icon' => 'users', 'badge' => null],
-            ['route' => 'admin.tables.index', 'label' => 'Meja', 'icon' => 'grid-3x3', 'badge' => null],
-            ['route' => 'admin.settings.index', 'label' => 'Pengaturan Cafe', 'icon' => 'settings', 'badge' => null],
-            ['route' => 'admin.logs.index', 'label' => 'Log Aktivitas', 'icon' => 'history', 'badge' => null],
-        ];
-
-        $homeRoute = 'admin.dashboard';
-    } else {
-        $menus = [
-            ['route' => 'admin.staff.index', 'label' => 'Manajemen User Staf & Hak Akses', 'icon' => 'users', 'badge' => null],
-            ['route' => 'admin.catalog.index', 'label' => 'Manajemen Menu', 'icon' => 'coffee', 'badge' => null],
-            ['route' => 'admin.operations.index', 'label' => 'Meja & Metode Pembayaran', 'icon' => 'grid-3x3', 'badge' => null],
-            ['route' => 'admin.vouchers.index', 'label' => 'Promo / Voucher', 'icon' => 'percent', 'badge' => null],
-            ['route' => 'admin.website.index', 'label' => 'Pengaturan Website', 'icon' => 'settings', 'badge' => null],
-            ['route' => 'admin.activity.index', 'label' => 'Log Aktivitas', 'icon' => 'history', 'badge' => null],
-        ];
-
-        $homeRoute = 'admin.staff.index';
-    }
+    $homeRoute = 'admin.dashboard';
 @endphp
 
 <aside id="admin-sidebar" class="fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#290024] text-[#F2F5E2] flex flex-col transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none -translate-x-full lg:translate-x-0">

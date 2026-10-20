@@ -135,9 +135,7 @@ class LoginController extends Controller
     {
         return match ($user->primaryRole()) {
             'owner' => route('owner.dashboard'),
-            'admin' => config('features.legacy_admin')
-                ? route('admin.dashboard')
-                : route('admin.staff.index'),
+            'admin' => route('admin.dashboard'),
             'kasir' => route('kasir.dashboard'),
             default => route('login'),
         };

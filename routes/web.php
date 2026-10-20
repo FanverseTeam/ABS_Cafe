@@ -67,12 +67,15 @@ Route::post('/kasir/logout', [LoginController::class, 'logout'])->name('kasir.lo
 
 /*
 |--------------------------------------------------------------------------
-| Back-Office Admin (6 active features)
+| Back-Office Admin (7 active features)
 |--------------------------------------------------------------------------
-| Admin hanya memiliki enam modul aktif. Halaman lama tetap tersedia di
-| bawah sebagai grup LEGACY ADMIN yang dikendalikan FEATURE_LEGACY_ADMIN.
+| Admin memiliki Dashboard + enam modul aktif. Halaman lama tetap tersedia
+| di bawah sebagai grup LEGACY ADMIN yang dikendalikan FEATURE_LEGACY_ADMIN.
 */
-Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'])->group(function () {
+    // ACTIVE ADMIN: Dashboard tetap aktif meskipun FEATURE_LEGACY_ADMIN=false.
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
     // 1. Manajemen User Staf & Hak Akses
     Route::prefix('staf')->name('staff.')->group(function () {
         Route::get('/', [StaffController::class, 'index'])->name('index');
@@ -172,10 +175,7 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
 | FEATURE_LEGACY_ADMIN=true to restore the previous admin experience.
 */
 if (config('features.legacy_admin')) {
-    Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function () {
-        // LEGACY ADMIN: Dashboard
-        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-
+    Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'])->group(function () {
         // LEGACY ADMIN: Pesanan
         Route::prefix('pesanan')->name('orders.')->group(function () {
             Route::get('/', [OrderController::class, 'index'])->name('index');

@@ -21,13 +21,14 @@ class AdminWorkspaceTest extends TestCase
         }
     }
 
-    public function test_admin_sidebar_has_exactly_six_active_features_and_no_legacy_navigation(): void
+    public function test_admin_sidebar_has_exactly_seven_active_features_and_no_legacy_navigation(): void
     {
         $this->requireLegacyAdminDisabled();
 
-        $response = $this->actingAsAdmin()->get(route('admin.staff.index'));
+        $response = $this->actingAsAdmin()->get(route('admin.dashboard'));
 
         $response->assertOk()
+            ->assertSee('Dashboard')
             ->assertSee('Manajemen User Staf & Hak Akses')
             ->assertSee('Manajemen Menu')
             ->assertSee('Meja & Metode Pembayaran')
@@ -47,20 +48,29 @@ class AdminWorkspaceTest extends TestCase
         preg_match('/<nav class="flex-1.*?<\/nav>/s', $response->getContent(), $matches);
 
         $this->assertNotEmpty($matches);
-        $this->assertSame(6, substr_count($matches[0], '<a href='));
+        $this->assertSame(7, substr_count($matches[0], '<a href='));
     }
 
-    public function test_mobile_bottom_nav_has_four_main_entries_and_more_sheet(): void
+    public function test_mobile_bottom_nav_has_beranda_and_more_sheet(): void
     {
         $this->requireLegacyAdminDisabled();
 
-        $this->actingAsAdmin()->get(route('admin.staff.index'))
+        $this->actingAsAdmin()->get(route('admin.dashboard'))
             ->assertOk()
+            ->assertSee('Beranda')
+            ->assertSee(route('admin.dashboard'), false)
             ->assertSee('toggleAdminMore()', false)
             ->assertSee('Pengaturan Website')
             ->assertSee('Log Aktivitas')
             ->assertSee('Profil')
             ->assertSee('Keluar');
+    }
+
+    public function test_admin_dashboard_is_active_when_switch_is_off(): void
+    {
+        $this->requireLegacyAdminDisabled();
+
+        $this->actingAsAdmin()->get('/admin')->assertOk();
     }
 
     public function test_legacy_admin_urls_return_404_when_switch_is_off(): void
@@ -70,7 +80,6 @@ class AdminWorkspaceTest extends TestCase
         $this->actingAsAdmin();
 
         foreach ([
-            '/admin',
             '/admin/pesanan',
             '/admin/menu',
             '/admin/kategori',
@@ -286,6 +295,7 @@ class AdminWorkspaceTest extends TestCase
         $this->actingAsAdmin();
 
         foreach ([
+            route('admin.dashboard'),
             route('admin.staff.index'),
             route('admin.catalog.index'),
             route('admin.operations.index'),
@@ -296,7 +306,9 @@ class AdminWorkspaceTest extends TestCase
             $this->get($url)
                 ->assertOk()
                 ->assertDontSee('Pemberitahuan Sistem', false)
-                ->assertDontSee('Cari pesanan, menu, atau meja', false);
+                ->assertDontSee('Cari pesanan, menu, atau meja', false)
+                ->assertDontSee('Pesanan Terbaru', false)
+                ->assertDontSee('Tren Penjualan', false);
         }
     }
 }

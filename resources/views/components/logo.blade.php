@@ -78,7 +78,7 @@
 
     @if ($showText)
         <span style="display:flex;min-width:0;flex-direction:column;line-height:1.05;">
-            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'Playfair Display',Georgia,serif;font-weight:700;letter-spacing:-0.01em;font-size:{{ $sizeConfig['title'] }}px;color:{{ $titleColor }};">
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'Noto Serif',Georgia,serif;font-weight:700;letter-spacing:-0.01em;font-size:{{ $sizeConfig['title'] }}px;color:{{ $titleColor }};">
                 {{ $title }}
             </span>
             <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;font-size:{{ $sizeConfig['subtitle'] }}px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:{{ $subtitleColor }};">

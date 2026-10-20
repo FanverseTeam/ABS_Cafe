@@ -1,10 +1,10 @@
-# ABS Cafe — Web App Halaman Admin (Back-Office) ☕👜
+# ABS Cafe — Web App Halaman Admin (Back-Office)
 
 Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (tagline: *Accessories & Cafe*), Boyolangu, Kabupaten Tulungagung. Dikembangkan menggunakan **Laravel (PHP, Blade, CSS Tailwind, dan JavaScript)** dengan nuansa hangat ala coffee shop premium (palet coklat & krem).
 
 ---
 
-## 🎨 Tema & Desain Visual
+## Tema & Desain Visual
 - **Nuansa**: Hangat, elegan, clean ala coffee shop modern.
 - **Palet Warna**:
   - Coklat Tua (Primer, Header, Sidebar Aktif): `#4A1F14`
@@ -16,13 +16,13 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (tagline: *Acce
   - Teks: Utama `#3B1E14`, Sekunder `#8A6A55`
   - Status: Sukses `#4F7A4A`, Peringatan `#C98A2B`, Bahaya `#B03A2E`, Info `#5B7C99`
 - **Tipografi**:
-  - Judul / Heading: *Playfair Display* (Serif elegan)
-  - Isi / Tabel / Form: *Poppins* (Sans-serif bersih)
+  - Judul / Heading: *Noto Serif* (Serif elegan, self-hosted)
+  - Isi / Tabel / Form: *Poppins* (Sans-serif bersih, self-hosted)
 - **Komponen**: Sudut membulat besar (`rounded-2xl` & `rounded-full`), soft shadow, responsif desktop & mobile drawer.
 
 ---
 
-## 🔑 Kredensial Akun Demo (Administrator)
+## Kredensial Akun Demo (Administrator)
 | Peran | Email | Username | Password |
 |---|---|---|---|
 | **Admin Utama** | `admin@abscafe.com` | `admin` | `admin123` |
@@ -33,7 +33,7 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (tagline: *Acce
 
 ---
 
-## 📋 Fitur & Halaman yang Dibuat
+## Fitur & Halaman yang Dibuat
 
 1. **Login Admin (`/admin/login`)**:
    - Layout 2 kolom estetis dengan foto kafe dan tagline *"Good Coffee, Good Mood"*.
@@ -87,7 +87,7 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (tagline: *Acce
 
 ---
 
-## 🚀 Cara Menjalankan Proyek di Laragon
+## Cara Menjalankan Proyek di Laragon
 
 1. Buka aplikasi **Laragon** dan klik **Start All** (Apache/Nginx & MySQL aktif).
 2. Buka terminal di folder proyek (`d:\laragon\www\ABS_Cafe`):
@@ -105,7 +105,7 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (tagline: *Acce
 
 ---
 
-## 🖼️ Foto Latar Landing Staf
+## Foto Latar Landing Staf
 
 Halaman `/staf` memakai foto lokal `landing.jpg` di root proyek sebagai master
 (jangan diubah atau dihapus). Agar tidak menyajikan file master 6,7 MB, buat versi
@@ -127,7 +127,7 @@ halaman otomatis memakai gradasi Beige → Vanilla Custard → Apricot.
 
 ---
 
-## 🧪 Pengujian Otomatis
+## Pengujian Otomatis
 
 Proyek ini memiliki suite pengujian PHPUnit (242 tes, 699 assertion) yang mencakup
 seluruh fitur 3 peran (Admin, Owner, Kasir), logika service (unit), alur lintas-fitur
@@ -159,5 +159,5 @@ mysql -u root abs_cafe < db_abscafe.sql
 
 ---
 
-## 👥 Pengembang
+## Pengembang
 Dikembangkan untuk kerja sama proyek sekolah bersama **ABS Cafe Tulungagung** oleh **Fanverse Team, XI RPL 1, SMKN 1 Boyolangu**.

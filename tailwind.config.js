@@ -26,7 +26,7 @@ export default {
         },
       },
       fontFamily: {
-        serif: ["var(--font-playfair)", "Playfair Display", "Georgia", "serif"],
+        serif: ["Noto Serif", "Georgia", "serif"],
         sans: ["var(--font-poppins)", "Poppins", "DM Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
       },
       borderRadius: {

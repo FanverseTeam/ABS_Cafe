@@ -19,6 +19,8 @@
     <link rel="apple-touch-icon" href="{{ asset('images/logo-badge.png') }}">
 
     <!-- Fonts & Styles -->
+    @include('partials.font-preloads')
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @php

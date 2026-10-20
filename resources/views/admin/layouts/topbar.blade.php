@@ -1,7 +1,7 @@
 @php
     $legacyAdmin = config('features.legacy_admin');
-    $homeRoute = $legacyAdmin ? 'admin.dashboard' : 'admin.staff.index';
-    $settingsRoute = $legacyAdmin ? 'admin.settings.index' : 'admin.website.index';
+    $homeRoute = 'admin.dashboard';
+    $settingsRoute = 'admin.website.index';
 
     if ($legacyAdmin) {
         $pendingOrders = \App\Models\Order::where('payment_status', 'menunggu_pembayaran')->take(5)->get();
