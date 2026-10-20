@@ -105,6 +105,28 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (tagline: *Acce
 
 ---
 
+## 🖼️ Foto Latar Landing Staf
+
+Halaman `/staf` memakai foto lokal `landing.jpg` di root proyek sebagai master
+(jangan diubah atau dihapus). Agar tidak menyajikan file master 6,7 MB, buat versi
+optimasi dengan satu perintah berikut setiap kali foto master diganti:
+
+```bash
+php artisan landing:optimize
+```
+
+Perintah tersebut membutuhkan **ImageMagick** dan menghasilkan:
+
+- `public/images/landing-bg-768.webp` (mobile)
+- `public/images/landing-bg-1280.webp` (tablet)
+- `public/images/landing-bg-1920.webp` (desktop)
+- `public/images/landing-bg-1920.jpg` (fallback browser lama)
+
+Masing-masing ditargetkan di bawah 400 KB. Jika file optimasi tidak tersedia,
+halaman otomatis memakai gradasi Beige → Vanilla Custard → Apricot.
+
+---
+
 ## 🧪 Pengujian Otomatis
 
 Proyek ini memiliki suite pengujian PHPUnit (242 tes, 699 assertion) yang mencakup

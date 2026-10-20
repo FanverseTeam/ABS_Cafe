@@ -246,6 +246,17 @@ class AdminWorkspaceTest extends TestCase
         $this->assertDatabaseHas('cafe_settings', ['key' => 'cafe_name', 'value' => 'ABS Cafe Baru']);
     }
 
+    public function test_website_settings_do_not_expose_landing_background_url_field(): void
+    {
+        $this->actingAsAdmin();
+
+        $this->get(route('admin.website.index', ['tab' => 'tampilan']))
+            ->assertOk()
+            ->assertSee('Judul Banner Utama')
+            ->assertDontSee('Foto Latar Landing')
+            ->assertDontSee('landing_bg_url');
+    }
+
     public function test_activity_log_filter_and_export_work(): void
     {
         $this->actingAsAdmin();
