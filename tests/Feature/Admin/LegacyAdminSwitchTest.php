@@ -32,21 +32,35 @@ class LegacyAdminSwitchTest extends TestCase
         }
     }
 
-    public function test_legacy_sidebar_is_restored_when_switch_is_on(): void
+    public function test_admin_sidebar_stays_at_seven_items_when_switch_is_on(): void
     {
         $response = $this->actingAsAdmin()->get('/admin');
 
         $response->assertOk()
             ->assertSee('Dashboard')
-            ->assertSee('Pesanan')
-            ->assertSee('Kategori')
-            ->assertSee('Stok')
-            ->assertSee('Pengguna (Staf)')
-            ->assertSee('Pengaturan Cafe');
+            ->assertSee('Manajemen User Staf & Hak Akses')
+            ->assertSee('Manajemen Menu')
+            ->assertSee('Meja & Metode Pembayaran')
+            ->assertSee('Promo / Voucher')
+            ->assertSee('Pengaturan Website')
+            ->assertSee('Log Aktivitas')
+            ->assertDontSee('Pengguna (Staf)')
+            ->assertDontSee('Pengaturan Cafe');
 
         preg_match('/<nav class="flex-1.*?<\/nav>/s', $response->getContent(), $matches);
 
         $this->assertNotEmpty($matches);
-        $this->assertSame(10, substr_count($matches[0], '<a href='));
+        $this->assertSame(7, substr_count($matches[0], '<a href='));
+    }
+
+    public function test_legacy_order_widgets_return_on_dashboard_when_switch_is_on(): void
+    {
+        $this->actingAsAdmin()->get('/admin')
+            ->assertOk()
+            ->assertSee('Ringkasan Pesanan')
+            ->assertSee('Pesanan Hari Ini')
+            ->assertSee('Pesanan Terbaru')
+            ->assertSee('Tren Penjualan')
+            ->assertSee('/admin/pesanan', false);
     }
 }

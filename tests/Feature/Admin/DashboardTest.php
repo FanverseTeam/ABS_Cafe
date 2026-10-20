@@ -2,27 +2,156 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\ActivityLog;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Order;
+use App\Models\Promo;
+use App\Models\Table;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Group;
-use Tests\Concerns\RequiresLegacyAdmin;
 use Tests\TestCase;
 
-#[Group('legacy')]
 class DashboardTest extends TestCase
 {
     use RefreshDatabase;
-    use RequiresLegacyAdmin;
 
-    public function test_admin_dashboard_loads(): void
+    private function requireLegacyAdminDisabled(): void
     {
-        $this->actingAsAdmin()->get('/admin')->assertOk();
+        if (config('features.legacy_admin')) {
+            $this->markTestSkipped('This assertion applies when FEATURE_LEGACY_ADMIN is disabled.');
+        }
+    }
+
+    private function requireLegacyAdminEnabled(): void
+    {
+        if (! config('features.legacy_admin')) {
+            $this->markTestSkipped('Legacy admin routes are disabled. Set FEATURE_LEGACY_ADMIN=true to run this test.');
+        }
+    }
+
+    public function test_admin_dashboard_loads_when_switch_is_off(): void
+    {
+        $this->requireLegacyAdminDisabled();
+
+        $this->actingAsAdmin()->get('/admin')
+            ->assertOk()
+            ->assertSee('Total Menu')
+            ->assertSee('Menu Stok Menipis/Habis')
+            ->assertSee('Promo Aktif')
+            ->assertSee('Staf Aktif')
+            ->assertSee('Jumlah Meja')
+            ->assertSee('Pintasan Cepat')
+            ->assertSee('Tambah Menu')
+            ->assertSee('Tambah Promo')
+            ->assertSee('Tambah Staf')
+            ->assertSee('Aktivitas Terbaru')
+            ->assertSee('Peringatan Stok Menipis')
+            ->assertDontSee('Pesanan Terbaru')
+            ->assertDontSee('Pendapatan')
+            ->assertDontSee('Menunggu Bayar')
+            ->assertDontSee('Tren Penjualan');
+    }
+
+    public function test_dashboard_stats_come_from_active_features(): void
+    {
+        $this->requireLegacyAdminDisabled();
+
+        $category = Category::factory()->create();
+        Menu::factory()->for($category)->create(['stock' => 50, 'min_stock' => 10]);
+        Menu::factory()->for($category)->lowStock()->create();
+
+        Promo::factory()->create(['is_active' => true]);
+        Promo::factory()->inactive()->create();
+
+        User::factory()->count(2)->create(['status' => 'aktif']);
+        User::factory()->inactive()->create();
+        Table::factory()->count(3)->create();
+
+        $this->actingAsAdmin();
+
+        $this->get('/admin')
+            ->assertOk()
+            ->assertViewHas('totalMenus', 2)
+            ->assertViewHas('lowStockCount', 1)
+            ->assertViewHas('activePromoCount', 1)
+            ->assertViewHas('activeStaffCount', 3)
+            ->assertViewHas('totalTables', 3);
+    }
+
+    public function test_dashboard_shows_only_the_five_latest_activity_logs(): void
+    {
+        $this->requireLegacyAdminDisabled();
+
+        foreach (range(0, 5) as $index) {
+            $log = ActivityLog::create([
+                'user_name' => 'Admin ABS',
+                'role' => 'admin',
+                'activity' => "Aktivitas {$index}",
+                'activity_type' => 'sistem',
+                'ip_address' => '127.0.0.1',
+            ]);
+
+            $log->forceFill(['created_at' => now()->subMinutes($index)])->save();
+        }
+
+        $response = $this->actingAsAdmin()->get('/admin');
+
+        $response->assertOk()
+            ->assertSee('Aktivitas 0')
+            ->assertSee('Aktivitas 4')
+            ->assertDontSee('Aktivitas 5');
+
+        $this->assertCount(5, $response->viewData('recentActivities'));
+    }
+
+    public function test_dashboard_links_to_active_admin_pages_only_when_switch_is_off(): void
+    {
+        $this->requireLegacyAdminDisabled();
+
+        $response = $this->actingAsAdmin()->get('/admin')->assertOk();
+
+        $response->assertDontSee('/admin/pesanan', false)
+            ->assertDontSee('/admin/menu"', false)
+            ->assertDontSee('/admin/kategori', false)
+            ->assertDontSee('/admin/stok', false)
+            ->assertDontSee('/admin/pengguna', false)
+            ->assertDontSee('/admin/meja', false)
+            ->assertDontSee('/admin/pengaturan', false)
+            ->assertDontSee('/admin/log"', false);
+
+        preg_match_all('/href="([^"]+)"/', $response->getContent(), $matches);
+
+        $links = collect($matches[1])
+            ->map(fn (string $url) => parse_url($url, PHP_URL_PATH))
+            ->filter(fn (?string $path) => is_string($path) && str_starts_with($path, '/admin'))
+            ->unique()
+            ->values();
+
+        $this->assertNotEmpty($links);
+
+        foreach ($links as $path) {
+            $this->get($path)->assertOk();
+        }
+    }
+
+    public function test_legacy_order_widgets_return_when_switch_is_on(): void
+    {
+        $this->requireLegacyAdminEnabled();
+
+        $this->actingAsAdmin()->get('/admin')
+            ->assertOk()
+            ->assertSee('Ringkasan Pesanan')
+            ->assertSee('Pesanan Hari Ini')
+            ->assertSee('Pesanan Terbaru')
+            ->assertSee('Tren Penjualan')
+            ->assertSee('Semua Pesanan');
     }
 
     public function test_revenue_today_sums_only_paid_orders_paid_today(): void
     {
+        $this->requireLegacyAdminEnabled();
+
         $today = now();
         $yesterday = now()->subDay();
 
@@ -37,6 +166,8 @@ class DashboardTest extends TestCase
 
     public function test_low_stock_menus_are_listed(): void
     {
+        $this->requireLegacyAdminDisabled();
+
         $category = Category::factory()->create();
         Menu::factory()->for($category)->lowStock()->create(['name' => 'Kopi Menipis']);
         Menu::factory()->for($category)->create(['name' => 'Kopi Aman', 'stock' => 99, 'min_stock' => 10]);

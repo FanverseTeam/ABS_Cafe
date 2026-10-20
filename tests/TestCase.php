@@ -41,16 +41,12 @@ abstract class TestCase extends BaseTestCase
 
     protected function adminHomeRoute(): string
     {
-        return config('features.legacy_admin')
-            ? route('admin.dashboard')
-            : route('admin.staff.index');
+        return route('admin.dashboard');
     }
 
     protected function adminHomePath(): string
     {
-        return config('features.legacy_admin')
-            ? '/admin'
-            : '/admin/staf';
+        return '/admin';
     }
 
     protected function actingAsOwner(): static

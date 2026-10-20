@@ -524,7 +524,7 @@ function renderCart() {
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-bold text-[#290024] truncate">${item.name}</p>
                     <p class="text-[10px] text-[#775533]">Rp ${formatRupiah(item.price).replace('Rp ', '')} &times; ${item.qty}</p>
-                    <button type="button" onclick="setNotes(${idx})" class="text-[9px] text-[#D4954D] hover:underline font-semibold block mt-0.5">${item.notes ? '✏️ '+item.notes : '+ catatan'}</button>
+                    <button type="button" onclick="setNotes(${idx})" class="text-[9px] text-[#D4954D] hover:underline font-semibold block mt-0.5">${item.notes ? item.notes : '+ catatan'}</button>
                 </div>
                 <div class="flex items-center gap-1.5 shrink-0">
                     <button type="button" onclick="changeQty(${idx}, -1)" class="qty-btn w-6 h-6 rounded-full bg-[#E3DEA4]/60 text-[#775533] flex items-center justify-center"><i data-lucide="minus" class="w-3 h-3"></i></button>

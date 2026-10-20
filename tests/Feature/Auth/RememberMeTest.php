@@ -205,7 +205,7 @@ class RememberMeTest extends TestCase
         $roles = [
             'admin' => [
                 'factory' => 'admin',
-                'route' => config('features.legacy_admin') ? 'admin.dashboard' : 'admin.staff.index',
+                'route' => 'admin.dashboard',
             ],
             'owner' => ['factory' => 'owner', 'route' => 'owner.dashboard'],
             'kasir' => ['factory' => 'kasir', 'route' => 'kasir.dashboard'],

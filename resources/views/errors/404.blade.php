@@ -22,9 +22,8 @@
     <title>Halaman Tidak Ditemukan - ABS Cafe</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo-badge.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('images/logo-badge.png') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    @include('partials.font-preloads')
+    <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -34,7 +33,7 @@
                     beige: '#E3DEA4', card: '#FAFCF3', text: '#290024', muted: '#775533',
                     success: '#4F7A4A', warning: '#C98A2B', danger: '#B03A2E', info: '#5B7C99',
                 } },
-                fontFamily: { serif: ['"Playfair Display"', 'Georgia', 'serif'], sans: ['"Poppins"', 'sans-serif'] },
+                fontFamily: { serif: ['"Noto Serif"', 'Georgia', 'serif'], sans: ['"Poppins"', 'sans-serif'] },
             } }
         }
     </script>

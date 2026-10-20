@@ -1,89 +1,53 @@
 @php
     $role = $role ?? 'admin';
     $currentRoute = Route::currentRouteName();
-    $legacyAdmin = config('features.legacy_admin');
 
     if ($role === 'admin') {
-        if ($legacyAdmin) {
-            $pendingOrders = \App\Models\Order::where('payment_status', 'menunggu_pembayaran')->count();
-
-            // LEGACY ADMIN: old mobile navigation.
-            $navItems = [
-                [
-                    'label' => 'Beranda',
-                    'route' => 'admin.dashboard',
-                    'icon'  => 'layout-dashboard',
-                    'match' => 'admin.dashboard',
-                    'badge' => null,
-                ],
-                [
-                    'label' => 'Menu',
-                    'route' => 'admin.menu.index',
-                    'icon'  => 'coffee',
-                    'match' => 'admin.menu',
-                    'badge' => null,
-                ],
-                [
-                    'label' => 'Staf',
-                    'route' => 'admin.users.index',
-                    'icon'  => 'users',
-                    'match' => 'admin.users',
-                    'badge' => null,
-                ],
-                [
-                    'label' => 'Promo',
-                    'route' => 'admin.promo.index',
-                    'icon'  => 'tag',
-                    'match' => 'admin.promo',
-                    'badge' => null,
-                ],
-                [
-                    'label' => 'Lainnya',
-                    'action' => 'toggleSidebar()',
-                    'icon'  => 'menu',
-                    'match' => null,
-                    'badge' => $pendingOrders > 0 ? $pendingOrders : null,
-                ],
-            ];
-        } else {
-            $navItems = [
-                [
-                    'label' => 'Staf',
-                    'route' => 'admin.staff.index',
-                    'icon'  => 'users',
-                    'match' => 'admin.staff',
-                    'badge' => null,
-                ],
-                [
-                    'label' => 'Menu',
-                    'route' => 'admin.catalog.index',
-                    'icon'  => 'coffee',
-                    'match' => 'admin.catalog',
-                    'badge' => null,
-                ],
-                [
-                    'label' => 'Meja',
-                    'route' => 'admin.operations.index',
-                    'icon'  => 'grid-3x3',
-                    'match' => 'admin.operations',
-                    'badge' => null,
-                ],
-                [
-                    'label' => 'Promo',
-                    'route' => 'admin.vouchers.index',
-                    'icon'  => 'tag',
-                    'match' => 'admin.vouchers',
-                    'badge' => null,
-                ],
-                [
-                    'label' => 'Lainnya',
-                    'action' => 'toggleAdminMore()',
-                    'icon'  => 'menu',
-                    'match' => null,
-                    'badge' => null,
-                ],
-            ];
-        }
+        // ACTIVE ADMIN: Dashboard is "Beranda", followed by the active modules.
+        $navItems = [
+            [
+                'label' => 'Beranda',
+                'route' => 'admin.dashboard',
+                'icon'  => 'layout-dashboard',
+                'match' => 'admin.dashboard',
+                'badge' => null,
+            ],
+            [
+                'label' => 'Staf',
+                'route' => 'admin.staff.index',
+                'icon'  => 'users',
+                'match' => 'admin.staff',
+                'badge' => null,
+            ],
+            [
+                'label' => 'Menu',
+                'route' => 'admin.catalog.index',
+                'icon'  => 'coffee',
+                'match' => 'admin.catalog',
+                'badge' => null,
+            ],
+            [
+                'label' => 'Meja',
+                'route' => 'admin.operations.index',
+                'icon'  => 'grid-3x3',
+                'match' => 'admin.operations',
+                'badge' => null,
+            ],
+            [
+                'label' => 'Promo',
+                'route' => 'admin.vouchers.index',
+                'icon'  => 'tag',
+                'match' => 'admin.vouchers',
+                'badge' => null,
+            ],
+            [
+                'label' => 'Lainnya',
+                'action' => 'toggleAdminMore()',
+                'icon'  => 'menu',
+                'match' => null,
+                'badge' => null,
+            ],
+        ];
     } elseif ($role === 'owner') {
         $activePromoCount = \App\Models\Promo::where('is_active', true)->whereDate('start_date', '<=', now())->whereDate('end_date', '>=', now())->count();
         $navItems = [
@@ -164,11 +128,13 @@
             ],
         ];
     }
+
+    $navColumns = count($navItems) === 6 ? 'grid-cols-6' : 'grid-cols-5';
 @endphp
 
 <!-- Mobile Bottom Navigation Bar (Hidden on desktop md/lg) -->
 <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FAFCF3]/95 backdrop-blur-lg border-t border-[#E3DEA4] shadow-[0_-4px_20px_rgba(41,0,36,0.06)] px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] transition-transform duration-300">
-    <div class="max-w-md mx-auto grid grid-cols-5 items-center gap-1">
+    <div class="max-w-md mx-auto grid {{ $navColumns }} items-center gap-1">
         @foreach($navItems as $item)
             @php
                 $isActive = false;
@@ -216,7 +182,7 @@
     </div>
 </nav>
 
-@if($role === 'admin' && ! $legacyAdmin)
+@if($role === 'admin')
     <!-- Active admin "Lainnya" sheet (website settings, activity log, profile, logout) -->
     <div id="admin-more-backdrop" onclick="toggleAdminMore()" class="fixed inset-0 z-40 bg-[#290024]/50 backdrop-blur-sm hidden lg:hidden"></div>
 
