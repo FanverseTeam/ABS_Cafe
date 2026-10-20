@@ -11,14 +11,23 @@ class MenuVariant extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['menu_id', 'name', 'price', 'is_default'];
+    protected $fillable = [
+        'menu_id', 'name', 'size', 'price', 'is_default', 'is_available', 'sort_order',
+    ];
 
     protected function casts(): array
     {
         return [
             'price' => 'decimal:2',
             'is_default' => 'boolean',
+            'is_available' => 'boolean',
+            'sort_order' => 'integer',
         ];
+    }
+
+    public function displayName(): string
+    {
+        return trim($this->name.($this->size ? ' - '.$this->size : ''));
     }
 
     public function menu(): BelongsTo

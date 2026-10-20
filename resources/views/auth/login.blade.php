@@ -187,7 +187,7 @@
 
                     <!-- Remember -->
                     <label class="flex items-center gap-2 cursor-pointer text-xs text-cafe-text select-none">
-                        <input type="checkbox" name="remember" value="1" {{ old('_token') ? (old('remember') ? 'checked' : '') : 'checked' }} class="w-4 h-4 rounded accent-[#290024] focus:ring-cafe-gold">
+                        <input type="checkbox" name="remember" value="1" @checked(old('remember')) class="w-4 h-4 rounded accent-[#290024] focus:ring-cafe-gold">
                         <span>Ingat saya di perangkat ini</span>
                     </label>
 

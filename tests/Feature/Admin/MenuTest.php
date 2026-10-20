@@ -96,4 +96,38 @@ class MenuTest extends TestCase
 
         $this->assertDatabaseMissing('menus', ['id' => $menu->id]);
     }
+
+    public function test_legacy_admin_can_create_menu_with_variants(): void
+    {
+        $category = Category::factory()->create();
+
+        $this->actingAsAdmin()->post('/admin/menu/store', [
+            'name' => 'Teh Tarik (Hot / Ice)',
+            'category_id' => $category->id,
+            'price' => 8000,
+            'variants_present' => 1,
+            'variants' => [
+                ['name' => 'Ice', 'price' => 9000, 'is_available' => '1'],
+                ['name' => 'Hot', 'price' => 8000, 'is_available' => '1'],
+            ],
+        ])->assertRedirect();
+
+        $menu = Menu::where('name', 'Teh Tarik (Hot / Ice)')->firstOrFail();
+
+        $this->assertSame(8000.0, (float) $menu->price);
+        $this->assertSame(2, $menu->variants()->count());
+    }
+
+    public function test_legacy_admin_can_merge_menus(): void
+    {
+        $category = Category::factory()->create();
+        $ice = Menu::factory()->for($category)->create(['name' => 'Teh Tarik (Ice)']);
+        $hot = Menu::factory()->for($category)->create(['name' => 'Teh Tarik (Hot)']);
+
+        $this->actingAsAdmin()->post('/admin/menu/gabungkan', [
+            'menu_ids' => [$ice->id, $hot->id],
+        ])->assertRedirect()->assertSessionHas('success');
+
+        $this->assertDatabaseHas('menus', ['name' => 'Teh Tarik (Hot / Ice)', 'deleted_at' => null]);
+    }
 }

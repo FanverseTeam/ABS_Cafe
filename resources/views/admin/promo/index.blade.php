@@ -77,7 +77,7 @@
                         <div class="pt-2 text-[11px] text-cafe-muted flex items-center gap-1">
                             <span>Berlaku untuk:</span>
                             <strong class="text-cafe-text">
-                                {{ $promo->applies_to === 'semua' ? 'Seluruh Menu' : ($promo->targetCategory ? 'Kategori ' . $promo->targetCategory->name : 'Menu Tertentu') }}
+                                {{ $promo->applies_to === 'semua' ? 'Seluruh Menu' : ($promo->targetCategory ? 'Kategori ' . $promo->targetCategory->name : ($promo->targetMenu ? 'Menu ' . $promo->targetMenu->name : 'Menu Tertentu')) }}
                             </strong>
                         </div>
                     </div>
@@ -167,20 +167,30 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Berlaku Untuk *</label>
                     <select name="applies_to" id="prm-applies" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         <option value="semua">Semua Menu</option>
                         <option value="kategori">Kategori Tertentu</option>
+                        <option value="menu">Menu Tertentu</option>
                     </select>
                 </div>
                 <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Kategori Target (Jika Kategori)</label>
+                    <label class="font-semibold text-cafe-dark">Kategori Target</label>
                     <select name="target_category_id" id="prm-cat" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         <option value="">Pilih Kategori</option>
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="font-semibold text-cafe-dark">Menu Target</label>
+                    <select name="target_menu_id" id="prm-menu" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <option value="">Pilih Menu</option>
+                        @foreach($menus as $menu)
+                            <option value="{{ $menu->id }}">{{ $menu->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -226,6 +236,8 @@
         document.getElementById('prm-type').value = 'buy_x_get_y';
         document.getElementById('prm-value').value = '100';
         document.getElementById('prm-applies').value = 'semua';
+        document.getElementById('prm-cat').value = '';
+        document.getElementById('prm-menu').value = '';
         document.getElementById('prm-banner').value = 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&auto=format&fit=crop&q=80';
         document.getElementById('prm-start').value = new Date().toISOString().split('T')[0];
         document.getElementById('prm-end').value = new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0];
@@ -242,6 +254,7 @@
         document.getElementById('prm-value').value = parseInt(promo.value);
         document.getElementById('prm-applies').value = promo.applies_to;
         document.getElementById('prm-cat').value = promo.target_category_id || '';
+        document.getElementById('prm-menu').value = promo.target_menu_id || '';
         document.getElementById('prm-banner').value = promo.banner || '';
         document.getElementById('prm-start').value = promo.start_date.split('T')[0];
         document.getElementById('prm-end').value = promo.end_date.split('T')[0];

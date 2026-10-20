@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\ActivityLog;
 use App\Models\CafeSetting;
+use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -136,7 +137,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         $paymentMethods = ['qris', 'tunai', 'debit'];
-        $menuList = Menu::all();
+        $menuList = Menu::with('variants')->get();
 
         foreach ($sampleCustomers as $index => $customer) {
             $orderCode = sprintf('#AB2610%02d', $index + 1);
@@ -197,14 +198,17 @@ class DatabaseSeeder extends Seeder
             $order->items()->delete();
             foreach ($selectedMenus as $menu) {
                 $qty = ($index % 2 === 0) ? 1 : 2;
-                $itemSubtotal = $menu->price * $qty;
+                $variant = $menu->variants->where('is_available', true)->first() ?? $menu->variants->first();
+                $itemPrice = $variant ? (float) $variant->price : (float) $menu->price;
+                $itemSubtotal = $itemPrice * $qty;
                 $subtotal += $itemSubtotal;
 
                 OrderItem::create([
                     'order_id' => $order->id,
                     'menu_id' => $menu->id,
-                    'name' => $menu->name,
-                    'price' => $menu->price,
+                    'variant_id' => $variant?->id,
+                    'name' => $menu->orderLineName($variant),
+                    'price' => $itemPrice,
                     'quantity' => $qty,
                     'subtotal' => $itemSubtotal,
                     'notes' => ($index % 4 === 0) ? 'Less sweet, ice dipisah' : null,
@@ -274,6 +278,8 @@ class DatabaseSeeder extends Seeder
         }
 
         // 6. Promos (3 promos)
+        $catCoffee = Category::where('name', 'Coffee Base')->firstOrFail();
+
         Promo::updateOrCreate(['title' => 'Buy 2 Get 1 Free All Coffee'], [
             'description' => 'Beli 2 cup menu coffee apa saja, dapatkan gratis 1 Americano atau Latte setiap hari!',
             'type' => 'buy_x_get_y',

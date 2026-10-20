@@ -9,12 +9,17 @@ use App\Models\Menu;
 use App\Models\Stock;
 use App\Models\StockLog;
 use App\Models\Supplier;
+use App\Services\MenuMergeService;
+use App\Services\MenuVariantService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class CatalogController extends Controller
 {
+    public function __construct(private readonly MenuVariantService $variants) {}
+
     public function index(Request $request)
     {
         $activeCategories = Category::where('is_active', true)->orderBy('order', 'asc')->get();
@@ -91,16 +96,7 @@ class CatalogController extends Controller
 
     public function storeMenu(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'price' => 'required|numeric|min:0',
-            'description' => 'nullable|string',
-            'image' => 'nullable|string',
-            'stock' => 'nullable|integer|min:0',
-            'min_stock' => 'nullable|integer|min:1',
-            'unit' => 'nullable|string',
-        ]);
+        $this->validateMenu($request);
 
         $menu = Menu::create([
             'name' => $request->input('name'),
@@ -116,6 +112,8 @@ class CatalogController extends Controller
             'sold_count' => 0,
         ]);
 
+        $this->variants->sync($menu, $this->variantPayload($request));
+
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
@@ -129,16 +127,7 @@ class CatalogController extends Controller
 
     public function updateMenu(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'price' => 'required|numeric|min:0',
-            'description' => 'nullable|string',
-            'image' => 'nullable|string',
-            'stock' => 'nullable|integer|min:0',
-            'min_stock' => 'nullable|integer|min:1',
-            'unit' => 'nullable|string',
-        ]);
+        $this->validateMenu($request);
 
         $menu = Menu::findOrFail($id);
 
@@ -154,6 +143,10 @@ class CatalogController extends Controller
             'min_stock' => $request->input('min_stock', $menu->min_stock),
             'unit' => $request->input('unit', $menu->unit),
         ]);
+
+        if ($request->has('variants') || $request->boolean('variants_present')) {
+            $this->variants->sync($menu, $this->variantPayload($request));
+        }
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
@@ -227,7 +220,7 @@ class CatalogController extends Controller
     {
         $menu = Menu::findOrFail($id);
         $name = $menu->name;
-        $menu->delete();
+        $menu->forceDelete();
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
@@ -238,6 +231,24 @@ class CatalogController extends Controller
         ]);
 
         return back()->with('success', "Menu {$name} telah berhasil dihapus.");
+    }
+
+    public function mergeMenus(Request $request, MenuMergeService $merge)
+    {
+        $data = $request->validate([
+            'menu_ids' => 'required|array|min:2',
+            'menu_ids.*' => 'required|integer|exists:menus,id',
+        ], [
+            'menu_ids.min' => 'Pilih minimal dua menu untuk digabungkan.',
+        ]);
+
+        try {
+            $parent = $merge->mergeMenus($data['menu_ids'], Auth::user());
+        } catch (ValidationException $exception) {
+            return back()->with('error', collect($exception->errors())->flatten()->first());
+        }
+
+        return back()->with('success', "Menu berhasil digabungkan menjadi {$parent->name}.");
     }
 
     public function recipes($id)
@@ -291,6 +302,42 @@ class CatalogController extends Controller
         }
 
         return back()->with('success', "Resep untuk menu {$menu->name} berhasil diperbarui.");
+    }
+
+    private function validateMenu(Request $request): void
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'price' => 'required|numeric|min:0',
+            'description' => 'nullable|string',
+            'image' => 'nullable|string',
+            'stock' => 'nullable|integer|min:0',
+            'min_stock' => 'nullable|integer|min:1',
+            'unit' => 'nullable|string',
+            'variants' => 'nullable|array',
+            'variants.*.id' => 'nullable|integer|exists:menu_variants,id',
+            'variants.*.name' => 'nullable|string|max:100',
+            'variants.*.size' => 'nullable|string|max:50',
+            'variants.*.price' => 'nullable|numeric|min:0',
+            'variants.*.is_available' => 'nullable|boolean',
+            'variants.*.sort_order' => 'nullable|integer|min:0',
+        ]);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function variantPayload(Request $request): array
+    {
+        if (! $request->has('variants')) {
+            return [];
+        }
+
+        return collect($request->input('variants', []))
+            ->filter(fn ($variant) => filled($variant['name'] ?? null))
+            ->values()
+            ->all();
     }
 
     public function storeCategory(Request $request)

@@ -7,6 +7,7 @@ use App\Models\CafeSetting;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\Promo;
+use App\Support\MenuSalesReport;
 use App\Support\PeriodFilter;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -211,24 +212,14 @@ class DashboardController extends Controller
     }
 
     /**
-     * @return Collection<int, array{name: string, quantity: int, revenue: float}>
+     * @return Collection<int, array{name: string, quantity: int, revenue: float, variants: array<int, array<string, mixed>>}>
      */
     private function topMenus(PeriodFilter $period, int $limit)
     {
-        return DB::table('order_items')
-            ->join('orders', 'orders.id', '=', 'order_items.order_id')
-            ->where('orders.payment_status', 'lunas')
-            ->whereBetween('orders.created_at', [$period->start, $period->end])
-            ->select('order_items.name', DB::raw('SUM(order_items.quantity) as quantity'), DB::raw('SUM(order_items.subtotal) as revenue'))
-            ->groupBy('order_items.name')
-            ->orderByDesc('quantity')
-            ->limit($limit)
-            ->get()
-            ->map(fn ($row) => [
-                'name' => $row->name,
-                'quantity' => (int) $row->quantity,
-                'revenue' => (float) $row->revenue,
-            ]);
+        return MenuSalesReport::forPeriod($period)
+            ->sortByDesc('quantity')
+            ->take($limit)
+            ->values();
     }
 
     /**

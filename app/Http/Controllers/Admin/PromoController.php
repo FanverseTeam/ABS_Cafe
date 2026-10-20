@@ -3,19 +3,22 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
+use App\Models\Category;
+use App\Models\Menu;
+use App\Models\Promo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Promo;
-use App\Models\Category;
-use App\Models\ActivityLog;
 
 class PromoController extends Controller
 {
     public function index()
     {
-        $promos = Promo::with('targetCategory')->orderBy('created_at', 'desc')->get();
+        $promos = Promo::with(['targetCategory', 'targetMenu'])->orderBy('created_at', 'desc')->get();
         $categories = Category::where('is_active', true)->get();
-        return view('admin.promo.index', compact('promos', 'categories'));
+        $menus = Menu::orderBy('name')->get();
+
+        return view('admin.promo.index', compact('promos', 'categories', 'menus'));
     }
 
     public function store(Request $request)
@@ -28,6 +31,7 @@ class PromoController extends Controller
             'value' => 'required|numeric|min:0',
             'applies_to' => 'required|in:semua,kategori,menu',
             'target_category_id' => 'nullable|exists:categories,id',
+            'target_menu_id' => 'nullable|exists:menus,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'banner' => 'nullable|string',
@@ -42,6 +46,7 @@ class PromoController extends Controller
             'value' => $request->input('value'),
             'applies_to' => $request->input('applies_to'),
             'target_category_id' => $request->input('target_category_id'),
+            'target_menu_id' => $request->input('target_menu_id'),
             'start_date' => $request->input('start_date'),
             'end_date' => $request->input('end_date'),
             'banner' => $request->input('banner') ?: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&auto=format&fit=crop&q=80',
@@ -70,6 +75,7 @@ class PromoController extends Controller
             'value' => 'required|numeric|min:0',
             'applies_to' => 'required|in:semua,kategori,menu',
             'target_category_id' => 'nullable|exists:categories,id',
+            'target_menu_id' => 'nullable|exists:menus,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'banner' => 'nullable|string',
@@ -85,6 +91,7 @@ class PromoController extends Controller
             'value' => $request->input('value'),
             'applies_to' => $request->input('applies_to'),
             'target_category_id' => $request->input('target_category_id'),
+            'target_menu_id' => $request->input('target_menu_id'),
             'start_date' => $request->input('start_date'),
             'end_date' => $request->input('end_date'),
             'banner' => $request->input('banner') ?: $promo->banner,
@@ -106,7 +113,7 @@ class PromoController extends Controller
     public function toggleActive($id)
     {
         $promo = Promo::findOrFail($id);
-        $promo->is_active = !$promo->is_active;
+        $promo->is_active = ! $promo->is_active;
         $promo->save();
 
         $statusStr = $promo->is_active ? 'Diaktifkan' : 'Dinonaktifkan';

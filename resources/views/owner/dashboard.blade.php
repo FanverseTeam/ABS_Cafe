@@ -187,6 +187,11 @@
                             <div class="min-w-0 flex-1">
                                 <p class="text-xs font-semibold text-cafe-dark truncate">{{ $menu['name'] }}</p>
                                 <p class="text-[10px] text-cafe-muted">{{ number_format($menu['quantity'], 0, ',', '.') }} terjual</p>
+                                @if(!empty($menu['variants']))
+                                    <p class="text-[9px] text-cafe-muted/80 truncate">
+                                        {{ collect($menu['variants'])->map(fn ($variant) => $variant['name'].' '.$variant['quantity'].'x')->implode(' / ') }}
+                                    </p>
+                                @endif
                             </div>
                             <span class="text-xs font-serif font-bold text-cafe-dark whitespace-nowrap">{{ $rp($menu['revenue']) }}</span>
                         </div>

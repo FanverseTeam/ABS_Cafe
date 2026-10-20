@@ -5,8 +5,8 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\MenuVariant;
+use App\Services\MenuMergeService;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class MenuUpdateSeeder extends Seeder
@@ -1761,5 +1761,8 @@ class MenuUpdateSeeder extends Seeder
         }
 
         Schema::enableForeignKeyConstraints();
+
+        // Menu Hot/Ice digabung menjadi menu induk dengan varian.
+        app(MenuMergeService::class)->mergeAllDetected();
     }
 }

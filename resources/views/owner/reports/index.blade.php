@@ -99,9 +99,22 @@
                             <tbody class="divide-y divide-cafe-beige/40">
                                 @forelse($data['perMenu']->take(10) as $row)
                                     <tr>
-                                        <td class="py-2 text-cafe-text font-medium">{{ $row['name'] }}</td>
-                                        <td class="py-2 text-right text-cafe-muted">{{ number_format($row['quantity'], 0, ',', '.') }}</td>
-                                        <td class="py-2 text-right font-semibold text-cafe-dark">{{ $rp($row['revenue']) }}</td>
+                                        <td class="py-2 text-cafe-text font-medium">
+                                            <div>{{ $row['name'] }}</div>
+                                            @if(!empty($row['variants']))
+                                                <div class="mt-1 space-y-0.5">
+                                                    @foreach($row['variants'] as $variant)
+                                                        <div class="text-[10px] text-cafe-muted flex items-center gap-1">
+                                                            <span class="w-1 h-1 rounded-full bg-cafe-gold shrink-0"></span>
+                                                            <span>{{ $variant['name'] }}</span>
+                                                            <span class="text-cafe-muted/70">{{ number_format($variant['quantity'], 0, ',', '.') }}x</span>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td class="py-2 text-right text-cafe-muted align-top">{{ number_format($row['quantity'], 0, ',', '.') }}</td>
+                                        <td class="py-2 text-right font-semibold text-cafe-dark align-top">{{ $rp($row['revenue']) }}</td>
                                     </tr>
                                 @empty
                                     <tr><td colspan="3" class="py-4 text-center text-cafe-muted">Belum ada data.</td></tr>

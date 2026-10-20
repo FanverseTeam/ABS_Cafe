@@ -14,6 +14,29 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 
+@php
+    $posMenuData = $categories->flatMap->menus->mapWithKeys(fn ($menu) => [
+        $menu->id => [
+            'id' => $menu->id,
+            'name' => $menu->name,
+            'base_name' => $menu->variantBaseName(),
+            'price' => (float) $menu->price,
+            'stock' => $menu->stock,
+            'description' => $menu->description,
+            'image' => $menu->image,
+            'is_available' => (bool) $menu->is_available,
+            'variants' => $menu->variants->map(fn ($variant) => [
+                'id' => $variant->id,
+                'name' => $variant->name,
+                'size' => $variant->size,
+                'display_name' => $variant->displayName(),
+                'price' => (float) $variant->price,
+                'is_available' => (bool) $variant->is_available,
+            ])->values(),
+        ],
+    ]);
+@endphp
+
 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 relative">
     <!-- Katalog Menu (Kiri di desktop, penuh di mobile) -->
     <div class="xl:col-span-2 space-y-4">
@@ -51,11 +74,14 @@
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                     @forelse($category->menus as $menu)
                         @php
-                            $defaultPrice = $menu->variants->count() ? (float)$menu->variants->first()->price : (float)$menu->price;
+                            $availableVariants = $menu->variants->where('is_available', true);
+                            $defaultPrice = $availableVariants->count() ? (float) $availableVariants->min('price') : (float) $menu->price;
                             $hasVariants = $menu->variants->count() > 1;
+                            $priceLabel = $hasVariants ? $menu->priceRangeLabel() : 'Rp '.number_format($defaultPrice, 0, ',', '.');
+                            $isSoldOut = ! $menu->is_available || ($menu->variants->isNotEmpty() && $availableVariants->isEmpty());
                         @endphp
-                        <div class="pos-menu-card bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4]/70 p-3 shadow-soft flex flex-col justify-between cursor-pointer group {{ ! $menu->is_available ? 'opacity-50 pointer-events-none' : '' }}"
-                             onclick="handleMenuClick({{ $menu->id }}, '{{ addslashes($menu->name) }}', {{ $defaultPrice }}, {{ $menu->stock ?? 'null' }}, '{{ addslashes($menu->description ?? '') }}', '{{ $menu->image }}', {{ json_encode($menu->variants) }})">
+                        <div class="pos-menu-card bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4]/70 p-3 shadow-soft flex flex-col justify-between cursor-pointer group {{ $isSoldOut ? 'opacity-50 pointer-events-none' : '' }}"
+                             onclick="handleMenuClick({{ $menu->id }})">
                             <div>
                                 <!-- Thumbnail Foto Membulat -->
                                 <div class="relative w-full aspect-square rounded-xl bg-[#F2F5E2] overflow-hidden mb-2.5 flex items-center justify-center">
@@ -93,12 +119,15 @@
                             <div class="mt-3 flex items-center justify-between gap-2 pt-2 border-t border-[#E3DEA4]/40">
                                 <div>
                                     <span class="font-serif font-bold text-xs sm:text-sm text-[#290024] block">
-                                        Rp {{ number_format($defaultPrice, 0, ',', '.') }}
+                                        {{ $priceLabel }}
                                     </span>
+                                    @if($hasVariants)
+                                        <span class="text-[9px] text-[#775533]">{{ $menu->variantNameList() }}</span>
+                                    @endif
                                 </div>
 
-                                <button type="button" 
-                                        onclick="event.stopPropagation(); handleMenuClick({{ $menu->id }}, '{{ addslashes($menu->name) }}', {{ $defaultPrice }}, {{ $menu->stock ?? 'null' }}, '{{ addslashes($menu->description ?? '') }}', '{{ $menu->image }}', {{ json_encode($menu->variants) }})"
+                                <button type="button"
+                                        onclick="event.stopPropagation(); handleMenuClick({{ $menu->id }})"
                                         class="qty-btn w-8 h-8 rounded-full bg-[#290024] text-[#FAFCF3] hover:bg-[#D4954D] hover:text-[#290024] flex items-center justify-center transition-all shadow-sm"
                                         aria-label="Pilih {{ $menu->name }}">
                                     <i data-lucide="plus" class="w-4 h-4"></i>
@@ -321,10 +350,16 @@
                 </div>
             </div>
 
-            <!-- Varian / Ukuran Pilihan (Radio-card bergaya referensi) -->
+            <!-- Varian -->
             <div id="sheet-variants-container" class="space-y-2 hidden">
-                <label class="block text-[11px] font-bold text-[#775533] uppercase tracking-wider">Pilih Ukuran / Varian</label>
+                <label class="block text-[11px] font-bold text-[#775533] uppercase tracking-wider">Pilih Varian</label>
                 <div id="sheet-variants-list" class="grid grid-cols-2 gap-2"></div>
+            </div>
+
+            <!-- Ukuran -->
+            <div id="sheet-sizes-container" class="space-y-2 hidden">
+                <label class="block text-[11px] font-bold text-[#775533] uppercase tracking-wider">Pilih Ukuran</label>
+                <div id="sheet-sizes-list" class="grid grid-cols-2 gap-2"></div>
             </div>
 
             <!-- Stepper Jumlah (- 1 +) -->
@@ -443,10 +478,16 @@
 
 <script>
 // ---------- State ----------
+const posMenus = @json($posMenuData);
 let cart = [];
 @if($resume)
     cart = {!! json_encode($resume->items->map(fn ($it) => [
-        'menu_id' => $it->menu_id, 'name' => $it->name, 'price' => (float)$it->price, 'qty' => $it->quantity, 'notes' => $it->notes,
+        'menu_id' => $it->menu_id,
+        'variant_id' => $it->variant_id,
+        'name' => $it->name,
+        'price' => (float) $it->price,
+        'qty' => $it->quantity,
+        'notes' => $it->notes,
     ])->values()) !!};
 @endif
 let selectedMethod = 'tunai';
@@ -454,10 +495,17 @@ let selectedMethod = 'tunai';
 // State detail sheet
 let currentMenuSheet = null;
 let currentSelectedVariant = null;
+let currentSelectedVariantName = null;
 let currentSheetQty = 1;
 
 function formatRupiah(n) {
     return 'Rp ' + new Intl.NumberFormat('id-ID').format(Math.round(n));
+}
+
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
+    }[char]));
 }
 
 let totalsTimer = null;
@@ -544,19 +592,138 @@ function renderCart() {
 }
 
 // ---------- Detail Menu Bottom Sheet Handler ----------
-function handleMenuClick(id, name, defaultPrice, stock, desc, image, variants) {
-    currentMenuSheet = { id, name, defaultPrice, stock, desc, image, variants };
+function optionCard(label, sublabel, selected, disabled, onClick) {
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.disabled = disabled;
+    card.className = `p-2.5 rounded-2xl border transition-all text-left flex items-center justify-between gap-2 ${
+        selected
+            ? 'border-[#290024] bg-[#290024] text-[#FAFCF3]'
+            : 'border-[#E3DEA4] bg-[#FAFCF3] text-[#290024]'
+    } ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:border-[#D4954D]'}`;
+    card.innerHTML = `
+        <div class="min-w-0">
+            <p class="text-xs font-bold leading-tight truncate">${escapeHtml(label)}</p>
+            <p class="text-[10px] ${selected ? 'text-[#D4954D]' : 'text-[#775533]'}">${escapeHtml(sublabel)}</p>
+        </div>
+        <div class="w-4 h-4 rounded-full border ${selected ? 'border-[#D4954D] bg-[#D4954D]' : 'border-[#775533]/40'} flex items-center justify-center shrink-0">
+            <span class="w-1.5 h-1.5 rounded-full ${selected ? 'bg-[#290024]' : 'opacity-0'}"></span>
+        </div>
+    `;
+    if (! disabled && onClick) {
+        card.onclick = onClick;
+    }
+
+    return card;
+}
+
+function variantGroups(menu) {
+    const groups = new Map();
+
+    (menu.variants || []).forEach((variant) => {
+        if (! groups.has(variant.name)) {
+            groups.set(variant.name, []);
+        }
+        groups.get(variant.name).push(variant);
+    });
+
+    return Array.from(groups, ([name, rows]) => ({
+        name,
+        rows,
+        available: rows.some((row) => row.is_available),
+        minPrice: Math.min(...rows.map((row) => Number(row.price))),
+        maxPrice: Math.max(...rows.map((row) => Number(row.price))),
+    }));
+}
+
+function selectVariantGroup(group) {
+    if (! currentMenuSheet) {
+        return;
+    }
+
+    currentSelectedVariantName = group.name;
+    const sizeContainer = document.getElementById('sheet-sizes-container');
+    const sizeList = document.getElementById('sheet-sizes-list');
+    sizeList.innerHTML = '';
+
+    const renderGroupSelection = () => {
+        const list = document.getElementById('sheet-variants-list');
+        Array.from(list.children).forEach((card, index) => {
+            const item = currentMenuSheet.groups[index];
+            if (! item) {
+                return;
+            }
+            card.className = `p-2.5 rounded-2xl border transition-all text-left flex items-center justify-between gap-2 ${
+                item.name === currentSelectedVariantName
+                    ? 'border-[#290024] bg-[#290024] text-[#FAFCF3]'
+                    : 'border-[#E3DEA4] bg-[#FAFCF3] text-[#290024]'
+            } ${item.available ? 'cursor-pointer hover:border-[#D4954D]' : 'opacity-40 cursor-not-allowed'}`;
+        });
+    };
+
+    const rows = group.rows;
+    const availableRows = rows.filter((row) => row.is_available);
+    const hasSizes = rows.some((row) => row.size) || rows.length > 1;
+    const retainedSelection = currentSelectedVariant
+        ? availableRows.find((row) => row.id === currentSelectedVariant.id)
+        : null;
+
+    if (! hasSizes) {
+        currentSelectedVariant = retainedSelection || availableRows[0] || null;
+        currentSelectedVariantName = group.name;
+        sizeContainer.classList.add('hidden');
+        document.getElementById('sheet-menu-price').textContent = formatRupiah(
+            currentSelectedVariant ? currentSelectedVariant.price : group.minPrice
+        );
+        renderGroupSelection();
+
+        return;
+    }
+
+    sizeContainer.classList.remove('hidden');
+    currentSelectedVariant = retainedSelection || availableRows[0] || null;
+
+    rows.forEach((row) => {
+        const label = row.size || 'Reguler';
+        const selected = currentSelectedVariant?.id === row.id;
+        sizeList.appendChild(optionCard(
+            label,
+            formatRupiah(row.price),
+            selected,
+            ! row.is_available,
+            () => {
+                currentSelectedVariant = row;
+                document.getElementById('sheet-menu-price').textContent = formatRupiah(row.price);
+                selectVariantGroup(group);
+            }
+        ));
+    });
+
+    document.getElementById('sheet-menu-price').textContent = formatRupiah(
+        currentSelectedVariant ? currentSelectedVariant.price : group.minPrice
+    );
+    renderGroupSelection();
+}
+
+function handleMenuClick(id) {
+    const menu = posMenus[id];
+    if (! menu) {
+        return;
+    }
+
+    currentMenuSheet = { ...menu, groups: variantGroups(menu) };
     currentSheetQty = 1;
+    currentSelectedVariant = null;
+    currentSelectedVariantName = null;
     document.getElementById('sheet-qty').textContent = '1';
     document.getElementById('sheet-notes').value = '';
 
-    document.getElementById('sheet-menu-name').textContent = name;
-    document.getElementById('sheet-menu-desc').textContent = desc || 'Menu spesial pilihan dari ABS Cafe.';
-    
+    document.getElementById('sheet-menu-name').textContent = menu.name;
+    document.getElementById('sheet-menu-desc').textContent = menu.description || 'Menu spesial pilihan dari ABS Cafe.';
+
     const imgEl = document.getElementById('sheet-menu-img');
-    const imgWrap = document.getElementById('sheet-menu-img-wrap');
-    if (image) {
-        imgEl.src = image;
+    if (menu.image) {
+        imgEl.src = menu.image;
         imgEl.classList.remove('hidden');
     } else {
         imgEl.classList.add('hidden');
@@ -564,53 +731,63 @@ function handleMenuClick(id, name, defaultPrice, stock, desc, image, variants) {
 
     const varContainer = document.getElementById('sheet-variants-container');
     const varList = document.getElementById('sheet-variants-list');
+    const sizeContainer = document.getElementById('sheet-sizes-container');
     varList.innerHTML = '';
+    sizeContainer.classList.add('hidden');
+    document.getElementById('sheet-sizes-list').innerHTML = '';
 
-    if (variants && variants.length > 1) {
+    const groups = currentMenuSheet.groups;
+
+    if (groups.length > 1) {
         varContainer.classList.remove('hidden');
-        currentSelectedVariant = variants[0];
-        document.getElementById('sheet-menu-price').textContent = formatRupiah(currentSelectedVariant.price);
-
-        variants.forEach((v, vIdx) => {
-            const isSelected = vIdx === 0;
-            const card = document.createElement('div');
-            card.className = `p-2.5 rounded-2xl border cursor-pointer transition-all text-left flex items-center justify-between ${isSelected ? 'border-[#290024] bg-[#290024] text-[#FAFCF3]' : 'border-[#E3DEA4] bg-[#FAFCF3] text-[#290024]'}`;
-            card.innerHTML = `
-                <div>
-                    <p class="text-xs font-bold leading-tight">${v.name}</p>
-                    <p class="text-[10px] ${isSelected ? 'text-[#D4954D]' : 'text-[#775533]'}">${formatRupiah(v.price)}</p>
-                </div>
-                <div class="w-4 h-4 rounded-full border ${isSelected ? 'border-[#D4954D] bg-[#D4954D]' : 'border-[#775533]/40'} flex items-center justify-center">
-                    <span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-[#290024]' : 'opacity-0'}"></span>
-                </div>
-            `;
-            card.onclick = () => {
-                currentSelectedVariant = v;
-                document.getElementById('sheet-menu-price').textContent = formatRupiah(v.price);
-                Array.from(varList.children).forEach(c => {
-                    c.className = 'p-2.5 rounded-2xl border cursor-pointer transition-all text-left flex items-center justify-between border-[#E3DEA4] bg-[#FAFCF3] text-[#290024]';
-                    c.querySelector('div:last-child').className = 'w-4 h-4 rounded-full border border-[#775533]/40 flex items-center justify-center';
-                    c.querySelector('div:last-child span').className = 'w-1.5 h-1.5 rounded-full opacity-0';
-                });
-                card.className = 'p-2.5 rounded-2xl border cursor-pointer transition-all text-left flex items-center justify-between border-[#290024] bg-[#290024] text-[#FAFCF3]';
-                card.querySelector('div:last-child').className = 'w-4 h-4 rounded-full border border-[#D4954D] bg-[#D4954D] flex items-center justify-center';
-                card.querySelector('div:last-child span').className = 'w-1.5 h-1.5 rounded-full bg-[#290024]';
-            };
-            varList.appendChild(card);
+        groups.forEach((group) => {
+            const price = group.minPrice === group.maxPrice
+                ? formatRupiah(group.minPrice)
+                : `${formatRupiah(group.minPrice)} - ${formatRupiah(group.maxPrice)}`;
+            varList.appendChild(optionCard(
+                group.name,
+                price,
+                false,
+                ! group.available,
+                () => selectVariantGroup(group)
+            ));
         });
+
+        const firstAvailable = groups.find((group) => group.available) || groups[0];
+        selectVariantGroup(firstAvailable);
+    } else if (groups.length === 1) {
+        varContainer.classList.add('hidden');
+        selectVariantGroup(groups[0]);
     } else {
         varContainer.classList.add('hidden');
-        currentSelectedVariant = (variants && variants.length === 1) ? variants[0] : null;
-        document.getElementById('sheet-menu-price').textContent = formatRupiah(defaultPrice);
+        sizeContainer.classList.add('hidden');
+        currentSelectedVariant = null;
+        document.getElementById('sheet-menu-price').textContent = formatRupiah(menu.price);
     }
 
     // Set submit button action
     document.getElementById('sheet-add-btn').onclick = function() {
-        const finalName = currentSelectedVariant ? `${name} (${currentSelectedVariant.name})` : name;
-        const finalPrice = currentSelectedVariant ? (float)currentSelectedVariant.price : defaultPrice;
+        if (currentMenuSheet.groups.length > 0 && ! currentSelectedVariant) {
+            showToast('Varian Habis', 'Varian untuk menu ini sedang tidak tersedia.', 'error');
+            return;
+        }
+
+        const variant = currentSelectedVariant;
+        const isMergedName = /\s*\([^)]*\/[^)]*\)\s*$/.test(menu.name);
+        let finalName = menu.name;
+
+        if (variant && isMergedName) {
+            finalName = `${menu.base_name} - ${variant.name}${variant.size ? ` - ${variant.size}` : ''}`;
+        } else if (variant && variant.name !== 'Porsi' && menu.name.includes(variant.name)) {
+            finalName = variant.size ? `${menu.name} - ${variant.size}` : menu.name;
+        } else if (variant && variant.name !== 'Porsi') {
+            finalName = `${menu.name} (${variant.display_name || variant.name})`;
+        }
+
+        const finalPrice = variant ? Number(variant.price) : Number(menu.price);
         const notes = document.getElementById('sheet-notes').value.trim();
 
-        addToCartWithOptions(id, finalName, finalPrice, stock, currentSheetQty, notes);
+        addToCartWithOptions(menu.id, finalName, finalPrice, menu.stock, currentSheetQty, notes, variant?.id ?? null);
         closeMenuDetailSheet();
         showToast('Ditambahkan', `${currentSheetQty}x ${finalName} masuk ke keranjang`);
     };
@@ -666,17 +843,17 @@ function addToCart(menuId, name, price, stock) {
     addToCartWithOptions(menuId, name, price, stock, 1, '');
 }
 
-function addToCartWithOptions(menuId, name, price, stock, qty = 1, notes = '') {
+function addToCartWithOptions(menuId, name, price, stock, qty = 1, notes = '', variantId = null) {
     if (stock !== null && cart.filter(i => i.menu_id === menuId).reduce((s, i) => s + i.qty, 0) + qty > stock) {
         showToast('Stok Terbatas', `Stok "${name}" hanya tersisa ${stock}`, 'error');
         return;
     }
-    const existing = cart.find(i => i.menu_id === menuId && i.name === name);
+    const existing = cart.find(i => i.menu_id === menuId && i.variant_id === variantId);
     if (existing) {
         existing.qty += qty;
         if (notes) existing.notes = notes;
     } else {
-        cart.push({ menu_id: menuId, name, price, qty, notes });
+        cart.push({ menu_id: menuId, variant_id: variantId, name, price, qty, notes });
     }
     renderCart();
 }

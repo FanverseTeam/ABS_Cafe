@@ -50,7 +50,11 @@ class OrderService
     public function buildLines(array $lines): array
     {
         $menus = Menu::whereIn('id', collect($lines)->pluck('menu_id')->unique())->get()->keyBy('id');
-        $variants = MenuVariant::whereIn('id', collect($lines)->pluck('variant_id')->filter()->unique())->get()->keyBy('id');
+        $variantsByMenu = MenuVariant::whereIn('menu_id', $menus->keys())
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get()
+            ->groupBy('menu_id');
 
         $built = [];
         $subtotal = 0.0;
@@ -64,18 +68,35 @@ class OrderService
                 throw ValidationException::withMessages(['cart' => "Menu \"{$menu->name}\" sedang habis."]);
             }
 
+            $menuVariants = $variantsByMenu->get($menu->id, collect());
             $quantity = max(1, (int) ($line['quantity'] ?? 1));
             $price = (float) $menu->price;
             $name = $menu->name;
             $variantId = null;
+            $variant = null;
 
             if (! empty($line['variant_id'])) {
-                $variant = $variants->get((int) $line['variant_id']);
-                if ($variant && $variant->menu_id === $menu->id) {
-                    $price = (float) $variant->price;
-                    $name = $menu->name.' ('.$variant->name.')';
-                    $variantId = $variant->id;
+                $variant = $menuVariants->firstWhere('id', (int) $line['variant_id']);
+
+                if (! $variant) {
+                    throw ValidationException::withMessages(['cart' => "Varian untuk menu \"{$menu->name}\" tidak valid."]);
                 }
+            } elseif ($menuVariants->count() === 1) {
+                $variant = $menuVariants->first();
+            } elseif ($menuVariants->count() > 1) {
+                throw ValidationException::withMessages(['cart' => "Pilih varian untuk menu \"{$menu->name}\"."]);
+            }
+
+            if ($variant) {
+                if (! $variant->is_available) {
+                    throw ValidationException::withMessages([
+                        'cart' => "Varian \"{$variant->displayName()}\" untuk menu \"{$menu->name}\" sedang habis.",
+                    ]);
+                }
+
+                $price = (float) $variant->price;
+                $variantId = $variant->id;
+                $name = $this->lineName($menu, $variant, $menuVariants->count());
             }
 
             if ($menu->stock !== null && $menu->stock < $quantity) {
@@ -101,6 +122,25 @@ class OrderService
         }
 
         return ['items' => $built, 'subtotal' => round($subtotal, 2)];
+    }
+
+    private function lineName(Menu $menu, MenuVariant $variant, int $variantCount): string
+    {
+        if ($variantCount > 1 || str_contains($menu->name, ' / ')) {
+            return trim($menu->variantBaseName().' - '.$variant->name.($variant->size ? ' - '.$variant->size : ''));
+        }
+
+        if ($variant->name === 'Porsi' && ! $variant->size) {
+            return $menu->name;
+        }
+
+        if (str_contains($menu->name, $variant->name)) {
+            return $variant->size ? $menu->name.' - '.$variant->size : $menu->name;
+        }
+
+        $display = $variant->displayName();
+
+        return $menu->name.' ('.$display.')';
     }
 
     public function findPromo(?string $code): ?Promo
@@ -163,6 +203,10 @@ class OrderService
             return (float) collect($items)->whereIn('menu_id', $menuIds)->sum('subtotal');
         }
 
+        if ($promo->applies_to === 'menu' && $promo->target_menu_id) {
+            return (float) collect($items)->where('menu_id', $promo->target_menu_id)->sum('subtotal');
+        }
+
         return (float) collect($items)->sum('subtotal');
     }
 
@@ -171,9 +215,13 @@ class OrderService
      */
     private function buyXGetYDiscount(Promo $promo, array $items): float
     {
-        $eligible = $promo->applies_to === 'kategori' && $promo->target_category_id
-            ? collect($items)->filter(fn ($i) => Menu::whereKey($i['menu_id'])->where('category_id', $promo->target_category_id)->exists())
-            : collect($items);
+        $eligible = match (true) {
+            $promo->applies_to === 'kategori' && (bool) $promo->target_category_id => collect($items)
+                ->filter(fn ($i) => Menu::whereKey($i['menu_id'])->where('category_id', $promo->target_category_id)->exists()),
+            $promo->applies_to === 'menu' && (bool) $promo->target_menu_id => collect($items)
+                ->where('menu_id', $promo->target_menu_id),
+            default => collect($items),
+        };
 
         $units = [];
         foreach ($eligible as $item) {
@@ -577,10 +625,27 @@ class OrderService
 
     public function markMenusUnavailableForStock(Stock $stock): void
     {
-        $menuIds = Recipe::where('stock_id', $stock->id)->pluck('menu_id')->unique();
-        if ($menuIds->isNotEmpty()) {
-            Menu::whereIn('id', $menuIds)->update(['is_available' => false]);
-        }
+        $recipes = Recipe::where('stock_id', $stock->id)->get();
+        $menuIds = $recipes->pluck('menu_id')->unique();
+
+        MenuVariant::whereIn('id', $recipes->pluck('menu_variant_id')->filter()->unique())
+            ->update(['is_available' => false]);
+
+        Recipe::where('stock_id', $stock->id)
+            ->whereNull('menu_variant_id')
+            ->pluck('menu_id')
+            ->unique()
+            ->each(function ($menuId) {
+                MenuVariant::where('menu_id', $menuId)->update(['is_available' => false]);
+                Menu::whereKey($menuId)->update(['is_available' => false]);
+            });
+
+        $menuIds->each(function ($menuId) {
+            $menu = Menu::with('variants')->find($menuId);
+            if ($menu && $menu->variants->isNotEmpty() && ! $menu->variants->contains('is_available', true)) {
+                $menu->update(['is_available' => false]);
+            }
+        });
     }
 
     public function syncMenuAvailabilityForStock(Stock $stock): void
@@ -592,18 +657,33 @@ class OrderService
         }
 
         $menuIds = Recipe::where('stock_id', $stock->id)->pluck('menu_id')->unique();
+
         foreach ($menuIds as $menuId) {
-            $menu = Menu::find($menuId);
+            $menu = Menu::with('variants')->find($menuId);
             if (! $menu) {
                 continue;
             }
 
-            $allAvailable = Recipe::where('menu_id', $menuId)
-                ->with('stock')
-                ->get()
-                ->every(fn ($r) => $r->stock && (float) $r->stock->quantity > 0);
+            $menuRecipes = Recipe::where('menu_id', $menuId)->with('stock')->get();
+            $baseRecipes = $menuRecipes->whereNull('menu_variant_id');
 
-            if ($allAvailable && ($menu->stock === null || $menu->stock > 0)) {
+            foreach ($menu->variants as $variant) {
+                $specific = $menuRecipes->where('menu_variant_id', $variant->id);
+                $recipes = $specific->isNotEmpty() ? $specific : $baseRecipes;
+
+                $available = $recipes->every(fn ($recipe) => $recipe->stock && (float) $recipe->stock->quantity > 0);
+                $variant->update(['is_available' => $available]);
+            }
+
+            $allAvailable = $baseRecipes
+                ->merge($menuRecipes->whereNotNull('menu_variant_id'))
+                ->every(fn ($recipe) => $recipe->stock && (float) $recipe->stock->quantity > 0);
+
+            if ($menu->variants->isNotEmpty()) {
+                $menu->update([
+                    'is_available' => $menu->variants->contains('is_available', true),
+                ]);
+            } elseif ($allAvailable && ($menu->stock === null || $menu->stock > 0)) {
                 $menu->update(['is_available' => true]);
             }
         }

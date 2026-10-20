@@ -79,7 +79,20 @@
             <thead><tr><th>Menu</th><th class="num">Qty</th><th class="num">Pendapatan</th></tr></thead>
             <tbody>
                 @foreach($report['perMenu'] as $row)
-                    <tr><td>{{ $row['name'] }}</td><td class="num">{{ number_format($row['quantity'], 0, ',', '.') }}</td><td class="num">Rp {{ number_format($row['revenue'], 0, ',', '.') }}</td></tr>
+                    <tr>
+                        <td>
+                            {{ $row['name'] }}
+                            @if(!empty($row['variants']))
+                                <div class="muted">
+                                    @foreach($row['variants'] as $variant)
+                                        {{ $variant['name'] }} ({{ number_format($variant['quantity'], 0, ',', '.') }}x)@if(!$loop->last), @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                        </td>
+                        <td class="num">{{ number_format($row['quantity'], 0, ',', '.') }}</td>
+                        <td class="num">Rp {{ number_format($row['revenue'], 0, ',', '.') }}</td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>

@@ -35,7 +35,11 @@
             <p class="text-xs text-cafe-muted mt-0.5">Kelola racikan kopi, minuman segar, camilan, dan aneka hidangan ABS Cafe</p>
         </div>
 
-        <div class="flex items-center gap-2">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <button type="button" onclick="openMergeMenuModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-full bg-cafe-card border border-cafe-beige text-cafe-dark font-semibold text-xs hover:bg-cafe-beige/60 transition-all flex items-center justify-center gap-2">
+                <i data-lucide="combine" class="w-4 h-4 text-cafe-bronze"></i>
+                <span>Gabungkan Menu</span>
+            </button>
             <button onclick="openMenuModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all flex items-center justify-center gap-2">
                 <i data-lucide="plus" class="w-4 h-4 text-[#D4954D]"></i>
                 <span>Tambah Menu Baru</span>
@@ -128,8 +132,17 @@
                         <div class="p-4 space-y-2">
                             <div class="flex items-start justify-between gap-2">
                                 <h3 class="font-serif font-bold text-base text-cafe-dark leading-snug">{{ $menu->name }}</h3>
-                                <span class="font-bold text-sm text-cafe-brown shrink-0">Rp {{ number_format($menu->price, 0, ',', '.') }}</span>
+                                <span class="font-bold text-sm text-cafe-brown shrink-0">{{ $menu->priceRangeLabel() }}</span>
                             </div>
+                            @if($menu->variants->isNotEmpty())
+                                <div class="flex flex-wrap gap-1">
+                                    @foreach($menu->variants as $variant)
+                                        <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold border {{ $variant->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
+                                            {{ $variant->displayName() }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            @endif
                             <p class="text-xs text-cafe-muted line-clamp-2 leading-relaxed">{{ $menu->description }}</p>
                         </div>
                     </div>
@@ -165,7 +178,7 @@
                             </form>
 
                             <!-- Edit -->
-                            <button onclick="editMenuModal({{ json_encode($menu) }})" class="p-1.5 rounded-full text-cafe-brown hover:text-cafe-dark hover:bg-cafe-beige/60 transition-colors" title="Edit Menu">
+                            <button onclick="editMenuModal({{ Illuminate\Support\Js::from($menu) }})" class="p-1.5 rounded-full text-cafe-brown hover:text-cafe-dark hover:bg-cafe-beige/60 transition-colors" title="Edit Menu">
                                 <i data-lucide="edit" class="w-3.5 h-3.5"></i>
                             </button>
 
@@ -210,11 +223,18 @@
                                         <div>
                                             <p class="font-semibold text-cafe-dark text-xs">{{ $menu->name }}</p>
                                             <p class="text-[11px] text-cafe-muted line-clamp-1 max-w-xs">{{ $menu->description }}</p>
+                                            @if($menu->variants->isNotEmpty())
+                                                <div class="flex flex-wrap gap-1 mt-1">
+                                                    @foreach($menu->variants as $variant)
+                                                        <span class="px-1.5 py-0.5 rounded-full text-[9px] font-semibold border {{ $variant->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">{{ $variant->displayName() }}</span>
+                                                    @endforeach
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>
                                 <td class="py-3 px-3 font-medium text-cafe-text">{{ $menu->category->name }}</td>
-                                <td class="py-3 px-3 font-bold text-cafe-dark">Rp {{ number_format($menu->price, 0, ',', '.') }}</td>
+                                <td class="py-3 px-3 font-bold text-cafe-dark">{{ $menu->priceRangeLabel() }}</td>
                                 <td class="py-3 px-3 font-medium">
                                     <span class="{{ $menu->stock <= 0 ? 'text-cafe-danger font-bold' : ($menu->stock <= $menu->min_stock ? 'text-cafe-warning font-bold' : 'text-cafe-text') }}">
                                         {{ $menu->stock }} {{ $menu->unit }}
@@ -246,7 +266,7 @@
                                                 <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                                             </button>
                                         </form>
-                                        <button onclick="editMenuModal({{ json_encode($menu) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark" title="Edit">
+                                        <button onclick="editMenuModal({{ Illuminate\Support\Js::from($menu) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark" title="Edit">
                                             <i data-lucide="edit" class="w-3.5 h-3.5"></i>
                                         </button>
                                         <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-1.5 rounded-full hover:bg-cafe-danger/10 text-cafe-danger" title="Hapus">
@@ -323,6 +343,8 @@
                 <input type="url" name="image" id="menu-input-image" placeholder="https://images.unsplash.com/..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
             </div>
 
+            @include('admin.catalog.partials.variant-form')
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Stok Awal</label>
@@ -397,6 +419,7 @@
         document.getElementById('menu-input-unit').value = 'porsi';
         document.getElementById('menu-input-available').checked = true;
         document.getElementById('menu-input-bestseller').checked = false;
+        setVariantRows([]);
         document.getElementById('menu-modal').classList.remove('hidden');
     }
 
@@ -413,6 +436,7 @@
         document.getElementById('menu-input-unit').value = menu.unit;
         document.getElementById('menu-input-available').checked = Boolean(menu.is_available);
         document.getElementById('menu-input-bestseller').checked = Boolean(menu.is_best_seller);
+        setVariantRows(menu.variants || []);
         document.getElementById('menu-modal').classList.remove('hidden');
     }
 
@@ -430,4 +454,6 @@
         document.getElementById('delete-menu-modal').classList.add('hidden');
     }
 </script>
+
+@include('admin.catalog.partials.merge-menu', ['mergeAction' => route('admin.menu.merge')])
 @endsection

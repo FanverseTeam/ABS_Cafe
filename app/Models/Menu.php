@@ -8,14 +8,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Menu extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, SoftDeletes;
 
     protected $fillable = [
         'category_id', 'name', 'description', 'price', 'image',
         'is_available', 'is_best_seller', 'stock', 'min_stock', 'unit', 'sold_count',
+        'merged_into_menu_id', 'variant_id',
     ];
 
     protected function casts(): array
@@ -27,6 +29,8 @@ class Menu extends Model
             'stock' => 'integer',
             'min_stock' => 'integer',
             'sold_count' => 'integer',
+            'merged_into_menu_id' => 'integer',
+            'variant_id' => 'integer',
         ];
     }
 
@@ -73,7 +77,27 @@ class Menu extends Model
 
     public function variants(): HasMany
     {
-        return $this->hasMany(MenuVariant::class);
+        return $this->hasMany(MenuVariant::class)->orderBy('sort_order')->orderBy('id');
+    }
+
+    public function availableVariants(): HasMany
+    {
+        return $this->variants()->where('is_available', true);
+    }
+
+    public function mergedInto(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'merged_into_menu_id');
+    }
+
+    public function mergedFrom(): HasMany
+    {
+        return $this->hasMany(self::class, 'merged_into_menu_id')->withTrashed();
+    }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
     }
 
     public function recipes(): HasMany
@@ -84,6 +108,73 @@ class Menu extends Model
     public function imageUrl(): ?string
     {
         return $this->image ?: null;
+    }
+
+    public function hasMultipleVariants(): bool
+    {
+        return $this->variants()->count() > 1;
+    }
+
+    /**
+     * Nama dasar untuk menu hasil gabungan, tanpa akhiran "(Hot / Ice)".
+     */
+    public function variantBaseName(): string
+    {
+        return trim((string) preg_replace('/\s*\([^)]*\/[^)]*\)\s*$/', '', $this->name));
+    }
+
+    public function variantNameList(): string
+    {
+        $names = $this->relationLoaded('variants')
+            ? $this->variants->pluck('name')
+            : $this->variants()->pluck('name');
+
+        return $names->unique()->filter()->implode(' / ');
+    }
+
+    public function priceRangeLabel(): string
+    {
+        $prices = $this->relationLoaded('variants')
+            ? $this->variants->pluck('price')
+            : $this->variants()->pluck('price');
+
+        if ($prices->isEmpty()) {
+            return 'Rp '.number_format((float) $this->price, 0, ',', '.');
+        }
+
+        $min = (float) $prices->min();
+        $max = (float) $prices->max();
+
+        if ($min === $max) {
+            return 'Rp '.number_format($min, 0, ',', '.');
+        }
+
+        return 'Rp '.number_format($min, 0, ',', '.').' - Rp '.number_format($max, 0, ',', '.');
+    }
+
+    public function orderLineName(?MenuVariant $variant): string
+    {
+        if (! $variant) {
+            return $this->name;
+        }
+
+        $variantCount = $this->relationLoaded('variants')
+            ? $this->variants->count()
+            : $this->variants()->count();
+
+        if ($variantCount > 1 || str_contains($this->name, ' / ')) {
+            return trim($this->variantBaseName().' - '.$variant->name.($variant->size ? ' - '.$variant->size : ''));
+        }
+
+        if ($variant->name === 'Porsi' && ! $variant->size) {
+            return $this->name;
+        }
+
+        if (str_contains($this->name, $variant->name)) {
+            return $variant->size ? $this->name.' - '.$variant->size : $this->name;
+        }
+
+        return $this->name.' ('.$variant->displayName().')';
     }
 
     public function scopeSearch(Builder $query, ?string $term): Builder

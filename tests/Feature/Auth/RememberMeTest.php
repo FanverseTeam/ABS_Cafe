@@ -47,7 +47,10 @@ class RememberMeTest extends TestCase
         $admin = User::factory()->admin()->create([
             'email' => 'admin@example.com',
             'password' => Hash::make('secret123'),
+            'remember_token' => null,
         ]);
+
+        $this->assertNull($admin->fresh()->remember_token);
 
         $response = $this->post('/login', [
             'login' => 'admin@example.com',
@@ -58,6 +61,83 @@ class RememberMeTest extends TestCase
 
         $recallerName = Auth::guard('web')->getRecallerName();
         $response->assertCookieMissing($recallerName);
+        $this->assertNull($admin->fresh()->remember_token);
+    }
+
+    public function test_login_without_remember_clears_previous_recaller_cookie_and_rotates_token(): void
+    {
+        $admin = User::factory()->admin()->create([
+            'email' => 'admin@example.com',
+            'password' => Hash::make('secret123'),
+        ]);
+
+        $firstLogin = $this->post('/login', [
+            'login' => 'admin@example.com',
+            'password' => 'secret123',
+            'remember' => '1',
+        ]);
+
+        $recallerName = Auth::guard('web')->getRecallerName();
+        $oldCookie = $firstLogin->getCookie($recallerName);
+        $oldToken = $admin->fresh()->remember_token;
+
+        $this->assertNotNull($oldCookie);
+        $this->assertNotNull($oldToken);
+
+        $this->flushSession();
+        Auth::forgetGuards();
+
+        $secondLogin = $this->withCookie($recallerName, $oldCookie->getValue())
+            ->post('/login', [
+                'login' => 'admin@example.com',
+                'password' => 'secret123',
+            ]);
+
+        $secondLogin->assertRedirect($this->adminHomeRoute());
+        $secondLogin->assertCookieExpired($recallerName);
+
+        $newToken = $admin->fresh()->remember_token;
+        $this->assertNotNull($newToken);
+        $this->assertNotSame($oldToken, $newToken);
+
+        $this->flushSession();
+        Auth::forgetGuards();
+
+        $this->withCookie($recallerName, $oldCookie->getValue())
+            ->get($this->adminHomePath())
+            ->assertRedirect(route('admin.login'));
+
+        $this->assertGuest();
+    }
+
+    public function test_session_loss_without_remember_redirects_to_login(): void
+    {
+        $admin = User::factory()->admin()->create([
+            'email' => 'admin@example.com',
+            'password' => Hash::make('secret123'),
+        ]);
+
+        $this->post('/login', [
+            'login' => 'admin@example.com',
+            'password' => 'secret123',
+        ])->assertRedirect($this->adminHomeRoute());
+
+        $this->assertAuthenticatedAs($admin);
+
+        $this->flushSession();
+        Auth::forgetGuards();
+
+        $this->get($this->adminHomePath())
+            ->assertRedirect(route('admin.login'));
+
+        $this->assertGuest();
+    }
+
+    public function test_session_configuration_expires_when_browser_closes_and_requires_idle_timeout(): void
+    {
+        $this->assertTrue(config('session.expire_on_close'));
+        $this->assertSame(120, config('session.lifetime'));
+        $this->assertSame(30 * 24 * 60, config('auth.guards.web.remember'));
     }
 
     public function test_clearing_session_cookie_keeps_user_authenticated_via_remember_cookie(): void
@@ -112,6 +192,7 @@ class RememberMeTest extends TestCase
             ->post('/admin/logout');
 
         $logoutResponse->assertRedirect(route('staf.landing'));
+        $logoutResponse->assertCookieExpired($recallerName);
         $this->assertGuest();
 
         // remember_token harus diganti (cycled)
@@ -252,6 +333,78 @@ class RememberMeTest extends TestCase
 
             // Logout dan bersihkan state
             $this->post('/admin/logout');
+            $this->flushSession();
+            Auth::forgetGuards();
+        }
+    }
+
+    public function test_logout_invalidates_cookie_and_token_for_all_roles(): void
+    {
+        $roles = [
+            'admin' => [
+                'factory' => 'admin',
+                'email' => 'admin_logout@example.com',
+                'logout' => 'admin.logout',
+                'home' => 'admin.dashboard',
+                'redirect' => 'admin.login',
+            ],
+            'owner' => [
+                'factory' => 'owner',
+                'email' => 'owner_logout@example.com',
+                'logout' => 'owner.logout',
+                'home' => 'owner.dashboard',
+                'redirect' => 'login',
+            ],
+            'kasir' => [
+                'factory' => 'kasir',
+                'email' => 'kasir_logout@example.com',
+                'logout' => 'kasir.logout',
+                'home' => 'kasir.dashboard',
+                'redirect' => 'login',
+            ],
+        ];
+
+        foreach ($roles as $role => $config) {
+            $user = User::factory()->{$config['factory']}()->create([
+                'email' => $config['email'],
+                'password' => Hash::make('secret123'),
+            ]);
+
+            $loginResponse = $this->post('/login', [
+                'login' => $config['email'],
+                'password' => 'secret123',
+                'remember' => '1',
+            ]);
+
+            $loginResponse->assertRedirect(route($config['home']));
+
+            $recallerName = Auth::guard('web')->getRecallerName();
+            $recallerCookie = $loginResponse->getCookie($recallerName);
+            $initialToken = $user->fresh()->remember_token;
+
+            $this->assertNotNull($recallerCookie, "Recaller cookie harus dibuat untuk {$role}.");
+            $this->assertNotNull($initialToken);
+
+            $this->flushSession();
+            Auth::forgetGuards();
+
+            $logoutResponse = $this->withCookie($recallerName, $recallerCookie->getValue())
+                ->post(route($config['logout']));
+
+            $logoutResponse->assertRedirect(route('staf.landing'));
+            $logoutResponse->assertCookieExpired($recallerName);
+            $this->assertGuest();
+            $this->assertNotSame($initialToken, $user->fresh()->remember_token);
+
+            $this->flushSession();
+            Auth::forgetGuards();
+
+            $this->withCookie($recallerName, $recallerCookie->getValue())
+                ->get(route($config['home']))
+                ->assertRedirect(route($config['redirect']));
+
+            $this->assertGuest();
+
             $this->flushSession();
             Auth::forgetGuards();
         }

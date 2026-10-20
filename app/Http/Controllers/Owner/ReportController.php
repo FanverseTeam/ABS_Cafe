@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Models\Stock;
 use App\Models\StockLog;
 use App\Models\StockMovement;
+use App\Support\MenuSalesReport;
 use App\Support\PeriodFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -221,15 +222,7 @@ class ReportController extends Controller
 
     private function perMenu(PeriodFilter $period)
     {
-        return DB::table('order_items')
-            ->join('orders', 'orders.id', '=', 'order_items.order_id')
-            ->where('orders.payment_status', 'lunas')
-            ->whereBetween('orders.created_at', [$period->start, $period->end])
-            ->select('order_items.name', DB::raw('SUM(order_items.quantity) as quantity'), DB::raw('SUM(order_items.subtotal) as revenue'))
-            ->groupBy('order_items.name')
-            ->orderByDesc('revenue')
-            ->get()
-            ->map(fn ($r) => ['name' => $r->name, 'quantity' => (int) $r->quantity, 'revenue' => (float) $r->revenue]);
+        return MenuSalesReport::forPeriod($period);
     }
 
     private function perCategory(PeriodFilter $period)

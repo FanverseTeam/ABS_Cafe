@@ -20,6 +20,7 @@ class Promo extends Model
         'value',
         'applies_to',
         'target_category_id',
+        'target_menu_id',
         'start_date',
         'end_date',
         'banner',
@@ -40,6 +41,11 @@ class Promo extends Model
     public function targetCategory(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'target_category_id');
+    }
+
+    public function targetMenu(): BelongsTo
+    {
+        return $this->belongsTo(Menu::class, 'target_menu_id');
     }
 
     public function orders(): HasMany

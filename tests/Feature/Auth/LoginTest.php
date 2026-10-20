@@ -17,6 +17,24 @@ class LoginTest extends TestCase
         $this->get('/login')->assertOk()->assertSee('login', false);
     }
 
+    public function test_remember_checkbox_is_unchecked_by_default_without_hidden_input(): void
+    {
+        $html = $this->get('/login')->assertOk()->getContent();
+
+        preg_match('/<input[^>]*name="remember"[^>]*>/', $html, $matches);
+
+        $this->assertNotEmpty($matches, 'Checkbox remember tidak ditemukan.');
+        $this->assertStringContainsString('name="remember"', $matches[0]);
+        $this->assertStringContainsString('value="1"', $matches[0]);
+        $this->assertStringNotContainsString('checked', $matches[0]);
+        $this->assertStringNotContainsString('x-model', $matches[0]);
+        $this->assertStringNotContainsString('wire:model', $matches[0]);
+        $this->assertDoesNotMatchRegularExpression(
+            '/<input[^>]*type="hidden"[^>]*name="remember"[^>]*>/',
+            $html
+        );
+    }
+
     public function test_root_redirects_to_staf_landing(): void
     {
         $this->get('/')->assertRedirect(route('staf.landing'));

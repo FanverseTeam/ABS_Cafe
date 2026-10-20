@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -63,7 +64,11 @@ class LoginController extends Controller
             'password' => $request->input('password'),
         ];
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        $remember = $request->boolean('remember');
+        $recallerName = Auth::guard()->getRecallerName();
+        $hadRememberCookie = $request->cookies->has($recallerName);
+
+        if (! Auth::attempt($credentials, $remember)) {
             return back()->withInput()
                 ->with('error', 'Email/username atau kata sandi tidak cocok. Silakan periksa kembali.');
         }
@@ -83,6 +88,17 @@ class LoginController extends Controller
 
             return back()->withInput()
                 ->with('error', 'Modul untuk peran ini belum tersedia. Fitur ini akan segera hadir.');
+        }
+
+        if (! $remember) {
+            if ($hadRememberCookie) {
+                Cookie::queue(Cookie::forget($recallerName));
+            }
+
+            if (! empty($user->getRememberToken())) {
+                $user->setRememberToken(Str::random(60));
+                $user->save();
+            }
         }
 
         $user->update(['last_login_at' => now()]);

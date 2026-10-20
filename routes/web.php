@@ -92,6 +92,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
 
         Route::prefix('menu')->name('menu.')->group(function () {
             Route::post('/store', [CatalogController::class, 'storeMenu'])->name('store');
+            Route::post('/gabungkan', [CatalogController::class, 'mergeMenus'])->name('merge');
             Route::post('/{id}/update', [CatalogController::class, 'updateMenu'])->name('update');
             Route::post('/{id}/duplicate', [CatalogController::class, 'duplicateMenu'])->name('duplicate');
             Route::post('/{id}/toggle-available', [CatalogController::class, 'toggleMenuAvailable'])->name('toggle.available');
@@ -189,6 +190,7 @@ if (config('features.legacy_admin')) {
         Route::prefix('menu')->name('menu.')->group(function () {
             Route::get('/', [MenuController::class, 'index'])->name('index');
             Route::post('/store', [MenuController::class, 'store'])->name('store');
+            Route::post('/gabungkan', [MenuController::class, 'mergeMenus'])->name('merge');
             Route::post('/{id}/update', [MenuController::class, 'update'])->name('update');
             Route::post('/{id}/duplicate', [MenuController::class, 'duplicate'])->name('duplicate');
             Route::post('/{id}/toggle-available', [MenuController::class, 'toggleAvailable'])->name('toggle.available');
