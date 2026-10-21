@@ -14,7 +14,7 @@
     ];
 @endphp
 
-<aside id="kasir-sidebar" class="hidden md:flex fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#290024] text-[#F2F5E2] flex-col shadow-2xl md:shadow-none">
+<aside id="kasir-sidebar" class="hidden lg:flex fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#290024] text-[#F2F5E2] flex-col shadow-2xl">
     <!-- Header -->
     <div class="h-20 px-6 flex items-center justify-between border-b border-white/10 shrink-0">
         <a href="{{ route('kasir.dashboard') }}" class="flex items-center gap-3 group">
@@ -52,18 +52,6 @@
                 </div>
             </a>
         @endforeach
-
-        <div class="px-3 pt-4 pb-2 text-[10px] font-semibold tracking-wider uppercase text-[#D4954D]/80">
-            Akun
-        </div>
-        <a href="{{ route('kasir.profile.index') }}" class="group flex items-center justify-between px-3.5 py-3 rounded-2xl text-xs font-medium transition-all duration-200 {{ request()->routeIs('kasir.profile.*') ? 'bg-[#D4954D] text-[#290024] font-semibold shadow-md translate-x-1' : 'text-[#F2F5E2]/85 hover:bg-white/10 hover:text-[#F2F5E2]' }}">
-            <div class="flex items-center gap-3 min-w-0">
-                <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors {{ request()->routeIs('kasir.profile.*') ? 'bg-[#290024]/15 text-[#290024]' : 'text-[#D4954D]' }}">
-                    <i data-lucide="user" class="w-4 h-4 stroke-[2.2]"></i>
-                </div>
-                <span class="truncate">Profil Saya</span>
-            </div>
-        </a>
     </nav>
 
     <!-- Footer -->

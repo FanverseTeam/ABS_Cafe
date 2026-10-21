@@ -78,44 +78,60 @@
         </div>
 
         <div class="p-5">
-            @if($paidToday->count() === 0)
-                <p class="text-xs text-cafe-muted py-6 text-center">Belum ada pembayaran tercatat hari ini.</p>
-            @else
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs">
-                        <thead>
-                            <tr class="border-b border-cafe-beige/50 text-[10px] uppercase tracking-wide text-cafe-muted">
-                                <th class="py-2.5 pr-4 font-semibold">Kode</th>
-                                <th class="py-2.5 pr-4 font-semibold">Pelanggan</th>
-                                <th class="py-2.5 pr-4 font-semibold">Metode</th>
-                                <th class="py-2.5 pr-4 font-semibold">Waktu</th>
-                                <th class="py-2.5 pr-4 font-semibold text-right">Total</th>
-                                <th class="py-2.5 font-semibold text-right">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-cafe-beige/30">
-                            @foreach($paidToday as $order)
-                                <tr class="hover:bg-cafe-cream/60 transition-colors">
-                                    <td class="py-3 pr-4 font-semibold text-cafe-dark">{{ $order->order_code }}</td>
-                                    <td class="py-3 pr-4 text-cafe-muted">{{ $order->customer_name }}</td>
-                                    <td class="py-3 pr-4">{{ $order->paymentMethodLabel() }}</td>
-                                    <td class="py-3 pr-4 text-cafe-muted">{{ $order->paid_at?->format('H:i') }}</td>
-                                    <td class="py-3 pr-4 text-right font-serif font-bold text-cafe-dark">Rp {{ number_format($order->total, 0, ',', '.') }}</td>
-                                    <td class="py-3 text-right">
-                                        <a href="{{ route('kasir.payments.receipt', $order) }}" class="inline-flex items-center gap-1 text-xs font-semibold text-cafe-brown hover:text-cafe-dark">
-                                            <i data-lucide="printer" class="w-3.5 h-3.5"></i> Cetak Ulang
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+            <x-responsive-table :paginate="$paidToday">
+                <x-slot:headers>
+                    <th class="py-2.5 pr-4 font-semibold text-left">Kode</th>
+                    <th class="py-2.5 pr-4 font-semibold text-left">Pelanggan</th>
+                    <th class="py-2.5 pr-4 font-semibold text-left">Metode</th>
+                    <th class="py-2.5 pr-4 font-semibold text-left">Waktu</th>
+                    <th class="py-2.5 pr-4 font-semibold text-right">Total</th>
+                    <th class="py-2.5 font-semibold text-right">Aksi</th>
+                </x-slot:headers>
 
-                <div class="mt-4">
-                    {{ $paidToday->links() }}
-                </div>
-            @endif
+                @forelse($paidToday as $order)
+                    <x-responsive-table.row>
+                        <x-slot:title>
+                            {{ $order->order_code }}
+                        </x-slot:title>
+
+                        <x-slot:subtitle>
+                            {{ $order->paid_at?->format('H:i') }}
+                        </x-slot:subtitle>
+
+                        <x-slot:badge>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-cafe-beige/60 text-cafe-muted">
+                                {{ $order->paymentMethodLabel() }}
+                            </span>
+                        </x-slot:badge>
+
+                        <x-slot:fields>
+                            <x-responsive-table.field label="Pelanggan" :value="$order->customer_name" />
+                            <x-responsive-table.field label="Total" :value="'Rp ' . number_format($order->total, 0, ',', '.')" is-highlight="true" />
+                        </x-slot:fields>
+
+                        <x-slot:actions>
+                            <a href="{{ route('kasir.payments.receipt', $order) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-dark text-xs font-semibold transition-colors">
+                                <i data-lucide="printer" class="w-3.5 h-3.5"></i> Cetak Ulang
+                            </a>
+                        </x-slot:actions>
+
+                        <x-slot:desktop>
+                            <td class="hidden md:table-cell py-3 pr-4 font-semibold text-cafe-dark">{{ $order->order_code }}</td>
+                            <td class="hidden md:table-cell py-3 pr-4 text-cafe-muted">{{ $order->customer_name }}</td>
+                            <td class="hidden md:table-cell py-3 pr-4">{{ $order->paymentMethodLabel() }}</td>
+                            <td class="hidden md:table-cell py-3 pr-4 text-cafe-muted">{{ $order->paid_at?->format('H:i') }}</td>
+                            <td class="hidden md:table-cell py-3 pr-4 text-right font-serif font-bold text-cafe-dark">Rp {{ number_format($order->total, 0, ',', '.') }}</td>
+                            <td class="hidden md:table-cell py-3 text-right">
+                                <a href="{{ route('kasir.payments.receipt', $order) }}" class="inline-flex items-center gap-1 text-xs font-semibold text-cafe-brown hover:text-cafe-dark">
+                                    <i data-lucide="printer" class="w-3.5 h-3.5"></i> Cetak Ulang
+                                </a>
+                            </td>
+                        </x-slot:desktop>
+                    </x-responsive-table.row>
+                @empty
+                    <x-responsive-table.empty col-span="6" message="Belum ada pembayaran tercatat hari ini." />
+                @endforelse
+            </x-responsive-table>
         </div>
     </div>
 </div>

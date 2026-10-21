@@ -16,63 +16,102 @@
     <!-- Categories Grid / Table -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- List Kategori (2 Cols) -->
-        <div class="md:col-span-2 bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
-            <div class="p-5 border-b border-cafe-beige/50 flex items-center justify-between">
+        <div class="md:col-span-2 space-y-3">
+            <div class="bg-cafe-card p-4 sm:p-5 rounded-2xl shadow-soft border border-cafe-beige/40 flex items-center justify-between">
                 <h3 class="font-serif font-bold text-base text-cafe-dark">Daftar Kategori Aktif</h3>
                 <span class="text-xs text-cafe-muted">{{ $categories->count() }} Kategori Terdaftar</span>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
-                    <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px]">
-                        <tr>
-                            <th class="py-3.5 pl-6">Urutan</th>
-                            <th class="py-3.5 px-3">Nama Kategori</th>
-                            <th class="py-3.5 px-3">Jumlah Menu</th>
-                            <th class="py-3.5 px-3">Status</th>
-                            <th class="py-3.5 pr-6 text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-cafe-beige/30">
-                        @foreach($categories as $cat)
-                            <tr class="hover:bg-cafe-cream/80 transition-colors">
-                                <td class="py-4 pl-6 font-mono font-bold text-cafe-gold">#{{ $cat->order }}</td>
-                                <td class="py-4 px-3">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl bg-cafe-beige/80 text-cafe-dark flex items-center justify-center shrink-0">
-                                            <i data-lucide="{{ $cat->icon }}" class="w-4 h-4"></i>
-                                        </div>
-                                        <div>
-                                            <p class="font-semibold text-cafe-dark text-xs">{{ $cat->name }}</p>
-                                            <p class="text-[11px] text-cafe-muted line-clamp-1 max-w-xs">{{ $cat->description }}</p>
-                                        </div>
+            <x-responsive-table>
+                <x-slot:headers>
+                    <th class="py-3.5 pl-6">Urutan</th>
+                    <th class="py-3.5 px-3">Nama Kategori</th>
+                    <th class="py-3.5 px-3">Jumlah Menu</th>
+                    <th class="py-3.5 px-3">Status</th>
+                    <th class="py-3.5 pr-6 text-right">Aksi</th>
+                </x-slot:headers>
+
+                @foreach($categories as $idx => $cat)
+                    <x-responsive-table.row :index="$idx">
+                        <!-- Mobile Card Layout -->
+                        <x-slot:title>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-cafe-beige/80 text-cafe-dark flex items-center justify-center shrink-0">
+                                    <i data-lucide="{{ $cat->icon }}" class="w-5 h-5"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="font-bold text-xs sm:text-sm text-cafe-dark truncate">{{ $cat->name }}</p>
+                                    <span class="text-[10px] text-cafe-muted font-mono">Urutan #{{ $cat->order }}</span>
+                                </div>
+                            </div>
+                        </x-slot:title>
+
+                        <x-slot:badge>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold {{ $cat->is_active ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-muted/15 text-cafe-muted' }}">
+                                {{ $cat->is_active ? 'Aktif' : 'Nonaktif' }}
+                            </span>
+                        </x-slot:badge>
+
+                        <x-slot:fields>
+                            <x-responsive-table.field label="Jumlah Menu" :value="$cat->menus_count . ' menu'" />
+                            <x-responsive-table.field label="Urutan" :value="'#' . $cat->order" />
+                        </x-slot:fields>
+
+                        @if($cat->description)
+                            <x-slot:content>
+                                <p class="text-xs text-cafe-muted">{{ $cat->description }}</p>
+                            </x-slot:content>
+                        @endif
+
+                        <x-slot:actions>
+                            <div class="flex items-center gap-1.5 w-full justify-end">
+                                <button onclick="editCategoryModal({{ json_encode($cat) }})" class="p-2 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark transition-colors" title="Edit">
+                                    <i data-lucide="edit" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="openDeleteCategoryModal({{ $cat->id }}, '{{ addslashes($cat->name) }}', {{ $cat->menus_count }})" class="p-2 rounded-full hover:bg-cafe-danger/10 text-cafe-danger transition-colors" title="Hapus">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </x-slot:actions>
+
+                        <!-- Desktop Cells -->
+                        <x-slot:desktop>
+                            <td class="hidden md:table-cell py-4 pl-6 font-mono font-bold text-cafe-gold">#{{ $cat->order }}</td>
+                            <td class="hidden md:table-cell py-4 px-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl bg-cafe-beige/80 text-cafe-dark flex items-center justify-center shrink-0">
+                                        <i data-lucide="{{ $cat->icon }}" class="w-4 h-4"></i>
                                     </div>
-                                </td>
-                                <td class="py-4 px-3 font-semibold text-cafe-text">
-                                    <span class="px-2.5 py-1 rounded-full bg-cafe-beige/60 text-cafe-dark">
-                                        {{ $cat->menus_count }} menu
-                                    </span>
-                                </td>
-                                <td class="py-4 px-3">
-                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold {{ $cat->is_active ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-muted/15 text-cafe-muted' }}">
-                                        {{ $cat->is_active ? 'Aktif' : 'Nonaktif' }}
-                                    </span>
-                                </td>
-                                <td class="py-4 pr-6 text-right">
-                                    <div class="flex items-center justify-end gap-1.5">
-                                        <button onclick="editCategoryModal({{ json_encode($cat) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark transition-colors" title="Edit">
-                                            <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                                        </button>
-                                        <button onclick="openDeleteCategoryModal({{ $cat->id }}, '{{ addslashes($cat->name) }}', {{ $cat->menus_count }})" class="p-1.5 rounded-full hover:bg-cafe-danger/10 text-cafe-danger transition-colors" title="Hapus">
-                                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                        </button>
+                                    <div>
+                                        <p class="font-semibold text-cafe-dark text-xs">{{ $cat->name }}</p>
+                                        <p class="text-[11px] text-cafe-muted line-clamp-1 max-w-xs">{{ $cat->description }}</p>
                                     </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                                </div>
+                            </td>
+                            <td class="hidden md:table-cell py-4 px-3 font-semibold text-cafe-text">
+                                <span class="px-2.5 py-1 rounded-full bg-cafe-beige/60 text-cafe-dark">
+                                    {{ $cat->menus_count }} menu
+                                </span>
+                            </td>
+                            <td class="hidden md:table-cell py-4 px-3">
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold {{ $cat->is_active ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-muted/15 text-cafe-muted' }}">
+                                    {{ $cat->is_active ? 'Aktif' : 'Nonaktif' }}
+                                </span>
+                            </td>
+                            <td class="hidden md:table-cell py-4 pr-6 text-right">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <button onclick="editCategoryModal({{ json_encode($cat) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark transition-colors" title="Edit">
+                                        <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                    <button onclick="openDeleteCategoryModal({{ $cat->id }}, '{{ addslashes($cat->name) }}', {{ $cat->menus_count }})" class="p-1.5 rounded-full hover:bg-cafe-danger/10 text-cafe-danger transition-colors" title="Hapus">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </x-slot:desktop>
+                    </x-responsive-table.row>
+                @endforeach
+            </x-responsive-table>
         </div>
 
         <!-- Info / Panduan Aturan Kategori (1 Col) -->

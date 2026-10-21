@@ -60,42 +60,49 @@
                 <h3 class="font-serif font-bold text-sm text-cafe-dark">Pesanan pada Shift Ini</h3>
             </div>
             <div class="p-5">
-                @if($orders->count() === 0)
-                    <div class="py-8 text-center">
-                        <div class="w-14 h-14 mx-auto rounded-full bg-cafe-cream flex items-center justify-center text-cafe-muted">
-                            <i data-lucide="shopping-bag" class="w-6 h-6"></i>
-                        </div>
-                        <p class="text-xs text-cafe-muted mt-3">Belum ada pesanan pada shift ini.</p>
-                    </div>
-                @else
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="border-b border-cafe-beige/50 text-[10px] uppercase tracking-wide text-cafe-muted">
-                                    <th class="py-2.5 pr-4 font-semibold">Kode</th>
-                                    <th class="py-2.5 pr-4 font-semibold">Pelanggan</th>
-                                    <th class="py-2.5 pr-4 font-semibold">Metode</th>
-                                    <th class="py-2.5 pr-4 font-semibold">Status</th>
-                                    <th class="py-2.5 font-semibold text-right">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-cafe-beige/30">
-                                @foreach($orders as $order)
-                                    <tr class="hover:bg-cafe-cream/60 transition-colors">
-                                        <td class="py-3 pr-4 font-semibold text-cafe-dark">{{ $order->order_code }}</td>
-                                        <td class="py-3 pr-4 text-cafe-muted">{{ $order->customer_name }}</td>
-                                        <td class="py-3 pr-4">{{ $order->paymentMethodLabel() }}</td>
-                                        <td class="py-3 pr-4">
-                                            @php $badge = $order->paymentStatusBadge(); @endphp
-                                            <span class="text-[10px] font-bold px-2 py-1 rounded-full bg-cafe-{{ $badge['color'] }}/15 text-cafe-{{ $badge['color'] }}">{{ $badge['label'] }}</span>
-                                        </td>
-                                        <td class="py-3 text-right font-serif font-bold text-cafe-dark">Rp {{ number_format($order->total, 0, ',', '.') }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
+                <x-responsive-table>
+                    <x-slot:headers>
+                        <th class="py-2.5 pr-4 font-semibold text-left">Kode</th>
+                        <th class="py-2.5 pr-4 font-semibold text-left">Pelanggan</th>
+                        <th class="py-2.5 pr-4 font-semibold text-left">Metode</th>
+                        <th class="py-2.5 pr-4 font-semibold text-left">Status</th>
+                        <th class="py-2.5 pr-4 font-semibold text-right">Total</th>
+                    </x-slot:headers>
+
+                    @forelse($orders as $order)
+                        <x-responsive-table.row>
+                            <x-slot:title>
+                                {{ $order->order_code }}
+                            </x-slot:title>
+
+                            <x-slot:subtitle>
+                                {{ $order->customer_name }}
+                            </x-slot:subtitle>
+
+                            <x-slot:badge>
+                                @php $badge = $order->paymentStatusBadge(); @endphp
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cafe-{{ $badge['color'] }}/15 text-cafe-{{ $badge['color'] }}">{{ $badge['label'] }}</span>
+                            </x-slot:badge>
+
+                            <x-slot:fields>
+                                <x-responsive-table.field label="Metode" :value="$order->paymentMethodLabel()" />
+                                <x-responsive-table.field label="Total" :value="'Rp ' . number_format($order->total, 0, ',', '.')" is-highlight="true" />
+                            </x-slot:fields>
+
+                            <x-slot:desktop>
+                                <td class="hidden md:table-cell py-3 pr-4 font-semibold text-cafe-dark">{{ $order->order_code }}</td>
+                                <td class="hidden md:table-cell py-3 pr-4 text-cafe-muted">{{ $order->customer_name }}</td>
+                                <td class="hidden md:table-cell py-3 pr-4">{{ $order->paymentMethodLabel() }}</td>
+                                <td class="hidden md:table-cell py-3 pr-4">
+                                    <span class="text-[10px] font-bold px-2 py-1 rounded-full bg-cafe-{{ $badge['color'] }}/15 text-cafe-{{ $badge['color'] }}">{{ $badge['label'] }}</span>
+                                </td>
+                                <td class="hidden md:table-cell py-3 text-right font-serif font-bold text-cafe-dark">Rp {{ number_format($order->total, 0, ',', '.') }}</td>
+                            </x-slot:desktop>
+                        </x-responsive-table.row>
+                    @empty
+                        <x-responsive-table.empty col-span="5" message="Belum ada pesanan pada shift ini." />
+                    @endforelse
+                </x-responsive-table>
             </div>
         </div>
 

@@ -15,11 +15,11 @@
     <!-- Left: Mobile Logo & Title -->
     <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
         @if($backUrl)
-            <a href="{{ $backUrl }}" class="md:hidden flex h-10 w-10 -ml-1 shrink-0 items-center justify-center rounded-full text-cafe-dark transition-colors hover:bg-cafe-beige/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70" aria-label="Kembali">
+            <a href="{{ $backUrl }}" class="lg:hidden flex h-10 w-10 -ml-1 shrink-0 items-center justify-center rounded-full text-cafe-dark transition-colors hover:bg-cafe-beige/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70" aria-label="Kembali">
                 <i data-lucide="arrow-left" class="h-5 w-5"></i>
             </a>
         @else
-            <a href="{{ route($homeRoute) }}" class="md:hidden shrink-0" title="ABS Cafe">
+            <a href="{{ route($homeRoute) }}" class="lg:hidden shrink-0" title="ABS Cafe">
                 <x-logo :show-text="false" size="sm" loading="eager" class="shrink-0" />
             </a>
         @endif
@@ -33,7 +33,7 @@
 
     @if($legacyAdmin)
         <!-- LEGACY ADMIN: order search and notification widgets are only shown when the switch is on. -->
-        <div class="flex-1 max-w-md hidden md:block">
+        <div class="flex-1 max-w-md hidden lg:block">
             <form action="{{ route('admin.orders.index') }}" method="GET" class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                 <input type="text" name="search" placeholder="Cari pesanan, menu, atau meja... (tekan Enter)" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-10 pr-4 py-2.5 rounded-full border border-cafe-beige/80 focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">
@@ -126,10 +126,6 @@
                     </div>
 
                     <div class="py-1 space-y-0.5">
-                        <a href="{{ route($settingsRoute, ['tab' => 'profil']) }}" class="flex items-center gap-2.5 px-3 py-2 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors">
-                            <i data-lucide="user" class="w-4 h-4 text-cafe-muted"></i>
-                            <span>Profil Saya</span>
-                        </a>
                         <a href="{{ route($settingsRoute, ['tab' => 'akun']) }}" class="flex items-center gap-2.5 px-3 py-2 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors">
                             <i data-lucide="key-round" class="w-4 h-4 text-cafe-muted"></i>
                             <span>Ganti Password</span>
@@ -171,10 +167,6 @@
                     </div>
 
                     <div class="py-1 space-y-0.5">
-                        <a href="{{ route($settingsRoute, ['tab' => 'profil']) }}" class="flex items-center gap-2.5 px-3 py-2 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors">
-                            <i data-lucide="user" class="w-4 h-4 text-cafe-muted"></i>
-                            <span>Profil Saya</span>
-                        </a>
                         <a href="{{ route($settingsRoute, ['tab' => 'akun']) }}" class="flex items-center gap-2.5 px-3 py-2 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors">
                             <i data-lucide="key-round" class="w-4 h-4 text-cafe-muted"></i>
                             <span>Ganti Password</span>

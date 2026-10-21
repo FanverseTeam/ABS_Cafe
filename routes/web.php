@@ -21,14 +21,12 @@ use App\Http\Controllers\Kasir\DashboardController as KasirDashboardController;
 use App\Http\Controllers\Kasir\OrderController as KasirOrderController;
 use App\Http\Controllers\Kasir\PaymentController as KasirPaymentController;
 use App\Http\Controllers\Kasir\PosController as KasirPosController;
-use App\Http\Controllers\Kasir\ProfileController as KasirProfileController;
 use App\Http\Controllers\Kasir\ReservationController as KasirReservationController;
 use App\Http\Controllers\Kasir\ShiftController as KasirShiftController;
 use App\Http\Controllers\Kasir\TableController as KasirTableController;
 use App\Http\Controllers\Owner\CashAdjustmentController as OwnerCashAdjustmentController;
 use App\Http\Controllers\Owner\CashierController as OwnerCashierController;
 use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
-use App\Http\Controllers\Owner\ProfileController as OwnerProfileController;
 use App\Http\Controllers\Owner\PromoController as OwnerPromoController;
 use App\Http\Controllers\Owner\ReportController as OwnerReportController;
 use App\Http\Controllers\Owner\SettingController as OwnerSettingController;
@@ -296,15 +294,12 @@ Route::prefix('owner')->name('owner.')->middleware(['auth', 'role:owner'])->grou
     // 5. Pengaturan Bisnis
     Route::get('/pengaturan', [OwnerSettingController::class, 'index'])->name('settings.index');
     Route::post('/pengaturan', [OwnerSettingController::class, 'update'])->name('settings.update');
+    Route::post('/pengaturan/akun', [OwnerSettingController::class, 'updateAccount'])->name('settings.account');
+    Route::post('/pengaturan/akun/password', [OwnerSettingController::class, 'updatePassword'])->name('settings.account.password');
 
     // 6. Penyesuaian Kas Laci
     Route::get('/penyesuaian-kas', [OwnerCashAdjustmentController::class, 'index'])->name('cash_adjustments.index');
     Route::post('/penyesuaian-kas', [OwnerCashAdjustmentController::class, 'store'])->name('cash_adjustments.store');
-
-    // Profil & Ganti Password
-    Route::get('/profil', [OwnerProfileController::class, 'index'])->name('profile.index');
-    Route::post('/profil', [OwnerProfileController::class, 'updateProfile'])->name('profile.update');
-    Route::post('/profil/password', [OwnerProfileController::class, 'updatePassword'])->name('profile.password');
 
     // Logout (nama route khusus owner agar view mudah dipakai)
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -371,11 +366,6 @@ Route::prefix('kasir')->name('kasir.')->middleware(['auth', 'role:kasir'])->grou
 
     // Meja: ubah status meja
     Route::post('/meja/{table}/status', [KasirTableController::class, 'update'])->name('tables.status');
-
-    // Profil & Ganti Password
-    Route::get('/profil', [KasirProfileController::class, 'index'])->name('profile.index');
-    Route::post('/profil', [KasirProfileController::class, 'updateProfile'])->name('profile.update');
-    Route::post('/profil/password', [KasirProfileController::class, 'updatePassword'])->name('profile.password');
 
     // Logout (nama route khusus kasir agar view mudah dipakai)
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

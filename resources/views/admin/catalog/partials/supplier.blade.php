@@ -39,62 +39,104 @@
             <span class="text-xs text-cafe-muted">{{ $suppliers->count() }} Supplier Terdaftar</span>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-                <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
-                    <tr>
-                        <th class="py-3.5 pl-6">Supplier</th>
-                        <th class="py-3.5 px-3">Kontak</th>
-                        <th class="py-3.5 px-3">Telepon / Email</th>
-                        <th class="py-3.5 px-3">Status</th>
-                        <th class="py-3.5 pr-6 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-cafe-beige/30">
-                    @forelse($suppliers as $supplier)
-                        <tr class="hover:bg-cafe-cream/80 transition-colors">
-                            <td class="py-4 pl-6">
-                                <p class="font-semibold text-cafe-dark">{{ $supplier->name }}</p>
-                                <p class="text-[11px] text-cafe-muted line-clamp-1 max-w-xs">{{ $supplier->address ?: 'Alamat belum diisi' }}</p>
-                            </td>
-                            <td class="py-4 px-3 text-cafe-text">{{ $supplier->contact_person ?: '-' }}</td>
-                            <td class="py-4 px-3 text-cafe-muted">
-                                <p>{{ $supplier->phone ?: '-' }}</p>
-                                <p class="text-[11px]">{{ $supplier->email ?: '' }}</p>
-                            </td>
-                            <td class="py-4 px-3">
-                                <form action="{{ route('admin.catalog.supplier.toggle.status', $supplier->id) }}" method="POST">
+        <x-responsive-table :paginate="$suppliers">
+            <x-slot:headers>
+                <th class="py-3.5 pl-6">Supplier</th>
+                <th class="py-3.5 px-3">Kontak</th>
+                <th class="py-3.5 px-3">Telepon / Email</th>
+                <th class="py-3.5 px-3">Status</th>
+                <th class="py-3.5 pr-6 text-right">Aksi</th>
+            </x-slot:headers>
+
+            @forelse($suppliers as $idx => $supplier)
+                <x-responsive-table.row :index="$idx">
+                    <!-- Mobile Card Layout -->
+                    <x-slot:title>
+                        <p class="font-bold text-xs sm:text-sm text-cafe-dark truncate">{{ $supplier->name }}</p>
+                    </x-slot:title>
+
+                    <x-slot:subtitle>
+                        @if($supplier->contact_person)
+                            <span class="text-cafe-muted">PIC: {{ $supplier->contact_person }}</span>
+                        @endif
+                    </x-slot:subtitle>
+
+                    <x-slot:badge>
+                        <form action="{{ route('admin.catalog.supplier.toggle.status', $supplier->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold border transition-all {{ $supplier->is_active ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
+                                {{ $supplier->is_active ? 'Aktif' : 'Nonaktif' }}
+                            </button>
+                        </form>
+                    </x-slot:badge>
+
+                    <x-slot:fields>
+                        <x-responsive-table.field label="Telepon" :value="$supplier->phone ?: '-'" />
+                        <x-responsive-table.field label="Email" :value="$supplier->email ?: '-'" />
+                    </x-slot:fields>
+
+                    @if($supplier->address)
+                        <x-slot:content>
+                            <p class="text-xs text-cafe-muted"><span class="font-semibold text-cafe-dark">Alamat:</span> {{ $supplier->address }}</p>
+                        </x-slot:content>
+                    @endif
+
+                    <x-slot:actions>
+                        <div class="flex items-center gap-1.5 w-full justify-end">
+                            <button onclick="editSupplierModal({{ json_encode($supplier) }})" class="p-2 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark transition-colors" title="Edit Supplier">
+                                <i data-lucide="edit" class="w-4 h-4"></i>
+                            </button>
+                            <form action="{{ route('admin.catalog.supplier.destroy', $supplier->id) }}" method="POST" onsubmit="return confirm('Hapus supplier ini?');" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="p-2 rounded-full text-cafe-danger hover:bg-cafe-danger/10 transition-colors" title="Hapus Supplier">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </x-slot:actions>
+
+                    <!-- Desktop Cells -->
+                    <x-slot:desktop>
+                        <td class="hidden md:table-cell py-4 pl-6">
+                            <p class="font-semibold text-cafe-dark">{{ $supplier->name }}</p>
+                            <p class="text-[11px] text-cafe-muted line-clamp-1 max-w-xs">{{ $supplier->address ?: 'Alamat belum diisi' }}</p>
+                        </td>
+                        <td class="hidden md:table-cell py-4 px-3 text-cafe-text">{{ $supplier->contact_person ?: '-' }}</td>
+                        <td class="hidden md:table-cell py-4 px-3 text-cafe-muted">
+                            <p>{{ $supplier->phone ?: '-' }}</p>
+                            <p class="text-[11px]">{{ $supplier->email ?: '' }}</p>
+                        </td>
+                        <td class="hidden md:table-cell py-4 px-3">
+                            <form action="{{ route('admin.catalog.supplier.toggle.status', $supplier->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="px-3 py-1 rounded-full text-[11px] font-semibold border transition-all {{ $supplier->is_active ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
+                                    {{ $supplier->is_active ? 'Aktif' : 'Nonaktif' }}
+                                </button>
+                            </form>
+                        </td>
+                        <td class="hidden md:table-cell py-4 pr-6 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <button onclick="editSupplierModal({{ json_encode($supplier) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark transition-colors" title="Edit Supplier">
+                                    <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <form action="{{ route('admin.catalog.supplier.destroy', $supplier->id) }}" method="POST" onsubmit="return confirm('Hapus supplier ini?');" class="inline">
                                     @csrf
-                                    <button type="submit" class="px-3 py-1 rounded-full text-[11px] font-semibold border transition-all {{ $supplier->is_active ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
-                                        {{ $supplier->is_active ? 'Aktif' : 'Nonaktif' }}
+                                    @method('DELETE')
+                                    <button type="submit" class="p-1.5 rounded-full text-cafe-danger hover:bg-cafe-danger/10 transition-colors" title="Hapus Supplier">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                     </button>
                                 </form>
-                            </td>
-                            <td class="py-4 pr-6 text-right">
-                                <div class="flex items-center justify-end gap-1.5">
-                                    <button onclick="editSupplierModal({{ json_encode($supplier) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark transition-colors" title="Edit Supplier">
-                                        <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                                    </button>
-                                    <form action="{{ route('admin.catalog.supplier.destroy', $supplier->id) }}" method="POST" onsubmit="return confirm('Hapus supplier ini?');" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="p-1.5 rounded-full text-cafe-danger hover:bg-cafe-danger/10 transition-colors" title="Hapus Supplier">
-                                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="p-8 text-center text-xs text-cafe-muted">
-                                Belum ada supplier yang sesuai dengan filter.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                            </div>
+                        </td>
+                    </x-slot:desktop>
+                </x-responsive-table.row>
+            @empty
+                <x-responsive-table.empty colspan="5">
+                    Belum ada supplier yang sesuai dengan filter.
+                </x-responsive-table.empty>
+            @endforelse
+        </x-responsive-table>
     </div>
 </div>
 

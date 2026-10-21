@@ -28,7 +28,7 @@ class MobileBottomNavigationTest extends TestCase
             $this->labelsWithin($html, 'mobile-bottom-nav'),
         );
         $this->assertCount(5, $this->itemsWithin($html, 'mobile-bottom-nav'));
-        $this->assertStringContainsString('md:hidden', $navHtml);
+        $this->assertStringContainsString('lg:hidden', $navHtml);
         $this->assertStringContainsString('env(safe-area-inset-bottom)', $navHtml);
         $this->assertStringContainsString('bg-[#D4954D] text-[#290024]', $navHtml);
         $this->assertStringContainsString('text-[#775533]', $navHtml);
@@ -44,11 +44,12 @@ class MobileBottomNavigationTest extends TestCase
             'Meja & Metode Pembayaran',
             'Pengaturan Website',
             'Log Aktivitas',
-            'Profil Saya',
             'Keluar',
         ] as $label) {
             $this->assertContains($label, $sheetLabels);
         }
+
+        $this->assertNotContains('Profil Saya', $sheetLabels);
 
         $this->assertStringContainsString('action="'.route('admin.logout').'"', $sheet);
         $this->assertStringNotContainsString('/admin/pesanan', $sheet);
@@ -98,6 +99,7 @@ class MobileBottomNavigationTest extends TestCase
         $this->assertNotContains('Staf', $labels);
         $this->assertNotContains('POS', $labels);
         $this->assertNotContains('Pesanan', $labels);
+        $this->assertNotContains('Profil Saya', $labels);
 
         $promo = $this->navItemByLabel($html, 'Promo');
         $this->assertNotNull($promo);
@@ -106,9 +108,11 @@ class MobileBottomNavigationTest extends TestCase
         $sheet = $this->regionHtml($html, 'mobile-more-sheet');
         $sheetLabels = $this->labelsWithin($html, 'mobile-more-sheet');
 
-        foreach (['Pengaturan Bisnis', 'Profil Saya', 'Keluar'] as $label) {
+        foreach (['Pengaturan Bisnis', 'Keluar'] as $label) {
             $this->assertContains($label, $sheetLabels);
         }
+
+        $this->assertNotContains('Profil Saya', $sheetLabels);
 
         $this->assertStringNotContainsString('Manajemen User Staf', $sheet);
         $this->assertStringNotContainsString('Log Aktivitas', $sheet);
@@ -167,11 +171,12 @@ class MobileBottomNavigationTest extends TestCase
         foreach ([
             'Pembayaran & Struk',
             'Buka/Tutup Shift & Rekap Kas',
-            'Profil Saya',
             'Keluar',
         ] as $label) {
             $this->assertContains($label, $sheetLabels);
         }
+
+        $this->assertNotContains('Profil Saya', $sheetLabels);
 
         $this->assertStringNotContainsString('Manajemen User Staf', $sheet);
         $this->assertStringNotContainsString('Dashboard Bisnis', $sheet);

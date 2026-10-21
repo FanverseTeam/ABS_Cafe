@@ -44,73 +44,111 @@
     </div>
 
     <!-- Table Container -->
-    <div class="bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-                <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
-                    <tr>
-                        <th class="py-3.5 pl-6">Menu / Bahan</th>
-                        <th class="py-3.5 px-3">Kategori</th>
-                        <th class="py-3.5 px-3">Stok Saat Ini</th>
-                        <th class="py-3.5 px-3">Batas Minimum</th>
-                        <th class="py-3.5 px-3">Satuan</th>
-                        <th class="py-3.5 px-3">Status</th>
-                        <th class="py-3.5 px-3">Terakhir Diperbarui</th>
-                        <th class="py-3.5 pr-6 text-right">Aksi Penyesuaian</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-cafe-beige/30">
-                    @forelse($menus as $idx => $m)
-                        <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FAFCF3]/40' : '' }}">
-                            <td class="py-4 pl-6">
-                                <div class="flex items-center gap-3">
-                                    <img src="{{ $m->image }}" alt="{{ $m->name }}" class="w-10 h-10 rounded-xl object-cover bg-cafe-beige shrink-0 shadow-xs">
-                                    <span class="font-semibold text-cafe-dark text-xs">{{ $m->name }}</span>
-                                </div>
-                            </td>
-                            <td class="py-4 px-3 font-medium text-cafe-text">{{ $m->category->name }}</td>
-                            <td class="py-4 px-3 font-bold text-sm text-cafe-dark">
-                                <span class="{{ $m->stock <= 0 ? 'text-cafe-danger' : ($m->stock <= $m->min_stock ? 'text-cafe-warning' : 'text-cafe-dark') }}">
-                                    {{ $m->stock }}
-                                </span>
-                            </td>
-                            <td class="py-4 px-3 text-cafe-muted">{{ $m->min_stock }}</td>
-                            <td class="py-4 px-3 text-cafe-muted">{{ $m->unit }}</td>
-                            <td class="py-4 px-3">
-                                @if($m->stock_status === 'aman')
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#4F7A4A]/15 text-[#4F7A4A] border border-[#4F7A4A]/30">Aman</span>
-                                @elseif($m->stock_status === 'menipis')
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#C98A2B]/15 text-[#C98A2B] border border-[#C98A2B]/30">Menipis</span>
-                                @else
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#B03A2E]/15 text-[#B03A2E] border border-[#B03A2E]/30">Habis</span>
-                                @endif
-                            </td>
-                            <td class="py-4 px-3 text-cafe-muted">{{ $m->updated_at->format('d M, H:i') }}</td>
-                            <td class="py-4 pr-6 text-right">
-                                <div class="flex items-center justify-end gap-1.5">
-                                    <button onclick="openAdjustModal({{ $m->id }}, '{{ addslashes($m->name) }}', 'masuk', '{{ $m->unit }}')" class="px-2.5 py-1 rounded-full bg-cafe-success/10 hover:bg-cafe-success/20 text-cafe-success font-semibold text-[11px] transition-colors" title="Tambah Stok">
-                                        + Masuk
-                                    </button>
-                                    <button onclick="openAdjustModal({{ $m->id }}, '{{ addslashes($m->name) }}', 'keluar', '{{ $m->unit }}')" class="px-2.5 py-1 rounded-full bg-cafe-danger/10 hover:bg-cafe-danger/20 text-cafe-danger font-semibold text-[11px] transition-colors" title="Kurangi Stok">
-                                        - Keluar
-                                    </button>
-                                    <button onclick="openMinStockModal({{ $m->id }}, '{{ addslashes($m->name) }}', {{ $m->min_stock }})" class="p-1 rounded-full bg-cafe-beige/50 hover:bg-cafe-beige text-cafe-muted hover:text-cafe-dark transition-colors" title="Atur Batas Minimum">
-                                        <i data-lucide="sliders" class="w-4 h-4"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="p-8 text-center text-xs text-cafe-muted">
-                                Tidak ada data stok yang sesuai dengan filter.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <x-responsive-table :paginate="$menus">
+        <x-slot:headers>
+            <th class="py-3.5 pl-6">Menu / Bahan</th>
+            <th class="py-3.5 px-3">Kategori</th>
+            <th class="py-3.5 px-3">Stok Saat Ini</th>
+            <th class="py-3.5 px-3">Batas Minimum</th>
+            <th class="py-3.5 px-3">Satuan</th>
+            <th class="py-3.5 px-3">Status</th>
+            <th class="py-3.5 px-3">Terakhir Diperbarui</th>
+            <th class="py-3.5 pr-6 text-right">Aksi Penyesuaian</th>
+        </x-slot:headers>
+
+        @forelse($menus as $idx => $m)
+            <x-responsive-table.row :index="$idx">
+                <!-- Mobile Card Layout -->
+                <x-slot:title>
+                    <div class="flex items-center gap-3">
+                        <img src="{{ $m->image }}" alt="{{ $m->name }}" class="w-11 h-11 rounded-xl object-cover bg-cafe-beige shrink-0 shadow-xs">
+                        <div class="min-w-0 flex-1">
+                            <p class="font-bold text-xs sm:text-sm text-cafe-dark truncate">{{ $m->name }}</p>
+                            <p class="text-[11px] text-cafe-muted mt-0.5">{{ $m->category->name }} &bull; {{ $m->updated_at->format('d M, H:i') }}</p>
+                        </div>
+                    </div>
+                </x-slot:title>
+
+                <x-slot:badge>
+                    @if($m->stock_status === 'aman')
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#4F7A4A]/15 text-[#4F7A4A] border border-[#4F7A4A]/30">Aman</span>
+                    @elseif($m->stock_status === 'menipis')
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#C98A2B]/15 text-[#C98A2B] border border-[#C98A2B]/30">Menipis</span>
+                    @else
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#B03A2E]/15 text-[#B03A2E] border border-[#B03A2E]/30">Habis</span>
+                    @endif
+                </x-slot:badge>
+
+                <x-slot:fields>
+                    <x-responsive-table.field label="Stok Saat Ini">
+                        <span class="font-bold text-sm {{ $m->stock <= 0 ? 'text-cafe-danger' : ($m->stock <= $m->min_stock ? 'text-cafe-warning' : 'text-cafe-dark') }}">
+                            {{ $m->stock }} {{ $m->unit }}
+                        </span>
+                    </x-responsive-table.field>
+                    <x-responsive-table.field label="Batas Minimum" :value="$m->min_stock . ' ' . $m->unit" />
+                </x-slot:fields>
+
+                <x-slot:actions>
+                    <div class="flex items-center gap-1.5 w-full justify-end">
+                        <button onclick="openAdjustModal({{ $m->id }}, '{{ addslashes($m->name) }}', 'masuk', '{{ $m->unit }}')" class="px-3 py-1.5 rounded-full bg-cafe-success/10 hover:bg-cafe-success/20 text-cafe-success font-semibold text-xs transition-colors" title="Tambah Stok">
+                            + Masuk
+                        </button>
+                        <button onclick="openAdjustModal({{ $m->id }}, '{{ addslashes($m->name) }}', 'keluar', '{{ $m->unit }}')" class="px-3 py-1.5 rounded-full bg-cafe-danger/10 hover:bg-cafe-danger/20 text-cafe-danger font-semibold text-xs transition-colors" title="Kurangi Stok">
+                            - Keluar
+                        </button>
+                        <button onclick="openMinStockModal({{ $m->id }}, '{{ addslashes($m->name) }}', {{ $m->min_stock }})" class="p-2 rounded-full bg-cafe-beige/50 hover:bg-cafe-beige text-cafe-muted hover:text-cafe-dark transition-colors" title="Atur Batas Minimum">
+                            <i data-lucide="sliders" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </x-slot:actions>
+
+                <!-- Desktop Cells -->
+                <x-slot:desktop>
+                    <td class="hidden md:table-cell py-4 pl-6">
+                        <div class="flex items-center gap-3">
+                            <img src="{{ $m->image }}" alt="{{ $m->name }}" class="w-10 h-10 rounded-xl object-cover bg-cafe-beige shrink-0 shadow-xs">
+                            <span class="font-semibold text-cafe-dark text-xs">{{ $m->name }}</span>
+                        </div>
+                    </td>
+                    <td class="hidden md:table-cell py-4 px-3 font-medium text-cafe-text">{{ $m->category->name }}</td>
+                    <td class="hidden md:table-cell py-4 px-3 font-bold text-sm text-cafe-dark">
+                        <span class="{{ $m->stock <= 0 ? 'text-cafe-danger' : ($m->stock <= $m->min_stock ? 'text-cafe-warning' : 'text-cafe-dark') }}">
+                            {{ $m->stock }}
+                        </span>
+                    </td>
+                    <td class="hidden md:table-cell py-4 px-3 text-cafe-muted">{{ $m->min_stock }}</td>
+                    <td class="hidden md:table-cell py-4 px-3 text-cafe-muted">{{ $m->unit }}</td>
+                    <td class="hidden md:table-cell py-4 px-3">
+                        @if($m->stock_status === 'aman')
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#4F7A4A]/15 text-[#4F7A4A] border border-[#4F7A4A]/30">Aman</span>
+                        @elseif($m->stock_status === 'menipis')
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#C98A2B]/15 text-[#C98A2B] border border-[#C98A2B]/30">Menipis</span>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#B03A2E]/15 text-[#B03A2E] border border-[#B03A2E]/30">Habis</span>
+                        @endif
+                    </td>
+                    <td class="hidden md:table-cell py-4 px-3 text-cafe-muted">{{ $m->updated_at->format('d M, H:i') }}</td>
+                    <td class="hidden md:table-cell py-4 pr-6 text-right">
+                        <div class="flex items-center justify-end gap-1.5">
+                            <button onclick="openAdjustModal({{ $m->id }}, '{{ addslashes($m->name) }}', 'masuk', '{{ $m->unit }}')" class="px-2.5 py-1 rounded-full bg-cafe-success/10 hover:bg-cafe-success/20 text-cafe-success font-semibold text-[11px] transition-colors" title="Tambah Stok">
+                                + Masuk
+                            </button>
+                            <button onclick="openAdjustModal({{ $m->id }}, '{{ addslashes($m->name) }}', 'keluar', '{{ $m->unit }}')" class="px-2.5 py-1 rounded-full bg-cafe-danger/10 hover:bg-cafe-danger/20 text-cafe-danger font-semibold text-[11px] transition-colors" title="Kurangi Stok">
+                                - Keluar
+                            </button>
+                            <button onclick="openMinStockModal({{ $m->id }}, '{{ addslashes($m->name) }}', {{ $m->min_stock }})" class="p-1 rounded-full bg-cafe-beige/50 hover:bg-cafe-beige text-cafe-muted hover:text-cafe-dark transition-colors" title="Atur Batas Minimum">
+                                <i data-lucide="sliders" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </td>
+                </x-slot:desktop>
+            </x-responsive-table.row>
+        @empty
+            <x-responsive-table.empty colspan="8">
+                Tidak ada data stok yang sesuai dengan filter.
+            </x-responsive-table.empty>
+        @endforelse
+    </x-responsive-table>
 </div>
 
 <!-- MODAL PENYESUAIAN STOK (TAMBAH / KURANGI / KOREKSI) -->
@@ -194,34 +232,58 @@
         </div>
 
         <div class="p-6 max-h-[70vh] overflow-y-auto">
-            <table class="w-full text-left text-xs">
-                <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted font-semibold">
-                    <tr>
-                        <th class="py-2.5 px-3">Waktu</th>
-                        <th class="py-2.5 px-3">Nama Menu/Bahan</th>
-                        <th class="py-2.5 px-3">Jenis</th>
-                        <th class="py-2.5 px-3">Perubahan</th>
-                        <th class="py-2.5 px-3">Catatan</th>
-                        <th class="py-2.5 px-3">Oleh</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-cafe-beige/30">
-                    @foreach($stockLogs as $log)
-                        <tr>
-                            <td class="py-3 px-3 text-cafe-muted">{{ $log->created_at->format('d/m/Y H:i') }}</td>
-                            <td class="py-3 px-3 font-semibold text-cafe-dark">{{ $log->item_name }}</td>
-                            <td class="py-3 px-3">
+            <x-responsive-table>
+                <x-slot:headers>
+                    <th class="py-2.5 px-3 text-left">Waktu</th>
+                    <th class="py-2.5 px-3 text-left">Nama Menu/Bahan</th>
+                    <th class="py-2.5 px-3 text-left">Jenis</th>
+                    <th class="py-2.5 px-3 text-left">Perubahan</th>
+                    <th class="py-2.5 px-3 text-left">Catatan</th>
+                    <th class="py-2.5 px-3 text-left">Oleh</th>
+                </x-slot:headers>
+
+                @foreach($stockLogs as $log)
+                    <x-responsive-table.row>
+                        <x-slot:title>
+                            {{ $log->item_name }}
+                        </x-slot:title>
+
+                        <x-slot:subtitle>
+                            {{ $log->created_at->format('d/m/Y H:i') }}
+                        </x-slot:subtitle>
+
+                        <x-slot:badge>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase {{ $log->type === 'masuk' ? 'bg-cafe-success/15 text-cafe-success' : ($log->type === 'keluar' ? 'bg-cafe-danger/15 text-cafe-danger' : 'bg-cafe-gold/20 text-cafe-dark') }}">
+                                {{ $log->type }}
+                            </span>
+                        </x-slot:badge>
+
+                        <x-slot:fields>
+                            <x-responsive-table.field label="Perubahan" :value="$log->stock_before . ' → ' . $log->stock_after" is-highlight="true" />
+                            <x-responsive-table.field label="Oleh" :value="$log->actor" />
+                        </x-slot:fields>
+
+                        <x-slot:content>
+                            @if($log->notes)
+                                <p class="text-xs text-cafe-muted mt-2 break-words">Catatan: {{ $log->notes }}</p>
+                            @endif
+                        </x-slot:content>
+
+                        <x-slot:desktop>
+                            <td class="hidden md:table-cell py-3 px-3 text-cafe-muted">{{ $log->created_at->format('d/m/Y H:i') }}</td>
+                            <td class="hidden md:table-cell py-3 px-3 font-semibold text-cafe-dark">{{ $log->item_name }}</td>
+                            <td class="hidden md:table-cell py-3 px-3">
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase {{ $log->type === 'masuk' ? 'bg-cafe-success/15 text-cafe-success' : ($log->type === 'keluar' ? 'bg-cafe-danger/15 text-cafe-danger' : 'bg-cafe-gold/20 text-cafe-dark') }}">
                                     {{ $log->type }}
                                 </span>
                             </td>
-                            <td class="py-3 px-3 font-mono font-medium">{{ $log->stock_before }} &rarr; {{ $log->stock_after }}</td>
-                            <td class="py-3 px-3 text-cafe-muted">{{ $log->notes ?? '-' }}</td>
-                            <td class="py-3 px-3 font-medium text-cafe-text">{{ $log->actor }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                            <td class="hidden md:table-cell py-3 px-3 font-mono font-medium">{{ $log->stock_before }} &rarr; {{ $log->stock_after }}</td>
+                            <td class="hidden md:table-cell py-3 px-3 text-cafe-muted">{{ $log->notes ?? '-' }}</td>
+                            <td class="hidden md:table-cell py-3 px-3 font-medium text-cafe-text">{{ $log->actor }}</td>
+                        </x-slot:desktop>
+                    </x-responsive-table.row>
+                @endforeach
+            </x-responsive-table>
         </div>
     </div>
 </div>

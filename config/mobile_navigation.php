@@ -69,13 +69,6 @@ return [
                             'active' => ['admin.activity.*'],
                         ],
                         [
-                            'label' => 'Profil Saya',
-                            'route' => 'admin.website.index',
-                            'route_params' => ['tab' => 'profil'],
-                            'icon' => 'user-round',
-                            'active' => ['admin.website.*'],
-                        ],
-                        [
                             'label' => 'Keluar',
                             'type' => 'logout',
                             'route' => 'admin.logout',
@@ -195,12 +188,6 @@ return [
                             'active' => ['owner.settings.*'],
                         ],
                         [
-                            'label' => 'Profil Saya',
-                            'route' => 'owner.profile.index',
-                            'icon' => 'user-round',
-                            'active' => ['owner.profile.*'],
-                        ],
-                        [
                             'label' => 'Keluar',
                             'type' => 'logout',
                             'route' => 'owner.logout',
@@ -260,12 +247,6 @@ return [
                             'route' => 'kasir.shift.index',
                             'icon' => 'wallet',
                             'active' => ['kasir.shift.*'],
-                        ],
-                        [
-                            'label' => 'Profil Saya',
-                            'route' => 'kasir.profile.index',
-                            'icon' => 'user-round',
-                            'active' => ['kasir.profile.*'],
                         ],
                         [
                             'label' => 'Keluar',

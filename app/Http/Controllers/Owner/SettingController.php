@@ -7,6 +7,8 @@ use App\Models\ActivityLog;
 use App\Models\CafeSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class SettingController extends Controller
 {
@@ -48,6 +50,8 @@ class SettingController extends Controller
             $settings[$key] = CafeSetting::get($key, $default);
         }
 
+        $user = Auth::user();
+
         $cafe = [
             'name' => CafeSetting::get('cafe_name', 'ABS Cafe'),
             'tagline' => CafeSetting::get('cafe_tagline', 'Accessories & Cafe'),
@@ -56,7 +60,7 @@ class SettingController extends Controller
             'email' => CafeSetting::get('cafe_email', ''),
         ];
 
-        return view('owner.settings.index', compact('settings', 'cafe'));
+        return view('owner.settings.index', compact('settings', 'cafe', 'user'));
     }
 
     public function update(Request $request)
@@ -105,6 +109,52 @@ class SettingController extends Controller
         $this->log($request, 'Memperbarui Pengaturan Bisnis');
 
         return back()->with('success', 'Pengaturan bisnis berhasil disimpan.');
+    }
+
+    /**
+     * Perbarui informasi akun owner (nama, username, email, telepon).
+     */
+    public function updateAccount(Request $request)
+    {
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:50|alpha_dash|unique:users,username,'.$user->id,
+            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
+            'phone' => 'nullable|string|max:30',
+        ]);
+
+        $user->update($validated);
+
+        $this->log($request, "Memperbarui akun owner: {$user->name}");
+
+        return back()->with('success', 'Informasi akun berhasil diperbarui.');
+    }
+
+    /**
+     * Ganti kata sandi owner dengan verifikasi kata sandi saat ini.
+     */
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => 'required|string',
+            'password' => ['required', 'confirmed', Password::min(6)],
+        ], [
+            'current_password.required' => 'Kata sandi saat ini wajib diisi.',
+        ]);
+
+        $user = Auth::user();
+
+        if (! Hash::check($validated['current_password'], $user->password)) {
+            return back()->withErrors(['current_password' => 'Kata sandi saat ini tidak sesuai.']);
+        }
+
+        $user->update(['password' => Hash::make($validated['password'])]);
+
+        $this->log($request, 'Mengganti kata sandi owner');
+
+        return back()->with('success', 'Kata sandi berhasil diubah.');
     }
 
     private function log(Request $request, string $activity): void

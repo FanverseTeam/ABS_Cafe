@@ -171,87 +171,150 @@
         </div>
     @else
         <!-- Table View -->
-        <div class="bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
-                    <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px]">
-                        <tr>
-                            <th class="py-3.5 pl-6">Foto &amp; Nama</th>
-                            <th class="py-3.5 px-3">Kategori</th>
-                            <th class="py-3.5 px-3">Harga</th>
-                            <th class="py-3.5 px-3">Stok</th>
-                            <th class="py-3.5 px-3">Terjual</th>
-                            <th class="py-3.5 px-3">Best Seller</th>
-                            <th class="py-3.5 px-3">Status</th>
-                            <th class="py-3.5 pr-6 text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-cafe-beige/30">
-                        @foreach($menus as $idx => $menu)
-                            <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FAFCF3]/40' : '' }}">
-                                <td class="py-3 pl-6">
-                                    <div class="flex items-center gap-3">
-                                        <img src="{{ $menu->image }}" alt="{{ $menu->name }}" class="w-11 h-11 rounded-xl object-cover bg-cafe-beige shrink-0 shadow-xs">
-                                        <div>
-                                            <p class="font-semibold text-cafe-dark text-xs">{{ $menu->name }}</p>
-                                            <p class="text-[11px] text-cafe-muted line-clamp-1 max-w-xs">{{ $menu->description }}</p>
-                                            @if($menu->variants->isNotEmpty())
-                                                <div class="flex flex-wrap gap-1 mt-1">
-                                                    @foreach($menu->variants as $variant)
-                                                        <span class="px-1.5 py-0.5 rounded-full text-[9px] font-semibold border {{ $variant->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">{{ $variant->displayName() }}</span>
-                                                    @endforeach
-                                                </div>
-                                            @endif
+        <x-responsive-table>
+            <x-slot:headers>
+                <th class="py-3.5 pl-6">Foto &amp; Nama</th>
+                <th class="py-3.5 px-3">Kategori</th>
+                <th class="py-3.5 px-3">Harga</th>
+                <th class="py-3.5 px-3">Stok</th>
+                <th class="py-3.5 px-3">Terjual</th>
+                <th class="py-3.5 px-3">Best Seller</th>
+                <th class="py-3.5 px-3">Status</th>
+                <th class="py-3.5 pr-6 text-right">Aksi</th>
+            </x-slot:headers>
+
+            @foreach($menus as $idx => $menu)
+                <x-responsive-table.row :index="$idx">
+                    <!-- Mobile Card Layout -->
+                    <x-slot:title>
+                        <div class="flex items-center gap-3">
+                            <img src="{{ $menu->image }}" alt="{{ $menu->name }}" class="w-12 h-12 rounded-xl object-cover bg-cafe-beige shrink-0 shadow-xs">
+                            <div class="min-w-0 flex-1">
+                                <p class="font-bold text-xs sm:text-sm text-cafe-dark truncate">{{ $menu->name }}</p>
+                                <p class="text-[11px] text-cafe-muted mt-0.5">{{ $menu->category->name }}</p>
+                            </div>
+                        </div>
+                    </x-slot:title>
+
+                    <x-slot:badge>
+                        @if($menu->is_best_seller)
+                            <span class="px-2 py-0.5 rounded-full bg-cafe-gold text-cafe-dark text-[10px] font-bold shadow-xs inline-flex items-center gap-0.5">
+                                <i data-lucide="star" class="w-3 h-3 fill-current"></i> Best
+                            </span>
+                        @endif
+                        <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold border transition-all {{ $menu->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
+                                {{ $menu->is_available ? 'Tersedia' : 'Habis' }}
+                            </button>
+                        </form>
+                    </x-slot:badge>
+
+                    <x-slot:fields>
+                        <x-responsive-table.field label="Harga" :value="$menu->priceRangeLabel()" />
+                        <x-responsive-table.field label="Stok">
+                            <span class="{{ $menu->stock <= 0 ? 'text-cafe-danger font-bold' : ($menu->stock <= $menu->min_stock ? 'text-cafe-warning font-bold' : 'text-cafe-text') }}">
+                                {{ $menu->stock }} {{ $menu->unit }}
+                            </span>
+                        </x-responsive-table.field>
+                        <x-responsive-table.field label="Terjual" :value="$menu->sold_count . ' porsi'" />
+                        @if($menu->variants->isNotEmpty())
+                            <x-responsive-table.field label="Varian">
+                                <div class="flex flex-wrap gap-1 mt-0.5">
+                                    @foreach($menu->variants as $variant)
+                                        <span class="px-1.5 py-0.5 rounded-full text-[9px] font-semibold border {{ $variant->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">{{ $variant->displayName() }}</span>
+                                    @endforeach
+                                </div>
+                            </x-responsive-table.field>
+                        @endif
+                    </x-slot:fields>
+
+                    @if($menu->description)
+                        <x-slot:content>
+                            <p class="text-xs text-cafe-muted">{{ $menu->description }}</p>
+                        </x-slot:content>
+                    @endif
+
+                    <x-slot:actions>
+                        <div class="flex items-center gap-1.5 w-full justify-end">
+                            <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="p-2 rounded-full hover:bg-cafe-beige/60 text-cafe-muted hover:text-cafe-dark" title="Duplikasi">
+                                    <i data-lucide="copy" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                            <button onclick="editMenuModal({{ Illuminate\Support\Js::from($menu) }})" class="p-2 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark" title="Edit">
+                                <i data-lucide="edit" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-2 rounded-full hover:bg-cafe-danger/10 text-cafe-danger" title="Hapus">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </x-slot:actions>
+
+                    <!-- Desktop Cells -->
+                    <x-slot:desktop>
+                        <td class="hidden md:table-cell py-3 pl-6">
+                            <div class="flex items-center gap-3">
+                                <img src="{{ $menu->image }}" alt="{{ $menu->name }}" class="w-11 h-11 rounded-xl object-cover bg-cafe-beige shrink-0 shadow-xs">
+                                <div>
+                                    <p class="font-semibold text-cafe-dark text-xs">{{ $menu->name }}</p>
+                                    <p class="text-[11px] text-cafe-muted line-clamp-1 max-w-xs">{{ $menu->description }}</p>
+                                    @if($menu->variants->isNotEmpty())
+                                        <div class="flex flex-wrap gap-1 mt-1">
+                                            @foreach($menu->variants as $variant)
+                                                <span class="px-1.5 py-0.5 rounded-full text-[9px] font-semibold border {{ $variant->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">{{ $variant->displayName() }}</span>
+                                            @endforeach
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="py-3 px-3 font-medium text-cafe-text">{{ $menu->category->name }}</td>
-                                <td class="py-3 px-3 font-bold text-cafe-dark">{{ $menu->priceRangeLabel() }}</td>
-                                <td class="py-3 px-3 font-medium">
-                                    <span class="{{ $menu->stock <= 0 ? 'text-cafe-danger font-bold' : ($menu->stock <= $menu->min_stock ? 'text-cafe-warning font-bold' : 'text-cafe-text') }}">
-                                        {{ $menu->stock }} {{ $menu->unit }}
-                                    </span>
-                                </td>
-                                <td class="py-3 px-3 text-cafe-muted">{{ $menu->sold_count }} porsi</td>
-                                <td class="py-3 px-3">
-                                    @if($menu->is_best_seller)
-                                        <span class="text-xs font-bold text-cafe-gold inline-flex items-center gap-1">
-                                            <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i> Ya
-                                        </span>
-                                    @else
-                                        <span class="text-cafe-muted">-</span>
                                     @endif
-                                </td>
-                                <td class="py-3 px-3">
-                                    <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="px-3 py-1 rounded-full text-[11px] font-semibold border transition-all {{ $menu->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
-                                            {{ $menu->is_available ? 'Tersedia' : 'Habis' }}
-                                        </button>
-                                    </form>
-                                </td>
-                                <td class="py-3 pr-6 text-right">
-                                    <div class="flex items-center justify-end gap-1.5">
-                                        <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST" class="inline">
-                                            @csrf
-                                            <button type="submit" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-muted hover:text-cafe-dark" title="Duplikasi">
-                                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                                            </button>
-                                        </form>
-                                        <button onclick="editMenuModal({{ Illuminate\Support\Js::from($menu) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark" title="Edit">
-                                            <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                                        </button>
-                                        <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-1.5 rounded-full hover:bg-cafe-danger/10 text-cafe-danger" title="Hapus">
-                                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="hidden md:table-cell py-3 px-3 font-medium text-cafe-text">{{ $menu->category->name }}</td>
+                        <td class="hidden md:table-cell py-3 px-3 font-bold text-cafe-dark">{{ $menu->priceRangeLabel() }}</td>
+                        <td class="hidden md:table-cell py-3 px-3 font-medium">
+                            <span class="{{ $menu->stock <= 0 ? 'text-cafe-danger font-bold' : ($menu->stock <= $menu->min_stock ? 'text-cafe-warning font-bold' : 'text-cafe-text') }}">
+                                {{ $menu->stock }} {{ $menu->unit }}
+                            </span>
+                        </td>
+                        <td class="hidden md:table-cell py-3 px-3 text-cafe-muted">{{ $menu->sold_count }} porsi</td>
+                        <td class="hidden md:table-cell py-3 px-3">
+                            @if($menu->is_best_seller)
+                                <span class="text-xs font-bold text-cafe-gold inline-flex items-center gap-1">
+                                    <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i> Ya
+                                </span>
+                            @else
+                                <span class="text-cafe-muted">-</span>
+                            @endif
+                        </td>
+                        <td class="hidden md:table-cell py-3 px-3">
+                            <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="px-3 py-1 rounded-full text-[11px] font-semibold border transition-all {{ $menu->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
+                                    {{ $menu->is_available ? 'Tersedia' : 'Habis' }}
+                                </button>
+                            </form>
+                        </td>
+                        <td class="hidden md:table-cell py-3 pr-6 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-muted hover:text-cafe-dark" title="Duplikasi">
+                                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </form>
+                                <button onclick="editMenuModal({{ Illuminate\Support\Js::from($menu) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark" title="Edit">
+                                    <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-1.5 rounded-full hover:bg-cafe-danger/10 text-cafe-danger" title="Hapus">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </x-slot:desktop>
+                </x-responsive-table.row>
+            @endforeach
+        </x-responsive-table>
     @endif
 </div>
 

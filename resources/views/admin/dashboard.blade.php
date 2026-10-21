@@ -350,45 +350,72 @@
                         </a>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="border-b border-cafe-beige text-cafe-muted font-semibold">
-                                    <th class="pb-3 pl-2">Kode Order</th>
-                                    <th class="pb-3">Customer</th>
-                                    <th class="pb-3">Meja/Tipe</th>
-                                    <th class="pb-3">Total</th>
-                                    <th class="pb-3">Status</th>
-                                    <th class="pb-3 text-right pr-2">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-cafe-beige/30">
-                                @foreach ($recentOrders as $rOrd)
-                                    <tr class="hover:bg-cafe-cream/60 transition-colors">
-                                        <td class="py-3 pl-2 font-mono font-medium text-cafe-dark">{{ $rOrd->order_code }}</td>
-                                        <td class="py-3 font-medium text-cafe-text">{{ $rOrd->customer_name }}</td>
-                                        <td class="py-3 text-cafe-muted">{{ $rOrd->order_type === 'dine_in' ? 'Meja ' . $rOrd->table_number : 'Take-away' }}</td>
-                                        <td class="py-3 font-semibold text-cafe-dark">Rp {{ number_format($rOrd->total, 0, ',', '.') }}</td>
-                                        <td class="py-3">
-                                            @if ($rOrd->payment_status === 'lunas')
-                                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#4F7A4A]/15 text-[#4F7A4A] border border-[#4F7A4A]/30">Lunas</span>
-                                            @elseif ($rOrd->payment_status === 'menunggu_pembayaran')
-                                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#C98A2B]/15 text-[#C98A2B] border border-[#C98A2B]/30">Menunggu</span>
-                                            @else
-                                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#B03A2E]/15 text-[#B03A2E] border border-[#B03A2E]/30">Batal</span>
-                                            @endif
-                                        </td>
-                                        <td class="py-3 text-right pr-2">
-                                            <a href="{{ route('admin.orders.index', ['search' => $rOrd->order_code]) }}" class="inline-flex items-center gap-1 text-xs font-semibold text-cafe-brown hover:text-cafe-dark px-2.5 py-1 rounded-full bg-cafe-beige/50 hover:bg-cafe-beige transition-colors">
-                                                <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                                                <span>Lihat</span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                    <x-responsive-table>
+                        <x-slot:headers>
+                            <th class="pb-3 pl-2 text-left">Kode Order</th>
+                            <th class="pb-3 text-left">Customer</th>
+                            <th class="pb-3 text-left">Meja/Tipe</th>
+                            <th class="pb-3 text-left">Total</th>
+                            <th class="pb-3 text-left">Status</th>
+                            <th class="pb-3 text-right pr-2">Aksi</th>
+                        </x-slot:headers>
+
+                        @foreach ($recentOrders as $rOrd)
+                            <x-responsive-table.row>
+                                <x-slot:title>
+                                    <span class="font-mono">{{ $rOrd->order_code }}</span>
+                                </x-slot:title>
+
+                                <x-slot:subtitle>
+                                    {{ $rOrd->customer_name }}
+                                </x-slot:subtitle>
+
+                                <x-slot:badge>
+                                    @if ($rOrd->payment_status === 'lunas')
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#4F7A4A]/15 text-[#4F7A4A] border border-[#4F7A4A]/30">Lunas</span>
+                                    @elseif ($rOrd->payment_status === 'menunggu_pembayaran')
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#C98A2B]/15 text-[#C98A2B] border border-[#C98A2B]/30">Menunggu</span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#B03A2E]/15 text-[#B03A2E] border border-[#B03A2E]/30">Batal</span>
+                                    @endif
+                                </x-slot:badge>
+
+                                <x-slot:fields>
+                                    <x-responsive-table.field label="Tipe" :value="$rOrd->order_type === 'dine_in' ? 'Meja ' . $rOrd->table_number : 'Take-away'" />
+                                    <x-responsive-table.field label="Total" :value="'Rp ' . number_format($rOrd->total, 0, ',', '.')" is-highlight="true" />
+                                </x-slot:fields>
+
+                                <x-slot:actions>
+                                    <a href="{{ route('admin.orders.index', ['search' => $rOrd->order_code]) }}" class="inline-flex items-center gap-1 text-xs font-semibold text-cafe-brown hover:text-cafe-dark px-3 py-1.5 rounded-full bg-cafe-beige/50 hover:bg-cafe-beige transition-colors">
+                                        <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                        <span>Lihat</span>
+                                    </a>
+                                </x-slot:actions>
+
+                                <x-slot:desktop>
+                                    <td class="hidden md:table-cell py-3 pl-2 font-mono font-medium text-cafe-dark">{{ $rOrd->order_code }}</td>
+                                    <td class="hidden md:table-cell py-3 font-medium text-cafe-text">{{ $rOrd->customer_name }}</td>
+                                    <td class="hidden md:table-cell py-3 text-cafe-muted">{{ $rOrd->order_type === 'dine_in' ? 'Meja ' . $rOrd->table_number : 'Take-away' }}</td>
+                                    <td class="hidden md:table-cell py-3 font-semibold text-cafe-dark">Rp {{ number_format($rOrd->total, 0, ',', '.') }}</td>
+                                    <td class="hidden md:table-cell py-3">
+                                        @if ($rOrd->payment_status === 'lunas')
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#4F7A4A]/15 text-[#4F7A4A] border border-[#4F7A4A]/30">Lunas</span>
+                                        @elseif ($rOrd->payment_status === 'menunggu_pembayaran')
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#C98A2B]/15 text-[#C98A2B] border border-[#C98A2B]/30">Menunggu</span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#B03A2E]/15 text-[#B03A2E] border border-[#B03A2E]/30">Batal</span>
+                                        @endif
+                                    </td>
+                                    <td class="hidden md:table-cell py-3 text-right pr-2">
+                                        <a href="{{ route('admin.orders.index', ['search' => $rOrd->order_code]) }}" class="inline-flex items-center gap-1 text-xs font-semibold text-cafe-brown hover:text-cafe-dark px-2.5 py-1 rounded-full bg-cafe-beige/50 hover:bg-cafe-beige transition-colors">
+                                            <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                            <span>Lihat</span>
+                                        </a>
+                                    </td>
+                                </x-slot:desktop>
+                            </x-responsive-table.row>
+                        @endforeach
+                    </x-responsive-table>
                 </div>
 
                 <!-- LEGACY ADMIN: stock panel with its old standalone link. -->

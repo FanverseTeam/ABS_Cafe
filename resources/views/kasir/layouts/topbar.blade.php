@@ -12,11 +12,11 @@
     <!-- Left: Mobile Logo & Title -->
     <div class="flex items-center gap-2 sm:gap-3 min-w-0">
         @if($backUrl)
-            <a href="{{ $backUrl }}" class="md:hidden flex h-10 w-10 -ml-1 shrink-0 items-center justify-center rounded-full text-cafe-dark transition-colors hover:bg-cafe-beige/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70" aria-label="Kembali">
+            <a href="{{ $backUrl }}" class="lg:hidden flex h-10 w-10 -ml-1 shrink-0 items-center justify-center rounded-full text-cafe-dark transition-colors hover:bg-cafe-beige/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70" aria-label="Kembali">
                 <i data-lucide="arrow-left" class="h-5 w-5"></i>
             </a>
         @else
-            <a href="{{ route('kasir.dashboard') }}" class="md:hidden shrink-0" title="ABS Cafe Beranda">
+            <a href="{{ route('kasir.dashboard') }}" class="lg:hidden shrink-0" title="ABS Cafe Beranda">
                 <x-logo :show-text="false" size="sm" loading="eager" class="shrink-0" />
             </a>
         @endif
@@ -121,10 +121,6 @@
                 </div>
 
                 <div class="py-1 space-y-0.5">
-                    <a href="{{ route('kasir.profile.index') }}" class="flex items-center gap-2.5 px-3 py-2 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors">
-                        <i data-lucide="user" class="w-4 h-4 text-cafe-muted"></i>
-                        <span>Profil & Ganti Password</span>
-                    </a>
                     <form action="{{ route('kasir.logout') }}" method="POST" data-cafe-confirm class="pt-1 border-t border-cafe-beige/40">
                         @csrf
                         <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-cafe-danger hover:bg-cafe-danger/10 rounded-xl transition-colors text-left">
