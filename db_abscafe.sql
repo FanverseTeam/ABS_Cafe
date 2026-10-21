@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Oct 20, 2026 at 03:51 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Host: localhost:3306
+-- Generation Time: Oct 21, 2026 at 01:53 AM
+-- Server version: 8.0.30
+-- PHP Version: 8.5.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,15 +28,15 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `activity_logs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `user_name` varchar(255) NOT NULL,
-  `role` varchar(255) NOT NULL DEFAULT 'admin',
-  `activity` text NOT NULL,
-  `activity_type` varchar(255) NOT NULL DEFAULT 'sistem',
-  `ip_address` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `user_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'admin',
+  `activity` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `activity_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'sistem',
+  `ip_address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Log audit riwayat aktivitas admin, kasir, dan sistem';
 
 --
 -- Dumping data for table `activity_logs`
@@ -160,12 +160,12 @@ INSERT INTO `activity_logs` (`id`, `user_name`, `role`, `activity`, `activity_ty
 --
 
 CREATE TABLE `cafe_settings` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `key` varchar(255) NOT NULL,
-  `value` text DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Konfigurasi umum dan pengaturan operasional ABS Cafe';
 
 --
 -- Dumping data for table `cafe_settings`
@@ -204,35 +204,18 @@ INSERT INTO `cafe_settings` (`id`, `key`, `value`, `created_at`, `updated_at`) V
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cafe_tables`
---
-
-CREATE TABLE `cafe_tables` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `number` varchar(20) NOT NULL,
-  `capacity` int(10) UNSIGNED NOT NULL DEFAULT 2,
-  `area` enum('indoor','outdoor') NOT NULL DEFAULT 'indoor',
-  `status` enum('kosong','terisi','dipesan') NOT NULL DEFAULT 'kosong',
-  `notes` text DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `cash_adjustments`
 --
 
 CREATE TABLE `cash_adjustments` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `amount` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `reason` varchar(255) NOT NULL,
-  `applied_to_shift_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `user_id` bigint UNSIGNED DEFAULT NULL,
+  `amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `reason` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `applied_to_shift_id` bigint UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Penyesuaian saldo kas kasir oleh owner';
 
 -- --------------------------------------------------------
 
@@ -241,15 +224,15 @@ CREATE TABLE `cash_adjustments` (
 --
 
 CREATE TABLE `cash_movements` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `cash_shift_id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `type` varchar(10) NOT NULL DEFAULT 'keluar',
-  `amount` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `reason` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `cash_shift_id` bigint UNSIGNED NOT NULL,
+  `user_id` bigint UNSIGNED DEFAULT NULL,
+  `type` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'keluar',
+  `amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `reason` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Kas masuk/keluar operasional harian saat shift kasir';
 
 -- --------------------------------------------------------
 
@@ -258,23 +241,23 @@ CREATE TABLE `cash_movements` (
 --
 
 CREATE TABLE `cash_shifts` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `user_id` bigint UNSIGNED DEFAULT NULL,
   `opened_at` datetime NOT NULL,
   `closed_at` datetime DEFAULT NULL,
-  `opening_cash` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `opening_cash_source` varchar(255) DEFAULT NULL,
-  `expected_cash` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `closing_cash` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `cash_difference` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `total_sales` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `total_transactions` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  `status` varchar(20) NOT NULL DEFAULT 'buka',
-  `is_auto_closed` tinyint(1) NOT NULL DEFAULT 1,
-  `notes` text DEFAULT NULL,
+  `opening_cash` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `opening_cash_source` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `expected_cash` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `closing_cash` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `cash_difference` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `total_sales` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `total_transactions` int UNSIGNED NOT NULL DEFAULT '0',
+  `status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'buka',
+  `is_auto_closed` tinyint(1) NOT NULL DEFAULT '1',
+  `notes` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Rekapitulasi shift kasir (buka/tutup kasir, saldo, penjualan)';
 
 --
 -- Dumping data for table `cash_shifts`
@@ -452,15 +435,15 @@ INSERT INTO `cash_shifts` (`id`, `user_id`, `opened_at`, `closed_at`, `opening_c
 --
 
 CREATE TABLE `categories` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `icon` varchar(255) NOT NULL DEFAULT 'Coffee',
-  `order` int(11) NOT NULL DEFAULT 1,
-  `is_active` tinyint(1) NOT NULL DEFAULT 1,
-  `description` text DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Coffee',
+  `order` int NOT NULL DEFAULT '1',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `description` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Kategori menu makanan, minuman, dan produk cafe';
 
 --
 -- Dumping data for table `categories`
@@ -489,12 +472,12 @@ INSERT INTO `categories` (`id`, `name`, `icon`, `order`, `is_active`, `descripti
 --
 
 CREATE TABLE `favorites` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `menu_id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `user_id` bigint UNSIGNED NOT NULL,
+  `menu_id` bigint UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Daftar menu favorit pelanggan';
 
 -- --------------------------------------------------------
 
@@ -503,24 +486,24 @@ CREATE TABLE `favorites` (
 --
 
 CREATE TABLE `menus` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `merged_into_menu_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `variant_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `category_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `merged_into_menu_id` bigint UNSIGNED DEFAULT NULL,
+  `variant_id` bigint UNSIGNED DEFAULT NULL,
+  `category_id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` decimal(12,2) NOT NULL,
-  `description` text DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL,
-  `is_available` tinyint(1) NOT NULL DEFAULT 1,
-  `is_best_seller` tinyint(1) NOT NULL DEFAULT 0,
-  `stock` int(11) NOT NULL DEFAULT 50,
-  `min_stock` int(11) NOT NULL DEFAULT 10,
-  `unit` varchar(255) NOT NULL DEFAULT 'porsi',
-  `sold_count` int(11) NOT NULL DEFAULT 0,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_available` tinyint(1) NOT NULL DEFAULT '1',
+  `is_best_seller` tinyint(1) NOT NULL DEFAULT '0',
+  `stock` int NOT NULL DEFAULT '50',
+  `min_stock` int NOT NULL DEFAULT '10',
+  `unit` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'porsi',
+  `sold_count` int NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Katalog produk dan menu makanan/minuman yang dijual';
 
 --
 -- Dumping data for table `menus`
@@ -677,17 +660,17 @@ INSERT INTO `menus` (`id`, `merged_into_menu_id`, `variant_id`, `category_id`, `
 --
 
 CREATE TABLE `menu_variants` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `menu_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `size` varchar(255) DEFAULT NULL,
-  `price` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `is_available` tinyint(1) NOT NULL DEFAULT 1,
-  `is_default` tinyint(1) NOT NULL DEFAULT 0,
-  `sort_order` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `id` bigint UNSIGNED NOT NULL,
+  `menu_id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `size` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `price` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `is_available` tinyint(1) NOT NULL DEFAULT '1',
+  `is_default` tinyint(1) NOT NULL DEFAULT '0',
+  `sort_order` int UNSIGNED NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Varian menu (ukuran, level rasa, dan harga khusus)';
 
 --
 -- Dumping data for table `menu_variants`
@@ -854,9 +837,9 @@ INSERT INTO `menu_variants` (`id`, `menu_id`, `name`, `size`, `price`, `is_avail
 --
 
 CREATE TABLE `migrations` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `migration` varchar(255) NOT NULL,
-  `batch` int(11) NOT NULL
+  `id` int UNSIGNED NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -888,7 +871,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (22, '2026_10_17_214652_create_recipes_table', 1),
 (23, '2026_10_20_080807_remove_landing_bg_url_setting', 1),
 (24, '2026_10_20_083704_strip_emoji_from_stored_text', 1),
-(25, '2026_10_20_201926_add_variant_merging_support', 3);
+(25, '2026_10_20_201926_add_variant_merging_support', 3),
+(26, '2026_10_21_082105_cleanup_database_schema_and_add_table_comments', 4);
 
 -- --------------------------------------------------------
 
@@ -897,10 +881,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 --
 
 CREATE TABLE `model_has_permissions` (
-  `permission_id` bigint(20) UNSIGNED NOT NULL,
-  `model_type` varchar(255) NOT NULL,
-  `model_id` bigint(20) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `permission_id` bigint UNSIGNED NOT NULL,
+  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_id` bigint UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Relasi penetapan izin langsung ke pengguna';
 
 -- --------------------------------------------------------
 
@@ -909,10 +893,10 @@ CREATE TABLE `model_has_permissions` (
 --
 
 CREATE TABLE `model_has_roles` (
-  `role_id` bigint(20) UNSIGNED NOT NULL,
-  `model_type` varchar(255) NOT NULL,
-  `model_id` bigint(20) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `role_id` bigint UNSIGNED NOT NULL,
+  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_id` bigint UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Relasi penetapan role ke pengguna';
 
 -- --------------------------------------------------------
 
@@ -921,32 +905,32 @@ CREATE TABLE `model_has_roles` (
 --
 
 CREATE TABLE `orders` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `order_code` varchar(255) NOT NULL,
-  `customer_name` varchar(255) NOT NULL,
-  `table_number` int(11) DEFAULT NULL,
-  `order_type` varchar(255) NOT NULL DEFAULT 'dine_in',
-  `source` varchar(20) NOT NULL DEFAULT 'offline',
-  `subtotal` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `tax` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `service_charge` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `discount` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `promo_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `cash_shift_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `total` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `payment_method` varchar(255) DEFAULT NULL,
-  `payment_status` varchar(255) NOT NULL DEFAULT 'menunggu_pembayaran',
-  `stock_deducted` tinyint(1) NOT NULL DEFAULT 0,
-  `stock_returned` tinyint(1) NOT NULL DEFAULT 0,
-  `order_status` varchar(255) NOT NULL DEFAULT 'diproses',
-  `cashier_name` varchar(255) DEFAULT NULL,
-  `cashier_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `order_code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `customer_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `table_number` int DEFAULT NULL,
+  `order_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'dine_in',
+  `source` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'offline',
+  `subtotal` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `tax` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `service_charge` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `discount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `promo_id` bigint UNSIGNED DEFAULT NULL,
+  `cash_shift_id` bigint UNSIGNED DEFAULT NULL,
+  `total` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `payment_method` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `payment_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'menunggu_pembayaran',
+  `stock_deducted` tinyint(1) NOT NULL DEFAULT '0',
+  `stock_returned` tinyint(1) NOT NULL DEFAULT '0',
+  `order_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'diproses',
+  `cashier_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `cashier_id` bigint UNSIGNED DEFAULT NULL,
   `paid_at` timestamp NULL DEFAULT NULL,
   `received_at` datetime DEFAULT NULL,
-  `cancel_reason` text DEFAULT NULL,
+  `cancel_reason` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Transaksi pesanan pelanggan (dine-in dan take-away)';
 
 --
 -- Dumping data for table `orders`
@@ -2024,18 +2008,18 @@ INSERT INTO `orders` (`id`, `order_code`, `customer_name`, `table_number`, `orde
 --
 
 CREATE TABLE `order_items` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `order_id` bigint(20) UNSIGNED NOT NULL,
-  `menu_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `variant_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `name` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `order_id` bigint UNSIGNED NOT NULL,
+  `menu_id` bigint UNSIGNED DEFAULT NULL,
+  `variant_id` bigint UNSIGNED DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` decimal(12,2) NOT NULL,
-  `quantity` int(11) NOT NULL DEFAULT 1,
+  `quantity` int NOT NULL DEFAULT '1',
   `subtotal` decimal(12,2) NOT NULL,
-  `notes` varchar(255) DEFAULT NULL,
+  `notes` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Rincian menu dan kuantitas dalam setiap pesanan';
 
 --
 -- Dumping data for table `order_items`
@@ -4641,13 +4625,13 @@ INSERT INTO `order_items` (`id`, `order_id`, `menu_id`, `variant_id`, `name`, `p
 --
 
 CREATE TABLE `order_timelines` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `order_id` bigint(20) UNSIGNED NOT NULL,
-  `status` varchar(255) NOT NULL,
-  `actor` varchar(255) DEFAULT NULL,
-  `description` text NOT NULL,
-  `logged_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `id` bigint UNSIGNED NOT NULL,
+  `order_id` bigint UNSIGNED NOT NULL,
+  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `actor` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `logged_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Catatan riwayat status perjalanan pesanan';
 
 --
 -- Dumping data for table `order_timelines`
@@ -7860,19 +7844,19 @@ INSERT INTO `order_timelines` (`id`, `order_id`, `status`, `actor`, `description
 --
 
 CREATE TABLE `payments` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `order_id` bigint(20) UNSIGNED NOT NULL,
-  `cashier_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `method` varchar(30) NOT NULL DEFAULT 'tunai',
-  `amount` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `cash_received` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `change_given` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `reference` varchar(255) DEFAULT NULL,
-  `status` varchar(30) NOT NULL DEFAULT 'lunas',
+  `id` bigint UNSIGNED NOT NULL,
+  `order_id` bigint UNSIGNED NOT NULL,
+  `cashier_id` bigint UNSIGNED DEFAULT NULL,
+  `method` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'tunai',
+  `amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `cash_received` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `change_given` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `reference` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'lunas',
   `paid_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Pencatatan pembayaran kasir (tunai, QRIS, debit)';
 
 --
 -- Dumping data for table `payments`
@@ -8921,17 +8905,17 @@ INSERT INTO `payments` (`id`, `order_id`, `cashier_id`, `method`, `amount`, `cas
 --
 
 CREATE TABLE `payment_methods` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `code` varchar(50) NOT NULL,
-  `type` varchar(30) NOT NULL DEFAULT 'lainnya',
-  `description` text DEFAULT NULL,
-  `instructions` text DEFAULT NULL,
-  `is_active` tinyint(1) NOT NULL DEFAULT 1,
-  `sort_order` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'lainnya',
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `instructions` text COLLATE utf8mb4_unicode_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `sort_order` int UNSIGNED NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Master metode pembayaran yang didukung sistem';
 
 --
 -- Dumping data for table `payment_methods`
@@ -8951,12 +8935,12 @@ INSERT INTO `payment_methods` (`id`, `name`, `code`, `type`, `description`, `ins
 --
 
 CREATE TABLE `permissions` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `guard_name` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Master izin hak akses sistem';
 
 -- --------------------------------------------------------
 
@@ -8965,24 +8949,24 @@ CREATE TABLE `permissions` (
 --
 
 CREATE TABLE `promos` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `code` varchar(255) DEFAULT NULL,
-  `description` text NOT NULL,
-  `type` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `value` decimal(10,2) NOT NULL,
-  `applies_to` varchar(255) NOT NULL DEFAULT 'semua',
-  `target_category_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `target_menu_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `applies_to` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'semua',
+  `target_category_id` bigint UNSIGNED DEFAULT NULL,
+  `target_menu_id` bigint UNSIGNED DEFAULT NULL,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
-  `banner` varchar(255) DEFAULT NULL,
-  `is_active` tinyint(1) NOT NULL DEFAULT 1,
-  `min_spend` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `quota` int(10) UNSIGNED DEFAULT NULL,
+  `banner` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `min_spend` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `quota` int UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Data promo diskon, voucher, dan kampanye cafe';
 
 --
 -- Dumping data for table `promos`
@@ -9000,14 +8984,14 @@ INSERT INTO `promos` (`id`, `title`, `code`, `description`, `type`, `value`, `ap
 --
 
 CREATE TABLE `recipes` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `menu_id` bigint(20) UNSIGNED NOT NULL,
-  `menu_variant_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `stock_id` bigint(20) UNSIGNED NOT NULL,
-  `amount` decimal(12,2) NOT NULL DEFAULT 1.00,
+  `id` bigint UNSIGNED NOT NULL,
+  `menu_id` bigint UNSIGNED NOT NULL,
+  `menu_variant_id` bigint UNSIGNED DEFAULT NULL,
+  `stock_id` bigint UNSIGNED NOT NULL,
+  `amount` decimal(12,2) NOT NULL DEFAULT '1.00',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Resep takaran kebutuhan stok bahan baku per menu/varian';
 
 -- --------------------------------------------------------
 
@@ -9016,20 +9000,20 @@ CREATE TABLE `recipes` (
 --
 
 CREATE TABLE `reservations` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `code` varchar(255) NOT NULL,
-  `customer_name` varchar(255) NOT NULL,
-  `phone` varchar(255) DEFAULT NULL,
-  `party_size` int(10) UNSIGNED NOT NULL DEFAULT 2,
+  `id` bigint UNSIGNED NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `customer_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `party_size` int UNSIGNED NOT NULL DEFAULT '2',
   `reservation_date` date NOT NULL,
   `reservation_time` time NOT NULL,
-  `table_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `status` varchar(20) NOT NULL DEFAULT 'menunggu',
-  `notes` text DEFAULT NULL,
-  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `table_id` bigint UNSIGNED DEFAULT NULL,
+  `status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'menunggu',
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `created_by` bigint UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Data reservasi meja cafe oleh pelanggan';
 
 --
 -- Dumping data for table `reservations`
@@ -9048,12 +9032,12 @@ INSERT INTO `reservations` (`id`, `code`, `customer_name`, `phone`, `party_size`
 --
 
 CREATE TABLE `roles` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `guard_name` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Master role hak akses pengguna';
 
 -- --------------------------------------------------------
 
@@ -9062,24 +9046,9 @@ CREATE TABLE `roles` (
 --
 
 CREATE TABLE `role_has_permissions` (
-  `permission_id` bigint(20) UNSIGNED NOT NULL,
-  `role_id` bigint(20) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `settings`
---
-
-CREATE TABLE `settings` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `key` varchar(255) NOT NULL,
-  `value` text DEFAULT NULL,
-  `group` varchar(50) NOT NULL DEFAULT 'umum',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `permission_id` bigint UNSIGNED NOT NULL,
+  `role_id` bigint UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Relasi penetapan izin ke masing-masing role';
 
 -- --------------------------------------------------------
 
@@ -9088,15 +9057,15 @@ CREATE TABLE `settings` (
 --
 
 CREATE TABLE `stocks` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `unit` varchar(30) NOT NULL DEFAULT 'pcs',
-  `quantity` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `min_quantity` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `unit` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pcs',
+  `quantity` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `min_quantity` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Inventaris master bahan baku dapur dan bar';
 
 -- --------------------------------------------------------
 
@@ -9105,18 +9074,18 @@ CREATE TABLE `stocks` (
 --
 
 CREATE TABLE `stock_logs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `menu_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `item_name` varchar(255) NOT NULL,
-  `type` varchar(255) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `stock_before` int(11) NOT NULL,
-  `stock_after` int(11) NOT NULL,
-  `notes` varchar(255) DEFAULT NULL,
-  `actor` varchar(255) NOT NULL DEFAULT 'Admin',
+  `id` bigint UNSIGNED NOT NULL,
+  `menu_id` bigint UNSIGNED DEFAULT NULL,
+  `item_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `quantity` int NOT NULL,
+  `stock_before` int NOT NULL,
+  `stock_after` int NOT NULL,
+  `notes` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `actor` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Admin',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Riwayat pergerakan stok langsung per item menu';
 
 --
 -- Dumping data for table `stock_logs`
@@ -9149,16 +9118,16 @@ INSERT INTO `stock_logs` (`id`, `menu_id`, `item_name`, `type`, `quantity`, `sto
 --
 
 CREATE TABLE `stock_movements` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `stock_id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `type` enum('masuk','keluar','penyesuaian') NOT NULL DEFAULT 'masuk',
+  `id` bigint UNSIGNED NOT NULL,
+  `stock_id` bigint UNSIGNED NOT NULL,
+  `user_id` bigint UNSIGNED DEFAULT NULL,
+  `type` enum('masuk','keluar','penyesuaian') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'masuk',
   `quantity` decimal(12,2) NOT NULL,
-  `stock_after` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `note` text DEFAULT NULL,
+  `stock_after` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `note` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Log mutasi keluar, masuk, dan penyesuaian stok bahan baku';
 
 -- --------------------------------------------------------
 
@@ -9167,9 +9136,9 @@ CREATE TABLE `stock_movements` (
 --
 
 CREATE TABLE `stock_supplier` (
-  `stock_id` bigint(20) UNSIGNED NOT NULL,
-  `supplier_id` bigint(20) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `stock_id` bigint UNSIGNED NOT NULL,
+  `supplier_id` bigint UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Relasi pivot antara bahan baku dan supplier';
 
 -- --------------------------------------------------------
 
@@ -9178,17 +9147,17 @@ CREATE TABLE `stock_supplier` (
 --
 
 CREATE TABLE `suppliers` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `contact_person` varchar(255) DEFAULT NULL,
-  `phone` varchar(30) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `address` text DEFAULT NULL,
-  `notes` text DEFAULT NULL,
-  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `contact_person` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` text COLLATE utf8mb4_unicode_ci,
+  `notes` text COLLATE utf8mb4_unicode_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Master data vendor dan supplier bahan baku';
 
 -- --------------------------------------------------------
 
@@ -9197,14 +9166,14 @@ CREATE TABLE `suppliers` (
 --
 
 CREATE TABLE `tables` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `number` int(11) NOT NULL,
-  `capacity` int(11) NOT NULL DEFAULT 4,
-  `status` varchar(255) NOT NULL DEFAULT 'tersedia',
-  `location_notes` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `number` int NOT NULL,
+  `capacity` int NOT NULL DEFAULT '4',
+  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'tersedia',
+  `location_notes` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Data meja cafe untuk pelanggan dine-in';
 
 --
 -- Dumping data for table `tables`
@@ -9229,23 +9198,23 @@ INSERT INTO `tables` (`id`, `number`, `capacity`, `status`, `location_notes`, `c
 --
 
 CREATE TABLE `users` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  `email` varchar(255) NOT NULL,
-  `role` varchar(255) NOT NULL DEFAULT 'staf',
-  `phone` varchar(255) DEFAULT NULL,
-  `photo_path` varchar(255) DEFAULT NULL,
-  `status` varchar(255) NOT NULL DEFAULT 'aktif',
-  `avatar` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `username` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'staf',
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `photo_path` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'aktif',
+  `avatar` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `last_login_at` timestamp NULL DEFAULT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  `remember_token` varchar(100) DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `is_active` tinyint(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `is_active` tinyint(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Data akun pengguna, staf, kasir, admin, dan owner cafe';
 
 --
 -- Dumping data for table `users`
@@ -9276,13 +9245,6 @@ ALTER TABLE `activity_logs`
 ALTER TABLE `cafe_settings`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `cafe_settings_key_unique` (`key`);
-
---
--- Indexes for table `cafe_tables`
---
-ALTER TABLE `cafe_tables`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `cafe_tables_number_unique` (`number`);
 
 --
 -- Indexes for table `cash_adjustments`
@@ -9449,13 +9411,6 @@ ALTER TABLE `role_has_permissions`
   ADD KEY `role_has_permissions_role_id_foreign` (`role_id`);
 
 --
--- Indexes for table `settings`
---
-ALTER TABLE `settings`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `settings_key_unique` (`key`);
-
---
 -- Indexes for table `stocks`
 --
 ALTER TABLE `stocks`
@@ -9511,169 +9466,157 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `activity_logs`
 --
 ALTER TABLE `activity_logs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
 -- AUTO_INCREMENT for table `cafe_settings`
 --
 ALTER TABLE `cafe_settings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
-
---
--- AUTO_INCREMENT for table `cafe_tables`
---
-ALTER TABLE `cafe_tables`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `cash_adjustments`
 --
 ALTER TABLE `cash_adjustments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `cash_movements`
 --
 ALTER TABLE `cash_movements`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `cash_shifts`
 --
 ALTER TABLE `cash_shifts`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=164;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=164;
 
 --
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `favorites`
 --
 ALTER TABLE `favorites`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
 
 --
 -- AUTO_INCREMENT for table `menu_variants`
 --
 ALTER TABLE `menu_variants`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1060;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1060;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2782;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2782;
 
 --
 -- AUTO_INCREMENT for table `order_timelines`
 --
 ALTER TABLE `order_timelines`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3569;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3569;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1033;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1033;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`
 --
 ALTER TABLE `payment_methods`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `permissions`
 --
 ALTER TABLE `permissions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `promos`
 --
 ALTER TABLE `promos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `recipes`
 --
 ALTER TABLE `recipes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `settings`
---
-ALTER TABLE `settings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `stocks`
 --
 ALTER TABLE `stocks`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `stock_logs`
 --
 ALTER TABLE `stock_logs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `stock_movements`
 --
 ALTER TABLE `stock_movements`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `suppliers`
 --
 ALTER TABLE `suppliers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tables`
 --
 ALTER TABLE `tables`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables

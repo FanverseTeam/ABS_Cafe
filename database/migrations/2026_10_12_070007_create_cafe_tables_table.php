@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Tabel meja sudah dibuat sebagai `tables` oleh migrasi 000001 (skema live).
+        if (Schema::hasTable('tables') || Schema::hasTable('cafe_tables')) {
+            return;
+        }
+
         Schema::create('cafe_tables', function (Blueprint $table) {
             $table->id();
             $table->string('number', 20)->unique();
