@@ -12,11 +12,10 @@
         ['route' => 'owner.cashiers.index', 'label' => 'Kinerja Kasir', 'icon' => 'users', 'badge' => null, 'match' => 'owner.cashiers'],
         ['route' => 'owner.promos.index', 'label' => 'Promo & Diskon', 'icon' => 'percent', 'badge' => $activePromoCount, 'match' => 'owner.promos'],
         ['route' => 'owner.settings.index', 'label' => 'Pengaturan Bisnis', 'icon' => 'briefcase', 'badge' => null, 'match' => 'owner.settings'],
-        ['route' => 'owner.profile.index', 'label' => 'Profil Saya', 'icon' => 'user-round', 'badge' => null, 'match' => 'owner.profile'],
     ];
 @endphp
 
-<aside id="owner-sidebar" class="hidden md:flex fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#290024] text-[#F2F5E2] flex-col shadow-2xl md:shadow-none">
+<aside id="owner-sidebar" class="hidden lg:flex fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#290024] text-[#F2F5E2] flex-col shadow-2xl">
     <!-- Header with Monogram Logo -->
     <div class="h-20 px-6 flex items-center justify-between border-b border-white/10 shrink-0">
         <a href="{{ route('owner.dashboard') }}" class="flex items-center gap-3 group">

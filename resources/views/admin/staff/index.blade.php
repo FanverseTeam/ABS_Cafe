@@ -55,11 +55,22 @@
         </form>
     </div>
 
-    <!-- Mobile Staff Cards (Hanya Tampil di Layar < md) -->
-    <div class="md:hidden space-y-3">
-        @forelse($users as $user)
-            <div class="bg-cafe-card rounded-2xl p-4 shadow-soft border border-cafe-beige/60 space-y-3">
-                <div class="flex items-center justify-between gap-2">
+    <!-- Unified Responsive Table & Mobile Cards -->
+    <x-responsive-table :paginate="$users">
+        <x-slot:headers>
+            <th class="py-3.5 pl-6">Foto &amp; Nama</th>
+            <th class="py-3.5 px-3">Email / Username</th>
+            <th class="py-3.5 px-3">No. HP</th>
+            <th class="py-3.5 px-3">Peran</th>
+            <th class="py-3.5 px-3">Status</th>
+            <th class="py-3.5 px-3">Login Terakhir</th>
+            <th class="py-3.5 pr-6 text-right">Aksi</th>
+        </x-slot:headers>
+
+        @forelse($users as $idx => $user)
+            <x-responsive-table.row :index="$idx">
+                <!-- Mobile Card Layout -->
+                <x-slot:title>
                     <div class="flex items-center gap-3 min-w-0">
                         <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="w-10 h-10 rounded-full object-cover bg-cafe-beige border border-cafe-gold/30 shrink-0">
                         <div class="min-w-0">
@@ -67,37 +78,29 @@
                             <p class="text-[10px] text-cafe-muted font-mono truncate">{{ '@' . $user->username }}</p>
                         </div>
                     </div>
+                </x-slot:title>
 
-                    <div class="shrink-0 flex items-center gap-1.5">
-                        @if($user->role === 'admin')
-                            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-cafe-gold/25 text-cafe-dark uppercase">Admin</span>
-                        @elseif($user->role === 'kasir')
-                            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-cafe-info/15 text-cafe-info uppercase">Kasir</span>
-                        @else
-                            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-cafe-beige/80 text-cafe-dark uppercase">Staf</span>
-                        @endif
-
-                        <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold {{ $user->status === 'aktif' ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-muted/15 text-cafe-muted' }}">
-                            {{ ucfirst($user->status) }}
-                        </span>
-                    </div>
-                </div>
-
-                <div class="text-[11px] text-cafe-muted space-y-0.5 pt-1 border-t border-cafe-beige/40">
-                    <p class="flex items-center gap-1.5">
-                        <i data-lucide="mail" class="w-3.5 h-3.5 text-cafe-gold shrink-0"></i>
-                        <span class="truncate">{{ $user->email }}</span>
-                    </p>
-                    @if($user->phone)
-                        <p class="flex items-center gap-1.5">
-                            <i data-lucide="phone" class="w-3.5 h-3.5 text-cafe-gold shrink-0"></i>
-                            <span>{{ $user->phone }}</span>
-                        </p>
+                <x-slot:badge>
+                    @if($user->role === 'admin')
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-cafe-gold/25 text-cafe-dark uppercase">Admin</span>
+                    @elseif($user->role === 'kasir')
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-cafe-info/15 text-cafe-info uppercase">Kasir</span>
+                    @else
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-cafe-beige/80 text-cafe-dark uppercase">Staf</span>
                     @endif
-                </div>
 
-                <!-- Action Buttons -->
-                <div class="flex items-center justify-between pt-2 border-t border-cafe-beige/40 gap-2">
+                    <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold {{ $user->status === 'aktif' ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-muted/15 text-cafe-muted' }}">
+                        {{ ucfirst($user->status) }}
+                    </span>
+                </x-slot:badge>
+
+                <x-slot:fields>
+                    <x-responsive-table.field label="Email" :value="$user->email" />
+                    <x-responsive-table.field label="No. HP" :value="$user->phone ?? '-'" />
+                    <x-responsive-table.field label="Login Terakhir" :value="$user->last_login_at ? $user->last_login_at->diffForHumans() : 'Belum pernah'" full-width />
+                </x-slot:fields>
+
+                <x-slot:actions>
                     <form action="{{ route('admin.staff.toggle.status', $user->id) }}" method="POST" class="inline">
                         @csrf
                         <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-cafe-beige/50 text-[10px] font-semibold text-cafe-dark hover:bg-cafe-beige">
@@ -123,109 +126,71 @@
                             </form>
                         @endif
                     </div>
-                </div>
-            </div>
+                </x-slot:actions>
+
+                <!-- Desktop Cells -->
+                <x-slot:desktop>
+                    <td class="hidden md:table-cell py-4 pl-6">
+                        <div class="flex items-center gap-3">
+                            <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="w-9 h-9 rounded-full object-cover bg-cafe-beige border border-cafe-gold/30 shrink-0">
+                            <span class="font-semibold text-cafe-dark text-xs">{{ $user->name }}</span>
+                        </div>
+                    </td>
+                    <td class="hidden md:table-cell py-4 px-3">
+                        <p class="text-cafe-text font-medium">{{ $user->email }}</p>
+                        <p class="text-[11px] text-cafe-muted font-mono">{{ '@' . $user->username }}</p>
+                    </td>
+                    <td class="hidden md:table-cell py-4 px-3 text-cafe-muted">{{ $user->phone ?? '-' }}</td>
+                    <td class="hidden md:table-cell py-4 px-3">
+                        @if($user->role === 'admin')
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cafe-gold/25 text-cafe-dark uppercase">Admin</span>
+                        @elseif($user->role === 'kasir')
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cafe-info/15 text-cafe-info uppercase">Kasir</span>
+                        @else
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cafe-beige/80 text-cafe-dark uppercase">Staf</span>
+                        @endif
+                    </td>
+                    <td class="hidden md:table-cell py-4 px-3">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold {{ $user->status === 'aktif' ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-muted/15 text-cafe-muted' }}">
+                            {{ ucfirst($user->status) }}
+                        </span>
+                    </td>
+                    <td class="hidden md:table-cell py-4 px-3 text-cafe-muted">
+                        {{ $user->last_login_at ? $user->last_login_at->diffForHumans() : 'Belum pernah' }}
+                    </td>
+                    <td class="hidden md:table-cell py-4 pr-6 text-right">
+                        <div class="flex items-center justify-end gap-1.5">
+                            <form action="{{ route('admin.staff.toggle.status', $user->id) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-muted hover:text-cafe-dark" title="{{ $user->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}">
+                                    <i data-lucide="{{ $user->status === 'aktif' ? 'user-x' : 'user-check' }}" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </form>
+                            <button onclick="openResetPassModal({{ $user->id }}, '{{ addslashes($user->name) }}')" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-gold hover:text-cafe-dark" title="Reset Password">
+                                <i data-lucide="key-round" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <button onclick="editUserModal({{ json_encode($user) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark" title="Edit">
+                                <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+                            </button>
+                            @if($user->id !== Auth::id())
+                                <form action="{{ route('admin.staff.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Hapus pengguna ini?');" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="p-1.5 rounded-full hover:bg-cafe-danger/10 text-cafe-danger" title="Hapus">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                    </td>
+                </x-slot:desktop>
+            </x-responsive-table.row>
         @empty
-            <div class="p-8 text-center text-xs text-cafe-muted bg-cafe-card rounded-2xl border border-cafe-beige/60">
-                Tidak ada data staf yang sesuai dengan filter.
-            </div>
+            <x-responsive-table.empty colspan="7">
+                Tidak ada data pengguna yang sesuai dengan filter.
+            </x-responsive-table.empty>
         @endforelse
-    </div>
-
-    <!-- Users Table Container (Tampil di Layar >= md) -->
-    <div class="hidden md:block bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-                <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
-                    <tr>
-                        <th class="py-3.5 pl-6">Foto &amp; Nama</th>
-                        <th class="py-3.5 px-3">Email / Username</th>
-                        <th class="py-3.5 px-3">No. HP</th>
-                        <th class="py-3.5 px-3">Peran</th>
-                        <th class="py-3.5 px-3">Status</th>
-                        <th class="py-3.5 px-3">Login Terakhir</th>
-                        <th class="py-3.5 pr-6 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-cafe-beige/30">
-                    @forelse($users as $idx => $user)
-                        <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FAFCF3]/40' : '' }}">
-                            <td class="py-4 pl-6">
-                                <div class="flex items-center gap-3">
-                                    <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="w-9 h-9 rounded-full object-cover bg-cafe-beige border border-cafe-gold/30 shrink-0">
-                                    <span class="font-semibold text-cafe-dark text-xs">{{ $user->name }}</span>
-                                </div>
-                            </td>
-                            <td class="py-4 px-3">
-                                <p class="text-cafe-text font-medium">{{ $user->email }}</p>
-                                <p class="text-[11px] text-cafe-muted font-mono">{{ '@' . $user->username }}</p>
-                            </td>
-                            <td class="py-4 px-3 text-cafe-muted">{{ $user->phone ?? '-' }}</td>
-                            <td class="py-4 px-3">
-                                @if($user->role === 'admin')
-                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cafe-gold/25 text-cafe-dark uppercase">Admin</span>
-                                @elseif($user->role === 'kasir')
-                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cafe-info/15 text-cafe-info uppercase">Kasir</span>
-                                @else
-                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cafe-beige/80 text-cafe-dark uppercase">Staf</span>
-                                @endif
-                            </td>
-                            <td class="py-4 px-3">
-                                <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold {{ $user->status === 'aktif' ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-muted/15 text-cafe-muted' }}">
-                                    {{ ucfirst($user->status) }}
-                                </span>
-                            </td>
-                            <td class="py-4 px-3 text-cafe-muted">
-                                {{ $user->last_login_at ? $user->last_login_at->diffForHumans() : 'Belum pernah' }}
-                            </td>
-                            <td class="py-4 pr-6 text-right">
-                                <div class="flex items-center justify-end gap-1.5">
-                                    <!-- Toggle Aktif/Nonaktif -->
-                                    <form action="{{ route('admin.staff.toggle.status', $user->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-muted hover:text-cafe-dark" title="{{ $user->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}">
-                                            <i data-lucide="{{ $user->status === 'aktif' ? 'user-x' : 'user-check' }}" class="w-3.5 h-3.5"></i>
-                                        </button>
-                                    </form>
-
-                                    <!-- Reset Password -->
-                                    <button onclick="openResetPassModal({{ $user->id }}, '{{ addslashes($user->name) }}')" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-gold hover:text-cafe-dark" title="Reset Password">
-                                        <i data-lucide="key-round" class="w-3.5 h-3.5"></i>
-                                    </button>
-
-                                    <!-- Edit -->
-                                    <button onclick="editUserModal({{ json_encode($user) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark" title="Edit">
-                                        <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                                    </button>
-
-                                    <!-- Delete -->
-                                    @if($user->id !== Auth::id())
-                                        <form action="{{ route('admin.staff.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Hapus pengguna ini?');" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="p-1.5 rounded-full hover:bg-cafe-danger/10 text-cafe-danger" title="Hapus">
-                                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                            </button>
-                                        </form>
-                                    @endif
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="p-8 text-center text-xs text-cafe-muted">
-                                Tidak ada data pengguna yang sesuai dengan filter.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        <div class="p-4 sm:p-5 border-t border-cafe-beige/50">
-            {{ $users->links() }}
-        </div>
-    </div>
+    </x-responsive-table>
 </div>
 
 <!-- MODAL FORM TAMBAH / EDIT USER (Bottom Sheet on Mobile) -->

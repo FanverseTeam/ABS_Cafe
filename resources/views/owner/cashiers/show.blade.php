@@ -59,99 +59,144 @@
         <!-- Daily Chart -->
         <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
             <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="line-chart" class="w-4 h-4 text-cafe-gold"></i> Penjualan Harian</h3>
-            <div class="h-64"><canvas id="cashierDailyChart"></canvas></div>
+            <div class="h-56 sm:h-64"><canvas id="cashierDailyChart"></canvas></div>
         </div>
 
         <!-- Shifts -->
         <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
             <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4 text-cafe-gold"></i> Riwayat Shift</h3>
-            <div class="overflow-x-auto">
-                <table class="w-full text-xs">
-                    <thead>
-                        <tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">
-                            <th class="text-left py-2">Buka</th>
-                            <th class="text-left py-2">Tutup</th>
-                            <th class="text-right py-2">Durasi</th>
-                            <th class="text-right py-2">Transaksi</th>
-                            <th class="text-right py-2">Penjualan</th>
-                            <th class="text-right py-2">Selisih</th>
-                            <th class="text-center py-2">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-cafe-beige/40">
-                        @forelse($shifts as $shift)
-                            @php $status = $shift->statusBadge(); $diff = $shift->differenceBadge(); @endphp
-                            <tr>
-                                <td class="py-2 text-cafe-text">{{ $shift->opened_at?->format('d/m/Y H:i') }}</td>
-                                <td class="py-2 text-cafe-muted">{{ $shift->closed_at?->format('d/m/Y H:i') ?? '-' }}</td>
-                                <td class="py-2 text-right text-cafe-muted">{{ $shift->durationLabel() }}</td>
-                                <td class="py-2 text-right text-cafe-muted">{{ $shift->total_transactions }}</td>
-                                <td class="py-2 text-right font-semibold text-cafe-dark">{{ $rp($shift->total_sales) }}</td>
-                                <td class="py-2 text-right">
-                                    @if($shift->is_auto_closed)
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cafe-success/15 text-cafe-success">Rp 0 (auto)</span>
-                                    @else
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
-                                            {{ $diff['color'] === 'success' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
-                                            {{ $diff['color'] === 'warning' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
-                                            {{ $diff['color'] === 'danger' ? 'bg-cafe-danger/15 text-cafe-danger' : '' }}">
-                                            {{ $rp($shift->cash_difference) }}
-                                        </span>
-                                    @endif
-                                </td>
-                                <td class="py-2 text-center">
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $status['color'] === 'success' ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-beige/60 text-cafe-muted' }}">
-                                        {{ $status['label'] }}
+            <x-responsive-table>
+                <x-slot:headers>
+                    <th class="text-left py-2">Buka</th>
+                    <th class="text-left py-2">Tutup</th>
+                    <th class="text-right py-2">Durasi</th>
+                    <th class="text-right py-2">Transaksi</th>
+                    <th class="text-right py-2">Penjualan</th>
+                    <th class="text-right py-2">Selisih</th>
+                    <th class="text-center py-2">Status</th>
+                </x-slot:headers>
+
+                @forelse($shifts as $shift)
+                    @php $status = $shift->statusBadge(); $diff = $shift->differenceBadge(); @endphp
+                    <x-responsive-table.row>
+                        <x-slot:title>
+                            {{ $shift->opened_at?->format('d/m/Y H:i') }}
+                        </x-slot:title>
+
+                        <x-slot:subtitle>
+                            Tutup: {{ $shift->closed_at?->format('d/m/Y H:i') ?? '-' }}
+                        </x-slot:subtitle>
+
+                        <x-slot:badge>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $status['color'] === 'success' ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-beige/60 text-cafe-muted' }}">
+                                {{ $status['label'] }}
+                            </span>
+                        </x-slot:badge>
+
+                        <x-slot:fields>
+                            <x-responsive-table.field label="Penjualan" :value="$rp($shift->total_sales)" is-highlight="true" />
+                            <x-responsive-table.field label="Transaksi" :value="$shift->total_transactions" />
+                            <x-responsive-table.field label="Durasi" :value="$shift->durationLabel()" />
+                            <x-responsive-table.field label="Selisih">
+                                @if($shift->is_auto_closed)
+                                    <span class="font-bold text-cafe-success">Rp 0 (auto)</span>
+                                @else
+                                    <span class="font-bold {{ $diff['color'] === 'success' ? 'text-cafe-success' : ($diff['color'] === 'warning' ? 'text-cafe-warning' : 'text-cafe-danger') }}">
+                                        {{ $rp($shift->cash_difference) }}
                                     </span>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr><td colspan="7" class="py-6 text-center text-cafe-muted">Belum ada data shift pada periode ini.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                                @endif
+                            </x-responsive-table.field>
+                        </x-slot:fields>
+
+                        <x-slot:desktop>
+                            <td class="hidden md:table-cell py-2 text-cafe-text">{{ $shift->opened_at?->format('d/m/Y H:i') }}</td>
+                            <td class="hidden md:table-cell py-2 text-cafe-muted">{{ $shift->closed_at?->format('d/m/Y H:i') ?? '-' }}</td>
+                            <td class="hidden md:table-cell py-2 text-right text-cafe-muted">{{ $shift->durationLabel() }}</td>
+                            <td class="hidden md:table-cell py-2 text-right text-cafe-muted">{{ $shift->total_transactions }}</td>
+                            <td class="hidden md:table-cell py-2 text-right font-semibold text-cafe-dark">{{ $rp($shift->total_sales) }}</td>
+                            <td class="hidden md:table-cell py-2 text-right">
+                                @if($shift->is_auto_closed)
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cafe-success/15 text-cafe-success">Rp 0 (auto)</span>
+                                @else
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
+                                        {{ $diff['color'] === 'success' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
+                                        {{ $diff['color'] === 'warning' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
+                                        {{ $diff['color'] === 'danger' ? 'bg-cafe-danger/15 text-cafe-danger' : '' }}">
+                                        {{ $rp($shift->cash_difference) }}
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="hidden md:table-cell py-2 text-center">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $status['color'] === 'success' ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-beige/60 text-cafe-muted' }}">
+                                    {{ $status['label'] }}
+                                </span>
+                            </td>
+                        </x-slot:desktop>
+                    </x-responsive-table.row>
+                @empty
+                    <x-responsive-table.empty col-span="7" message="Belum ada data shift pada periode ini." />
+                @endforelse
+            </x-responsive-table>
         </div>
 
         <!-- Orders -->
         <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
             <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="receipt" class="w-4 h-4 text-cafe-gold"></i> Pesanan Ditangani</h3>
-            <div class="overflow-x-auto">
-                <table class="w-full text-xs">
-                    <thead>
-                        <tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">
-                            <th class="text-left py-2">Kode</th>
-                            <th class="text-left py-2">Waktu</th>
-                            <th class="text-left py-2">Customer</th>
-                            <th class="text-left py-2">Metode</th>
-                            <th class="text-left py-2">Status</th>
-                            <th class="text-right py-2">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-cafe-beige/40">
-                        @forelse($orders as $order)
-                            <tr class="hover:bg-cafe-cream/60 transition-colors">
-                                <td class="py-2.5 font-semibold text-cafe-dark">{{ $order->order_code }}</td>
-                                <td class="py-2.5 text-cafe-muted">{{ $order->created_at->format('d/m/Y H:i') }}</td>
-                                <td class="py-2.5 text-cafe-text">{{ $order->customer_name }}</td>
-                                <td class="py-2.5 uppercase text-cafe-muted">{{ $order->payment_method }}</td>
-                                <td class="py-2.5">
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
-                                        {{ $order->payment_status === 'lunas' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
-                                        {{ $order->payment_status === 'menunggu_pembayaran' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
-                                        {{ $order->payment_status === 'dibatalkan' ? 'bg-cafe-danger/15 text-cafe-danger' : '' }}">
-                                        {{ ucfirst(str_replace('_', ' ', $order->payment_status)) }}
-                                    </span>
-                                </td>
-                                <td class="py-2.5 text-right font-semibold text-cafe-dark">{{ $rp($order->total) }}</td>
-                            </tr>
-                        @empty
-                            <tr><td colspan="6" class="py-6 text-center text-cafe-muted">Belum ada pesanan pada periode ini.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-4">{{ $orders->links() }}</div>
+            <x-responsive-table :paginate="$orders">
+                <x-slot:headers>
+                    <th class="text-left py-2">Kode</th>
+                    <th class="text-left py-2">Waktu</th>
+                    <th class="text-left py-2">Customer</th>
+                    <th class="text-left py-2">Metode</th>
+                    <th class="text-left py-2">Status</th>
+                    <th class="text-right py-2">Total</th>
+                </x-slot:headers>
+
+                @forelse($orders as $order)
+                    <x-responsive-table.row>
+                        <x-slot:title>
+                            {{ $order->order_code }}
+                        </x-slot:title>
+
+                        <x-slot:subtitle>
+                            {{ $order->created_at->format('d/m/Y H:i') }}
+                        </x-slot:subtitle>
+
+                        <x-slot:badge>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
+                                {{ $order->payment_status === 'lunas' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
+                                {{ $order->payment_status === 'menunggu_pembayaran' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
+                                {{ $order->payment_status === 'dibatalkan' ? 'bg-cafe-danger/15 text-cafe-danger' : '' }}">
+                                {{ ucfirst(str_replace('_', ' ', $order->payment_status)) }}
+                            </span>
+                        </x-slot:badge>
+
+                        <x-slot:fields>
+                            <x-responsive-table.field label="Customer" :value="$order->customer_name" />
+                            <x-responsive-table.field label="Metode" :value="strtoupper($order->payment_method)" />
+                            <x-responsive-table.field label="Total" :value="$rp($order->total)" is-highlight="true" />
+                        </x-slot:fields>
+
+                        <x-slot:desktop>
+                            <td class="hidden md:table-cell py-2.5 font-semibold text-cafe-dark">{{ $order->order_code }}</td>
+                            <td class="hidden md:table-cell py-2.5 text-cafe-muted">{{ $order->created_at->format('d/m/Y H:i') }}</td>
+                            <td class="hidden md:table-cell py-2.5 text-cafe-text">{{ $order->customer_name }}</td>
+                            <td class="hidden md:table-cell py-2.5 uppercase text-cafe-muted">{{ $order->payment_method }}</td>
+                            <td class="hidden md:table-cell py-2.5">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
+                                    {{ $order->payment_status === 'lunas' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
+                                    {{ $order->payment_status === 'menunggu_pembayaran' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
+                                    {{ $order->payment_status === 'dibatalkan' ? 'bg-cafe-danger/15 text-cafe-danger' : '' }}">
+                                    {{ ucfirst(str_replace('_', ' ', $order->payment_status)) }}
+                                </span>
+                            </td>
+                            <td class="hidden md:table-cell py-2.5 text-right font-semibold text-cafe-dark">{{ $rp($order->total) }}</td>
+                        </x-slot:desktop>
+                    </x-responsive-table.row>
+                @empty
+                    <x-responsive-table.empty col-span="6" message="Belum ada pesanan pada periode ini." />
+                @endforelse
+            </x-responsive-table>
         </div>
     </div>
 @endsection

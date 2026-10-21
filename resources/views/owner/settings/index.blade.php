@@ -20,18 +20,67 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <!-- Cafe Info (read-only) -->
-            <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 space-y-3">
-                <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2"><i data-lucide="store" class="w-4 h-4 text-cafe-gold"></i> Profil Usaha</h3>
-                <div class="text-xs space-y-2">
-                    <div><p class="text-cafe-muted text-[10px] uppercase tracking-wide">Nama</p><p class="font-semibold text-cafe-dark">{{ $cafe['name'] }}</p></div>
-                    <div><p class="text-cafe-muted text-[10px] uppercase tracking-wide">Tagline</p><p class="text-cafe-text">{{ $cafe['tagline'] }}</p></div>
-                    <div><p class="text-cafe-muted text-[10px] uppercase tracking-wide">Alamat</p><p class="text-cafe-text">{{ $cafe['address'] ?: '-' }}</p></div>
-                    <div><p class="text-cafe-muted text-[10px] uppercase tracking-wide">Telepon</p><p class="text-cafe-text">{{ $cafe['phone'] ?: '-' }}</p></div>
-                    <div><p class="text-cafe-muted text-[10px] uppercase tracking-wide">Email</p><p class="text-cafe-text">{{ $cafe['email'] ?: '-' }}</p></div>
+            <div class="space-y-4">
+                <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 space-y-3">
+                    <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2"><i data-lucide="store" class="w-4 h-4 text-cafe-gold"></i> Profil Usaha</h3>
+                    <div class="text-xs space-y-2">
+                        <div><p class="text-cafe-muted text-[10px] uppercase tracking-wide">Nama</p><p class="font-semibold text-cafe-dark">{{ $cafe['name'] }}</p></div>
+                        <div><p class="text-cafe-muted text-[10px] uppercase tracking-wide">Tagline</p><p class="text-cafe-text">{{ $cafe['tagline'] }}</p></div>
+                        <div><p class="text-cafe-muted text-[10px] uppercase tracking-wide">Alamat</p><p class="text-cafe-text">{{ $cafe['address'] ?: '-' }}</p></div>
+                        <div><p class="text-cafe-muted text-[10px] uppercase tracking-wide">Telepon</p><p class="text-cafe-text">{{ $cafe['phone'] ?: '-' }}</p></div>
+                        <div><p class="text-cafe-muted text-[10px] uppercase tracking-wide">Email</p><p class="text-cafe-text">{{ $cafe['email'] ?: '-' }}</p></div>
+                    </div>
                 </div>
-                <a href="{{ route('owner.profile.index') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-cafe-brown hover:text-cafe-dark transition-colors">
-                    Kelola akun saya <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                </a>
+
+                <!-- Account Info -->
+                <form action="{{ route('owner.settings.account') }}" method="POST" class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 space-y-4">
+                    @csrf
+                    <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2"><i data-lucide="user-round" class="w-4 h-4 text-cafe-gold"></i> Akun Saya</h3>
+                    <div class="text-xs space-y-3">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-cafe-text">Nama Lengkap</label>
+                            <input type="text" name="name" value="{{ old('name', $user->name) }}" required class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-cafe-text">Username</label>
+                            <input type="text" name="username" value="{{ old('username', $user->username) }}" required class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-cafe-text">Email</label>
+                            <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-cafe-text">Telepon</label>
+                            <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                        </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold transition-colors">Simpan Akun</button>
+                    </div>
+                </form>
+
+                <!-- Change Password -->
+                <form action="{{ route('owner.settings.account.password') }}" method="POST" class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 space-y-4">
+                    @csrf
+                    <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2"><i data-lucide="key-round" class="w-4 h-4 text-cafe-gold"></i> Ganti Kata Sandi</h3>
+                    <div class="text-xs space-y-3">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-cafe-text">Kata Sandi Saat Ini</label>
+                            <input type="password" name="current_password" required class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-cafe-text">Kata Sandi Baru</label>
+                            <input type="password" name="password" required class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-cafe-text">Konfirmasi Kata Sandi</label>
+                            <input type="password" name="password_confirmation" required class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                        </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold transition-colors">Perbarui Kata Sandi</button>
+                    </div>
+                </form>
             </div>
 
             <!-- Settings Form -->

@@ -60,59 +60,77 @@
     </div>
 
     <!-- Table Container -->
-    <div class="bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-                <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
-                    <tr>
-                        <th class="py-3.5 pl-6">Waktu Kejadian</th>
-                        <th class="py-3.5 px-3">Pengguna</th>
-                        <th class="py-3.5 px-3">Peran</th>
-                        <th class="py-3.5 px-3">Kategori</th>
-                        <th class="py-3.5 px-3">Rincian Aktivitas</th>
-                        <th class="py-3.5 pr-6 text-right">Alamat IP</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-cafe-beige/30">
-                    @forelse($logs as $idx => $log)
-                        <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FAFCF3]/40' : '' }}">
-                            <td class="py-4 pl-6 text-cafe-muted font-mono whitespace-nowrap">
-                                {{ $log->created_at->format('d M Y, H:i:s') }}
-                            </td>
-                            <td class="py-4 px-3 font-semibold text-cafe-dark whitespace-nowrap">
-                                {{ $log->user_name }}
-                            </td>
-                            <td class="py-4 px-3">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase {{ $log->role === 'admin' ? 'bg-cafe-gold/20 text-cafe-dark' : ($log->role === 'kasir' ? 'bg-cafe-info/15 text-cafe-info' : 'bg-cafe-beige text-cafe-muted') }}">
-                                    {{ $log->role }}
-                                </span>
-                            </td>
-                            <td class="py-4 px-3">
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-medium uppercase border border-cafe-beige/80 text-cafe-muted">
-                                    {{ $log->activity_type }}
-                                </span>
-                            </td>
-                            <td class="py-4 px-3 text-cafe-text font-medium leading-relaxed">
-                                {{ $log->activity }}
-                            </td>
-                            <td class="py-4 pr-6 text-right font-mono text-[11px] text-cafe-muted whitespace-nowrap">
-                                {{ $log->ip_address ?? '127.0.0.1' }}
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="p-8 text-center text-xs text-cafe-muted">
-                                Tidak ada log aktivitas yang sesuai dengan filter pencarian.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+    <x-responsive-table :paginate="$logs">
+        <x-slot:headers>
+            <th class="py-3.5 pl-6">Waktu Kejadian</th>
+            <th class="py-3.5 px-3">Pengguna</th>
+            <th class="py-3.5 px-3">Peran</th>
+            <th class="py-3.5 px-3">Kategori</th>
+            <th class="py-3.5 px-3">Rincian Aktivitas</th>
+            <th class="py-3.5 pr-6 text-right">Alamat IP</th>
+        </x-slot:headers>
 
-        <div class="p-4 sm:p-5 border-t border-cafe-beige/50">
-            {{ $logs->links() }}
-        </div>
-    </div>
+        @forelse($logs as $idx => $log)
+            <x-responsive-table.row :index="$idx">
+                <!-- Mobile Card Layout -->
+                <x-slot:title>
+                    <span class="font-mono text-[11px] text-cafe-muted">{{ $log->created_at->format('d M Y, H:i:s') }}</span>
+                </x-slot:title>
+
+                <x-slot:badge>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-medium uppercase border border-cafe-beige/80 text-cafe-muted">
+                        {{ $log->activity_type }}
+                    </span>
+                </x-slot:badge>
+
+                <x-slot:subtitle>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="font-bold text-xs text-cafe-dark">{{ $log->user_name }}</span>
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase {{ $log->role === 'admin' ? 'bg-cafe-gold/20 text-cafe-dark' : ($log->role === 'kasir' ? 'bg-cafe-info/15 text-cafe-info' : 'bg-cafe-beige text-cafe-muted') }}">
+                            {{ $log->role }}
+                        </span>
+                    </div>
+                </x-slot:subtitle>
+
+                <x-slot:content>
+                    <p class="text-xs text-cafe-text font-medium leading-relaxed break-words">{{ $log->activity }}</p>
+                </x-slot:content>
+
+                <x-slot:footer>
+                    <span class="font-mono text-[10px] text-cafe-muted">IP: {{ $log->ip_address ?? '127.0.0.1' }}</span>
+                </x-slot:footer>
+
+                <!-- Desktop Cells -->
+                <x-slot:desktop>
+                    <td class="hidden md:table-cell py-4 pl-6 text-cafe-muted font-mono whitespace-nowrap">
+                        {{ $log->created_at->format('d M Y, H:i:s') }}
+                    </td>
+                    <td class="hidden md:table-cell py-4 px-3 font-semibold text-cafe-dark whitespace-nowrap">
+                        {{ $log->user_name }}
+                    </td>
+                    <td class="hidden md:table-cell py-4 px-3">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase {{ $log->role === 'admin' ? 'bg-cafe-gold/20 text-cafe-dark' : ($log->role === 'kasir' ? 'bg-cafe-info/15 text-cafe-info' : 'bg-cafe-beige text-cafe-muted') }}">
+                            {{ $log->role }}
+                        </span>
+                    </td>
+                    <td class="hidden md:table-cell py-4 px-3">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-medium uppercase border border-cafe-beige/80 text-cafe-muted">
+                            {{ $log->activity_type }}
+                        </span>
+                    </td>
+                    <td class="hidden md:table-cell py-4 px-3 text-cafe-text font-medium leading-relaxed break-words">
+                        {{ $log->activity }}
+                    </td>
+                    <td class="hidden md:table-cell py-4 pr-6 text-right font-mono text-[11px] text-cafe-muted whitespace-nowrap">
+                        {{ $log->ip_address ?? '127.0.0.1' }}
+                    </td>
+                </x-slot:desktop>
+            </x-responsive-table.row>
+        @empty
+            <x-responsive-table.empty colspan="6">
+                Tidak ada log aktivitas yang sesuai dengan filter pencarian.
+            </x-responsive-table.empty>
+        @endforelse
+    </x-responsive-table>
 </div>
 @endsection

@@ -15,7 +15,7 @@
     $homeRoute = 'admin.dashboard';
 @endphp
 
-<aside id="admin-sidebar" class="hidden md:flex fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#290024] text-[#F2F5E2] flex-col shadow-2xl md:shadow-none">
+<aside id="admin-sidebar" class="hidden lg:flex fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#290024] text-[#F2F5E2] flex-col shadow-2xl">
     <!-- Header with Monogram Logo -->
     <div class="h-20 px-6 flex items-center justify-between border-b border-white/10 shrink-0">
         <a href="{{ route($homeRoute) }}" class="flex items-center gap-3 group">

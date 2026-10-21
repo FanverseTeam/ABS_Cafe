@@ -75,11 +75,11 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div class="lg:col-span-2 bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
                     <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="bar-chart-3" class="w-4 h-4 text-cafe-gold"></i> Penjualan per Hari</h3>
-                    <div class="h-72"><canvas id="dailyChart"></canvas></div>
+                    <div class="h-56 sm:h-72"><canvas id="dailyChart"></canvas></div>
                 </div>
                 <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
                     <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="clock-4" class="w-4 h-4 text-cafe-gold"></i> Jam Sibuk</h3>
-                    <div class="h-72"><canvas id="hourChart"></canvas></div>
+                    <div class="h-56 sm:h-72"><canvas id="hourChart"></canvas></div>
                 </div>
             </div>
 
@@ -148,35 +148,51 @@
             <!-- Detail Pesanan -->
             <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
                 <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="list" class="w-4 h-4 text-cafe-gold"></i> Detail Pesanan</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-xs">
-                        <thead>
-                            <tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">
-                                <th class="text-left py-2">Kode</th>
-                                <th class="text-left py-2">Waktu</th>
-                                <th class="text-left py-2">Customer</th>
-                                <th class="text-left py-2">Kasir</th>
-                                <th class="text-left py-2">Metode</th>
-                                <th class="text-right py-2">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-cafe-beige/40">
-                            @forelse($data['orders'] as $order)
-                                <tr class="hover:bg-cafe-cream/60 transition-colors">
-                                    <td class="py-2.5 font-semibold text-cafe-dark">{{ $order->order_code }}</td>
-                                    <td class="py-2.5 text-cafe-muted">{{ $order->created_at->format('d/m/Y H:i') }}</td>
-                                    <td class="py-2.5 text-cafe-text">{{ $order->customer_name }}</td>
-                                    <td class="py-2.5 text-cafe-muted">{{ $order->cashierLabel() }}</td>
-                                    <td class="py-2.5 uppercase text-cafe-muted">{{ $order->payment_method }}</td>
-                                    <td class="py-2.5 text-right font-semibold text-cafe-dark">{{ $rp($order->total) }}</td>
-                                </tr>
-                            @empty
-                                <tr><td colspan="6" class="py-6 text-center text-cafe-muted">Belum ada pesanan pada periode ini.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4">{{ $data['orders']->links() }}</div>
+                <x-responsive-table :paginate="$data['orders']">
+                    <x-slot:headers>
+                        <th class="text-left py-2">Kode</th>
+                        <th class="text-left py-2">Waktu</th>
+                        <th class="text-left py-2">Customer</th>
+                        <th class="text-left py-2">Kasir</th>
+                        <th class="text-left py-2">Metode</th>
+                        <th class="text-right py-2">Total</th>
+                    </x-slot:headers>
+
+                    @forelse($data['orders'] as $order)
+                        <x-responsive-table.row>
+                            <x-slot:title>
+                                {{ $order->order_code }}
+                            </x-slot:title>
+
+                            <x-slot:subtitle>
+                                {{ $order->created_at->format('d/m/Y H:i') }}
+                            </x-slot:subtitle>
+
+                            <x-slot:badge>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-cafe-beige/60 text-cafe-muted">
+                                    {{ $order->payment_method }}
+                                </span>
+                            </x-slot:badge>
+
+                            <x-slot:fields>
+                                <x-responsive-table.field label="Customer" :value="$order->customer_name" />
+                                <x-responsive-table.field label="Kasir" :value="$order->cashierLabel()" />
+                                <x-responsive-table.field label="Total" :value="$rp($order->total)" is-highlight="true" />
+                            </x-slot:fields>
+
+                            <x-slot:desktop>
+                                <td class="hidden md:table-cell py-2.5 font-semibold text-cafe-dark">{{ $order->order_code }}</td>
+                                <td class="hidden md:table-cell py-2.5 text-cafe-muted">{{ $order->created_at->format('d/m/Y H:i') }}</td>
+                                <td class="hidden md:table-cell py-2.5 text-cafe-text">{{ $order->customer_name }}</td>
+                                <td class="hidden md:table-cell py-2.5 text-cafe-muted">{{ $order->cashierLabel() }}</td>
+                                <td class="hidden md:table-cell py-2.5 uppercase text-cafe-muted">{{ $order->payment_method }}</td>
+                                <td class="hidden md:table-cell py-2.5 text-right font-semibold text-cafe-dark">{{ $rp($order->total) }}</td>
+                            </x-slot:desktop>
+                        </x-responsive-table.row>
+                    @empty
+                        <x-responsive-table.empty col-span="6" message="Belum ada pesanan pada periode ini." />
+                    @endforelse
+                </x-responsive-table>
             </div>
         @elseif($tab === 'keuangan')
             <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
@@ -232,7 +248,7 @@
                             <span class="ml-2 text-[10px] bg-cafe-success/15 text-cafe-success font-semibold px-2 py-0.5 rounded-full">Mode Otomatis</span>
                         @endif
                     </h3>
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-hidden md:overflow-x-auto">
                         <table class="w-full text-xs">
                             <thead>
                                 <tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">
@@ -245,7 +261,7 @@
                             <tbody class="divide-y divide-cafe-beige/40">
                                 @forelse($finance['shifts'] as $shift)
                                     <tr>
-                                        <td class="py-2 font-medium text-cafe-text">{{ $shift->user?->name ?? '-' }}</td>
+                                        <td class="py-2 font-medium text-cafe-text truncate">{{ $shift->user?->name ?? '-' }}</td>
                                         <td class="py-2 text-cafe-muted">{{ $shift->opened_at?->format('d/m H:i') }}</td>
                                         <td class="py-2 text-right font-semibold text-cafe-dark">{{ $rp($shift->total_sales) }}</td>
                                         <td class="py-2 text-right">
@@ -274,36 +290,54 @@
                     @if($finance['adjustments']->isNotEmpty())
                         <div class="mt-4 pt-4 border-t border-cafe-beige/50">
                             <h4 class="text-xs font-bold text-cafe-dark mb-2 flex items-center gap-2"><i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-cafe-bronze"></i> Penyesuaian Kas Laci</h4>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-xs">
-                                    <thead><tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">
-                                        <th class="text-left py-1.5">Dibuat</th>
-                                        <th class="text-left py-1.5">Oleh</th>
-                                        <th class="text-right py-1.5">Jumlah</th>
-                                        <th class="text-left py-1.5">Alasan</th>
-                                        <th class="text-left py-1.5">Shift</th>
-                                    </tr></thead>
-                                    <tbody class="divide-y divide-cafe-beige/30">
-                                        @foreach($finance['adjustments'] as $adj)
-                                            <tr>
-                                                <td class="py-1.5 text-cafe-muted">{{ $adj->created_at->format('d/m H:i') }}</td>
-                                                <td class="py-1.5 font-medium text-cafe-text">{{ $adj->user?->name ?? '-' }}</td>
-                                                <td class="py-1.5 text-right font-bold {{ $adj->amount >= 0 ? 'text-cafe-success' : 'text-cafe-danger' }}">
-                                                    {{ ($adj->amount >= 0 ? '+' : '') . $rp($adj->amount) }}
-                                                </td>
-                                                <td class="py-1.5 text-cafe-muted">{{ $adj->reason }}</td>
-                                                <td class="py-1.5 text-cafe-muted">
-                                                    @if($adj->applied_to_shift_id)
-                                                        Shift #{{ $adj->applied_to_shift_id }}
-                                                    @else
-                                                        <span class="text-cafe-warning">Menunggu</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                            <x-responsive-table>
+                                <x-slot:headers>
+                                    <th class="text-left py-1.5">Dibuat</th>
+                                    <th class="text-left py-1.5">Oleh</th>
+                                    <th class="text-right py-1.5">Jumlah</th>
+                                    <th class="text-left py-1.5">Alasan</th>
+                                    <th class="text-left py-1.5">Shift</th>
+                                </x-slot:headers>
+
+                                @foreach($finance['adjustments'] as $adj)
+                                    <x-responsive-table.row>
+                                        <x-slot:title>
+                                            {{ $adj->created_at->format('d/m H:i') }}
+                                        </x-slot:title>
+
+                                        <x-slot:subtitle>
+                                            Oleh: {{ $adj->user?->name ?? '-' }}
+                                        </x-slot:subtitle>
+
+                                        <x-slot:badge>
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $adj->amount >= 0 ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-danger/15 text-cafe-danger' }}">
+                                                {{ ($adj->amount >= 0 ? '+' : '') . $rp($adj->amount) }}
+                                            </span>
+                                        </x-slot:badge>
+
+                                        <x-slot:fields>
+                                            <x-responsive-table.field label="Alasan" :value="$adj->reason" />
+                                            <x-responsive-table.field label="Shift" :value="$adj->applied_to_shift_id ? 'Shift #' . $adj->applied_to_shift_id : 'Menunggu'" />
+                                        </x-slot:fields>
+
+                                        <x-slot:desktop>
+                                            <td class="hidden md:table-cell py-1.5 text-cafe-muted">{{ $adj->created_at->format('d/m H:i') }}</td>
+                                            <td class="hidden md:table-cell py-1.5 font-medium text-cafe-text">{{ $adj->user?->name ?? '-' }}</td>
+                                            <td class="hidden md:table-cell py-1.5 text-right font-bold {{ $adj->amount >= 0 ? 'text-cafe-success' : 'text-cafe-danger' }}">
+                                                {{ ($adj->amount >= 0 ? '+' : '') . $rp($adj->amount) }}
+                                            </td>
+                                            <td class="hidden md:table-cell py-1.5 text-cafe-muted">{{ $adj->reason }}</td>
+                                            <td class="hidden md:table-cell py-1.5 text-cafe-muted">
+                                                @if($adj->applied_to_shift_id)
+                                                    Shift #{{ $adj->applied_to_shift_id }}
+                                                @else
+                                                    <span class="text-cafe-warning">Menunggu</span>
+                                                @endif
+                                            </td>
+                                        </x-slot:desktop>
+                                    </x-responsive-table.row>
+                                @endforeach
+                            </x-responsive-table>
                         </div>
                     @endif
                 </div>
@@ -361,37 +395,55 @@
 
                 <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
                     <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="arrow-right-left" class="w-4 h-4 text-cafe-gold"></i> Riwayat Pergerakan Stok</h3>
-                    <div class="overflow-x-auto max-h-96 overflow-y-auto">
-                        <table class="w-full text-xs">
-                            <thead class="sticky top-0 bg-cafe-card">
-                                <tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">
-                                    <th class="text-left py-2">Item</th>
-                                    <th class="text-left py-2">Tipe</th>
-                                    <th class="text-right py-2">Qty</th>
-                                    <th class="text-right py-2">Waktu</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-cafe-beige/40">
-                                @forelse($stock['movements'] as $mv)
-                                    <tr>
-                                        <td class="py-2 font-medium text-cafe-text">{{ $mv->item_name }}</td>
-                                        <td class="py-2">
-                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
-                                                {{ $mv->type === 'masuk' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
-                                                {{ $mv->type === 'keluar' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
-                                                {{ $mv->type === 'koreksi' ? 'bg-cafe-info/15 text-cafe-info' : '' }}">
-                                                {{ ucfirst($mv->type) }}
-                                            </span>
-                                        </td>
-                                        <td class="py-2 text-right font-semibold text-cafe-dark">{{ $mv->quantity }}</td>
-                                        <td class="py-2 text-right text-cafe-muted">{{ $mv->created_at->format('d/m H:i') }}</td>
-                                    </tr>
-                                @empty
-                                    <tr><td colspan="4" class="py-4 text-center text-cafe-muted">Belum ada pergerakan stok.</td></tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                    <x-responsive-table>
+                        <x-slot:headers>
+                            <th class="text-left py-2">Item</th>
+                            <th class="text-left py-2">Tipe</th>
+                            <th class="text-right py-2">Qty</th>
+                            <th class="text-right py-2">Waktu</th>
+                        </x-slot:headers>
+
+                        @forelse($stock['movements'] as $mv)
+                            <x-responsive-table.row>
+                                <x-slot:title>
+                                    {{ $mv->item_name }}
+                                </x-slot:title>
+
+                                <x-slot:subtitle>
+                                    {{ $mv->created_at->format('d/m H:i') }}
+                                </x-slot:subtitle>
+
+                                <x-slot:badge>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
+                                        {{ $mv->type === 'masuk' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
+                                        {{ $mv->type === 'keluar' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
+                                        {{ $mv->type === 'koreksi' ? 'bg-cafe-info/15 text-cafe-info' : '' }}">
+                                        {{ ucfirst($mv->type) }}
+                                    </span>
+                                </x-slot:badge>
+
+                                <x-slot:fields>
+                                    <x-responsive-table.field label="Jumlah" :value="$mv->quantity" is-highlight="true" />
+                                </x-slot:fields>
+
+                                <x-slot:desktop>
+                                    <td class="hidden md:table-cell py-2 font-medium text-cafe-text">{{ $mv->item_name }}</td>
+                                    <td class="hidden md:table-cell py-2">
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
+                                            {{ $mv->type === 'masuk' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
+                                            {{ $mv->type === 'keluar' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
+                                            {{ $mv->type === 'koreksi' ? 'bg-cafe-info/15 text-cafe-info' : '' }}">
+                                            {{ ucfirst($mv->type) }}
+                                        </span>
+                                    </td>
+                                    <td class="hidden md:table-cell py-2 text-right font-semibold text-cafe-dark">{{ $mv->quantity }}</td>
+                                    <td class="hidden md:table-cell py-2 text-right text-cafe-muted">{{ $mv->created_at->format('d/m H:i') }}</td>
+                                </x-slot:desktop>
+                            </x-responsive-table.row>
+                        @empty
+                            <x-responsive-table.empty col-span="4" message="Belum ada pergerakan stok." />
+                        @endforelse
+                    </x-responsive-table>
                 </div>
 
                 @if(isset($stock['ingredientUsage']) && $stock['ingredientUsage']->isNotEmpty())

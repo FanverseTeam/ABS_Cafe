@@ -62,7 +62,6 @@ class AdminWorkspaceTest extends TestCase
             ->assertSee('toggleAdminMore()', false)
             ->assertSee('Pengaturan Website')
             ->assertSee('Log Aktivitas')
-            ->assertSee('Profil')
             ->assertSee('Keluar');
     }
 

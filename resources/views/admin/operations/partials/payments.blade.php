@@ -33,74 +33,118 @@
     </div>
 
     <!-- Payment Method Table -->
-    <div class="bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
-        <div class="p-5 border-b border-cafe-beige/50 flex items-center justify-between">
+    <div class="space-y-3">
+        <div class="bg-cafe-card p-4 sm:p-5 rounded-2xl shadow-soft border border-cafe-beige/40 flex items-center justify-between">
             <h3 class="font-serif font-bold text-base text-cafe-dark">Daftar Metode Pembayaran</h3>
             <span class="text-xs text-cafe-muted">{{ $paymentMethods->count() }} Metode Terdaftar</span>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-                <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
-                    <tr>
-                        <th class="py-3.5 pl-6">Metode</th>
-                        <th class="py-3.5 px-3">Kode</th>
-                        <th class="py-3.5 px-3">Tipe</th>
-                        <th class="py-3.5 px-3">Urutan</th>
-                        <th class="py-3.5 px-3">Status</th>
-                        <th class="py-3.5 pr-6 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-cafe-beige/30">
-                    @forelse($paymentMethods as $method)
-                        <tr class="hover:bg-cafe-cream/80 transition-colors">
-                            <td class="py-4 pl-6">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-xl bg-cafe-beige/70 text-cafe-brown flex items-center justify-center shrink-0">
-                                        <i data-lucide="{{ $method->icon() }}" class="w-4 h-4"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold text-cafe-dark">{{ $method->name }}</p>
-                                        <p class="text-[11px] text-cafe-muted line-clamp-1 max-w-xs">{{ $method->description ?: 'Belum ada deskripsi' }}</p>
-                                    </div>
+        <x-responsive-table>
+            <x-slot:headers>
+                <th class="py-3.5 pl-6">Metode</th>
+                <th class="py-3.5 px-3">Kode</th>
+                <th class="py-3.5 px-3">Tipe</th>
+                <th class="py-3.5 px-3">Urutan</th>
+                <th class="py-3.5 px-3">Status</th>
+                <th class="py-3.5 pr-6 text-right">Aksi</th>
+            </x-slot:headers>
+
+            @forelse($paymentMethods as $idx => $method)
+                <x-responsive-table.row :index="$idx">
+                    <!-- Mobile Card Layout -->
+                    <x-slot:title>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-cafe-beige/70 text-cafe-brown flex items-center justify-center shrink-0">
+                                <i data-lucide="{{ $method->icon() }}" class="w-5 h-5"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="font-bold text-xs sm:text-sm text-cafe-dark truncate">{{ $method->name }}</p>
+                                <span class="font-mono text-[10px] text-cafe-muted">{{ $method->code }}</span>
+                            </div>
+                        </div>
+                    </x-slot:title>
+
+                    <x-slot:badge>
+                        <form action="{{ route('admin.operations.payments.toggle.active', $method->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold border transition-all {{ $method->is_active ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
+                                {{ $method->is_active ? 'Aktif' : 'Nonaktif' }}
+                            </button>
+                        </form>
+                    </x-slot:badge>
+
+                    <x-slot:fields>
+                        <x-responsive-table.field label="Tipe" :value="$method->type" />
+                        <x-responsive-table.field label="Urutan" :value="$method->sort_order" />
+                    </x-slot:fields>
+
+                    @if($method->description)
+                        <x-slot:content>
+                            <p class="text-xs text-cafe-muted">{{ $method->description }}</p>
+                        </x-slot:content>
+                    @endif
+
+                    <x-slot:actions>
+                        <div class="flex items-center gap-1.5 w-full justify-end">
+                            <button onclick="editPaymentMethodModal({{ json_encode($method) }})" class="p-2 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark transition-colors" title="Edit Metode">
+                                <i data-lucide="edit" class="w-4 h-4"></i>
+                            </button>
+                            <form action="{{ route('admin.operations.payments.destroy', $method->id) }}" method="POST" onsubmit="return confirm('Hapus metode pembayaran ini?');" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="p-2 rounded-full text-cafe-danger hover:bg-cafe-danger/10 transition-colors" title="Hapus Metode">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </x-slot:actions>
+
+                    <!-- Desktop Cells -->
+                    <x-slot:desktop>
+                        <td class="hidden md:table-cell py-4 pl-6">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-cafe-beige/70 text-cafe-brown flex items-center justify-center shrink-0">
+                                    <i data-lucide="{{ $method->icon() }}" class="w-4 h-4"></i>
                                 </div>
-                            </td>
-                            <td class="py-4 px-3 font-mono text-cafe-muted">{{ $method->code }}</td>
-                            <td class="py-4 px-3 text-cafe-text">{{ $method->type }}</td>
-                            <td class="py-4 px-3 text-cafe-muted">{{ $method->sort_order }}</td>
-                            <td class="py-4 px-3">
-                                <form action="{{ route('admin.operations.payments.toggle.active', $method->id) }}" method="POST">
+                                <div>
+                                    <p class="font-semibold text-cafe-dark">{{ $method->name }}</p>
+                                    <p class="text-[11px] text-cafe-muted line-clamp-1 max-w-xs">{{ $method->description ?: 'Belum ada deskripsi' }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="hidden md:table-cell py-4 px-3 font-mono text-cafe-muted">{{ $method->code }}</td>
+                        <td class="hidden md:table-cell py-4 px-3 text-cafe-text">{{ $method->type }}</td>
+                        <td class="hidden md:table-cell py-4 px-3 text-cafe-muted">{{ $method->sort_order }}</td>
+                        <td class="hidden md:table-cell py-4 px-3">
+                            <form action="{{ route('admin.operations.payments.toggle.active', $method->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="px-3 py-1 rounded-full text-[11px] font-semibold border transition-all {{ $method->is_active ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
+                                    {{ $method->is_active ? 'Aktif' : 'Nonaktif' }}
+                                </button>
+                            </form>
+                        </td>
+                        <td class="hidden md:table-cell py-4 pr-6 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <button onclick="editPaymentMethodModal({{ json_encode($method) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark transition-colors" title="Edit Metode">
+                                    <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <form action="{{ route('admin.operations.payments.destroy', $method->id) }}" method="POST" onsubmit="return confirm('Hapus metode pembayaran ini?');" class="inline">
                                     @csrf
-                                    <button type="submit" class="px-3 py-1 rounded-full text-[11px] font-semibold border transition-all {{ $method->is_active ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
-                                        {{ $method->is_active ? 'Aktif' : 'Nonaktif' }}
+                                    @method('DELETE')
+                                    <button type="submit" class="p-1.5 rounded-full text-cafe-danger hover:bg-cafe-danger/10 transition-colors" title="Hapus Metode">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                     </button>
                                 </form>
-                            </td>
-                            <td class="py-4 pr-6 text-right">
-                                <div class="flex items-center justify-end gap-1.5">
-                                    <button onclick="editPaymentMethodModal({{ json_encode($method) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark transition-colors" title="Edit Metode">
-                                        <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                                    </button>
-                                    <form action="{{ route('admin.operations.payments.destroy', $method->id) }}" method="POST" onsubmit="return confirm('Hapus metode pembayaran ini?');" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="p-1.5 rounded-full text-cafe-danger hover:bg-cafe-danger/10 transition-colors" title="Hapus Metode">
-                                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="p-8 text-center text-xs text-cafe-muted">
-                                Belum ada metode pembayaran yang sesuai dengan filter.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                            </div>
+                        </td>
+                    </x-slot:desktop>
+                </x-responsive-table.row>
+            @empty
+                <x-responsive-table.empty colspan="6">
+                    Belum ada metode pembayaran yang sesuai dengan filter.
+                </x-responsive-table.empty>
+            @endforelse
+        </x-responsive-table>
     </div>
 </div>
 

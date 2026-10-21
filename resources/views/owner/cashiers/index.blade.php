@@ -28,63 +28,92 @@
             <!-- Chart -->
             <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
                 <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="bar-chart-3" class="w-4 h-4 text-cafe-gold"></i> Perbandingan Penjualan</h3>
-                <div class="h-72"><canvas id="cashierChart"></canvas></div>
+                <div class="h-56 sm:h-72"><canvas id="cashierChart"></canvas></div>
             </div>
 
             <!-- Table -->
             <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-xs">
-                        <thead>
-                            <tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">
-                                <th class="text-left py-3">Kasir</th>
-                                <th class="text-right py-3">Pesanan</th>
-                                <th class="text-right py-3">Total Penjualan</th>
-                                <th class="text-right py-3">Rata-rata</th>
-                                <th class="text-right py-3">Shift</th>
-                                <th class="text-right py-3">Kecepatan</th>
-                                <th class="text-right py-3"></th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-cafe-beige/40">
-                            @foreach($cashiers as $c)
-                                <tr class="hover:bg-cafe-cream/60 transition-colors">
-                                    <td class="py-3">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-9 h-9 rounded-full bg-cafe-dark text-cafe-gold text-xs font-bold flex items-center justify-center shrink-0">{{ $c['initials'] }}</div>
-                                            <div class="min-w-0">
-                                                <p class="font-semibold text-cafe-dark truncate">{{ $c['name'] }}</p>
-                                                <p class="text-[10px] text-cafe-muted">@ {{ $c['username'] }}</p>
-                                                <div class="mt-1 h-1.5 w-28 rounded-full bg-cafe-beige/60 overflow-hidden">
-                                                    <div class="h-full rounded-full bg-cafe-gold" style="width: {{ max(3, round($c['sales'] / $topSales * 100)) }}%"></div>
-                                                </div>
+                <x-responsive-table>
+                    <x-slot:headers>
+                        <th class="text-left py-3">Kasir</th>
+                        <th class="text-right py-3">Pesanan</th>
+                        <th class="text-right py-3">Total Penjualan</th>
+                        <th class="text-right py-3">Rata-rata</th>
+                        <th class="text-right py-3">Shift</th>
+                        <th class="text-right py-3">Kecepatan</th>
+                        <th class="text-right py-3"></th>
+                    </x-slot:headers>
+
+                    @foreach($cashiers as $c)
+                        <x-responsive-table.row>
+                            <x-slot:title>
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-full bg-cafe-dark text-cafe-gold text-xs font-bold flex items-center justify-center shrink-0">{{ $c['initials'] }}</div>
+                                    <div class="min-w-0">
+                                        <p class="font-semibold text-cafe-dark truncate">{{ $c['name'] }}</p>
+                                        <p class="text-[10px] text-cafe-muted">@ {{ $c['username'] }}</p>
+                                    </div>
+                                </div>
+                            </x-slot:title>
+
+                            <x-slot:badge>
+                                @if($c['prep_minutes'] !== null)
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $c['prep_minutes'] <= 12 ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-warning/15 text-cafe-warning' }}">
+                                        ~{{ $c['prep_minutes'] }} mnt
+                                    </span>
+                                @endif
+                            </x-slot:badge>
+
+                            <x-slot:fields>
+                                <x-responsive-table.field label="Total Penjualan" :value="$rp($c['sales'])" is-highlight="true" />
+                                <x-responsive-table.field label="Pesanan" :value="number_format($c['orders'], 0, ',', '.')" />
+                                <x-responsive-table.field label="Rata-rata" :value="$rp($c['avg'])" />
+                                <x-responsive-table.field label="Shift" :value="$c['shifts']" />
+                            </x-slot:fields>
+
+                            <x-slot:actions>
+                                <a href="{{ route('owner.cashiers.show', array_merge(['id' => $c['id']], $period->queryParams())) }}"
+                                   class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-dark font-medium transition-colors text-xs">
+                                    Detail <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                                </a>
+                            </x-slot:actions>
+
+                            <x-slot:desktop>
+                                <td class="hidden md:table-cell py-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-full bg-cafe-dark text-cafe-gold text-xs font-bold flex items-center justify-center shrink-0">{{ $c['initials'] }}</div>
+                                        <div class="min-w-0">
+                                            <p class="font-semibold text-cafe-dark truncate">{{ $c['name'] }}</p>
+                                            <p class="text-[10px] text-cafe-muted">@ {{ $c['username'] }}</p>
+                                            <div class="mt-1 h-1.5 w-28 rounded-full bg-cafe-beige/60 overflow-hidden">
+                                                <div class="h-full rounded-full bg-cafe-gold" style="width: {{ max(3, round($c['sales'] / $topSales * 100)) }}%"></div>
                                             </div>
                                         </div>
-                                    </td>
-                                    <td class="py-3 text-right font-medium text-cafe-text">{{ number_format($c['orders'], 0, ',', '.') }}</td>
-                                    <td class="py-3 text-right font-semibold text-cafe-dark">{{ $rp($c['sales']) }}</td>
-                                    <td class="py-3 text-right text-cafe-muted">{{ $rp($c['avg']) }}</td>
-                                    <td class="py-3 text-right text-cafe-muted">{{ $c['shifts'] }}</td>
-                                    <td class="py-3 text-right">
-                                        @if($c['prep_minutes'] !== null)
-                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $c['prep_minutes'] <= 12 ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-warning/15 text-cafe-warning' }}">
-                                                ~{{ $c['prep_minutes'] }} mnt
-                                            </span>
-                                        @else
-                                            <span class="text-cafe-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td class="py-3 text-right">
-                                        <a href="{{ route('owner.cashiers.show', array_merge(['id' => $c['id']], $period->queryParams())) }}"
-                                           class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-dark font-medium transition-colors">
-                                            Detail <i data-lucide="arrow-right" class="w-3 h-3"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                                    </div>
+                                </td>
+                                <td class="hidden md:table-cell py-3 text-right font-medium text-cafe-text">{{ number_format($c['orders'], 0, ',', '.') }}</td>
+                                <td class="hidden md:table-cell py-3 text-right font-semibold text-cafe-dark">{{ $rp($c['sales']) }}</td>
+                                <td class="hidden md:table-cell py-3 text-right text-cafe-muted">{{ $rp($c['avg']) }}</td>
+                                <td class="hidden md:table-cell py-3 text-right text-cafe-muted">{{ $c['shifts'] }}</td>
+                                <td class="hidden md:table-cell py-3 text-right">
+                                    @if($c['prep_minutes'] !== null)
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $c['prep_minutes'] <= 12 ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-warning/15 text-cafe-warning' }}">
+                                            ~{{ $c['prep_minutes'] }} mnt
+                                        </span>
+                                    @else
+                                        <span class="text-cafe-muted">-</span>
+                                    @endif
+                                </td>
+                                <td class="hidden md:table-cell py-3 text-right">
+                                    <a href="{{ route('owner.cashiers.show', array_merge(['id' => $c['id']], $period->queryParams())) }}"
+                                       class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-dark font-medium transition-colors">
+                                        Detail <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                                    </a>
+                                </td>
+                            </x-slot:desktop>
+                        </x-responsive-table.row>
+                    @endforeach
+                </x-responsive-table>
             </div>
         @endif
     </div>

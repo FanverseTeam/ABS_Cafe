@@ -86,56 +86,69 @@
         </div>
 
         <div class="p-5">
-            @if($history->count() === 0)
-                <div class="py-8 text-center">
-                    <div class="w-14 h-14 mx-auto rounded-full bg-cafe-cream flex items-center justify-center text-cafe-muted">
-                        <i data-lucide="history" class="w-6 h-6"></i>
-                    </div>
-                    <p class="text-xs text-cafe-muted mt-3">Belum ada riwayat shift yang ditutup.</p>
-                </div>
-            @else
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs">
-                        <thead>
-                            <tr class="border-b border-cafe-beige/50 text-[10px] uppercase tracking-wide text-cafe-muted">
-                                <th class="py-2.5 pr-4 font-semibold">Dibuka</th>
-                                <th class="py-2.5 pr-4 font-semibold">Ditutup</th>
-                                <th class="py-2.5 pr-4 font-semibold text-right">Kas Awal</th>
-                                <th class="py-2.5 pr-4 font-semibold text-right">Penjualan</th>
-                                <th class="py-2.5 pr-4 font-semibold text-right">Kas Akhir Diharapkan</th>
-                                <th class="py-2.5 pr-4 font-semibold text-right">Kas Fisik</th>
-                                <th class="py-2.5 pr-4 font-semibold text-right">Selisih</th>
-                                <th class="py-2.5 font-semibold">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-cafe-beige/30">
-                            @foreach($history as $s)
-                                @php $selisih = (float)$s->cash_difference; @endphp
-                                <tr class="hover:bg-cafe-cream/60 transition-colors">
-                                    <td class="py-3 pr-4 text-cafe-dark font-medium">{{ $s->opened_at->format('d/m/y H:i') }}</td>
-                                    <td class="py-3 pr-4 text-cafe-muted">{{ $s->closed_at?->format('d/m/y H:i') }}</td>
-                                    <td class="py-3 pr-4 text-right">{{ number_format($s->opening_cash, 0, ',', '.') }}</td>
-                                    <td class="py-3 pr-4 text-right font-serif font-bold text-cafe-dark">{{ number_format($s->total_sales, 0, ',', '.') }}</td>
-                                    <td class="py-3 pr-4 text-right">{{ number_format($s->expected_cash, 0, ',', '.') }}</td>
-                                    <td class="py-3 pr-4 text-right">{{ number_format($s->closing_cash, 0, ',', '.') }}</td>
-                                    <td class="py-3 pr-4 text-right font-bold {{ $selisih == 0 ? 'text-cafe-success' : ($selisih < 0 ? 'text-cafe-danger' : 'text-cafe-warning') }}">
-                                        {{ $selisih > 0 ? '+' : '' }}{{ number_format($selisih, 0, ',', '.') }}
-                                    </td>
-                                    <td class="py-3">
-                                        <a href="{{ route('kasir.shift.show', $s) }}" class="text-xs font-semibold text-cafe-brown hover:text-cafe-dark flex items-center gap-1">
-                                            <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Detail
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+            <x-responsive-table :paginate="$history">
+                <x-slot:headers>
+                    <th class="py-2.5 pr-4 font-semibold text-left">Dibuka</th>
+                    <th class="py-2.5 pr-4 font-semibold text-left">Ditutup</th>
+                    <th class="py-2.5 pr-4 font-semibold text-right">Kas Awal</th>
+                    <th class="py-2.5 pr-4 font-semibold text-right">Penjualan</th>
+                    <th class="py-2.5 pr-4 font-semibold text-right">Kas Akhir Diharapkan</th>
+                    <th class="py-2.5 pr-4 font-semibold text-right">Kas Fisik</th>
+                    <th class="py-2.5 pr-4 font-semibold text-right">Selisih</th>
+                    <th class="py-2.5 font-semibold text-right">Aksi</th>
+                </x-slot:headers>
 
-                <div class="mt-4">
-                    {{ $history->links() }}
-                </div>
-            @endif
+                @forelse($history as $s)
+                    @php $selisih = (float)$s->cash_difference; @endphp
+                    <x-responsive-table.row>
+                        <x-slot:title>
+                            {{ $s->opened_at->format('d/m/y H:i') }}
+                        </x-slot:title>
+
+                        <x-slot:subtitle>
+                            Ditutup: {{ $s->closed_at?->format('d/m/y H:i') ?? '-' }}
+                        </x-slot:subtitle>
+
+                        <x-slot:badge>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $selisih == 0 ? 'bg-cafe-success/15 text-cafe-success' : ($selisih < 0 ? 'bg-cafe-danger/15 text-cafe-danger' : 'bg-cafe-warning/15 text-cafe-warning') }}">
+                                Selisih: {{ $selisih > 0 ? '+' : '' }}{{ number_format($selisih, 0, ',', '.') }}
+                            </span>
+                        </x-slot:badge>
+
+                        <x-slot:fields>
+                            <x-responsive-table.field label="Penjualan" :value="'Rp ' . number_format($s->total_sales, 0, ',', '.')" is-highlight="true" />
+                            <x-responsive-table.field label="Kas Awal" :value="'Rp ' . number_format($s->opening_cash, 0, ',', '.')" />
+                            <x-responsive-table.field label="Kas Fisik" :value="'Rp ' . number_format($s->closing_cash, 0, ',', '.')" />
+                            <x-responsive-table.field label="Diharapkan" :value="'Rp ' . number_format($s->expected_cash, 0, ',', '.')" />
+                        </x-slot:fields>
+
+                        <x-slot:actions>
+                            <a href="{{ route('kasir.shift.show', $s) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-dark text-xs font-semibold transition-colors">
+                                <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Detail Shift
+                            </a>
+                        </x-slot:actions>
+
+                        <x-slot:desktop>
+                            <td class="hidden md:table-cell py-3 pr-4 text-cafe-dark font-medium">{{ $s->opened_at->format('d/m/y H:i') }}</td>
+                            <td class="hidden md:table-cell py-3 pr-4 text-cafe-muted">{{ $s->closed_at?->format('d/m/y H:i') ?? '-' }}</td>
+                            <td class="hidden md:table-cell py-3 pr-4 text-right">{{ number_format($s->opening_cash, 0, ',', '.') }}</td>
+                            <td class="hidden md:table-cell py-3 pr-4 text-right font-serif font-bold text-cafe-dark">{{ number_format($s->total_sales, 0, ',', '.') }}</td>
+                            <td class="hidden md:table-cell py-3 pr-4 text-right">{{ number_format($s->expected_cash, 0, ',', '.') }}</td>
+                            <td class="hidden md:table-cell py-3 pr-4 text-right">{{ number_format($s->closing_cash, 0, ',', '.') }}</td>
+                            <td class="hidden md:table-cell py-3 pr-4 text-right font-bold {{ $selisih == 0 ? 'text-cafe-success' : ($selisih < 0 ? 'text-cafe-danger' : 'text-cafe-warning') }}">
+                                {{ $selisih > 0 ? '+' : '' }}{{ number_format($selisih, 0, ',', '.') }}
+                            </td>
+                            <td class="hidden md:table-cell py-3 text-right">
+                                <a href="{{ route('kasir.shift.show', $s) }}" class="inline-flex items-center gap-1 text-xs font-semibold text-cafe-brown hover:text-cafe-dark">
+                                    <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Detail
+                                </a>
+                            </td>
+                        </x-slot:desktop>
+                    </x-responsive-table.row>
+                @empty
+                    <x-responsive-table.empty col-span="8" message="Belum ada riwayat shift yang ditutup." />
+                @endforelse
+            </x-responsive-table>
         </div>
     </div>
 </div>
