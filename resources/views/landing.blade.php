@@ -21,6 +21,29 @@
     <!-- Fonts & Styles -->
     @include('partials.font-preloads')
     <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        beige: '#F2F5E2',
+                        custard: '#E3DEA4',
+                        apricot: '#D4954D',
+                        olive: '#775533',
+                        midnight: {
+                            DEFAULT: '#290024',
+                            400: '#1c0019',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif"', 'Georgia', 'serif'],
+                        sans: ['"Poppins"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @php
@@ -80,24 +103,25 @@
     <style>
         html,
         body {
-            height: 100%;
+            min-height: 100%;
             margin: 0;
             padding: 0;
         }
 
         body {
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
             background-color: #290024;
         }
 
         .landing-screen {
             position: relative;
             display: flex;
-            height: 100svh;
+            min-height: 100vh;
             min-height: 100svh;
             flex-direction: column;
             justify-content: space-between;
-            overflow: hidden;
+            overflow-x: hidden;
             isolation: isolate;
         }
 
@@ -142,6 +166,30 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
+        }
+
+        @media (max-width: 640px) {
+            .landing-card {
+                padding: 1.5rem 1.25rem 1.25rem;
+                border-radius: 22px;
+                max-width: 100%;
+            }
+
+            .landing-title {
+                font-size: 1.75rem !important;
+                line-height: 1.15 !important;
+            }
+
+            .landing-subtitle {
+                font-size: 0.8125rem !important;
+            }
+
+            .landing-cta {
+                max-width: 100%;
+                min-height: 2.85rem;
+                padding: 0.75rem 1.25rem;
+                font-size: 0.9375rem;
+            }
         }
 
         /* Warm Corner Accents for Handcrafted Feel */
