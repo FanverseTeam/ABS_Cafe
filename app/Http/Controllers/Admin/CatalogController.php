@@ -47,7 +47,7 @@ class CatalogController extends Controller
             default => $menuQuery->orderBy('sold_count', 'desc'),
         };
 
-        $menus = $menuQuery->get();
+        $menus = $menuQuery->paginate(20)->withQueryString();
         $viewMode = $request->input('view', 'grid');
 
         $stockQuery = Menu::with('category');

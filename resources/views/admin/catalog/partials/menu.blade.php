@@ -1,6 +1,286 @@
-<div class="space-y-6">
+{{--
+    Manajemen Menu — Menu & Kategori tab partial
+    Mobile  : compact list cards, FAB, sticky search + chips + filter sheet
+    Tablet  : 2-column list, max-w-3xl centered, FAB pill
+    Desktop : unchanged grid/table views with full toolbar
 
-    <!-- Page Header -->
+    All routes, JS modal functions, and data logic are untouched.
+--}}
+
+{{-- =========================================================
+     MOBILE / TABLET LAYOUT  (hidden on lg+)
+     ========================================================= --}}
+<div class="lg:hidden space-y-0">
+
+    {{-- Sticky search + filter row --}}
+    <div class="sticky top-16 z-20 bg-[#F2F5E2] pt-3 pb-2 -mx-3.5 px-3.5 sm:-mx-5 sm:px-5 border-b border-[#E3DEA4]/60">
+
+        {{-- Search bar + action-sheet trigger --}}
+        <div class="flex items-center gap-2">
+            <div class="flex-1 min-w-0">
+                <x-mobile.search-bar
+                    name="search"
+                    :value="request('search')"
+                    placeholder="Cari nama menu..."
+                    :action="route('admin.catalog.index')"
+                    :hidden-fields="[
+                        'tab'         => 'menu',
+                        'view'        => $viewMode,
+                        'sort'        => request('sort'),
+                        'category_id' => request('category_id'),
+                        'status'      => request('status'),
+                    ]"
+                />
+            </div>
+
+            {{-- Filter & Sort sheet --}}
+            @php
+                $activeFilterCount = collect([
+                    request('sort') && request('sort') !== 'terlaris' ? 1 : 0,
+                    request('status') ? 1 : 0,
+                ])->sum();
+            @endphp
+            <x-mobile.filter-sheet
+                id="catalog-filter-sheet"
+                :badge-count="$activeFilterCount"
+                label="Filter & Urut"
+            >
+                {{-- Sort options --}}
+                <div class="space-y-2">
+                    <p class="text-xs font-bold text-[#290024] uppercase tracking-wide">Urutan</p>
+                    @foreach([
+                        'terlaris'   => 'Terlaris',
+                        'nama'       => 'Nama (A-Z)',
+                        'harga_asc'  => 'Harga Terendah',
+                        'harga_desc' => 'Harga Tertinggi',
+                    ] as $sortKey => $sortLabel)
+                        <a
+                            href="{{ route('admin.catalog.index', array_merge(request()->query(), ['sort' => $sortKey, 'page' => 1])) }}"
+                            class="flex items-center justify-between w-full py-2.5 px-4 rounded-2xl text-sm transition-colors {{ request('sort', 'terlaris') === $sortKey ? 'bg-[#290024] text-[#FAFCF3] font-semibold' : 'text-[#290024] hover:bg-[#E3DEA4]/50' }}"
+                            onclick="closeBottomSheet('catalog-filter-sheet')"
+                        >
+                            <span>{{ $sortLabel }}</span>
+                            @if(request('sort', 'terlaris') === $sortKey)
+                                <i data-lucide="check" class="w-4 h-4"></i>
+                            @endif
+                        </a>
+                    @endforeach
+                </div>
+
+                <div class="h-px bg-[#E3DEA4]/60 my-3"></div>
+
+                {{-- Status filter --}}
+                <div class="space-y-2">
+                    <p class="text-xs font-bold text-[#290024] uppercase tracking-wide">Status</p>
+                    @foreach(['all' => 'Semua', 'available' => 'Tersedia', 'unavailable' => 'Habis'] as $statusKey => $statusLabel)
+                        <a
+                            href="{{ route('admin.catalog.index', array_merge(request()->query(), ['status' => $statusKey === 'all' ? null : $statusKey, 'page' => 1])) }}"
+                            class="flex items-center justify-between w-full py-2.5 px-4 rounded-2xl text-sm transition-colors {{ (request('status', 'all') === $statusKey || ($statusKey === 'all' && !request('status'))) ? 'bg-[#290024] text-[#FAFCF3] font-semibold' : 'text-[#290024] hover:bg-[#E3DEA4]/50' }}"
+                            onclick="closeBottomSheet('catalog-filter-sheet')"
+                        >
+                            <span>{{ $statusLabel }}</span>
+                            @if(request('status', 'all') === $statusKey || ($statusKey === 'all' && !request('status')))
+                                <i data-lucide="check" class="w-4 h-4"></i>
+                            @endif
+                        </a>
+                    @endforeach
+                </div>
+
+                <div class="h-px bg-[#E3DEA4]/60 my-3"></div>
+
+                {{-- View mode --}}
+                <div class="space-y-2">
+                    <p class="text-xs font-bold text-[#290024] uppercase tracking-wide">Tampilan</p>
+                    <div class="flex gap-2">
+                        <a href="{{ route('admin.catalog.index', array_merge(request()->query(), ['view' => 'table', 'page' => 1])) }}"
+                           class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-semibold transition-colors {{ $viewMode === 'table' ? 'bg-[#290024] text-[#FAFCF3]' : 'bg-[#F2F5E2] text-[#290024] border border-[#E3DEA4]' }}"
+                           onclick="closeBottomSheet('catalog-filter-sheet')">
+                            <i data-lucide="list" class="w-4 h-4"></i> Daftar
+                        </a>
+                        <a href="{{ route('admin.catalog.index', array_merge(request()->query(), ['view' => 'grid', 'page' => 1])) }}"
+                           class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-semibold transition-colors {{ $viewMode === 'grid' ? 'bg-[#290024] text-[#FAFCF3]' : 'bg-[#F2F5E2] text-[#290024] border border-[#E3DEA4]' }}"
+                           onclick="closeBottomSheet('catalog-filter-sheet')">
+                            <i data-lucide="layout-grid" class="w-4 h-4"></i> Kotak
+                        </a>
+                    </div>
+                </div>
+
+                <x-slot:footer>
+                    <a
+                        href="{{ route('admin.catalog.index', ['tab' => 'menu']) }}"
+                        class="block w-full text-center py-3 rounded-2xl text-sm font-semibold text-[#290024] border border-[#E3DEA4] hover:bg-[#E3DEA4]/60 transition-colors"
+                        onclick="closeBottomSheet('catalog-filter-sheet')"
+                    >
+                        Atur Ulang Filter
+                    </a>
+                </x-slot:footer>
+            </x-mobile.filter-sheet>
+
+            {{-- More-actions (Gabungkan, Kelola Kategori) --}}
+            <x-mobile.action-sheet id="catalog-more-actions" label="Aksi Lainnya">
+                <button
+                    type="button"
+                    onclick="closeBottomSheet('catalog-more-actions'); openMergeMenuModal();"
+                    class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
+                >
+                    <i data-lucide="combine" class="w-5 h-5 text-[#775533] shrink-0"></i>
+                    <span>Gabungkan Menu</span>
+                </button>
+                <a
+                    href="{{ route('admin.catalog.index', ['tab' => 'menu', '#' => 'kategori']) }}"
+                    onclick="closeBottomSheet('catalog-more-actions')"
+                    class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
+                >
+                    <i data-lucide="folder" class="w-5 h-5 text-[#775533] shrink-0"></i>
+                    <span>Kelola Kategori</span>
+                </a>
+            </x-mobile.action-sheet>
+        </div>
+
+        {{-- Category chips --}}
+        @php
+            $chips = array_merge(
+                [[
+                    'label'  => 'Semua',
+                    'count'  => \App\Models\Menu::count(),
+                    'href'   => route('admin.catalog.index', array_merge(request()->query(), ['category_id' => 'all', 'page' => 1])),
+                    'active' => !request('category_id') || request('category_id') === 'all',
+                ]],
+                $categories->map(fn ($cat) => [
+                    'label'  => $cat->name,
+                    'count'  => $cat->menus()->count(),
+                    'href'   => route('admin.catalog.index', array_merge(request()->query(), ['category_id' => $cat->id, 'page' => 1])),
+                    'active' => request('category_id') == $cat->id,
+                ])->toArray()
+            );
+        @endphp
+        <div class="mt-2">
+            <x-mobile.chip-scroller :chips="$chips" id="catalog-chips" />
+        </div>
+    </div>
+
+    {{-- Results summary --}}
+    <div class="flex items-center justify-between pt-3 pb-2 text-xs text-[#775533]">
+        <span>Menampilkan {{ $menus->firstItem() }}–{{ $menus->lastItem() }} dari {{ $menus->total() }} menu</span>
+        @if(request('search'))
+            <span class="text-[#290024] font-semibold">Hasil: "{{ request('search') }}"</span>
+        @endif
+    </div>
+
+    {{-- ---- LIST VIEW (default) ---- --}}
+    @if($viewMode !== 'grid')
+        <div class="space-y-2 sm:max-w-3xl sm:mx-auto">
+            @forelse($menus as $menu)
+                <x-mobile.menu-list-item
+                    :menu="$menu"
+                    :toggle-available-route="route('admin.catalog.menu.toggle.available', $menu->id)"
+                    edit-callback="editMenuModal"
+                    delete-callback="openDeleteMenuModal"
+                    :duplicate-route="route('admin.catalog.menu.duplicate', $menu->id)"
+                />
+            @empty
+                <x-mobile.empty-state
+                    icon="coffee"
+                    title="Tidak Ada Menu Ditemukan"
+                    message="Coba ubah kata kunci pencarian atau atur ulang filter."
+                    action-label="Atur Ulang Filter"
+                    :action-href="route('admin.catalog.index', ['tab' => 'menu'])"
+                />
+            @endforelse
+        </div>
+
+    {{-- ---- GRID VIEW ---- --}}
+    @else
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:max-w-3xl sm:mx-auto">
+            @forelse($menus as $menu)
+                @php $sheetId = 'menu-grid-action-' . $menu->id; @endphp
+                <div class="bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4]/60 shadow-sm overflow-hidden flex flex-col">
+                    {{-- Image --}}
+                    <button
+                        type="button"
+                        onclick="openBottomSheet('{{ $sheetId }}')"
+                        class="relative w-full aspect-[4/3] bg-[#E3DEA4]/40 overflow-hidden focus-visible:outline-none"
+                        aria-label="Aksi untuk {{ $menu->name }}"
+                    >
+                        <img src="{{ $menu->image }}" alt="{{ $menu->name }}" class="w-full h-full object-cover" loading="lazy">
+                        @if($menu->is_best_seller)
+                            <span class="absolute bottom-0 left-0 right-0 bg-[#D4954D] text-[#290024] text-[8px] font-bold text-center py-0.5">Best Seller</span>
+                        @endif
+                    </button>
+
+                    {{-- Body --}}
+                    <button
+                        type="button"
+                        onclick="openBottomSheet('{{ $sheetId }}')"
+                        class="flex-1 p-2.5 text-left focus-visible:outline-none"
+                    >
+                        <p class="font-bold text-xs text-[#290024] line-clamp-2 leading-tight">{{ $menu->name }}</p>
+                        <p class="text-[10px] text-[#775533] mt-0.5 truncate">{{ $menu->category?->name }}</p>
+                        <p class="font-semibold text-xs text-[#290024] mt-1">{{ $menu->priceRangeLabel() }}</p>
+                    </button>
+
+                    {{-- Toggle footer --}}
+                    <div class="px-2.5 py-2 border-t border-[#E3DEA4]/40 flex items-center justify-between">
+                        <span class="text-[10px] font-semibold {{ $menu->is_available ? 'text-[#4F7A4A]' : 'text-[#B03A2E]' }}">
+                            {{ $menu->is_available ? 'Tersedia' : 'Habis' }}
+                        </span>
+                        <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="w-9 h-5 rounded-full p-0.5 transition-colors focus-visible:outline-none {{ $menu->is_available ? 'bg-[#4F7A4A]' : 'bg-[#775533]/30' }}">
+                                <div class="w-4 h-4 rounded-full bg-white shadow-sm transition-transform {{ $menu->is_available ? 'translate-x-4' : 'translate-x-0' }}"></div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                {{-- Action sheet for grid item --}}
+                <x-mobile.menu-list-item
+                    :menu="$menu"
+                    :toggle-available-route="route('admin.catalog.menu.toggle.available', $menu->id)"
+                    edit-callback="editMenuModal"
+                    delete-callback="openDeleteMenuModal"
+                    :duplicate-route="route('admin.catalog.menu.duplicate', $menu->id)"
+                    class="hidden"
+                />
+            @empty
+                <div class="col-span-2 sm:col-span-3">
+                    <x-mobile.empty-state
+                        icon="coffee"
+                        title="Tidak Ada Menu Ditemukan"
+                        message="Coba ubah kata kunci pencarian atau atur ulang filter."
+                        action-label="Atur Ulang Filter"
+                        :action-href="route('admin.catalog.index', ['tab' => 'menu'])"
+                    />
+                </div>
+            @endforelse
+        </div>
+    @endif
+
+    {{-- Pagination --}}
+    @if($menus->hasPages())
+        <div class="pt-4 pb-2 sm:max-w-3xl sm:mx-auto">
+            {{ $menus->links() }}
+        </div>
+    @endif
+
+    {{-- Bottom padding to clear FAB + bottom nav --}}
+    <div class="h-24"></div>
+</div>
+
+{{-- FAB: Tambah Menu (mobile/tablet only) --}}
+<x-mobile.fab
+    id="catalog-fab-add"
+    icon="plus"
+    label="Tambah Menu"
+    onclick="openMenuModal()"
+/>
+
+{{-- =========================================================
+     DESKTOP LAYOUT  (hidden below lg)
+     ========================================================= --}}
+<div class="hidden lg:block space-y-6">
+
+    {{-- Page Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
             <h2 class="font-serif text-xl sm:text-2xl font-bold text-cafe-dark">Katalog Menu</h2>
@@ -19,10 +299,11 @@
         </div>
     </div>
 
-    <!-- Toolbar Filters & Grid/Table Toggle -->
+    {{-- Toolbar --}}
     <div class="bg-cafe-card p-4 sm:p-5 rounded-2xl shadow-soft border border-cafe-beige/40 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-        <!-- Search -->
+        {{-- Search --}}
         <form method="GET" action="{{ route('admin.catalog.index') }}" class="relative flex-1 max-w-sm">
+            <input type="hidden" name="tab" value="menu">
             <input type="hidden" name="view" value="{{ $viewMode }}">
             <input type="hidden" name="category_id" value="{{ request('category_id') }}">
             <input type="hidden" name="sort" value="{{ request('sort') }}">
@@ -30,7 +311,7 @@
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu atau deskripsi..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
         </form>
 
-        <!-- Category Tabs -->
+        {{-- Category Tabs --}}
         <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
             <a href="{{ route('admin.catalog.index', array_merge(request()->query(), ['category_id' => 'all'])) }}" class="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all {{ !request('category_id') || request('category_id') === 'all' ? 'bg-cafe-dark text-cafe-cream shadow-xs' : 'bg-cafe-beige/40 text-cafe-text hover:bg-cafe-beige/70' }}">
                 Semua ({{ \App\Models\Menu::count() }})
@@ -42,7 +323,7 @@
             @endforeach
         </div>
 
-        <!-- Sort & View Mode Toggle -->
+        {{-- Sort & View Mode --}}
         <div class="flex items-center gap-2 shrink-0">
             <div class="flex items-center gap-1 bg-cafe-beige/40 px-3 py-1.5 rounded-full border border-cafe-beige">
                 <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-cafe-muted"></i>
@@ -65,24 +346,21 @@
         </div>
     </div>
 
-    <!-- Content: Grid View or Table View -->
+    {{-- Content: Grid or Table --}}
     @if($viewMode === 'grid')
         <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
             @forelse($menus as $menu)
                 <div class="bg-cafe-card rounded-2xl shadow-soft hover:shadow-soft-lg border border-cafe-beige/50 overflow-hidden flex flex-col justify-between transition-all group">
                     <div>
-                        <!-- Image Container -->
                         <div class="relative h-32 sm:h-44 w-full bg-cafe-beige overflow-hidden">
                             <img src="{{ $menu->image }}" alt="{{ $menu->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
 
-                            <!-- Category Badge -->
                             <div class="absolute top-3 left-3">
                                 <span class="px-2.5 py-1 rounded-full bg-[#290024]/80 backdrop-blur-md text-[#F2F5E2] text-[10px] font-semibold tracking-wide">
                                     {{ $menu->category->name }}
                                 </span>
                             </div>
 
-                            <!-- Best Seller Badge -->
                             @if($menu->is_best_seller)
                                 <div class="absolute top-3 right-3">
                                     <span class="px-2.5 py-1 rounded-full bg-cafe-gold text-cafe-dark text-[10px] font-bold shadow-sm flex items-center gap-1">
@@ -92,7 +370,6 @@
                                 </div>
                             @endif
 
-                            <!-- Stock Pill -->
                             <div class="absolute bottom-3 right-3">
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-md shadow-xs {{ $menu->stock <= 0 ? 'bg-cafe-danger text-white' : ($menu->stock <= $menu->min_stock ? 'bg-cafe-warning text-white' : 'bg-black/60 text-white') }}">
                                     Stok: {{ $menu->stock }} {{ $menu->unit }}
@@ -100,7 +377,6 @@
                             </div>
                         </div>
 
-                        <!-- Card Body -->
                         <div class="p-4 space-y-2">
                             <div class="flex items-start justify-between gap-2">
                                 <h3 class="font-serif font-bold text-base text-cafe-dark leading-snug">{{ $menu->name }}</h3>
@@ -119,9 +395,7 @@
                         </div>
                     </div>
 
-                    <!-- Card Actions -->
                     <div class="p-4 pt-2 border-t border-cafe-beige/40 flex items-center justify-between text-xs">
-                        <!-- Switch Tersedia / Habis -->
                         <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
                             @csrf
                             <button type="submit" class="flex items-center gap-2 cursor-pointer select-none">
@@ -133,28 +407,21 @@
                         </form>
 
                         <div class="flex items-center gap-1">
-                            <!-- Toggle Best Seller -->
                             <form action="{{ route('admin.catalog.menu.toggle.bestseller', $menu->id) }}" method="POST" class="inline">
                                 @csrf
                                 <button type="submit" class="p-1.5 rounded-full transition-colors {{ $menu->is_best_seller ? 'text-cafe-gold bg-cafe-gold/20' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/60' }}" title="{{ $menu->is_best_seller ? 'Hapus Best Seller' : 'Tandai Best Seller' }}">
                                     <i data-lucide="star" class="w-3.5 h-3.5 {{ $menu->is_best_seller ? 'fill-current' : '' }}"></i>
                                 </button>
                             </form>
-
-                            <!-- Duplicate -->
                             <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST" class="inline">
                                 @csrf
                                 <button type="submit" class="p-1.5 rounded-full text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/60 transition-colors" title="Duplikasi Menu">
                                     <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                                 </button>
                             </form>
-
-                            <!-- Edit -->
                             <button onclick="editMenuModal({{ Illuminate\Support\Js::from($menu) }})" class="p-1.5 rounded-full text-cafe-brown hover:text-cafe-dark hover:bg-cafe-beige/60 transition-colors" title="Edit Menu">
                                 <i data-lucide="edit" class="w-3.5 h-3.5"></i>
                             </button>
-
-                            <!-- Delete -->
                             <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-1.5 rounded-full text-cafe-danger hover:bg-cafe-danger/10 transition-colors" title="Hapus Menu">
                                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                             </button>
@@ -170,10 +437,10 @@
             @endforelse
         </div>
     @else
-        <!-- Table View -->
+        {{-- Table View --}}
         <x-responsive-table>
             <x-slot:headers>
-                <th class="py-3.5 pl-6">Foto &amp; Nama</th>
+                <th class="py-3.5 pl-6">Foto & Nama</th>
                 <th class="py-3.5 px-3">Kategori</th>
                 <th class="py-3.5 px-3">Harga</th>
                 <th class="py-3.5 px-3">Stok</th>
@@ -185,7 +452,6 @@
 
             @foreach($menus as $idx => $menu)
                 <x-responsive-table.row :index="$idx">
-                    <!-- Mobile Card Layout -->
                     <x-slot:title>
                         <div class="flex items-center gap-3">
                             <img src="{{ $menu->image }}" alt="{{ $menu->name }}" class="w-12 h-12 rounded-xl object-cover bg-cafe-beige shrink-0 shadow-xs">
@@ -252,7 +518,7 @@
                         </div>
                     </x-slot:actions>
 
-                    <!-- Desktop Cells -->
+                    {{-- Desktop Cells --}}
                     <x-slot:desktop>
                         <td class="hidden md:table-cell py-3 pl-6">
                             <div class="flex items-center gap-3">
@@ -316,14 +582,25 @@
             @endforeach
         </x-responsive-table>
     @endif
+
+    {{-- Desktop pagination --}}
+    @if($menus->hasPages())
+        <div class="mt-4">
+            {{ $menus->links() }}
+        </div>
+    @endif
 </div>
 
-<!-- MODAL FORM TAMBAH / EDIT MENU (Bottom Sheet on Mobile) -->
+
+{{-- =========================================================
+     SHARED MODALS (mobile + desktop)
+     ========================================================= --}}
+
+{{-- MODAL FORM TAMBAH / EDIT MENU --}}
 <div id="menu-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 overflow-y-auto hidden">
     <div class="fixed inset-0 bg-[#290024]/60 backdrop-blur-sm" onclick="closeMenuModal()"></div>
 
     <div class="relative w-full max-w-2xl bg-cafe-card rounded-t-[2rem] sm:rounded-2xl shadow-soft-lg border-t sm:border border-cafe-beige/60 overflow-hidden z-10 pb-[max(1rem,env(safe-area-inset-bottom))]">
-        <!-- Handle for mobile -->
         <div class="sm:hidden w-full pt-3 pb-1 flex justify-center cursor-pointer" onclick="closeMenuModal()">
             <div class="w-12 h-1 bg-[#775533]/30 rounded-full"></div>
         </div>
@@ -415,7 +692,7 @@
     </div>
 </div>
 
-<!-- MODAL KONFIRMASI HAPUS -->
+{{-- MODAL KONFIRMASI HAPUS --}}
 <div id="delete-menu-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
     <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeDeleteMenuModal()"></div>
 
