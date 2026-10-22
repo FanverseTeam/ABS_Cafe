@@ -9,8 +9,9 @@
 @endphp
 
 @section('content')
-    <div class="space-y-6">
-        <div>
+    <div class="space-y-4 lg:space-y-6">
+        <!-- Header (Desktop only) -->
+        <div class="hidden lg:block">
             <h2 class="font-serif text-2xl sm:text-3xl font-bold text-cafe-dark">Kinerja Kasir</h2>
             <p class="text-xs text-cafe-muted mt-1">Bandingkan performa penjualan, jumlah transaksi, dan kecepatan layanan tiap kasir.</p>
         </div>

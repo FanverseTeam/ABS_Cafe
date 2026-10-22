@@ -10,25 +10,26 @@
     $totalNotif = $lowStockItems->count() + $endingPromos->count();
 @endphp
 
-<header class="sticky top-0 z-30 h-16 sm:h-20 bg-[#FAFCF3]/95 backdrop-blur-md border-b border-cafe-beige/60 px-3.5 sm:px-8 flex items-center justify-between gap-3 sm:gap-4 shadow-sm">
-    <!-- Left: Mobile Logo & Title -->
-    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
-        @if($backUrl)
-            <a href="{{ $backUrl }}" class="lg:hidden flex h-10 w-10 -ml-1 shrink-0 items-center justify-center rounded-full text-cafe-dark transition-colors hover:bg-cafe-beige/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70" aria-label="Kembali">
-                <i data-lucide="arrow-left" class="h-5 w-5"></i>
-            </a>
-        @else
-            <a href="{{ route('owner.dashboard') }}" class="lg:hidden shrink-0" title="ABS Cafe Beranda">
-                <x-logo :show-text="false" size="sm" loading="eager" class="shrink-0" />
-            </a>
-        @endif
+<header class="sticky top-0 z-30 min-h-[4rem] sm:min-h-[5rem] bg-[#FAFCF3]/95 backdrop-blur-md border-b border-cafe-beige/60 px-3.5 sm:px-8 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">
+    <div class="h-16 sm:h-20 flex items-center justify-between gap-3 sm:gap-4 w-full">
+        <!-- Left: Mobile Logo & Title -->
+        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+            @if($backUrl)
+                <a href="{{ $backUrl }}" class="lg:hidden flex h-10 w-10 -ml-1 shrink-0 items-center justify-center rounded-full text-cafe-dark transition-colors hover:bg-cafe-beige/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70" aria-label="Kembali">
+                    <i data-lucide="arrow-left" class="h-5 w-5"></i>
+                </a>
+            @else
+                <a href="{{ route('owner.dashboard') }}" class="lg:hidden shrink-0" title="ABS Cafe Beranda">
+                    <x-logo :show-text="false" size="sm" loading="eager" class="shrink-0" />
+                </a>
+            @endif
 
-        <div class="min-w-0">
-            <h1 class="font-serif text-sm sm:text-xl font-bold text-cafe-dark truncate leading-tight">
-                @yield('page_title', 'Dashboard Bisnis')
-            </h1>
+            <div class="min-w-0 flex-1 py-1">
+                <h1 class="font-serif text-base sm:text-xl font-bold text-cafe-dark truncate leading-normal" title="@yield('page_title', 'Dashboard Bisnis')">
+                    @yield('page_title', 'Dashboard Bisnis')
+                </h1>
+            </div>
         </div>
-    </div>
 
     <!-- Center: Search menu (analitik) -->
     <div class="flex-1 max-w-md hidden lg:block">
@@ -133,6 +134,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </header>
 

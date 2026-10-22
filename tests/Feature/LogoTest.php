@@ -74,7 +74,6 @@ class LogoTest extends TestCase
             ->assertSee('abs-cafe-logo', false)
             ->assertSee('alt="ABS Cafe"', false)
             ->assertSee('images/logo.png', false)
-            ->assertSee('images/logo-og.png', false)
             ->assertSee('images/logo-badge.png', false)
             ->assertSee('background-color:#290024', false);
     }

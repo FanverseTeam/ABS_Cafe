@@ -4,31 +4,50 @@
 @section('page_title', 'Pesanan Masuk')
 
 @section('content')
-<div class="space-y-5">
+<div class="space-y-4 lg:space-y-5">
+    {{-- Mobile FAB for Pesanan Baru --}}
+    <x-mobile.fab icon="plus" label="Pesanan Baru" href="{{ route('kasir.pos.index') }}" />
+
     <!-- Tabs & Filter -->
-    <div class="flex flex-wrap items-center justify-between gap-3">
-        <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 -mx-2 px-2">
-            @php
-                $currentTab = $tab ?? 'aktif';
-                $tabs = [
-                    'aktif' => ['label' => 'Aktif', 'badge' => $counts['aktif']],
-                    'web' => ['label' => 'Web', 'badge' => $counts['web']],
-                    'belum_bayar' => ['label' => 'Belum Bayar', 'badge' => $counts['belum_bayar']],
-                    'selesai' => ['label' => 'Hari Ini', 'badge' => null],
+    <div class="flex items-center justify-between gap-3">
+        @php
+            $currentTab = $tab ?? 'aktif';
+            $tabDefs = [
+                'aktif' => ['label' => 'Aktif', 'badge' => $counts['aktif']],
+                'web' => ['label' => 'Web', 'badge' => $counts['web']],
+                'belum_bayar' => ['label' => 'Belum Bayar', 'badge' => $counts['belum_bayar']],
+                'selesai' => ['label' => 'Hari Ini', 'badge' => null],
+            ];
+            $orderChips = [];
+            foreach($tabDefs as $key => $tabItem) {
+                $orderChips[] = [
+                    'label'  => $tabItem['label'] . ($tabItem['badge'] ? ' (' . $tabItem['badge'] . ')' : ''),
+                    'href'   => route('kasir.orders.index', ['tab' => $key]),
+                    'active' => $currentTab == $key,
                 ];
-            @endphp
-            @foreach($tabs as $key => $tab)
+            }
+        @endphp
+
+        {{-- Mobile/Tablet: Chip Scroller with fade edges --}}
+        <div class="lg:hidden flex-1 min-w-0">
+            <x-mobile.chip-scroller :chips="$orderChips" />
+        </div>
+
+        {{-- Desktop tabs --}}
+        <div class="hidden lg:flex gap-2 overflow-x-auto no-scrollbar py-1">
+            @foreach($tabDefs as $key => $tabItem)
                 <a href="{{ route('kasir.orders.index', ['tab' => $key]) }}"
                    class="shrink-0 px-4 py-2 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 {{ $currentTab == $key ? 'bg-[#290024] text-[#F2F5E2] shadow-sm' : 'bg-[#FAFCF3] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]/60' }}">
-                    {{ $tab['label'] }}
-                    @if($tab['badge'])
-                        <span class="px-1.5 py-0.5 rounded-full text-[9px] font-bold {{ $currentTab == $key ? 'bg-[#D4954D] text-[#290024]' : 'bg-[#290024] text-white' }}">{{ $tab['badge'] }}</span>
+                    {{ $tabItem['label'] }}
+                    @if($tabItem['badge'])
+                        <span class="px-1.5 py-0.5 rounded-full text-[9px] font-bold {{ $currentTab == $key ? 'bg-[#D4954D] text-[#290024]' : 'bg-[#290024] text-white' }}">{{ $tabItem['badge'] }}</span>
                     @endif
                 </a>
             @endforeach
         </div>
 
-        <a href="{{ route('kasir.pos.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#B87C3C] transition-colors shadow-md">
+        <!-- Desktop Action Button -->
+        <a href="{{ route('kasir.pos.index') }}" class="hidden lg:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#B87C3C] transition-colors shadow-md shrink-0">
             <i data-lucide="plus" class="w-4 h-4"></i>
             Pesanan Baru
         </a>

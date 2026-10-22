@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
+use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Table;
-use App\Models\ActivityLog;
 
 class TableController extends Controller
 {
     public function index()
     {
         $tables = Table::orderBy('number', 'asc')->get();
+
         return view('admin.tables.index', compact('tables'));
     }
 
@@ -50,7 +51,7 @@ class TableController extends Controller
         $table = Table::findOrFail($id);
 
         $request->validate([
-            'number' => 'required|integer|unique:tables,number,' . $table->id,
+            'number' => 'required|integer|unique:tables,number,'.$table->id,
             'capacity' => 'required|integer|min:1',
             'status' => 'required|in:tersedia,terpakai,nonaktif',
             'location_notes' => 'nullable|string',

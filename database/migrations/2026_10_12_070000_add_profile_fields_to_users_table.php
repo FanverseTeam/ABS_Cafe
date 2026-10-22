@@ -11,10 +11,10 @@ return new class extends Migration
         // Skema live (migrasi 000001) sudah memiliki `phone` dan `last_login_at`.
         // Tambahkan hanya kolom yang belum ada agar aman dijalankan di database yang sudah terisi.
         Schema::table('users', function (Blueprint $table) {
-            if (!Schema::hasColumn('users', 'photo_path')) {
+            if (! Schema::hasColumn('users', 'photo_path')) {
                 $table->string('photo_path')->nullable()->after('phone');
             }
-            if (!Schema::hasColumn('users', 'is_active')) {
+            if (! Schema::hasColumn('users', 'is_active')) {
                 $table->boolean('is_active')->default(true);
             }
         });

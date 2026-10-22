@@ -4,9 +4,9 @@
 @section('page_title', 'Log Aktivitas')
 
 @section('content')
-<div class="space-y-6">
-    <!-- Breadcrumb -->
-    <nav class="flex items-center gap-1.5 text-xs text-cafe-muted mb-3">
+<div class="space-y-4 lg:space-y-6">
+    <!-- Breadcrumb (Desktop only) -->
+    <nav class="hidden lg:flex items-center gap-1.5 text-xs text-cafe-muted mb-3">
         <a href="{{ route('admin.activity.index') }}" class="hover:text-cafe-dark flex items-center gap-1">
             <i data-lucide="home" class="w-3.5 h-3.5"></i>
             <span>Admin</span>
@@ -15,8 +15,8 @@
         <span class="font-semibold text-cafe-dark">Log Aktivitas</span>
     </nav>
 
-    <!-- Page Header & Action -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <!-- Page Header & Action (Desktop only) -->
+    <div class="hidden lg:flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h2 class="font-serif text-2xl font-bold text-cafe-dark">Catatan Audit &amp; Aktivitas</h2>
             <p class="text-xs text-cafe-muted mt-0.5">Rekam jejak seluruh aksi admin dan kasir: perubahan harga, pembatalan pesanan, dan penyesuaian stok</p>
@@ -28,8 +28,86 @@
         </a>
     </div>
 
-    <!-- Filters Toolbar -->
-    <div class="bg-cafe-card p-4 sm:p-5 rounded-2xl shadow-soft border border-cafe-beige/40">
+    {{-- MOBILE / TABLET CONTROLS (lg:hidden) --}}
+    <div class="lg:hidden space-y-2.5">
+        <x-mobile.search-bar
+            name="search"
+            value="{{ request('search') }}"
+            placeholder="Cari aktivitas..."
+            :hiddenFields="[
+                'type' => request('type', 'all'),
+                'user' => request('user', 'all'),
+            ]"
+        />
+
+        {{-- Single-row filter: Type Chips + User Filter Sheet --}}
+        <div class="flex items-center gap-2">
+            <div class="flex-1 min-w-0">
+                @php
+                    $typeOptions = [
+                        ['label' => 'Semua', 'val' => 'all'],
+                        ['label' => 'Pesanan', 'val' => 'pesanan'],
+                        ['label' => 'Menu', 'val' => 'menu'],
+                        ['label' => 'Stok', 'val' => 'stok'],
+                        ['label' => 'Promo', 'val' => 'promo'],
+                        ['label' => 'Pengguna', 'val' => 'pengguna'],
+                        ['label' => 'Sistem', 'val' => 'sistem'],
+                    ];
+                    $currentType = request('type', 'all');
+                    $typeChips = array_map(function($opt) use ($currentType) {
+                        return [
+                            'label'  => $opt['label'],
+                            'href'   => route('admin.activity.index', array_merge(request()->except('page'), ['type' => $opt['val']])),
+                            'active' => $currentType === $opt['val'],
+                        ];
+                    }, $typeOptions);
+                @endphp
+                <x-mobile.chip-scroller :chips="$typeChips" />
+            </div>
+
+            {{-- User Filter Sheet --}}
+            @php
+                $userActive = request('user') && request('user') !== 'all';
+            @endphp
+            <x-mobile.filter-sheet id="activity-user-sheet" :badgeCount="$userActive ? 1 : 0" label="Staf">
+                <form method="GET" action="{{ route('admin.activity.index') }}" class="space-y-4">
+                    @if(request('search'))
+                        <input type="hidden" name="search" value="{{ request('search') }}">
+                    @endif
+                    @if(request('type'))
+                        <input type="hidden" name="type" value="{{ request('type') }}">
+                    @endif
+
+                    <div>
+                        <label class="block text-xs font-bold text-cafe-dark mb-2">Filter Berdasarkan Staf</label>
+                        <div class="space-y-1.5 max-h-60 overflow-y-auto">
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-cafe-beige/60 bg-cafe-beige/20 text-xs cursor-pointer">
+                                <input type="radio" name="user" value="all" {{ !request('user') || request('user') === 'all' ? 'checked' : '' }} class="text-cafe-dark focus:ring-0">
+                                <span class="font-medium text-cafe-text">Semua Pengguna</span>
+                            </label>
+                            @foreach($users as $userName)
+                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-cafe-beige/60 bg-cafe-beige/20 text-xs cursor-pointer">
+                                    <input type="radio" name="user" value="{{ $userName }}" {{ request('user') === $userName ? 'checked' : '' }} class="text-cafe-dark focus:ring-0">
+                                    <span class="font-medium text-cafe-text">{{ $userName }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-2">
+                        <a href="{{ route('admin.activity.index', request()->except('user')) }}" class="flex-1 py-2.5 text-center rounded-xl bg-cafe-beige/40 text-cafe-dark text-xs font-bold">Reset</a>
+                        <button type="submit" class="flex-1 py-2.5 text-center rounded-xl bg-cafe-dark text-cafe-cream text-xs font-bold shadow-md">Terapkan</button>
+                    </div>
+                </form>
+            </x-mobile.filter-sheet>
+        </div>
+    </div>
+
+    {{-- Mobile FAB for Export CSV --}}
+    <x-mobile.fab icon="download" label="Ekspor" href="{{ route('admin.activity.export') }}" />
+
+    <!-- Filters Toolbar (Desktop only) -->
+    <div class="hidden lg:block bg-cafe-card p-4 sm:p-5 rounded-2xl shadow-soft border border-cafe-beige/40">
         <form method="GET" action="{{ route('admin.activity.index') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>

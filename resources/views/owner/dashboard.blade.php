@@ -17,9 +17,9 @@
 @endphp
 
 @section('content')
-    <div class="space-y-6">
-        <!-- Header -->
-        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+    <div class="space-y-4 lg:space-y-6">
+        <!-- Header (Desktop only) -->
+        <div class="hidden lg:flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
             <div>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold text-cafe-dark">Ringkasan Performa Bisnis</h2>
                 <p class="text-xs text-cafe-muted mt-1">Pantau penjualan, laba, dan operasional ABS Cafe secara menyeluruh.</p>
@@ -29,6 +29,9 @@
                 <span>Lihat Laporan Lengkap</span>
             </a>
         </div>
+
+        {{-- Mobile FAB for Laporan Lengkap --}}
+        <x-mobile.fab icon="file-bar-chart" label="Laporan" href="{{ route('owner.reports.index', $period->queryParams()) }}" />
 
         <!-- Period Filter -->
         <div class="bg-cafe-card rounded-2xl border border-cafe-beige/60 shadow-soft p-4">

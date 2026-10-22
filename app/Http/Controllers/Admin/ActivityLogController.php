@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\ActivityLog;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class ActivityLogController extends Controller
 {
@@ -17,7 +17,7 @@ class ActivityLogController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('activity', 'like', "%{$search}%")
-                  ->orWhere('user_name', 'like', "%{$search}%");
+                    ->orWhere('user_name', 'like', "%{$search}%");
             });
         }
 
@@ -37,15 +37,15 @@ class ActivityLogController extends Controller
 
     public function exportCsv(Request $request)
     {
-        $fileName = 'Log_Aktivitas_ABS_Cafe_' . date('Ymd_His') . '.csv';
+        $fileName = 'Log_Aktivitas_ABS_Cafe_'.date('Ymd_His').'.csv';
         $logs = ActivityLog::orderBy('created_at', 'desc')->get();
 
         $headers = [
-            "Content-type" => "text/csv; charset=UTF-8",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0"
+            'Content-type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $columns = ['ID', 'Waktu', 'Pengguna', 'Peran', 'Aktivitas', 'Kategori', 'Alamat IP'];

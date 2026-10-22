@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Kasir;
 
-use App\Models\Order;
 use App\Models\Reservation;
 use App\Models\Table;
 use Illuminate\Foundation\Testing\RefreshDatabase;

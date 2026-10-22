@@ -9,8 +9,9 @@
 @endphp
 
 @section('content')
-    <div class="space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+    <div class="space-y-4 lg:space-y-6">
+        <!-- Header (Desktop only) -->
+        <div class="hidden lg:flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
             <div>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold text-cafe-dark">Kampanye Promo & Diskon</h2>
                 <p class="text-xs text-cafe-muted mt-1">Buat, pantau, dan nonaktifkan promo untuk meningkatkan penjualan.</p>
@@ -19,6 +20,9 @@
                 <i data-lucide="plus" class="w-4 h-4"></i> Buat Promo
             </button>
         </div>
+
+        {{-- Mobile FAB for Buat Promo --}}
+        <x-mobile.fab icon="plus" label="Buat Promo" onclick="openPromoModal()" />
 
         <!-- Stats -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">

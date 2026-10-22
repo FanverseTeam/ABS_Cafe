@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
+use App\Models\Category;
+use App\Models\Menu;
+use App\Models\StockLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Menu;
-use App\Models\Category;
-use App\Models\StockLog;
-use App\Models\ActivityLog;
 
 class StockController extends Controller
 {

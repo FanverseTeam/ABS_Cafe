@@ -11,26 +11,42 @@ class LandingPageTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_staf_landing_page_is_accessible_for_guests(): void
+    public function test_staf_landing_page_is_accessible_for_guests_and_shows_splash_elements(): void
     {
-        $this->get('/staf')
+        $response = $this->get('/staf')
             ->assertOk()
+            ->assertSee('Selamat datang di')
             ->assertSee('ABS Cafe')
             ->assertSee('Good Coffee')
-            ->assertSee('Good Mood')
-            ->assertSee('Portal Staf ABS Cafe')
+            ->assertSee('Good Mood.')
+            ->assertSee('Lewati')
             ->assertSee(route('login'));
+
+        $html = $response->getContent();
+
+        // Elemen splash
+        $this->assertStringContainsString('splash-logo-container', $html);
+        $this->assertStringContainsString('splash-progress-bar', $html);
+        $this->assertStringContainsString('splash-skip', $html);
     }
 
-    public function test_staf_landing_page_has_correct_meta_tags(): void
+    public function test_staf_landing_page_has_correct_meta_tags_and_prefetch(): void
     {
         $this->get('/staf')
             ->assertOk()
-            ->assertSee('ABS Cafe – Good Coffee, Good Mood', false) // title
-            ->assertSee('Portal Staf ABS Cafe', false) // description
-            ->assertSee('og:title', false)
-            ->assertSee('og:description', false)
-            ->assertSee('og:image', false);
+            ->assertSee('<link rel="prefetch" href="'.route('login').'"', false)
+            ->assertSee('Portal Staf ABS Cafe', false);
+    }
+
+    public function test_staf_landing_page_has_accessibility_live_status(): void
+    {
+        $response = $this->get('/staf')->assertOk();
+        $html = $response->getContent();
+
+        $this->assertStringContainsString('role="status"', $html);
+        $this->assertStringContainsString('aria-live="polite"', $html);
+        $this->assertStringContainsString('Memuat halaman login', $html);
+        $this->assertStringContainsString('prefers-reduced-motion', $html);
     }
 
     public function test_landing_page_uses_local_optimized_background_images(): void
@@ -47,14 +63,8 @@ class LandingPageTest extends TestCase
             ->assertSee('rel="preload"', false)
             ->assertSee('as="image"', false)
             ->assertSee('decoding="async"', false)
-            ->assertSee('object-cover', false)
             ->assertDontSee('LANDING_BG_URL')
             ->assertDontSee('landing_bg_url');
-
-        $html = $response->getContent();
-
-        $this->assertStringContainsString('background-size: cover', $html);
-        $this->assertStringContainsString('background-position: center', $html);
     }
 
     public function test_landing_page_falls_back_to_gradient_when_optimized_images_are_missing(): void
@@ -94,93 +104,75 @@ class LandingPageTest extends TestCase
         }
     }
 
-    public function test_guest_sees_exactly_one_login_link(): void
+    public function test_guest_sees_skip_button_linking_to_login(): void
     {
         $response = $this->get('/staf')
             ->assertOk()
-            ->assertSee('Login');
+            ->assertSee('Lewati');
 
         $html = $response->getContent();
 
-        $this->assertSame(1, substr_count($html, 'href="'.route('login').'"'));
-        $this->assertSame(1, substr_count($html, '>Login<'));
+        $this->assertStringContainsString('href="'.route('login').'"', $html);
+        $this->assertStringContainsString('aria-label="Lewati animasi dan langsung ke halaman login"', $html);
     }
 
-    public function test_admin_sees_one_dashboard_button_linking_to_staff_management(): void
+    public function test_splash_duration_and_noscript_fallback_follow_config(): void
+    {
+        config(['splash.duration' => 3.0]);
+
+        $response = $this->get('/staf')->assertOk();
+        $html = $response->getContent();
+
+        // Cek noscript meta refresh: 4 detik untuk durasi 3.0 detik
+        $this->assertStringContainsString('<noscript>', $html);
+        $this->assertStringContainsString('http-equiv="refresh"', $html);
+        $this->assertStringContainsString('content="4;url='.route('login').'"', $html);
+
+        // Uji durasi dinamis saat config berubah
+        config(['splash.duration' => 5.0]);
+        $customResponse = $this->get('/staf')->assertOk();
+        $customHtml = $customResponse->getContent();
+
+        $this->assertStringContainsString('content="6;url='.route('login').'"', $customHtml);
+    }
+
+    public function test_admin_is_redirected_to_admin_dashboard_without_animation(): void
     {
         $admin = User::factory()->admin()->create();
 
-        $response = $this->actingAs($admin)->get('/staf')
-            ->assertOk()
-            ->assertSee('Buka Dashboard');
-
-        $html = $response->getContent();
-
-        $adminDashboardRoute = config('features.legacy_admin')
-            ? route('admin.dashboard')
-            : route('admin.staff.index');
-
-        $this->assertSame(1, substr_count($html, '>Buka Dashboard<'));
-        $this->assertSame(1, substr_count($html, 'href="'.$adminDashboardRoute.'"'));
-        $this->assertSame(0, substr_count($html, 'href="'.route('login').'"'));
+        $this->actingAs($admin)
+            ->get('/staf')
+            ->assertRedirect(route('admin.dashboard'));
     }
 
-    public function test_owner_sees_one_dashboard_button_linking_to_owner_dashboard(): void
+    public function test_owner_is_redirected_to_owner_dashboard_without_animation(): void
     {
         $owner = User::factory()->owner()->create();
 
-        $response = $this->actingAs($owner)->get('/staf')
-            ->assertOk()
-            ->assertSee('Buka Dashboard');
-
-        $html = $response->getContent();
-
-        $this->assertSame(1, substr_count($html, '>Buka Dashboard<'));
-        $this->assertSame(1, substr_count($html, 'href="'.route('owner.dashboard').'"'));
-        $this->assertSame(0, substr_count($html, 'href="'.route('login').'"'));
+        $this->actingAs($owner)
+            ->get('/staf')
+            ->assertRedirect(route('owner.dashboard'));
     }
 
-    public function test_kasir_sees_one_dashboard_button_linking_to_kasir_dashboard(): void
+    public function test_kasir_is_redirected_to_kasir_dashboard_without_animation(): void
     {
         $kasir = User::factory()->kasir()->create();
 
-        $response = $this->actingAs($kasir)->get('/staf')
-            ->assertOk()
-            ->assertSee('Buka Dashboard');
-
-        $html = $response->getContent();
-
-        $this->assertSame(1, substr_count($html, '>Buka Dashboard<'));
-        $this->assertSame(1, substr_count($html, 'href="'.route('kasir.dashboard').'"'));
-        $this->assertSame(0, substr_count($html, 'href="'.route('login').'"'));
+        $this->actingAs($kasir)
+            ->get('/staf')
+            ->assertRedirect(route('kasir.dashboard'));
     }
 
-    public function test_landing_page_does_not_render_removed_visuals(): void
+    public function test_direct_login_page_renders_form_without_splash_animation(): void
     {
-        $this->get('/staf')
+        $response = $this->get('/login')
             ->assertOk()
-            ->assertDontSee('Pesanan masuk')
-            ->assertDontSee('Laporan hari ini')
-            ->assertDontSee('Stok aman')
-            ->assertDontSee('Lihat peran')
-            ->assertDontSee('Masuk sebagai')
-            ->assertDontSee('hero-arch')
-            ->assertDontSee('stat-card')
-            ->assertDontSee('role-card');
-    }
-
-    public function test_landing_page_has_footer_with_location(): void
-    {
-        $this->get('/staf')
-            ->assertOk()
-            ->assertSee('ABS Cafe • Tulungagung');
-    }
-
-    public function test_landing_page_uses_indonesian_language(): void
-    {
-        $this->get('/staf')
-            ->assertOk()
-            ->assertSee('Kelola operasional dan pantau bisnis ABS Cafe dalam satu tempat');
+            ->assertSee('Masuk')
+            ->assertSee('name="login"', false)
+            ->assertSee('name="password"', false)
+            ->assertDontSee('splash-progress-bar')
+            ->assertDontSee('splash-viewport')
+            ->assertDontSee('Memuat halaman login');
     }
 
     public function test_root_redirects_to_staf_landing(): void
@@ -188,12 +180,12 @@ class LandingPageTest extends TestCase
         $this->get('/')->assertRedirect(route('staf.landing'));
     }
 
-    public function test_logout_redirects_to_staf_landing(): void
+    public function test_logout_redirects_to_login_with_success_message(): void
     {
         $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)->post('/admin/logout')
-            ->assertRedirect(route('staf.landing'))
-            ->assertSessionHas('success');
+            ->assertRedirect(route('login'))
+            ->assertSessionHas('success', 'Anda telah berhasil keluar.');
     }
 }

@@ -12,9 +12,7 @@ use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
-    public function __construct(private readonly OrderService $orders)
-    {
-    }
+    public function __construct(private readonly OrderService $orders) {}
 
     public function index(Request $request)
     {

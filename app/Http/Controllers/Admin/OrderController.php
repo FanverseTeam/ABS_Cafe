@@ -3,19 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Order;
-use App\Models\OrderTimeline;
 use App\Models\ActivityLog;
 use App\Models\CafeSetting;
+use App\Models\Order;
+use App\Models\OrderTimeline;
 use App\Services\OrderService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    public function __construct(private readonly OrderService $orders)
-    {
-    }
+    public function __construct(private readonly OrderService $orders) {}
 
     public function index(Request $request)
     {
@@ -26,7 +24,7 @@ class OrderController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('order_code', 'like', "%{$search}%")
-                  ->orWhere('customer_name', 'like', "%{$search}%");
+                    ->orWhere('customer_name', 'like', "%{$search}%");
             });
         }
 
@@ -60,6 +58,7 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::with(['items', 'timelines'])->findOrFail($id);
+
         return response()->json($order);
     }
 
@@ -128,15 +127,15 @@ class OrderController extends Controller
 
     public function exportCsv(Request $request)
     {
-        $fileName = 'Pesanan_ABS_Cafe_' . date('Ymd_His') . '.csv';
+        $fileName = 'Pesanan_ABS_Cafe_'.date('Ymd_His').'.csv';
         $orders = Order::orderBy('created_at', 'desc')->get();
 
         $headers = [
-            "Content-type" => "text/csv; charset=UTF-8",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0"
+            'Content-type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=$fileName",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $columns = ['Kode Order', 'Waktu', 'Customer', 'Tipe', 'Meja', 'Total (Rp)', 'Metode Bayar', 'Status Bayar', 'Status Pesanan', 'Kasir'];

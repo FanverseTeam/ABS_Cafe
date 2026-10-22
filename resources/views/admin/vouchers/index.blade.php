@@ -4,9 +4,9 @@
 @section('page_title', 'Promo / Voucher')
 
 @section('content')
-<div class="space-y-6">
-    <!-- Breadcrumb -->
-    <nav class="flex items-center gap-1.5 text-xs text-cafe-muted mb-3">
+<div class="space-y-4 lg:space-y-6">
+    <!-- Breadcrumb (Desktop only) -->
+    <nav class="hidden lg:flex items-center gap-1.5 text-xs text-cafe-muted mb-3">
         <a href="{{ route('admin.vouchers.index') }}" class="hover:text-cafe-dark flex items-center gap-1">
             <i data-lucide="home" class="w-3.5 h-3.5"></i>
             <span>Admin</span>
@@ -15,8 +15,8 @@
         <span class="font-semibold text-cafe-dark">Promo &amp; Diskon</span>
     </nav>
 
-    <!-- Page Header & Action -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <!-- Page Header & Action (Desktop only) -->
+    <div class="hidden lg:flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h2 class="font-serif text-2xl font-bold text-cafe-dark">Kampanye Promo &amp; Voucher</h2>
             <p class="text-xs text-cafe-muted mt-0.5">Kelola penawaran diskon, bundling Buy 2 Get 1, dan cashback pelanggan kafe</p>
@@ -28,13 +28,16 @@
         </button>
     </div>
 
-    <!-- Promo Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {{-- Mobile FAB for Buat Promo Baru --}}
+    <x-mobile.fab icon="plus" label="Buat Promo" onclick="openPromoModal()" />
+
+    <!-- Promo Cards Grid (1 col on mobile, 2 cols on tablet, 3 cols on desktop) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
         @forelse($promos as $promo)
             <div class="bg-cafe-card rounded-2xl shadow-soft hover:shadow-soft-lg border border-cafe-beige/50 overflow-hidden flex flex-col justify-between transition-all group">
                 <div>
-                    <!-- Banner Image Container -->
-                    <div class="relative h-44 w-full bg-cafe-beige overflow-hidden">
+                    <!-- Banner Image Container (compact on mobile) -->
+                    <div class="relative h-32 sm:h-36 lg:h-44 w-full bg-cafe-beige overflow-hidden">
                         <img src="{{ $promo->banner }}" alt="{{ $promo->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 

@@ -151,7 +151,7 @@ class LoginTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)->post('/admin/logout')->assertRedirect(route('staf.landing'));
+        $this->actingAs($admin)->post('/admin/logout')->assertRedirect(route('login'));
 
         $this->assertGuest();
     }

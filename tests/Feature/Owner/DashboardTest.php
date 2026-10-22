@@ -5,7 +5,6 @@ namespace Tests\Feature\Owner;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\Promo;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

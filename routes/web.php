@@ -32,9 +32,14 @@ use App\Http\Controllers\Owner\ReportController as OwnerReportController;
 use App\Http\Controllers\Owner\SettingController as OwnerSettingController;
 use Illuminate\Support\Facades\Route;
 
-// Landing Page Staf (Portal Staf ABS Cafe)
+// Splash / Layar Animasi Selamat Datang Staf (Portal Staf ABS Cafe)
+// Catatan: Untuk mengaktifkan kembali landing lama, ubah return view('staf.splash') menjadi return view('landing')
 Route::get('/staf', function () {
-    return view('landing');
+    if (auth()->check()) {
+        return redirect(LoginController::dashboardFor(auth()->user()));
+    }
+
+    return view('staf.splash');
 })->name('staf.landing');
 
 // Root redirect ke halaman staf (sementara; nanti untuk customer landing)

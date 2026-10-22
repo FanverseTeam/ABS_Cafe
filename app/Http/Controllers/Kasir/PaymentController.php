@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use App\Models\CafeSetting;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Services\PaymentService;
@@ -13,9 +14,7 @@ use Illuminate\Validation\ValidationException;
 
 class PaymentController extends Controller
 {
-    public function __construct(private readonly PaymentService $payments)
-    {
-    }
+    public function __construct(private readonly PaymentService $payments) {}
 
     public function index(Request $request)
     {
@@ -88,10 +87,10 @@ class PaymentController extends Controller
     {
         $order->load('items', 'promo');
         $setting = [
-            'name' => \App\Models\CafeSetting::get('cafe_name', 'ABS Cafe'),
-            'address' => \App\Models\CafeSetting::get('cafe_address', ''),
-            'phone' => \App\Models\CafeSetting::get('cafe_phone', ''),
-            'footer' => \App\Models\CafeSetting::get('receipt_footer', 'Terima kasih atas kunjungan Anda'),
+            'name' => CafeSetting::get('cafe_name', 'ABS Cafe'),
+            'address' => CafeSetting::get('cafe_address', ''),
+            'phone' => CafeSetting::get('cafe_phone', ''),
+            'footer' => CafeSetting::get('receipt_footer', 'Terima kasih atas kunjungan Anda'),
         ];
 
         return view('kasir.payments.receipt', compact('order', 'setting'));

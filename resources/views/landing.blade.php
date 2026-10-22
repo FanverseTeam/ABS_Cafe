@@ -1,3 +1,8 @@
+{{--
+    LANDING LAMA (nonaktif)
+    Halaman portal staf lama. Untuk mengaktifkan kembali, ubah route /staf
+    di routes/web.php agar mengembalikan view('landing').
+--}}
 <!DOCTYPE html>
 <html lang="id">
 <head>

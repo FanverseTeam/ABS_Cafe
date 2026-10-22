@@ -27,7 +27,7 @@
 
         {{-- Tab switcher --}}
         {{-- Mobile/Tablet: sticky below app bar, full-width segmented control --}}
-        <div class="lg:hidden sticky top-16 z-20 bg-[#F2F5E2] pt-2 -mx-3.5 px-3.5 sm:-mx-5 sm:px-5">
+        <div class="lg:hidden sticky top-[calc(4rem+env(safe-area-inset-top,0px))] z-20 bg-[#F2F5E2] pt-2 pb-1 -mx-3.5 px-3.5 sm:-mx-5 sm:px-5">
             <div class="grid grid-cols-2 gap-1 bg-[#E3DEA4]/50 p-1 rounded-2xl">
                 <a href="{{ route('admin.catalog.index', ['tab' => 'menu']) }}"
                    class="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all {{ $tab !== 'stock' ? 'bg-[#290024] text-[#FAFCF3] shadow-sm' : 'text-[#775533] hover:bg-[#E3DEA4]/60' }}">

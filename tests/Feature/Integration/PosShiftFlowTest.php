@@ -5,6 +5,7 @@ namespace Tests\Feature\Integration;
 use App\Models\CashShift;
 use App\Models\Menu;
 use App\Models\Order;
+use App\Models\Table;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -66,7 +67,7 @@ class PosShiftFlowTest extends TestCase
         $this->openShift();
 
         $menu = Menu::factory()->create(['price' => 15000, 'stock' => 20, 'sold_count' => 0]);
-        \App\Models\Table::factory()->create(['number' => 5, 'status' => 'tersedia']);
+        Table::factory()->create(['number' => 5, 'status' => 'tersedia']);
 
         $this->post('/kasir/pos/store', [
             'order_type' => 'dine_in',
@@ -77,7 +78,7 @@ class PosShiftFlowTest extends TestCase
 
         $order = Order::latest('id')->firstOrFail();
         $this->assertSame('menunggu_pembayaran', $order->payment_status);
-        $this->assertSame('terpakai', \App\Models\Table::where('number', 5)->firstOrFail()->status);
+        $this->assertSame('terpakai', Table::where('number', 5)->firstOrFail()->status);
 
         $this->post("/kasir/pesanan/{$order->id}/status", ['status' => 'siap'])->assertRedirect();
         $this->assertSame('siap', $order->fresh()->order_status);
@@ -88,7 +89,7 @@ class PosShiftFlowTest extends TestCase
         ])->assertRedirect(route('kasir.payments.receipt', $order));
 
         $this->assertSame('lunas', $order->fresh()->payment_status);
-        $this->assertSame('tersedia', \App\Models\Table::where('number', 5)->firstOrFail()->status);
+        $this->assertSame('tersedia', Table::where('number', 5)->firstOrFail()->status);
         $this->assertSame(19, $menu->fresh()->stock);
     }
 }

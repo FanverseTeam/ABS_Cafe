@@ -191,7 +191,7 @@ class RememberMeTest extends TestCase
         $logoutResponse = $this->withCookie($recallerName, $recallerCookie->getValue())
             ->post('/admin/logout');
 
-        $logoutResponse->assertRedirect(route('staf.landing'));
+        $logoutResponse->assertRedirect(route('login'));
         $logoutResponse->assertCookieExpired($recallerName);
         $this->assertGuest();
 
@@ -391,7 +391,7 @@ class RememberMeTest extends TestCase
             $logoutResponse = $this->withCookie($recallerName, $recallerCookie->getValue())
                 ->post(route($config['logout']));
 
-            $logoutResponse->assertRedirect(route('staf.landing'));
+            $logoutResponse->assertRedirect(route('login'));
             $logoutResponse->assertCookieExpired($recallerName);
             $this->assertGuest();
             $this->assertNotSame($initialToken, $user->fresh()->remember_token);

@@ -88,7 +88,7 @@ class ReservationController extends Controller
         return back()->with('success', "Reservasi {$reservation->code} diperbarui.");
     }
 
-    public function status(Request $request, Reservation $reservation, Table $table = null)
+    public function status(Request $request, Reservation $reservation, ?Table $table = null)
     {
         $data = $request->validate([
             'status' => 'required|in:menunggu,dikonfirmasi,datang,selesai,batal,tidak_datang',

@@ -1,7 +1,7 @@
 {{--
     Manajemen Menu — Menu & Kategori tab partial
-    Mobile  : compact list cards, FAB, sticky search + chips + filter sheet
-    Tablet  : 2-column list, max-w-3xl centered, FAB pill
+    Mobile  : square-card grid, 2-col; no list/grid toggle
+    Tablet  : square-card grid, 3-col (md), max-w-4xl centered
     Desktop : unchanged grid/table views with full toolbar
 
     All routes, JS modal functions, and data logic are untouched.
@@ -13,7 +13,7 @@
 <div class="lg:hidden space-y-0">
 
     {{-- Sticky search + filter row --}}
-    <div class="sticky top-16 z-20 bg-[#F2F5E2] pt-3 pb-2 -mx-3.5 px-3.5 sm:-mx-5 sm:px-5 border-b border-[#E3DEA4]/60">
+    <div class="sticky top-[calc(4rem+env(safe-area-inset-top,0px))] z-20 bg-[#F2F5E2] pt-2 pb-2 -mx-3.5 px-3.5 sm:-mx-5 sm:px-5 border-b border-[#E3DEA4]/60">
 
         {{-- Search bar + action-sheet trigger --}}
         <div class="flex items-center gap-2">
@@ -25,7 +25,6 @@
                     :action="route('admin.catalog.index')"
                     :hidden-fields="[
                         'tab'         => 'menu',
-                        'view'        => $viewMode,
                         'sort'        => request('sort'),
                         'category_id' => request('category_id'),
                         'status'      => request('status'),
@@ -88,23 +87,6 @@
 
                 <div class="h-px bg-[#E3DEA4]/60 my-3"></div>
 
-                {{-- View mode --}}
-                <div class="space-y-2">
-                    <p class="text-xs font-bold text-[#290024] uppercase tracking-wide">Tampilan</p>
-                    <div class="flex gap-2">
-                        <a href="{{ route('admin.catalog.index', array_merge(request()->query(), ['view' => 'table', 'page' => 1])) }}"
-                           class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-semibold transition-colors {{ $viewMode === 'table' ? 'bg-[#290024] text-[#FAFCF3]' : 'bg-[#F2F5E2] text-[#290024] border border-[#E3DEA4]' }}"
-                           onclick="closeBottomSheet('catalog-filter-sheet')">
-                            <i data-lucide="list" class="w-4 h-4"></i> Daftar
-                        </a>
-                        <a href="{{ route('admin.catalog.index', array_merge(request()->query(), ['view' => 'grid', 'page' => 1])) }}"
-                           class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-sm font-semibold transition-colors {{ $viewMode === 'grid' ? 'bg-[#290024] text-[#FAFCF3]' : 'bg-[#F2F5E2] text-[#290024] border border-[#E3DEA4]' }}"
-                           onclick="closeBottomSheet('catalog-filter-sheet')">
-                            <i data-lucide="layout-grid" class="w-4 h-4"></i> Kotak
-                        </a>
-                    </div>
-                </div>
-
                 <x-slot:footer>
                     <a
                         href="{{ route('admin.catalog.index', ['tab' => 'menu']) }}"
@@ -160,25 +142,166 @@
     </div>
 
     {{-- Results summary --}}
-    <div class="flex items-center justify-between pt-3 pb-2 text-xs text-[#775533]">
-        <span>Menampilkan {{ $menus->firstItem() }}–{{ $menus->lastItem() }} dari {{ $menus->total() }} menu</span>
-        @if(request('search'))
-            <span class="text-[#290024] font-semibold">Hasil: "{{ request('search') }}"</span>
-        @endif
+    <div class="flex items-center pt-3 pb-2 text-xs text-[#775533]">
+        <div class="flex items-center gap-2 min-w-0">
+            <span>Menampilkan {{ $menus->firstItem() ?? 0 }}–{{ $menus->lastItem() ?? 0 }} dari {{ $menus->total() }} menu</span>
+            @if(request('search'))
+                <span class="text-[#290024] font-semibold truncate hidden sm:inline">&bull; "{{ request('search') }}"</span>
+            @endif
+        </div>
     </div>
 
-    {{-- ---- LIST VIEW (default) ---- --}}
-    @if($viewMode !== 'grid')
-        <div class="space-y-2 sm:max-w-3xl sm:mx-auto">
-            @forelse($menus as $menu)
-                <x-mobile.menu-list-item
-                    :menu="$menu"
-                    :toggle-available-route="route('admin.catalog.menu.toggle.available', $menu->id)"
-                    edit-callback="editMenuModal"
-                    delete-callback="openDeleteMenuModal"
-                    :duplicate-route="route('admin.catalog.menu.duplicate', $menu->id)"
-                />
-            @empty
+    {{-- MENU ITEMS: square-card grid, one card per menu --}}
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:max-w-4xl md:mx-auto">
+        @forelse($menus as $menu)
+            @php
+                $sheetId  = 'menu-action-' . $menu->id;
+                $isBest   = (bool) $menu->is_best_seller;
+                $isAvail  = (bool) $menu->is_available;
+                $menuJson = Illuminate\Support\Js::from($menu->load('variants'));
+            @endphp
+
+            {{-- Single card per menu --}}
+            <div
+                data-menu-id="{{ $menu->id }}"
+                class="bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4]/60 shadow-sm overflow-hidden flex flex-col transition-all hover:border-[#290024]/20"
+            >
+                {{-- Square photo area --}}
+                <div class="relative w-full aspect-square bg-[#E3DEA4]/40 overflow-hidden shrink-0">
+                    <img
+                        src="{{ $menu->image }}"
+                        alt="{{ $menu->name }}"
+                        class="w-full h-full object-cover cursor-pointer"
+                        loading="lazy"
+                        onclick="openBottomSheet('{{ $sheetId }}')"
+                    >
+                    {{-- Best Seller ribbon: top-left --}}
+                    @if($isBest)
+                        <span class="absolute top-1.5 left-1.5 bg-[#D4954D] text-[#290024] text-[8px] font-bold px-1.5 py-0.5 rounded shadow-xs leading-none whitespace-nowrap">
+                            Best Seller
+                        </span>
+                    @endif
+                    {{-- Habis badge: top-right, only when unavailable --}}
+                    @if(!$isAvail)
+                        <span class="absolute top-1.5 right-1.5 bg-[#B03A2E] text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow-xs leading-none">
+                            Habis
+                        </span>
+                    @endif
+
+                    {{-- 3-dots action sheet trigger: bottom-right --}}
+                    <button
+                        type="button"
+                        onclick="openBottomSheet('{{ $sheetId }}')"
+                        class="absolute bottom-1.5 right-1.5 w-6 h-6 rounded-full bg-[#290024]/70 hover:bg-[#290024] text-[#FAFCF3] flex items-center justify-center backdrop-blur-xs transition-colors shadow-xs"
+                        aria-label="Aksi untuk {{ $menu->name }}"
+                    >
+                        <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
+                {{-- Text body --}}
+                <div
+                    onclick="openBottomSheet('{{ $sheetId }}')"
+                    class="flex-1 flex flex-col px-2.5 pt-2 pb-1 text-left min-w-0 w-full cursor-pointer focus:outline-none"
+                    role="button"
+                    tabindex="0"
+                    onkeydown="if(event.key==='Enter'||event.key===' '){openBottomSheet('{{ $sheetId }}')}"
+                    aria-label="Detail {{ $menu->name }}"
+                >
+                    {{-- Name: 2-line clamp, fixed height for alignment --}}
+                    <h3 class="font-bold text-[11px] sm:text-xs text-[#290024] line-clamp-2 leading-tight" style="min-height:2.4em">
+                        {{ $menu->name }}
+                    </h3>
+                    {{-- Category: olive wood --}}
+                    <p class="text-[10px] text-[#775533] mt-0.5 truncate font-medium">
+                        {{ $menu->category?->name }}
+                    </p>
+                    {{-- Price: single line, tabular, bold --}}
+                    <p class="font-bold text-[11px] sm:text-xs text-[#290024] mt-auto pt-1 whitespace-nowrap tabular-nums">
+                        {{ $menu->priceRangeLabel() }}
+                    </p>
+                </div>
+
+                {{-- Footer: availability label + toggle (min 44px touch target) --}}
+                <div
+                    class="px-2.5 py-1.5 border-t border-[#E3DEA4]/40 flex items-center justify-between"
+                    onclick="event.stopPropagation()"
+                >
+                    <span class="text-[9px] sm:text-[10px] font-semibold {{ $isAvail ? 'text-[#4F7A4A]' : 'text-[#B03A2E]' }}">
+                        {{ $isAvail ? 'Tersedia' : 'Habis' }}
+                    </span>
+                    <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
+                        @csrf
+                        <button
+                            type="submit"
+                            class="min-w-[44px] min-h-[44px] -my-1.5 -mr-2 flex items-center justify-center p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]/70 rounded-full"
+                            title="{{ $isAvail ? 'Tandai Habis' : 'Tandai Tersedia' }}"
+                            aria-label="{{ $isAvail ? 'Tandai Habis' : 'Tandai Tersedia' }} {{ $menu->name }}"
+                        >
+                            <div class="w-9 h-5 rounded-full p-0.5 transition-colors {{ $isAvail ? 'bg-[#4F7A4A]' : 'bg-[#775533]/30' }}">
+                                <div class="w-4 h-4 rounded-full bg-white shadow-sm transition-transform {{ $isAvail ? 'translate-x-4' : 'translate-x-0' }}"></div>
+                            </div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {{-- Action bottom sheet --}}
+            <x-mobile.bottom-sheet :id="$sheetId" :title="$menu->name" :subtitle="$menu->category?->name">
+                <div class="space-y-1">
+                    <button
+                        type="button"
+                        onclick="closeBottomSheet('{{ $sheetId }}'); editMenuModal({{ $menuJson }});"
+                        class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
+                    >
+                        <i data-lucide="edit" class="w-5 h-5 text-[#775533] shrink-0"></i>
+                        <span>Ubah Menu</span>
+                    </button>
+
+                    <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
+                        @csrf
+                        <button
+                            type="submit"
+                            class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
+                        >
+                            <i data-lucide="{{ $isAvail ? 'eye-off' : 'eye' }}" class="w-5 h-5 text-[#775533] shrink-0"></i>
+                            <span>{{ $isAvail ? 'Nonaktifkan (Tandai Habis)' : 'Aktifkan (Tandai Tersedia)' }}</span>
+                        </button>
+                    </form>
+
+                    <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST">
+                        @csrf
+                        <button
+                            type="submit"
+                            class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
+                        >
+                            <i data-lucide="copy" class="w-5 h-5 text-[#775533] shrink-0"></i>
+                            <span>Duplikat Menu</span>
+                        </button>
+                    </form>
+
+                    <a
+                        href="{{ route('admin.catalog.menu.recipes', $menu->id) }}"
+                        class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
+                    >
+                        <i data-lucide="scale" class="w-5 h-5 text-[#775533] shrink-0"></i>
+                        <span>Resep &amp; HPP</span>
+                    </a>
+
+                    <div class="h-px bg-[#E3DEA4]/60 my-2"></div>
+
+                    <button
+                        type="button"
+                        onclick="closeBottomSheet('{{ $sheetId }}'); openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}');"
+                        class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#B03A2E] hover:bg-[#B03A2E]/10 transition-colors text-left min-h-[48px]"
+                    >
+                        <i data-lucide="trash-2" class="w-5 h-5 text-[#B03A2E] shrink-0"></i>
+                        <span>Hapus Menu</span>
+                    </button>
+                </div>
+            </x-mobile.bottom-sheet>
+        @empty
+            <div class="col-span-2 md:col-span-3">
                 <x-mobile.empty-state
                     icon="coffee"
                     title="Tidak Ada Menu Ditemukan"
@@ -186,75 +309,10 @@
                     action-label="Atur Ulang Filter"
                     :action-href="route('admin.catalog.index', ['tab' => 'menu'])"
                 />
-            @endforelse
-        </div>
+            </div>
+        @endforelse
+    </div>
 
-    {{-- ---- GRID VIEW ---- --}}
-    @else
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:max-w-3xl sm:mx-auto">
-            @forelse($menus as $menu)
-                @php $sheetId = 'menu-grid-action-' . $menu->id; @endphp
-                <div class="bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4]/60 shadow-sm overflow-hidden flex flex-col">
-                    {{-- Image --}}
-                    <button
-                        type="button"
-                        onclick="openBottomSheet('{{ $sheetId }}')"
-                        class="relative w-full aspect-[4/3] bg-[#E3DEA4]/40 overflow-hidden focus-visible:outline-none"
-                        aria-label="Aksi untuk {{ $menu->name }}"
-                    >
-                        <img src="{{ $menu->image }}" alt="{{ $menu->name }}" class="w-full h-full object-cover" loading="lazy">
-                        @if($menu->is_best_seller)
-                            <span class="absolute bottom-0 left-0 right-0 bg-[#D4954D] text-[#290024] text-[8px] font-bold text-center py-0.5">Best Seller</span>
-                        @endif
-                    </button>
-
-                    {{-- Body --}}
-                    <button
-                        type="button"
-                        onclick="openBottomSheet('{{ $sheetId }}')"
-                        class="flex-1 p-2.5 text-left focus-visible:outline-none"
-                    >
-                        <p class="font-bold text-xs text-[#290024] line-clamp-2 leading-tight">{{ $menu->name }}</p>
-                        <p class="text-[10px] text-[#775533] mt-0.5 truncate">{{ $menu->category?->name }}</p>
-                        <p class="font-semibold text-xs text-[#290024] mt-1">{{ $menu->priceRangeLabel() }}</p>
-                    </button>
-
-                    {{-- Toggle footer --}}
-                    <div class="px-2.5 py-2 border-t border-[#E3DEA4]/40 flex items-center justify-between">
-                        <span class="text-[10px] font-semibold {{ $menu->is_available ? 'text-[#4F7A4A]' : 'text-[#B03A2E]' }}">
-                            {{ $menu->is_available ? 'Tersedia' : 'Habis' }}
-                        </span>
-                        <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="w-9 h-5 rounded-full p-0.5 transition-colors focus-visible:outline-none {{ $menu->is_available ? 'bg-[#4F7A4A]' : 'bg-[#775533]/30' }}">
-                                <div class="w-4 h-4 rounded-full bg-white shadow-sm transition-transform {{ $menu->is_available ? 'translate-x-4' : 'translate-x-0' }}"></div>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                {{-- Action sheet for grid item --}}
-                <x-mobile.menu-list-item
-                    :menu="$menu"
-                    :toggle-available-route="route('admin.catalog.menu.toggle.available', $menu->id)"
-                    edit-callback="editMenuModal"
-                    delete-callback="openDeleteMenuModal"
-                    :duplicate-route="route('admin.catalog.menu.duplicate', $menu->id)"
-                    class="hidden"
-                />
-            @empty
-                <div class="col-span-2 sm:col-span-3">
-                    <x-mobile.empty-state
-                        icon="coffee"
-                        title="Tidak Ada Menu Ditemukan"
-                        message="Coba ubah kata kunci pencarian atau atur ulang filter."
-                        action-label="Atur Ulang Filter"
-                        :action-href="route('admin.catalog.index', ['tab' => 'menu'])"
-                    />
-                </div>
-            @endforelse
-        </div>
-    @endif
 
     {{-- Pagination --}}
     @if($menus->hasPages())
@@ -263,8 +321,8 @@
         </div>
     @endif
 
-    {{-- Bottom padding to clear FAB + bottom nav --}}
-    <div class="h-24"></div>
+    {{-- Bottom padding >= 112px to clear FAB + bottom nav --}}
+    <div class="h-32 sm:h-36"></div>
 </div>
 
 {{-- FAB: Tambah Menu (mobile/tablet only) --}}

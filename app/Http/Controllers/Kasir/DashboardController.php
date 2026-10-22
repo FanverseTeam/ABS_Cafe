@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function __construct(private readonly ShiftService $shifts)
-    {
-    }
+    public function __construct(private readonly ShiftService $shifts) {}
 
     public function index()
     {

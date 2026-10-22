@@ -36,15 +36,15 @@ return new class extends Migration
 
         // 2. Kolom relasi pada orders (aman bila sudah ada)
         Schema::table('orders', function (Blueprint $table) {
-            if (!Schema::hasColumn('orders', 'cashier_id')) {
+            if (! Schema::hasColumn('orders', 'cashier_id')) {
                 $table->foreignId('cashier_id')->nullable()->after('cashier_name')
                     ->constrained('users')->nullOnDelete();
             }
-            if (!Schema::hasColumn('orders', 'promo_id')) {
+            if (! Schema::hasColumn('orders', 'promo_id')) {
                 $table->foreignId('promo_id')->nullable()->after('discount')
                     ->constrained('promos')->nullOnDelete();
             }
-            if (!Schema::hasColumn('orders', 'cash_shift_id')) {
+            if (! Schema::hasColumn('orders', 'cash_shift_id')) {
                 $table->foreignId('cash_shift_id')->nullable()->after('promo_id')
                     ->constrained('cash_shifts')->nullOnDelete();
             }
@@ -52,7 +52,7 @@ return new class extends Migration
 
         // 3. Kuota promo (opsional) untuk kampanye berbatas jumlah
         Schema::table('promos', function (Blueprint $table) {
-            if (!Schema::hasColumn('promos', 'quota')) {
+            if (! Schema::hasColumn('promos', 'quota')) {
                 $table->unsignedInteger('quota')->nullable()->after('min_spend');
             }
         });

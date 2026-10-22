@@ -4,25 +4,49 @@
 @section('page_title', 'Pengaturan Website')
 
 @section('content')
-<div class="space-y-6">
-    <!-- Breadcrumb -->
-    <nav class="flex items-center gap-1.5 text-xs text-cafe-muted mb-3">
-        <a href="{{ route('admin.website.index') }}" class="hover:text-cafe-dark flex items-center gap-1">
-            <i data-lucide="home" class="w-3.5 h-3.5"></i>
-            <span>Admin</span>
-        </a>
-        <i data-lucide="chevron-right" class="w-3 h-3 text-cafe-muted/60"></i>
-        <span class="font-semibold text-cafe-dark">Pengaturan Website</span>
-    </nav>
+<div class="space-y-4 lg:space-y-6">
+    <!-- Breadcrumb (Desktop only) -->
+    <div class="hidden lg:block space-y-4">
+        <nav class="flex items-center gap-1.5 text-xs text-cafe-muted">
+            <a href="{{ route('admin.website.index') }}" class="hover:text-cafe-dark flex items-center gap-1">
+                <i data-lucide="home" class="w-3.5 h-3.5"></i>
+                <span>Admin</span>
+            </a>
+            <i data-lucide="chevron-right" class="w-3 h-3 text-cafe-muted/60"></i>
+            <span class="font-semibold text-cafe-dark">Pengaturan Website</span>
+        </nav>
 
-    <!-- Page Header -->
-    <div>
-        <h2 class="font-serif text-2xl font-bold text-cafe-dark">Pengaturan Website &amp; Operasional</h2>
-        <p class="text-xs text-cafe-muted mt-0.5">Kelola identitas kafe, metode pembayaran, format struk/nota, pajak, dan akun admin</p>
+        <div>
+            <h2 class="font-serif text-2xl font-bold text-cafe-dark">Pengaturan Website &amp; Operasional</h2>
+            <p class="text-xs text-cafe-muted mt-0.5">Kelola identitas kafe, metode pembayaran, format struk/nota, pajak, dan akun admin</p>
+        </div>
     </div>
 
-    <!-- Tabs Navigation -->
-    <div class="flex items-center gap-2 overflow-x-auto border-b border-cafe-beige/60 pb-2 scrollbar-none text-xs font-semibold">
+    {{-- Tabs Navigation for Mobile/Tablet: sticky chip scroller --}}
+    <div class="lg:hidden sticky top-16 z-20 bg-[#F2F5E2] pt-2 pb-2 -mx-3.5 px-3.5 sm:-mx-5 sm:px-5">
+        @php
+            $tabOptions = [
+                ['label' => 'Profil', 'val' => 'profil'],
+                ['label' => 'Pajak & Biaya', 'val' => 'pajak'],
+                ['label' => 'Pembayaran', 'val' => 'pembayaran'],
+                ['label' => 'Nota & Struk', 'val' => 'nota'],
+                ['label' => 'Tampilan', 'val' => 'tampilan'],
+                ['label' => 'Akun Saya', 'val' => 'akun'],
+            ];
+            $currentWebTab = $tab ?? 'profil';
+            $webChips = array_map(function($opt) use ($currentWebTab) {
+                return [
+                    'label'  => $opt['label'],
+                    'href'   => route('admin.website.index', ['tab' => $opt['val']]),
+                    'active' => $currentWebTab === $opt['val'],
+                ];
+            }, $tabOptions);
+        @endphp
+        <x-mobile.chip-scroller :chips="$webChips" />
+    </div>
+
+    <!-- Tabs Navigation (Desktop only) -->
+    <div class="hidden lg:flex items-center gap-2 overflow-x-auto border-b border-cafe-beige/60 pb-2 scrollbar-none text-xs font-semibold">
         <a href="{{ route('admin.website.index', ['tab' => 'profil']) }}" class="px-4 py-2 rounded-full whitespace-nowrap transition-all {{ $tab === 'profil' ? 'bg-cafe-dark text-cafe-cream shadow-xs' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/50' }}">
             Profil Cafe
         </a>

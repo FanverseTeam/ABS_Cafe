@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use App\Models\CafeSetting;
 use App\Models\Category;
-use App\Models\Menu;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Models\Promo;
@@ -23,8 +23,7 @@ class PosController extends Controller
         private readonly OrderService $orders,
         private readonly PaymentService $payments,
         private readonly ShiftService $shifts,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request)
     {
@@ -69,9 +68,9 @@ class PosController extends Controller
             $promo = $this->orders->findPromo(trim($request->input('voucher', '')) ?: null);
             ['discount' => $discount] = $this->orders->calculateDiscount($promo, $built['items'], $built['subtotal']);
 
-            $tax = round(($built['subtotal'] - $discount) * (float) \App\Models\CafeSetting::get('tax_percent', 10) / 100, 2);
-            $serviceActive = (bool) \App\Models\CafeSetting::get('service_charge_active', 0);
-            $service = $serviceActive ? round(($built['subtotal'] - $discount) * (float) \App\Models\CafeSetting::get('service_charge_percent', 5) / 100, 2) : 0;
+            $tax = round(($built['subtotal'] - $discount) * (float) CafeSetting::get('tax_percent', 10) / 100, 2);
+            $serviceActive = (bool) CafeSetting::get('service_charge_active', 0);
+            $service = $serviceActive ? round(($built['subtotal'] - $discount) * (float) CafeSetting::get('service_charge_percent', 5) / 100, 2) : 0;
             $total = round($built['subtotal'] + $tax + $service - $discount, 2);
 
             return response()->json([

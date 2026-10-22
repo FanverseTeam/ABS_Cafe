@@ -14,9 +14,9 @@
 @endphp
 
 @section('content')
-    <div class="space-y-6">
-        <!-- Header -->
-        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+    <div class="space-y-4 lg:space-y-6">
+        <!-- Header (Desktop only) -->
+        <div class="hidden lg:flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
             <div>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold text-cafe-dark">Laporan Bisnis</h2>
                 <p class="text-xs text-cafe-muted mt-1">Analisis mendalam penjualan, keuangan, dan perputaran stok.</p>
@@ -31,13 +31,31 @@
             </div>
         </div>
 
+        {{-- Mobile FAB for Cetak Laporan --}}
+        <x-mobile.fab icon="printer" label="Cetak" href="{{ route('owner.reports.print', $tabQuery($tab)) }}" target="_blank" />
+
         <!-- Period Filter -->
-        <div class="bg-cafe-card rounded-2xl border border-cafe-beige/60 shadow-soft p-4">
+        <div class="bg-cafe-card rounded-2xl border border-cafe-beige/60 shadow-soft p-3 sm:p-4">
             @include('owner.partials.period-filter', ['period' => $period])
         </div>
 
-        <!-- Tabs -->
-        <div class="inline-flex items-center gap-1 p-1 rounded-full bg-cafe-beige/50 border border-cafe-beige">
+        {{-- Tabs for Mobile/Tablet: chip scroller --}}
+        <div class="lg:hidden">
+            @php
+                $reportChips = [];
+                foreach($tabs as $k => $m) {
+                    $reportChips[] = [
+                        'label'  => $m['label'],
+                        'href'   => route('owner.reports.index', $tabQuery($k)),
+                        'active' => $tab === $k,
+                    ];
+                }
+            @endphp
+            <x-mobile.chip-scroller :chips="$reportChips" />
+        </div>
+
+        <!-- Tabs (Desktop only) -->
+        <div class="hidden lg:inline-flex items-center gap-1 p-1 rounded-full bg-cafe-beige/50 border border-cafe-beige">
             @foreach($tabs as $key => $meta)
                 <a href="{{ route('owner.reports.index', $tabQuery($key)) }}"
                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all {{ $tab === $key ? 'bg-cafe-dark text-cafe-cream shadow-sm' : 'text-cafe-muted hover:bg-cafe-beige hover:text-cafe-dark' }}">

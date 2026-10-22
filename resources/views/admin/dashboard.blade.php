@@ -4,9 +4,9 @@
 @section('page_title', 'Dashboard')
 
 @section('content')
-<div class="space-y-8">
+<div class="space-y-4 lg:space-y-8">
     <!-- ACTIVE ADMIN DASHBOARD: welcome banner for the always-on modules. -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-[#290024] via-[#3D1236] to-[#775533] text-cafe-cream p-6 sm:p-8 rounded-3xl shadow-soft-lg relative overflow-hidden">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-[#290024] via-[#3D1236] to-[#775533] text-cafe-cream p-4.5 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl shadow-soft-lg relative overflow-hidden">
         <!-- Line art aesthetic circles -->
         <div class="absolute -top-10 -right-10 w-44 h-44 rounded-full border border-cafe-gold/20 pointer-events-none"></div>
         <div class="absolute top-1/2 -right-20 w-60 h-60 rounded-full border border-cafe-gold/10 pointer-events-none"></div>

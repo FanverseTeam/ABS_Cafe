@@ -21,11 +21,14 @@
             <input type="date" name="date" value="{{ $date->format('Y-m-d') }}" class="bg-[#FAFCF3] border border-[#E3DEA4] text-xs text-[#290024] px-3.5 py-2 rounded-2xl focus:border-[#D4954D] focus:outline-none">
             <button class="px-4 py-2 rounded-2xl bg-[#290024] text-[#FAFCF3] text-xs font-semibold hover:bg-[#775533] transition-colors">Tampilkan</button>
         </form>
-        <button onclick="openCreateModal()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#D4954D] text-[#290024] text-xs font-bold hover:brightness-105 transition-all shadow-md active:scale-95">
+        <button onclick="openCreateModal()" class="hidden lg:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#D4954D] text-[#290024] text-xs font-bold hover:brightness-105 transition-all shadow-md active:scale-95">
             <i data-lucide="plus" class="w-4 h-4"></i>
             Buat Reservasi
         </button>
     </div>
+
+    {{-- Mobile FAB for Buat Reservasi --}}
+    <x-mobile.fab icon="plus" label="Reservasi" onclick="openCreateModal()" />
 
     <!-- Peta Meja -->
     <div id="section-tables" class="bg-[#FAFCF3] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
