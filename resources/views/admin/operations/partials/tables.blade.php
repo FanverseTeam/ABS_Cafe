@@ -1,7 +1,7 @@
 <div class="space-y-6">
 
-    <!-- Page Header & Action -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <!-- Page Header & Action (Desktop only) -->
+    <div class="hidden lg:flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h2 class="font-serif text-2xl font-bold text-cafe-dark">Denah Meja &amp; QR Code Pemesanan</h2>
             <p class="text-xs text-cafe-muted mt-0.5">Pantau status meja, atur kapasitas kursi, dan generate QR code scan pesan pelanggan</p>
@@ -13,8 +13,11 @@
         </button>
     </div>
 
-    <!-- Tables Grid Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+    {{-- Mobile FAB for Tambah Meja --}}
+    <x-mobile.fab icon="plus" label="Tambah Meja" onclick="openTableModal()" />
+
+    <!-- Tables Grid Cards (2 cols on mobile, 3 on tablet, 5 on desktop) -->
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
         @forelse($tables as $table)
             <div class="bg-cafe-card rounded-2xl p-5 shadow-soft hover:shadow-soft-lg border border-cafe-beige/50 flex flex-col justify-between transition-all relative overflow-hidden group">
                 <!-- Status Top Border Indicator -->
