@@ -1,7 +1,7 @@
 <div class="space-y-6">
 
-    <!-- Page Header & Action -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <!-- Page Header & Action (Desktop only; mobile header handled by layout) -->
+    <div class="hidden lg:flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h2 class="font-serif text-2xl font-bold text-cafe-dark">Inventaris &amp; Kontrol Stok</h2>
             <p class="text-xs text-cafe-muted mt-0.5">Pantau ketersediaan bahan, status menipis/habis, serta log pergerakan stok</p>
@@ -13,8 +13,83 @@
         </button>
     </div>
 
-    <!-- Toolbar Filters -->
-    <div class="bg-cafe-card p-4 sm:p-5 rounded-2xl shadow-soft border border-cafe-beige/40">
+    {{-- MOBILE / TABLET CONTROLS (lg:hidden) --}}
+    <div class="lg:hidden space-y-2.5">
+        {{-- Sticky Search Bar --}}
+        <x-mobile.search-bar
+            name="stock_search"
+            value="{{ request('stock_search') }}"
+            placeholder="Cari menu/bahan..."
+            :hiddenFields="[
+                'tab' => 'stock',
+                'stock_category_id' => request('stock_category_id', 'all'),
+                'stock_status' => request('stock_status', 'all'),
+            ]"
+        />
+
+        {{-- Single-row filter: Status Chips + Category Filter Sheet --}}
+        <div class="flex items-center gap-2">
+            <div class="flex-1 min-w-0">
+                @php
+                    $statusOptions = [
+                        ['label' => 'Semua', 'val' => 'all'],
+                        ['label' => 'Aman', 'val' => 'aman'],
+                        ['label' => 'Menipis', 'val' => 'menipis'],
+                        ['label' => 'Habis', 'val' => 'habis'],
+                    ];
+                    $currentStatus = request('stock_status', 'all');
+                    $chips = array_map(function($opt) use ($currentStatus) {
+                        return [
+                            'label'  => $opt['label'],
+                            'href'   => route('admin.catalog.index', array_merge(request()->except('page'), ['tab' => 'stock', 'stock_status' => $opt['val']])),
+                            'active' => $currentStatus === $opt['val'],
+                        ];
+                    }, $statusOptions);
+                @endphp
+                <x-mobile.chip-scroller :chips="$chips" />
+            </div>
+
+            {{-- Category Filter Sheet --}}
+            @php
+                $catActive = request('stock_category_id') && request('stock_category_id') !== 'all';
+            @endphp
+            <x-mobile.filter-sheet id="stock-cat-sheet" :badgeCount="$catActive ? 1 : 0" label="Kategori">
+                <form method="GET" action="{{ route('admin.catalog.index') }}" class="space-y-4">
+                    <input type="hidden" name="tab" value="stock">
+                    @if(request('stock_search'))
+                        <input type="hidden" name="stock_search" value="{{ request('stock_search') }}">
+                    @endif
+                    @if(request('stock_status'))
+                        <input type="hidden" name="stock_status" value="{{ request('stock_status') }}">
+                    @endif
+
+                    <div>
+                        <label class="block text-xs font-bold text-cafe-dark mb-2">Filter Kategori</label>
+                        <div class="space-y-1.5 max-h-60 overflow-y-auto">
+                            <label class="flex items-center gap-2 p-2.5 rounded-xl border border-cafe-beige/60 bg-cafe-beige/20 text-xs cursor-pointer">
+                                <input type="radio" name="stock_category_id" value="all" {{ !request('stock_category_id') || request('stock_category_id') === 'all' ? 'checked' : '' }} class="text-cafe-dark focus:ring-0">
+                                <span class="font-semibold text-cafe-dark">Semua Kategori</span>
+                            </label>
+                            @foreach($categories as $cat)
+                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-cafe-beige/60 bg-cafe-beige/20 text-xs cursor-pointer">
+                                    <input type="radio" name="stock_category_id" value="{{ $cat->id }}" {{ request('stock_category_id') == $cat->id ? 'checked' : '' }} class="text-cafe-dark focus:ring-0">
+                                    <span class="font-medium text-cafe-text">{{ $cat->name }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-2">
+                        <a href="{{ route('admin.catalog.index', ['tab' => 'stock']) }}" class="flex-1 py-2.5 text-center rounded-xl bg-cafe-beige/40 text-cafe-dark text-xs font-bold">Reset</a>
+                        <button type="submit" class="flex-1 py-2.5 text-center rounded-xl bg-cafe-dark text-cafe-cream text-xs font-bold shadow-md">Terapkan</button>
+                    </div>
+                </form>
+            </x-mobile.filter-sheet>
+        </div>
+    </div>
+
+    <!-- Toolbar Filters (Desktop only) -->
+    <div class="hidden lg:block bg-cafe-card p-4 sm:p-5 rounded-2xl shadow-soft border border-cafe-beige/40">
         <form method="GET" action="{{ route('admin.catalog.index') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <input type="hidden" name="tab" value="stock">
 
@@ -42,6 +117,9 @@
             </div>
         </form>
     </div>
+
+    {{-- Mobile FAB for Riwayat Stok --}}
+    <x-mobile.fab icon="history" label="Riwayat" onclick="openHistoryLogsModal()" />
 
     <!-- Table Container -->
     <x-responsive-table :paginate="$menus">

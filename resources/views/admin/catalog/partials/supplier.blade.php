@@ -1,6 +1,6 @@
 <div class="space-y-6">
-    <!-- Page Header & Action -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <!-- Page Header & Action (Desktop only) -->
+    <div class="hidden lg:flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h2 class="font-serif text-2xl font-bold text-cafe-dark">Supplier &amp; Mitra Bahan</h2>
             <p class="text-xs text-cafe-muted mt-0.5">Kelola kontak supplier, status kerja sama, dan catatan pengadaan bahan kafe.</p>
@@ -12,8 +12,38 @@
         </button>
     </div>
 
-    <!-- Filters -->
-    <div class="bg-cafe-card p-4 sm:p-5 rounded-2xl shadow-soft border border-cafe-beige/40">
+    {{-- MOBILE / TABLET CONTROLS (lg:hidden) --}}
+    <div class="lg:hidden space-y-2.5">
+        <x-mobile.search-bar
+            name="supplier_search"
+            value="{{ request('supplier_search') }}"
+            placeholder="Cari supplier..."
+            :hiddenFields="[
+                'tab' => 'stock',
+                'supplier_status' => request('supplier_status', 'all'),
+            ]"
+        />
+
+        @php
+            $suppStatusOptions = [
+                ['label' => 'Semua', 'val' => 'all'],
+                ['label' => 'Aktif', 'val' => 'aktif'],
+                ['label' => 'Nonaktif', 'val' => 'nonaktif'],
+            ];
+            $currentSuppStatus = request('supplier_status', 'all');
+            $suppChips = array_map(function($opt) use ($currentSuppStatus) {
+                return [
+                    'label'  => $opt['label'],
+                    'href'   => route('admin.catalog.index', array_merge(request()->except('page'), ['tab' => 'stock', 'supplier_status' => $opt['val']])),
+                    'active' => $currentSuppStatus === $opt['val'],
+                ];
+            }, $suppStatusOptions);
+        @endphp
+        <x-mobile.chip-scroller :chips="$suppChips" />
+    </div>
+
+    <!-- Filters (Desktop only) -->
+    <div class="hidden lg:block bg-cafe-card p-4 sm:p-5 rounded-2xl shadow-soft border border-cafe-beige/40">
         <form method="GET" action="{{ route('admin.catalog.index') }}" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <input type="hidden" name="tab" value="stock">
 
@@ -31,6 +61,9 @@
             </div>
         </form>
     </div>
+
+    {{-- Mobile FAB for Tambah Supplier --}}
+    <x-mobile.fab icon="plus" label="Tambah Supplier" onclick="openSupplierModal()" />
 
     <!-- Supplier Table -->
     <div class="bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
