@@ -4,9 +4,9 @@
 @section('page_title', 'Pengguna')
 
 @section('content')
-<div class="space-y-6">
-    <!-- Breadcrumb -->
-    <nav class="flex items-center gap-1.5 text-xs text-cafe-muted mb-3">
+<div class="space-y-4 lg:space-y-6">
+    <!-- Breadcrumb (Desktop only) -->
+    <nav class="hidden lg:flex items-center gap-1.5 text-xs text-cafe-muted mb-3">
         <a href="{{ route('admin.dashboard') }}" class="hover:text-cafe-dark flex items-center gap-1">
             <i data-lucide="home" class="w-3.5 h-3.5"></i>
             <span>Admin</span>
@@ -15,8 +15,8 @@
         <span class="font-semibold text-cafe-dark">Pengguna (Staf/Kasir)</span>
     </nav>
 
-    <!-- Page Header & Action -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <!-- Page Header & Action (Desktop only) -->
+    <div class="hidden lg:flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h2 class="font-serif text-2xl font-bold text-cafe-dark">Manajemen Pengguna &amp; Hak Akses</h2>
             <p class="text-xs text-cafe-muted mt-0.5">Kelola akun administrator, kasir kasir, dan staf barista ABS Cafe</p>
@@ -28,8 +28,80 @@
         </button>
     </div>
 
-    <!-- Filters & Search Toolbar -->
-    <div class="bg-cafe-card p-4 sm:p-5 rounded-2xl shadow-soft border border-cafe-beige/40">
+    {{-- MOBILE / TABLET CONTROLS (lg:hidden) --}}
+    <div class="lg:hidden space-y-2.5">
+        <x-mobile.search-bar
+            name="search"
+            value="{{ request('search') }}"
+            placeholder="Cari nama, email, username..."
+            :hiddenFields="[
+                'role' => request('role', 'all'),
+                'status' => request('status', 'all'),
+            ]"
+        />
+
+        {{-- Single-row filter: Role Chips + Status Filter Sheet --}}
+        <div class="flex items-center gap-2">
+            <div class="flex-1 min-w-0">
+                @php
+                    $roleOptions = [
+                        ['label' => 'Semua', 'val' => 'all'],
+                        ['label' => 'Admin', 'val' => 'admin'],
+                        ['label' => 'Kasir', 'val' => 'kasir'],
+                        ['label' => 'Staf', 'val' => 'staf'],
+                    ];
+                    $currentRole = request('role', 'all');
+                    $roleChips = array_map(function($opt) use ($currentRole) {
+                        return [
+                            'label'  => $opt['label'],
+                            'href'   => route('admin.users.index', array_merge(request()->except('page'), ['role' => $opt['val']])),
+                            'active' => $currentRole === $opt['val'],
+                        ];
+                    }, $roleOptions);
+                @endphp
+                <x-mobile.chip-scroller :chips="$roleChips" />
+            </div>
+
+            {{-- Status Filter Sheet --}}
+            @php
+                $statusActive = request('status') && request('status') !== 'all';
+            @endphp
+            <x-mobile.filter-sheet id="user-status-sheet" :badgeCount="$statusActive ? 1 : 0" label="Status">
+                <form method="GET" action="{{ route('admin.users.index') }}" class="space-y-4">
+                    @if(request('search'))
+                        <input type="hidden" name="search" value="{{ request('search') }}">
+                    @endif
+                    @if(request('role'))
+                        <input type="hidden" name="role" value="{{ request('role') }}">
+                    @endif
+
+                    <div>
+                        <label class="block text-xs font-bold text-cafe-dark mb-2">Filter Status Akun</label>
+                        <div class="space-y-1.5">
+                            @foreach([
+                                'all' => 'Semua Status',
+                                'aktif' => 'Aktif',
+                                'nonaktif' => 'Nonaktif',
+                            ] as $val => $label)
+                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-cafe-beige/60 bg-cafe-beige/20 text-xs cursor-pointer">
+                                    <input type="radio" name="status" value="{{ $val }}" {{ request('status', 'all') === $val ? 'checked' : '' }} class="text-cafe-dark focus:ring-0">
+                                    <span class="font-medium text-cafe-text">{{ $label }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-2">
+                        <a href="{{ route('admin.users.index', request()->except('status')) }}" class="flex-1 py-2.5 text-center rounded-xl bg-cafe-beige/40 text-cafe-dark text-xs font-bold">Reset</a>
+                        <button type="submit" class="flex-1 py-2.5 text-center rounded-xl bg-cafe-dark text-cafe-cream text-xs font-bold shadow-md">Terapkan</button>
+                    </div>
+                </form>
+            </x-mobile.filter-sheet>
+        </div>
+    </div>
+
+    <!-- Filters & Search Toolbar (Desktop only) -->
+    <div class="hidden lg:block bg-cafe-card p-4 sm:p-5 rounded-2xl shadow-soft border border-cafe-beige/40">
         <form method="GET" action="{{ route('admin.users.index') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
@@ -55,8 +127,11 @@
         </form>
     </div>
 
-    <!-- Mobile Staff Cards (Hanya Tampil di Layar < md) -->
-    <div class="md:hidden space-y-3">
+    {{-- Mobile FAB for Tambah Staf --}}
+    <x-mobile.fab icon="user-plus" label="Tambah Staf" onclick="openUserModal()" />
+
+    <!-- Mobile/Tablet Staff Cards (lg:hidden, 1 col mobile, 2 cols tablet) -->
+    <div class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-3">
         @forelse($users as $user)
             <div class="bg-cafe-card rounded-2xl p-4 shadow-soft border border-cafe-beige/60 space-y-3">
                 <div class="flex items-center justify-between gap-2">
@@ -132,8 +207,8 @@
         @endforelse
     </div>
 
-    <!-- Users Table Container (Tampil di Layar >= md) -->
-    <div class="hidden md:block bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
+    <!-- Users Table Container (Desktop only: lg+) -->
+    <div class="hidden lg:block bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/40 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
                 <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
