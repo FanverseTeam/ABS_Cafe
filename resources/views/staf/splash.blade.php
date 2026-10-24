@@ -282,46 +282,6 @@
             animation: progressFill {{ $tProgress }}s cubic-bezier(0.4, 0, 0.2, 1) {{ $dProgress }}s forwards;
         }
 
-        /* Tombol Lewati di Pojok Bawah */
-        .splash-skip {
-            position: fixed;
-            bottom: calc(14px + env(safe-area-inset-bottom, 0px));
-            right: calc(16px + env(safe-area-inset-right, 0px));
-            z-index: 25;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.4rem 0.9rem;
-            min-height: 36px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #E3DEA4;
-            background: rgba(41, 0, 36, 0.72);
-            border: 1px solid rgba(227, 222, 164, 0.35);
-            border-radius: 9999px;
-            text-decoration: none;
-            letter-spacing: 0.04em;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .splash-skip:hover {
-            color: #FAFCF3;
-            background: rgba(119, 85, 51, 0.65);
-            border-color: #D4954D;
-            transform: translateY(-1px);
-        }
-
-        .splash-skip:focus {
-            outline: none;
-        }
-
-        .splash-skip:focus-visible {
-            outline: 2px solid #D4954D;
-            outline-offset: 2px;
-        }
 
         /* Layer Fade-out ke Midnight Violet di akhir animasi */
         .splash-fadeout {
@@ -470,10 +430,6 @@
             <p class="splash-tagline">Good Coffee, <em class="splash-tagline-accent">Good Mood.</em></p>
         </main>
 
-        {{-- Tombol Lewati --}}
-        <a href="{{ $loginUrl }}" class="splash-skip" aria-label="Lewati animasi dan langsung ke halaman login">
-            Lewati
-        </a>
 
         {{-- Garis Progres --}}
         <div class="splash-progress-track" aria-hidden="true">

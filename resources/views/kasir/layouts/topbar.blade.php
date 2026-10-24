@@ -8,7 +8,7 @@
     $unpaidOrders = \App\Models\Order::unpaid()->where('order_status', '!=', 'selesai')->take(5)->get();
 @endphp
 
-<header class="sticky top-0 z-30 min-h-[4rem] sm:min-h-[5rem] bg-[#FAFCF3]/95 backdrop-blur-md border-b border-cafe-beige/60 px-3.5 sm:px-8 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">
+<header class="sticky top-0 z-30 min-h-[4rem] sm:min-h-[5rem] bg-[#FAFCF3]/95 backdrop-blur-md border-b border-cafe-beige/60 px-4 sm:px-8 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">
     <div class="h-16 sm:h-20 flex items-center justify-between gap-2.5 sm:gap-4 w-full">
     <!-- Left: Mobile Logo & Title -->
     <div class="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -23,7 +23,7 @@
         @endif
 
         <div class="min-w-0 flex-1 py-1">
-            <h1 class="font-serif text-base sm:text-xl font-bold text-cafe-dark truncate leading-normal" title="@yield('page_title', 'Portal Kasir')">
+            <h1 class="font-serif text-base sm:text-xl font-bold text-cafe-dark truncate leading-snug py-0.5" title="@yield('page_title', 'Portal Kasir')">
                 @yield('page_title', 'Portal Kasir')
             </h1>
         </div>

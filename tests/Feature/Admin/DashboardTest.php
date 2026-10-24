@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Promo;
 use App\Models\Table;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -178,5 +179,26 @@ class DashboardTest extends TestCase
             return $menus->pluck('name')->contains('Kopi Menipis')
                 && ! $menus->pluck('name')->contains('Kopi Aman');
         });
+    }
+
+    public function test_admin_dashboard_renders_welcome_banner_with_required_elements(): void
+    {
+        $this->requireLegacyAdminDisabled();
+
+        $admin = User::factory()->create([
+            'role' => 'admin',
+            'name' => 'Budi Santoso',
+            'status' => 'aktif',
+        ]);
+
+        $response = $this->actingAs($admin)->get('/admin');
+
+        $response->assertOk()
+            ->assertSee(Carbon::now()->translatedFormat('l, j F Y'))
+            ->assertSee('Selamat datang,')
+            ->assertSee('Budi Santoso')
+            ->assertSee('Ikhtisar operasional ABS Cafe Tulungagung hari ini')
+            ->assertSee('Kelola Menu')
+            ->assertSee(route('admin.catalog.index', ['tab' => 'menu']), false);
     }
 }

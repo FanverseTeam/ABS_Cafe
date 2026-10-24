@@ -7,22 +7,34 @@
 <div class="space-y-6">
     <!-- Banner Shift -->
     @if(! $shift)
-        <div class="bg-[#290024] text-[#F2F5E2] rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-soft-lg">
-            <div class="absolute inset-0 opacity-20 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=900&auto=format&fit=crop&q=80')"></div>
-            <div class="absolute inset-0 bg-gradient-to-r from-[#290024] via-[#290024]/90 to-transparent"></div>
+        <div class="w-full max-w-[900px] mx-auto lg:max-w-none bg-gradient-to-r from-[#290024] via-[#3D1236] to-[#775533] text-cafe-cream rounded-2xl lg:rounded-3xl p-5 md:p-6 lg:p-8 relative shadow-soft-lg">
+            <!-- Background & line art decoration isolated with overflow-hidden -->
+            <div class="absolute inset-0 rounded-2xl lg:rounded-3xl overflow-hidden pointer-events-none z-0" aria-hidden="true">
+                <div class="absolute inset-0 opacity-15 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=900&auto=format&fit=crop&q=80')"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-[#290024] via-[#3D1236]/90 to-transparent"></div>
+                <div class="absolute -top-10 -right-10 w-44 h-44 rounded-full border border-cafe-gold/20 opacity-40"></div>
+            </div>
+
             <div class="relative z-10 max-w-2xl">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-[#D4954D] text-xs font-medium border border-[#D4954D]/20">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-cafe-gold text-xs font-medium border border-cafe-gold/30 mb-2">
                     <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
                     <span>Shift Belum Dibuka</span>
                 </div>
-                <h2 class="font-serif text-2xl sm:text-3xl font-bold mt-4">Mulai hari kerja Anda, <span class="text-[#D4954D] italic">{{ Auth::user()->name }}</span>!</h2>
-                <p class="text-xs sm:text-sm text-[#F2F5E2]/80 mt-2 max-w-lg leading-relaxed">
+                <h2 class="font-serif leading-[1.25] break-words text-[#FAFCF3]">
+                    <span class="block lg:inline text-xs sm:text-sm lg:text-3xl font-normal lg:font-bold text-cafe-cream/85 lg:text-[#FAFCF3] mb-0.5 lg:mb-0">Mulai hari kerja Anda, </span>
+                    <span class="block lg:inline text-[22px] sm:text-[24px] md:text-[28px] lg:text-3xl font-bold tracking-tight text-cafe-gold lg:text-[#FAFCF3]">
+                        {{ Auth::user()->name }}
+                    </span>
+                </h2>
+                <p class="text-sm leading-[1.5] text-cafe-beige/85 mt-2 max-w-lg">
                     Transaksi kasir hanya bisa diproses setelah shift dibuka. Siapkan kas awal, lalu mulai menerima pesanan & pembayaran.
                 </p>
-                <a href="{{ route('kasir.shift.open') }}" class="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#D4954D] text-[#290024] font-bold text-xs sm:text-sm shadow-md hover:bg-[#B87C3C] transition-colors">
-                    <i data-lucide="play" class="w-4 h-4"></i>
-                    Buka Shift Sekarang
-                </a>
+                <div class="mt-4 flex flex-wrap items-center gap-3">
+                    <a href="{{ route('kasir.shift.open') }}" class="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-full bg-cafe-gold text-cafe-dark hover:bg-[#c4853d] font-semibold text-xs sm:text-sm shadow-md transition-all">
+                        <i data-lucide="play" class="w-4 h-4 shrink-0"></i>
+                        <span>Buka Shift Sekarang</span>
+                    </a>
+                </div>
             </div>
         </div>
     @endif

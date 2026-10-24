@@ -14,7 +14,7 @@
     @if($activeShift)
         <div class="bg-cafe-card border border-cafe-success/40 rounded-2xl sm:rounded-3xl shadow-soft-lg overflow-hidden">
             <div class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-cafe-beige/40">
-                <div class="p-4.5 sm:p-6 lg:p-8 flex flex-col justify-center">
+                <div class="p-5 md:p-6 lg:p-8 flex flex-col justify-center">
                     <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cafe-success/15 text-cafe-success text-xs font-semibold border border-cafe-success/30 w-fit">
                         <span class="relative flex h-2 w-2">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cafe-success opacity-60"></span>

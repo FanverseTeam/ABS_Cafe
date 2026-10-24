@@ -113,7 +113,7 @@
         @include('admin.layouts.topbar')
 
         <!-- Main Body -->
-        <main class="flex-1 p-3.5 sm:p-5 lg:p-8 pb-[calc(5.75rem+env(safe-area-inset-bottom))] lg:pb-8 relative min-w-0">
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 pb-[calc(5.75rem+env(safe-area-inset-bottom))] lg:pb-8 relative min-w-0">
             <!-- Background Line Art Decoration -->
             <div class="fixed bottom-0 right-0 w-96 h-96 pointer-events-none opacity-5 -z-0">
                 <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">

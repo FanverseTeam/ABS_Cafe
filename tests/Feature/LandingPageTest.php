@@ -19,7 +19,7 @@ class LandingPageTest extends TestCase
             ->assertSee('ABS Cafe')
             ->assertSee('Good Coffee')
             ->assertSee('Good Mood.')
-            ->assertSee('Lewati')
+            ->assertDontSee('Lewati')
             ->assertSee(route('login'));
 
         $html = $response->getContent();
@@ -27,7 +27,7 @@ class LandingPageTest extends TestCase
         // Elemen splash
         $this->assertStringContainsString('splash-logo-container', $html);
         $this->assertStringContainsString('splash-progress-bar', $html);
-        $this->assertStringContainsString('splash-skip', $html);
+        $this->assertStringNotContainsString('splash-skip', $html);
     }
 
     public function test_staf_landing_page_has_correct_meta_tags_and_prefetch(): void
@@ -104,16 +104,16 @@ class LandingPageTest extends TestCase
         }
     }
 
-    public function test_guest_sees_skip_button_linking_to_login(): void
+    public function test_guest_does_not_see_skip_button(): void
     {
         $response = $this->get('/staf')
             ->assertOk()
-            ->assertSee('Lewati');
+            ->assertDontSee('Lewati');
 
         $html = $response->getContent();
 
-        $this->assertStringContainsString('href="'.route('login').'"', $html);
-        $this->assertStringContainsString('aria-label="Lewati animasi dan langsung ke halaman login"', $html);
+        $this->assertStringNotContainsString('splash-skip', $html);
+        $this->assertStringNotContainsString('Lewati animasi', $html);
     }
 
     public function test_splash_duration_and_noscript_fallback_follow_config(): void
