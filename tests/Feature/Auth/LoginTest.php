@@ -55,7 +55,7 @@ class LoginTest extends TestCase
         $response->assertRedirect($this->adminHomeRoute());
         $this->assertAuthenticatedAs($admin);
         $this->assertNotNull($admin->fresh()->last_login_at);
-        $this->assertDatabaseHas('activity_logs', ['user_name' => $admin->name, 'role' => 'admin']);
+        $this->assertDatabaseHas('log_aktivitas', ['user_name' => $admin->name, 'role' => 'admin']);
     }
 
     public function test_owner_can_login_with_username(): void

@@ -54,8 +54,8 @@ class OrderTest extends TestCase
             ->assertRedirect();
 
         $this->assertSame('siap', $order->fresh()->order_status);
-        $this->assertDatabaseHas('order_timelines', ['order_id' => $order->id, 'status' => 'SIAP']);
-        $this->assertDatabaseHas('activity_logs', ['activity_type' => 'pesanan', 'user_name' => $admin->name]);
+        $this->assertDatabaseHas('pesanan_riwayat', ['order_id' => $order->id, 'status' => 'SIAP']);
+        $this->assertDatabaseHas('log_aktivitas', ['activity_type' => 'pesanan', 'user_name' => $admin->name]);
     }
 
     public function test_update_order_status_validates_allowed_values(): void
@@ -79,7 +79,7 @@ class OrderTest extends TestCase
         $this->assertSame('dibatalkan', $order->payment_status);
         $this->assertSame('dibatalkan', $order->order_status);
         $this->assertSame('Pelanggan pergi', $order->cancel_reason);
-        $this->assertDatabaseHas('order_timelines', ['order_id' => $order->id, 'status' => 'DIBATALKAN']);
+        $this->assertDatabaseHas('pesanan_riwayat', ['order_id' => $order->id, 'status' => 'DIBATALKAN']);
     }
 
     public function test_cancel_requires_reason_min_five_chars(): void

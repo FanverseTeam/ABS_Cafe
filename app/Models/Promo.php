@@ -12,6 +12,8 @@ class Promo extends Model
 {
     use HasFactory;
 
+    protected $table = 'promo';
+
     protected $fillable = [
         'title',
         'code',

@@ -36,8 +36,8 @@ class MenuTest extends TestCase
             'unit' => 'cup',
         ])->assertRedirect();
 
-        $this->assertDatabaseHas('menus', ['name' => 'Matcha Baru', 'category_id' => $category->id]);
-        $this->assertDatabaseHas('activity_logs', ['activity_type' => 'menu']);
+        $this->assertDatabaseHas('menu', ['name' => 'Matcha Baru', 'category_id' => $category->id]);
+        $this->assertDatabaseHas('log_aktivitas', ['activity_type' => 'menu']);
     }
 
     public function test_create_menu_requires_valid_data(): void
@@ -67,7 +67,7 @@ class MenuTest extends TestCase
 
         $this->actingAsAdmin()->post("/admin/menu/{$menu->id}/duplicate")->assertRedirect();
 
-        $this->assertDatabaseHas('menus', ['name' => 'Original (Salinan)', 'sold_count' => 0]);
+        $this->assertDatabaseHas('menu', ['name' => 'Original (Salinan)', 'sold_count' => 0]);
     }
 
     public function test_admin_can_toggle_availability(): void
@@ -94,7 +94,7 @@ class MenuTest extends TestCase
 
         $this->actingAsAdmin()->delete("/admin/menu/{$menu->id}")->assertRedirect();
 
-        $this->assertDatabaseMissing('menus', ['id' => $menu->id]);
+        $this->assertDatabaseMissing('menu', ['id' => $menu->id]);
     }
 
     public function test_legacy_admin_can_create_menu_with_variants(): void
@@ -128,6 +128,6 @@ class MenuTest extends TestCase
             'menu_ids' => [$ice->id, $hot->id],
         ])->assertRedirect()->assertSessionHas('success');
 
-        $this->assertDatabaseHas('menus', ['name' => 'Teh Tarik (Hot / Ice)', 'deleted_at' => null]);
+        $this->assertDatabaseHas('menu', ['name' => 'Teh Tarik (Hot / Ice)', 'deleted_at' => null]);
     }
 }

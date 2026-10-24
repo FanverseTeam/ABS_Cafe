@@ -37,7 +37,7 @@ class PromoTest extends TestCase
     {
         $this->actingAsOwner()->post('/owner/promo/store', $this->payload())->assertRedirect();
 
-        $this->assertDatabaseHas('promos', ['title' => 'Promo Owner', 'code' => 'OWNER10', 'is_active' => true]);
+        $this->assertDatabaseHas('promo', ['title' => 'Promo Owner', 'code' => 'OWNER10', 'is_active' => true]);
     }
 
     public function test_owner_promo_code_must_be_unique(): void
@@ -79,6 +79,6 @@ class PromoTest extends TestCase
 
         $this->actingAsOwner()->delete("/owner/promo/{$promo->id}")->assertRedirect();
 
-        $this->assertDatabaseMissing('promos', ['id' => $promo->id]);
+        $this->assertDatabaseMissing('promo', ['id' => $promo->id]);
     }
 }

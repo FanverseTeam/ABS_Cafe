@@ -30,7 +30,7 @@ class PaymentServiceTest extends TestCase
 
         $this->assertSame('lunas', $order->fresh()->payment_status);
         $this->assertSame(30000.0, (float) $payment->change_given);
-        $this->assertDatabaseHas('payments', ['order_id' => $order->id, 'method' => 'tunai']);
+        $this->assertDatabaseHas('pembayaran', ['order_id' => $order->id, 'method' => 'tunai']);
     }
 
     public function test_cash_payment_rejects_insufficient_amount(): void

@@ -40,14 +40,14 @@ class PromoTest extends TestCase
     {
         $this->actingAsAdmin()->post('/admin/promo/store', $this->payload())->assertRedirect();
 
-        $this->assertDatabaseHas('promos', ['title' => 'Diskon Akhir Pekan', 'code' => 'WEEKEND10']);
+        $this->assertDatabaseHas('promo', ['title' => 'Diskon Akhir Pekan', 'code' => 'WEEKEND10']);
     }
 
     public function test_promo_can_be_created_without_code(): void
     {
         $this->actingAsAdmin()->post('/admin/promo/store', $this->payload(['code' => null]))->assertRedirect();
 
-        $this->assertDatabaseHas('promos', ['title' => 'Diskon Akhir Pekan', 'code' => null]);
+        $this->assertDatabaseHas('promo', ['title' => 'Diskon Akhir Pekan', 'code' => null]);
     }
 
     public function test_promo_code_must_be_unique(): void
@@ -94,6 +94,6 @@ class PromoTest extends TestCase
 
         $this->actingAsAdmin()->delete("/admin/promo/{$promo->id}")->assertRedirect();
 
-        $this->assertDatabaseMissing('promos', ['id' => $promo->id]);
+        $this->assertDatabaseMissing('promo', ['id' => $promo->id]);
     }
 }

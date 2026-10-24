@@ -39,7 +39,7 @@ class OperationsController extends Controller
     public function storeTable(Request $request)
     {
         $request->validate([
-            'number' => 'required|integer|unique:tables,number',
+            'number' => 'required|integer|unique:meja,number',
             'capacity' => 'required|integer|min:1',
             'status' => 'required|in:tersedia,terpakai,nonaktif',
             'location_notes' => 'nullable|string',
@@ -70,7 +70,7 @@ class OperationsController extends Controller
         $table = Table::findOrFail($id);
 
         $request->validate([
-            'number' => 'required|integer|unique:tables,number,'.$table->id,
+            'number' => 'required|integer|unique:meja,number,'.$table->id,
             'capacity' => 'required|integer|min:1',
             'status' => 'required|in:tersedia,terpakai,nonaktif',
             'location_notes' => 'nullable|string',
@@ -139,7 +139,7 @@ class OperationsController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:payment_methods,code',
+            'code' => 'required|string|max:50|unique:metode_bayar,code',
             'type' => 'required|string|max:30',
             'description' => 'nullable|string',
             'instructions' => 'nullable|string',
@@ -178,7 +178,7 @@ class OperationsController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:payment_methods,code,'.$method->id,
+            'code' => 'required|string|max:50|unique:metode_bayar,code,'.$method->id,
             'type' => 'required|string|max:30',
             'description' => 'nullable|string',
             'instructions' => 'nullable|string',

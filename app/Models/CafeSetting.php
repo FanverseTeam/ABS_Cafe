@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class CafeSetting extends Model
 {
+    protected $table = 'pengaturan';
+
     protected $fillable = [
         'key',
         'value',
+        'group',
     ];
 
     public static function get(string $key, $default = null)

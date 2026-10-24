@@ -11,6 +11,8 @@ class Order extends Model
 {
     use HasFactory;
 
+    protected $table = 'pesanan';
+
     public const SOURCE_LABELS = [
         'offline' => 'Offline',
         'web' => 'Web',

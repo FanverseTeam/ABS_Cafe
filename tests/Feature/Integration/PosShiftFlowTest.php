@@ -40,12 +40,12 @@ class PosShiftFlowTest extends TestCase
         $order = Order::where('cash_shift_id', $shift->id)->firstOrFail();
         $this->assertSame('lunas', $order->payment_status);
         $this->assertSame(22000.0, (float) $order->total);
-        $this->assertDatabaseHas('payments', ['order_id' => $order->id, 'method' => 'tunai', 'amount' => 22000]);
+        $this->assertDatabaseHas('pembayaran', ['order_id' => $order->id, 'method' => 'tunai', 'amount' => 22000]);
 
         $menu->refresh();
         $this->assertSame(9, $menu->stock);
         $this->assertSame(1, $menu->sold_count);
-        $this->assertDatabaseHas('stock_logs', ['menu_id' => $menu->id, 'type' => 'keluar', 'stock_after' => 9]);
+        $this->assertDatabaseHas('stok_riwayat', ['menu_id' => $menu->id, 'type' => 'keluar', 'stock_after' => 9]);
 
         $this->post("/kasir/pesanan/{$order->id}/status", ['status' => 'siap'])->assertRedirect();
         $this->post("/kasir/pesanan/{$order->id}/status", ['status' => 'selesai'])->assertRedirect();

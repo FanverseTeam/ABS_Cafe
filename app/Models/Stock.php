@@ -12,6 +12,8 @@ class Stock extends Model
 {
     use LogsActivity;
 
+    protected $table = 'stok';
+
     protected $fillable = ['name', 'unit', 'quantity', 'min_quantity', 'is_active'];
 
     protected function casts(): array
@@ -25,12 +27,12 @@ class Stock extends Model
 
     public function suppliers(): BelongsToMany
     {
-        return $this->belongsToMany(Supplier::class)->withTimestamps();
+        return $this->belongsToMany(Supplier::class, 'stok_pemasok', 'stock_id', 'supplier_id')->withTimestamps();
     }
 
     public function movements(): HasMany
     {
-        return $this->hasMany(StockMovement::class)->latest();
+        return $this->hasMany(StokRiwayat::class, 'stock_id')->latest();
     }
 
     public function recipes(): HasMany

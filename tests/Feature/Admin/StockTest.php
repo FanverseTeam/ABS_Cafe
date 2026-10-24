@@ -33,7 +33,7 @@ class StockTest extends TestCase
         $menu->refresh();
         $this->assertSame(25, $menu->stock);
         $this->assertTrue($menu->is_available);
-        $this->assertDatabaseHas('stock_logs', ['menu_id' => $menu->id, 'type' => 'masuk', 'stock_after' => 25]);
+        $this->assertDatabaseHas('stok_riwayat', ['menu_id' => $menu->id, 'type' => 'masuk', 'stock_after' => 25]);
     }
 
     public function test_stock_out_decreases_stock_and_never_below_zero(): void

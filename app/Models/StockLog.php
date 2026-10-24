@@ -2,27 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class StockLog extends Model
+class StockLog extends StokRiwayat
 {
-    protected $fillable = [
-        'menu_id',
-        'item_name',
-        'type',
-        'quantity',
-        'stock_before',
-        'stock_after',
-        'notes',
-        'actor',
-    ];
+    use HasFactory;
 
-    protected $casts = [
-        'quantity' => 'integer',
-        'stock_before' => 'integer',
-        'stock_after' => 'integer',
-    ];
+    protected $table = 'stok_riwayat';
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('menu_log', function (Builder $builder) {
+            $builder->whereNotNull('menu_id');
+        });
+    }
 
     public function menu(): BelongsTo
     {

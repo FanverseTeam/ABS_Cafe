@@ -2,32 +2,39 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CashAdjustment extends Model
+class CashAdjustment extends Kas
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'amount',
-        'reason',
-        'applied_to_shift_id',
-    ];
+    protected $table = 'kas';
 
-    protected $casts = [
-        'amount' => 'decimal:2',
-    ];
-
-    public function user(): BelongsTo
+    protected static function booted(): void
     {
-        return $this->belongsTo(User::class);
+        static::addGlobalScope('adjustment', function (Builder $builder) {
+            $builder->where('type', 'penyesuaian');
+        });
+
+        static::creating(function ($model) {
+            $model->type = 'penyesuaian';
+        });
+    }
+
+    public function getAppliedToShiftIdAttribute()
+    {
+        return $this->attributes['shift_id'] ?? null;
+    }
+
+    public function setAppliedToShiftIdAttribute($value): void
+    {
+        $this->attributes['shift_id'] = $value;
     }
 
     public function appliedShift(): BelongsTo
     {
-        return $this->belongsTo(CashShift::class, 'applied_to_shift_id');
+        return $this->belongsTo(CashShift::class, 'shift_id');
     }
 }

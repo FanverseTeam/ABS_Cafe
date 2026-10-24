@@ -34,7 +34,7 @@ class VariantMenuAdminTest extends TestCase
 
         $this->assertSame(15000.0, (float) $menu->price);
         $this->assertSame(2, $menu->variants()->count());
-        $this->assertDatabaseHas('menu_variants', [
+        $this->assertDatabaseHas('menu_varian', [
             'menu_id' => $menu->id,
             'name' => 'Hot',
             'is_available' => false,
@@ -82,8 +82,8 @@ class VariantMenuAdminTest extends TestCase
         $parent = Menu::where('name', 'Cappucino (Hot / Ice)')->firstOrFail();
 
         $this->assertSame(2, $parent->variants()->count());
-        $this->assertSoftDeleted('menus', ['id' => $ice->id]);
-        $this->assertSoftDeleted('menus', ['id' => $hot->id]);
+        $this->assertSoftDeleted('menu', ['id' => $ice->id]);
+        $this->assertSoftDeleted('menu', ['id' => $hot->id]);
     }
 
     public function test_menu_list_shows_variant_chips_and_price_range(): void

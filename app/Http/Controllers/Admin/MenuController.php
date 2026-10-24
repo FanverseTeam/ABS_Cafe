@@ -197,7 +197,7 @@ class MenuController extends Controller
     {
         $data = $request->validate([
             'menu_ids' => 'required|array|min:2',
-            'menu_ids.*' => 'required|integer|exists:menus,id',
+            'menu_ids.*' => 'required|integer|exists:menu,id',
         ], [
             'menu_ids.min' => 'Pilih minimal dua menu untuk digabungkan.',
         ]);
@@ -230,8 +230,8 @@ class MenuController extends Controller
 
         $data = $request->validate([
             'recipes' => 'nullable|array',
-            'recipes.*.stock_id' => 'required|exists:stocks,id',
-            'recipes.*.menu_variant_id' => 'nullable|exists:menu_variants,id',
+            'recipes.*.stock_id' => 'required|exists:stok,id',
+            'recipes.*.menu_variant_id' => 'nullable|exists:menu_varian,id',
             'recipes.*.amount' => 'required|numeric|min:0.01',
         ]);
 
@@ -268,7 +268,7 @@ class MenuController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'required|exists:kategori,id',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|string',
@@ -276,7 +276,7 @@ class MenuController extends Controller
             'min_stock' => 'nullable|integer|min:1',
             'unit' => 'nullable|string',
             'variants' => 'nullable|array',
-            'variants.*.id' => 'nullable|integer|exists:menu_variants,id',
+            'variants.*.id' => 'nullable|integer|exists:menu_varian,id',
             'variants.*.name' => 'nullable|string|max:100',
             'variants.*.size' => 'nullable|string|max:50',
             'variants.*.price' => 'nullable|numeric|min:0',

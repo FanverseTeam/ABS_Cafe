@@ -85,13 +85,13 @@ class PosTest extends TestCase
             'action' => 'save',
         ])->assertRedirect(route('kasir.pos.index'));
 
-        $this->assertDatabaseHas('orders', [
+        $this->assertDatabaseHas('pesanan', [
             'cash_shift_id' => $shift->id,
             'payment_status' => 'menunggu_pembayaran',
             'order_status' => 'diproses',
             'source' => 'offline',
         ]);
-        $this->assertDatabaseHas('order_items', ['name' => $menu->name, 'quantity' => 2]);
+        $this->assertDatabaseHas('pesanan_item', ['name' => $menu->name, 'quantity' => 2]);
     }
 
     public function test_store_with_pay_action_creates_paid_order(): void
@@ -111,7 +111,7 @@ class PosTest extends TestCase
         $order = Order::where('source', 'offline')->latest('id')->first();
         $response->assertRedirect(route('kasir.payments.receipt', $order));
         $this->assertSame('lunas', $order->fresh()->payment_status);
-        $this->assertDatabaseHas('payments', ['order_id' => $order->id, 'method' => 'tunai', 'status' => 'lunas']);
+        $this->assertDatabaseHas('pembayaran', ['order_id' => $order->id, 'method' => 'tunai', 'status' => 'lunas']);
     }
 
     public function test_dine_in_requires_table_number(): void
@@ -126,7 +126,7 @@ class PosTest extends TestCase
             'action' => 'save',
         ])->assertSessionHas('error');
 
-        $this->assertDatabaseCount('orders', 0);
+        $this->assertDatabaseCount('pesanan', 0);
     }
 
     public function test_store_rejects_empty_cart(): void

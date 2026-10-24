@@ -2,33 +2,41 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CashMovement extends Model
+class CashMovement extends Kas
 {
     use HasFactory;
 
-    protected $fillable = [
-        'cash_shift_id',
-        'user_id',
-        'type',
-        'amount',
-        'reason',
-    ];
+    protected $table = 'kas';
 
-    protected $casts = [
-        'amount' => 'decimal:2',
-    ];
+    protected static function booted(): void
+    {
+        static::addGlobalScope('movement', function (Builder $builder) {
+            $builder->whereIn('type', ['masuk', 'keluar']);
+        });
+
+        static::creating(function ($model) {
+            if (empty($model->type)) {
+                $model->type = 'keluar';
+            }
+        });
+    }
+
+    public function getCashShiftIdAttribute()
+    {
+        return $this->attributes['shift_id'] ?? null;
+    }
+
+    public function setCashShiftIdAttribute($value): void
+    {
+        $this->attributes['shift_id'] = $value;
+    }
 
     public function cashShift(): BelongsTo
     {
-        return $this->belongsTo(CashShift::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(CashShift::class, 'shift_id');
     }
 }

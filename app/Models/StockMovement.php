@@ -2,19 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class StockMovement extends Model
+class StockMovement extends StokRiwayat
 {
-    protected $fillable = ['stock_id', 'user_id', 'type', 'quantity', 'stock_after', 'note'];
+    use HasFactory;
 
-    protected function casts(): array
+    protected $table = 'stok_riwayat';
+
+    protected static function booted(): void
     {
-        return [
-            'quantity' => 'decimal:2',
-            'stock_after' => 'decimal:2',
-        ];
+        static::addGlobalScope('material_movement', function (Builder $builder) {
+            $builder->whereNotNull('stock_id');
+        });
+    }
+
+    public function getNoteAttribute()
+    {
+        return $this->attributes['notes'] ?? null;
+    }
+
+    public function setNoteAttribute($value): void
+    {
+        $this->attributes['notes'] = $value;
     }
 
     public function stock(): BelongsTo
@@ -25,17 +37,5 @@ class StockMovement extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * @return array{label: string, color: string}
-     */
-    public function typeBadge(): array
-    {
-        return match ($this->type) {
-            'masuk' => ['label' => 'Masuk', 'color' => 'success'],
-            'keluar' => ['label' => 'Keluar', 'color' => 'danger'],
-            default => ['label' => 'Penyesuaian', 'color' => 'info'],
-        };
     }
 }

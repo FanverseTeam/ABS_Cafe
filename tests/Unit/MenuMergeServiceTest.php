@@ -94,30 +94,30 @@ class MenuMergeServiceTest extends TestCase
         $this->assertSame(15, (int) $parent->stock);
         $this->assertSame(3, (int) $parent->sold_count);
 
-        $this->assertSoftDeleted('menus', ['id' => $ice->id]);
-        $this->assertSoftDeleted('menus', ['id' => $hot->id]);
+        $this->assertSoftDeleted('menu', ['id' => $ice->id]);
+        $this->assertSoftDeleted('menu', ['id' => $hot->id]);
 
         $iceVariant = $parent->variants()->where('name', 'Ice')->firstOrFail();
-        $this->assertDatabaseHas('order_items', [
+        $this->assertDatabaseHas('pesanan_item', [
             'id' => $item->id,
             'menu_id' => $parent->id,
             'variant_id' => $iceVariant->id,
             'name' => 'Vietnam Drip - Ice',
         ]);
         $this->assertSame(1, Recipe::where('menu_id', $parent->id)->whereNotNull('menu_variant_id')->count());
-        $this->assertDatabaseHas('promos', ['id' => $promo->id, 'target_menu_id' => $parent->id]);
-        $this->assertDatabaseHas('favorites', ['user_id' => $user->id, 'menu_id' => $parent->id]);
+        $this->assertDatabaseHas('promo', ['id' => $promo->id, 'target_menu_id' => $parent->id]);
+        $this->assertDatabaseHas('favorit', ['user_id' => $user->id, 'menu_id' => $parent->id]);
 
         $restored = $service->rollback($parent);
 
         $this->assertSame(2, $restored);
-        $this->assertSoftDeleted('menus', ['id' => $parent->id]);
-        $this->assertDatabaseHas('menus', ['id' => $ice->id, 'merged_into_menu_id' => null, 'deleted_at' => null]);
-        $this->assertDatabaseHas('menus', ['id' => $hot->id, 'merged_into_menu_id' => null, 'deleted_at' => null]);
-        $this->assertDatabaseHas('order_items', ['id' => $item->id, 'menu_id' => $ice->id]);
-        $this->assertDatabaseHas('promos', ['id' => $promo->id, 'target_menu_id' => $ice->id]);
-        $this->assertDatabaseHas('favorites', ['user_id' => $user->id, 'menu_id' => $ice->id]);
-        $this->assertDatabaseMissing('menu_variants', ['menu_id' => $parent->id]);
+        $this->assertSoftDeleted('menu', ['id' => $parent->id]);
+        $this->assertDatabaseHas('menu', ['id' => $ice->id, 'merged_into_menu_id' => null, 'deleted_at' => null]);
+        $this->assertDatabaseHas('menu', ['id' => $hot->id, 'merged_into_menu_id' => null, 'deleted_at' => null]);
+        $this->assertDatabaseHas('pesanan_item', ['id' => $item->id, 'menu_id' => $ice->id]);
+        $this->assertDatabaseHas('promo', ['id' => $promo->id, 'target_menu_id' => $ice->id]);
+        $this->assertDatabaseHas('favorit', ['user_id' => $user->id, 'menu_id' => $ice->id]);
+        $this->assertDatabaseMissing('menu_varian', ['menu_id' => $parent->id]);
     }
 
     public function test_variant_sizes_survive_merge_and_order_items_map_to_the_right_variant(): void
@@ -156,7 +156,7 @@ class MenuMergeServiceTest extends TestCase
 
         $newVariant = $parent->variants()->where('name', 'Ice')->where('size', 'Large')->firstOrFail();
 
-        $this->assertDatabaseHas('order_items', [
+        $this->assertDatabaseHas('pesanan_item', [
             'id' => $item->id,
             'menu_id' => $parent->id,
             'variant_id' => $newVariant->id,

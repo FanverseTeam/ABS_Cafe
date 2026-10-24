@@ -120,8 +120,8 @@ class SettingController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:50|alpha_dash|unique:users,username,'.$user->id,
-            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
+            'username' => 'required|string|max:50|alpha_dash|unique:pengguna,username,'.$user->id,
+            'email' => 'required|email|max:255|unique:pengguna,email,'.$user->id,
             'phone' => 'nullable|string|max:30',
         ]);
 

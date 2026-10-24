@@ -24,7 +24,7 @@ class WebOrderLifecycleTest extends TestCase
 
         $this->post("/kasir/pesanan/{$order->id}/terima")->assertRedirect();
         $this->assertSame('diterima', $order->fresh()->order_status);
-        $this->assertDatabaseHas('order_timelines', ['order_id' => $order->id, 'status' => 'DITERIMA']);
+        $this->assertDatabaseHas('pesanan_riwayat', ['order_id' => $order->id, 'status' => 'DITERIMA']);
 
         foreach (['diproses', 'siap', 'selesai'] as $status) {
             $this->post("/kasir/pesanan/{$order->id}/status", ['status' => $status])->assertRedirect();
@@ -32,7 +32,7 @@ class WebOrderLifecycleTest extends TestCase
         }
 
         foreach (['DIPROSES', 'SIAP', 'SELESAI'] as $status) {
-            $this->assertDatabaseHas('order_timelines', ['order_id' => $order->id, 'status' => $status]);
+            $this->assertDatabaseHas('pesanan_riwayat', ['order_id' => $order->id, 'status' => $status]);
         }
     }
 

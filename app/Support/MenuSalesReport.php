@@ -14,29 +14,29 @@ class MenuSalesReport
      */
     public static function forPeriod(PeriodFilter $period): Collection
     {
-        return DB::table('order_items')
-            ->join('orders', 'orders.id', '=', 'order_items.order_id')
-            ->leftJoin('menus', 'menus.id', '=', 'order_items.menu_id')
-            ->leftJoin('menu_variants', 'menu_variants.id', '=', 'order_items.variant_id')
-            ->where('orders.payment_status', 'lunas')
-            ->whereBetween('orders.created_at', [$period->start, $period->end])
+        return DB::table('pesanan_item')
+            ->join('pesanan', 'pesanan.id', '=', 'pesanan_item.order_id')
+            ->leftJoin('menu', 'menu.id', '=', 'pesanan_item.menu_id')
+            ->leftJoin('menu_varian', 'menu_varian.id', '=', 'pesanan_item.variant_id')
+            ->where('pesanan.payment_status', 'lunas')
+            ->whereBetween('pesanan.created_at', [$period->start, $period->end])
             ->select(
-                'order_items.menu_id',
-                'order_items.name as item_name',
-                'order_items.variant_id',
-                'menus.name as menu_name',
-                'menu_variants.name as variant_name',
-                'menu_variants.size as variant_size',
-                DB::raw('SUM(order_items.quantity) as quantity'),
-                DB::raw('SUM(order_items.subtotal) as revenue')
+                'pesanan_item.menu_id',
+                'pesanan_item.name as item_name',
+                'pesanan_item.variant_id',
+                'menu.name as menu_name',
+                'menu_varian.name as variant_name',
+                'menu_varian.size as variant_size',
+                DB::raw('SUM(pesanan_item.quantity) as quantity'),
+                DB::raw('SUM(pesanan_item.subtotal) as revenue')
             )
             ->groupBy(
-                'order_items.menu_id',
-                'order_items.name',
-                'order_items.variant_id',
-                'menus.name',
-                'menu_variants.name',
-                'menu_variants.size'
+                'pesanan_item.menu_id',
+                'pesanan_item.name',
+                'pesanan_item.variant_id',
+                'menu.name',
+                'menu_varian.name',
+                'menu_varian.size'
             )
             ->get()
             ->groupBy(fn ($row) => $row->menu_id ? 'menu-'.$row->menu_id : 'name-'.$row->menu_name)

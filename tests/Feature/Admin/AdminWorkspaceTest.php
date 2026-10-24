@@ -129,7 +129,7 @@ class AdminWorkspaceTest extends TestCase
             'status' => 'aktif',
         ])->assertRedirect();
 
-        $this->assertDatabaseHas('users', ['id' => $user->id, 'name' => 'Staf Diperbarui']);
+        $this->assertDatabaseHas('pengguna', ['id' => $user->id, 'name' => 'Staf Diperbarui']);
 
         $this->post(route('admin.staff.toggle.status', $user->id))->assertRedirect();
         $this->assertSame('nonaktif', $user->fresh()->status);
@@ -173,7 +173,7 @@ class AdminWorkspaceTest extends TestCase
             'is_active' => '1',
         ])->assertRedirect();
 
-        $this->assertDatabaseHas('suppliers', ['name' => 'Supplier Kopi']);
+        $this->assertDatabaseHas('pemasok', ['name' => 'Supplier Kopi']);
 
         $this->get(route('admin.catalog.index', ['tab' => 'stock']))
             ->assertOk()
@@ -192,7 +192,7 @@ class AdminWorkspaceTest extends TestCase
             'location_notes' => 'Lantai 2',
         ])->assertRedirect();
 
-        $this->assertDatabaseHas('tables', ['number' => 12]);
+        $this->assertDatabaseHas('meja', ['number' => 12]);
 
         $this->post(route('admin.operations.payments.store'), [
             'name' => 'QRIS Baru',
@@ -229,7 +229,7 @@ class AdminWorkspaceTest extends TestCase
             'min_spend' => 0,
         ])->assertRedirect();
 
-        $this->assertDatabaseHas('promos', ['title' => 'Voucher Akhir Pekan', 'code' => 'WEEKEND10']);
+        $this->assertDatabaseHas('promo', ['title' => 'Voucher Akhir Pekan', 'code' => 'WEEKEND10']);
 
         $this->get(route('admin.vouchers.index'))
             ->assertOk()
@@ -251,7 +251,7 @@ class AdminWorkspaceTest extends TestCase
             'hours_weekend' => '08:00 - 23:00',
         ])->assertRedirect(route('admin.website.index', ['tab' => 'profil']));
 
-        $this->assertDatabaseHas('cafe_settings', ['key' => 'cafe_name', 'value' => 'ABS Cafe Baru']);
+        $this->assertDatabaseHas('pengaturan', ['key' => 'cafe_name', 'value' => 'ABS Cafe Baru']);
     }
 
     public function test_website_settings_do_not_expose_landing_background_url_field(): void

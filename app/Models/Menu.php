@@ -14,6 +14,8 @@ class Menu extends Model
 {
     use HasFactory, LogsActivity, SoftDeletes;
 
+    protected $table = 'menu';
+
     protected $fillable = [
         'category_id', 'name', 'description', 'price', 'image',
         'is_available', 'is_best_seller', 'stock', 'min_stock', 'unit', 'sold_count',

@@ -91,7 +91,7 @@ class PosController extends Controller
     {
         $data = $request->validate([
             'order_type' => 'required|in:dine_in,take_away',
-            'table_number' => 'nullable|integer|exists:tables,number',
+            'table_number' => 'nullable|integer|exists:meja,number',
             'customer_name' => 'nullable|string|max:100',
             'cart' => 'required|string',
             'voucher' => 'nullable|string|max:50',

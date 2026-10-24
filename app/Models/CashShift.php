@@ -12,6 +12,8 @@ class CashShift extends Model
 {
     use HasFactory;
 
+    protected $table = 'shift';
+
     protected $fillable = [
         'user_id',
         'opened_at',
@@ -52,12 +54,17 @@ class CashShift extends Model
 
     public function cashMovements(): HasMany
     {
-        return $this->hasMany(CashMovement::class);
+        return $this->hasMany(CashMovement::class, 'shift_id');
     }
 
     public function adjustments(): HasMany
     {
-        return $this->hasMany(CashAdjustment::class, 'applied_to_shift_id');
+        return $this->hasMany(CashAdjustment::class, 'shift_id');
+    }
+
+    public function kas(): HasMany
+    {
+        return $this->hasMany(Kas::class, 'shift_id');
     }
 
     public function durationLabel(): string

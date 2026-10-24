@@ -30,7 +30,7 @@ class TableTest extends TestCase
             'location_notes' => 'Lantai 2',
         ])->assertRedirect();
 
-        $this->assertDatabaseHas('tables', ['number' => 12, 'capacity' => 4]);
+        $this->assertDatabaseHas('meja', ['number' => 12, 'capacity' => 4]);
     }
 
     public function test_table_number_must_be_unique(): void
@@ -92,6 +92,6 @@ class TableTest extends TestCase
 
         $this->actingAsAdmin()->delete("/admin/meja/{$table->id}")->assertRedirect();
 
-        $this->assertDatabaseMissing('tables', ['id' => $table->id]);
+        $this->assertDatabaseMissing('meja', ['id' => $table->id]);
     }
 }

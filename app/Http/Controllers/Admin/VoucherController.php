@@ -23,12 +23,12 @@ class VoucherController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'code' => 'nullable|string|max:50|unique:promos,code',
+            'code' => 'nullable|string|max:50|unique:promo,code',
             'description' => 'required|string',
             'type' => 'required|in:persen,nominal,buy_x_get_y',
             'value' => 'required|numeric|min:0',
             'applies_to' => 'required|in:semua,kategori,menu',
-            'target_category_id' => 'nullable|exists:categories,id',
+            'target_category_id' => 'nullable|exists:kategori,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'banner' => 'nullable|string',
@@ -65,12 +65,12 @@ class VoucherController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'code' => 'nullable|string|max:50|unique:promos,code,'.$id,
+            'code' => 'nullable|string|max:50|unique:promo,code,'.$id,
             'description' => 'required|string',
             'type' => 'required|in:persen,nominal,buy_x_get_y',
             'value' => 'required|numeric|min:0',
             'applies_to' => 'required|in:semua,kategori,menu',
-            'target_category_id' => 'nullable|exists:categories,id',
+            'target_category_id' => 'nullable|exists:kategori,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'banner' => 'nullable|string',

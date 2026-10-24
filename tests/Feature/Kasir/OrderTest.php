@@ -43,7 +43,7 @@ class OrderTest extends TestCase
         $this->post("/kasir/pesanan/{$order->id}/terima")->assertRedirect();
 
         $this->assertSame('diterima', $order->fresh()->order_status);
-        $this->assertDatabaseHas('order_timelines', ['order_id' => $order->id, 'status' => 'DITERIMA']);
+        $this->assertDatabaseHas('pesanan_riwayat', ['order_id' => $order->id, 'status' => 'DITERIMA']);
     }
 
     public function test_kasir_can_advance_order_status(): void

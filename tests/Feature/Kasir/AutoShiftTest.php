@@ -30,7 +30,7 @@ class AutoShiftTest extends TestCase
             ->assertRedirect(route('kasir.dashboard'))
             ->assertSessionHas('success');
 
-        $this->assertDatabaseHas('cash_shifts', [
+        $this->assertDatabaseHas('shift', [
             'user_id' => $kasir->id,
             'opening_cash' => 125000,
             'status' => 'buka',
@@ -171,14 +171,14 @@ class AutoShiftTest extends TestCase
             ])->assertRedirect(route('owner.cash_adjustments.index'))
             ->assertSessionHas('success');
 
-        $this->assertDatabaseHas('cash_adjustments', [
+        $this->assertDatabaseHas('kas', [
             'amount' => 15000,
             'reason' => 'Kelebihan kas fisik ditemukan di laci',
-            'applied_to_shift_id' => null,
+            'shift_id' => null,
         ]);
 
         // Tercatat di log aktivitas
-        $this->assertDatabaseHas('activity_logs', [
+        $this->assertDatabaseHas('log_aktivitas', [
             'activity_type' => 'sistem',
         ]);
 

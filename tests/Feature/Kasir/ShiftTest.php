@@ -41,7 +41,7 @@ class ShiftTest extends TestCase
             ->assertRedirect(route('kasir.dashboard'))
             ->assertSessionHas('success');
 
-        $this->assertDatabaseHas('cash_shifts', [
+        $this->assertDatabaseHas('shift', [
             'user_id' => $kasir->id,
             'opening_cash' => 250000,
             'expected_cash' => 250000,
@@ -55,7 +55,7 @@ class ShiftTest extends TestCase
             ->assertRedirect(route('kasir.dashboard'))
             ->assertSessionHas('success');
 
-        $this->assertDatabaseHas('cash_shifts', [
+        $this->assertDatabaseHas('shift', [
             'status' => 'buka',
             'opening_cash' => 100000,
         ]);
@@ -129,8 +129,8 @@ class ShiftTest extends TestCase
             'reason' => 'Tambah modal',
         ])->assertRedirect();
 
-        $this->assertDatabaseHas('cash_movements', [
-            'cash_shift_id' => $shift->id,
+        $this->assertDatabaseHas('kas', [
+            'shift_id' => $shift->id,
             'type' => 'masuk',
             'amount' => 50000,
         ]);

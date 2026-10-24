@@ -10,6 +10,8 @@ class OrderTimeline extends Model
 {
     use HasFactory;
 
+    protected $table = 'pesanan_riwayat';
+
     public $timestamps = false;
 
     protected $fillable = [

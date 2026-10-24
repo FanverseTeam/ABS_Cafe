@@ -10,11 +10,15 @@ class Table extends Model
 {
     use HasFactory;
 
+    protected $table = 'meja';
+
     protected $fillable = [
         'number',
         'capacity',
         'status',
         'location_notes',
+        'area',
+        'notes',
     ];
 
     protected $casts = [

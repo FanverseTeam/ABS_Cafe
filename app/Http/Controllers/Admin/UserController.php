@@ -41,8 +41,8 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:50|unique:users,username',
-            'email' => 'required|email|max:255|unique:users,email',
+            'username' => 'required|string|max:50|unique:pengguna,username',
+            'email' => 'required|email|max:255|unique:pengguna,email',
             'password' => 'required|string|min:6',
             'role' => 'required|in:admin,kasir,staf',
             'phone' => 'nullable|string|max:20',
@@ -81,8 +81,8 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:50|unique:users,username,'.$user->id,
-            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
+            'username' => 'required|string|max:50|unique:pengguna,username,'.$user->id,
+            'email' => 'required|email|max:255|unique:pengguna,email,'.$user->id,
             'role' => 'required|in:admin,kasir,staf',
             'phone' => 'nullable|string|max:20',
             'status' => 'required|in:aktif,nonaktif',

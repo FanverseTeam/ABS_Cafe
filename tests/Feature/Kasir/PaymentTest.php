@@ -53,7 +53,7 @@ class PaymentTest extends TestCase
 
         $order->refresh();
         $this->assertSame('lunas', $order->payment_status);
-        $this->assertDatabaseHas('payments', [
+        $this->assertDatabaseHas('pembayaran', [
             'order_id' => $order->id,
             'method' => 'tunai',
             'amount' => 22000,
@@ -87,7 +87,7 @@ class PaymentTest extends TestCase
         ])->assertRedirect(route('kasir.payments.receipt', $order));
 
         $this->assertSame('lunas', $order->fresh()->payment_status);
-        $this->assertDatabaseHas('payments', ['order_id' => $order->id, 'method' => 'qris', 'reference' => 'QR-123']);
+        $this->assertDatabaseHas('pembayaran', ['order_id' => $order->id, 'method' => 'qris', 'reference' => 'QR-123']);
     }
 
     public function test_paying_order_decrements_stock_and_writes_stock_log(): void
@@ -103,7 +103,7 @@ class PaymentTest extends TestCase
         $menu->refresh();
         $this->assertSame(7, $menu->stock);
         $this->assertSame(3, $menu->sold_count);
-        $this->assertDatabaseHas('stock_logs', ['menu_id' => $menu->id, 'type' => 'keluar', 'stock_after' => 7]);
+        $this->assertDatabaseHas('stok_riwayat', ['menu_id' => $menu->id, 'type' => 'keluar', 'stock_after' => 7]);
     }
 
     public function test_receipt_page_and_json_load(): void

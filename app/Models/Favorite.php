@@ -10,6 +10,8 @@ class Favorite extends Model
 {
     use HasFactory;
 
+    protected $table = 'favorit';
+
     protected $fillable = ['user_id', 'menu_id'];
 
     public function user(): BelongsTo

@@ -109,7 +109,7 @@ class EmojiFreeContentTest extends TestCase
             ->assertSessionHasErrors(['name']);
 
         $this->assertSame('Emoji tidak diperbolehkan.', session('errors')->first('name'));
-        $this->assertDatabaseMissing('menus', ['name' => "Kopi Senja \u{2615}"]);
+        $this->assertDatabaseMissing('menu', ['name' => "Kopi Senja \u{2615}"]);
     }
 
     public function test_cleanup_migration_removes_emoji_from_stored_text(): void
@@ -121,6 +121,10 @@ class EmojiFreeContentTest extends TestCase
         ]);
 
         $migration = require database_path('migrations/2026_10_20_083704_strip_emoji_from_stored_text.php');
+        $ref = new \ReflectionProperty($migration, 'columns');
+        $cols = $ref->getValue($migration);
+        $cols['menu'] = ['name', 'description', 'unit'];
+        $ref->setValue($migration, $cols);
         $migration->up();
 
         $menu->refresh();

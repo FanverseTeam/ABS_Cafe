@@ -48,7 +48,7 @@ class ShiftService
             ->latest('closed_at')
             ->first();
 
-        $unappliedAdjustments = CashAdjustment::whereNull('applied_to_shift_id')->get();
+        $unappliedAdjustments = CashAdjustment::whereNull('shift_id')->get();
         $adjustmentsTotal = (float) $unappliedAdjustments->sum('amount');
 
         if ($lastClosed) {
@@ -115,8 +115,8 @@ class ShiftService
             ]);
 
             // Tautkan penyesuaian kas yang belum terpakai ke shift baru ini
-            CashAdjustment::whereNull('applied_to_shift_id')
-                ->update(['applied_to_shift_id' => $shift->id]);
+            CashAdjustment::whereNull('shift_id')
+                ->update(['shift_id' => $shift->id]);
 
             return $shift;
         });
@@ -252,7 +252,7 @@ class ShiftService
                 'user_id' => $user->id,
                 'amount' => round($amount, 2),
                 'reason' => trim($reason),
-                'applied_to_shift_id' => null,
+                'shift_id' => null,
             ]);
 
             $formattedAmount = ($amount >= 0 ? '+' : '').'Rp '.number_format($amount, 0, ',', '.');

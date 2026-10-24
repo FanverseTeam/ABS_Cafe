@@ -138,7 +138,7 @@ class OrderServiceTest extends TestCase
         $this->service->advanceStatus($order, $user, 'siap');
 
         $this->assertSame('siap', $order->fresh()->order_status);
-        $this->assertDatabaseHas('order_timelines', ['order_id' => $order->id, 'status' => 'SIAP']);
+        $this->assertDatabaseHas('pesanan_riwayat', ['order_id' => $order->id, 'status' => 'SIAP']);
     }
 
     public function test_advance_status_rejects_invalid_target(): void
@@ -194,6 +194,6 @@ class OrderServiceTest extends TestCase
         $this->assertSame(22000.0, (float) $order->total);
         $this->assertSame('Pelanggan', $order->customer_name);
         $this->assertCount(1, $order->items);
-        $this->assertDatabaseHas('order_timelines', ['order_id' => $order->id, 'status' => 'DIBUAT']);
+        $this->assertDatabaseHas('pesanan_riwayat', ['order_id' => $order->id, 'status' => 'DIBUAT']);
     }
 }

@@ -11,6 +11,8 @@ class MenuVariant extends Model
 {
     use HasFactory;
 
+    protected $table = 'menu_varian';
+
     protected $fillable = [
         'menu_id', 'name', 'size', 'price', 'is_default', 'is_available', 'sort_order',
     ];

@@ -34,7 +34,7 @@ class ReservationTest extends TestCase
             ->assertRedirect()
             ->assertSessionHas('success');
 
-        $this->assertDatabaseHas('reservations', [
+        $this->assertDatabaseHas('reservasi', [
             'customer_name' => 'Budi Reservasi',
             'status' => 'menunggu',
         ]);
@@ -55,7 +55,7 @@ class ReservationTest extends TestCase
             'table_id' => $table->id,
         ]))->assertSessionHasErrors('table_id');
 
-        $this->assertDatabaseCount('reservations', 0);
+        $this->assertDatabaseCount('reservasi', 0);
     }
 
     public function test_table_time_conflict_is_rejected(): void
@@ -145,6 +145,6 @@ class ReservationTest extends TestCase
 
         $this->delete("/kasir/reservasi/{$reservation->id}")->assertRedirect();
 
-        $this->assertDatabaseMissing('reservations', ['id' => $reservation->id]);
+        $this->assertDatabaseMissing('reservasi', ['id' => $reservation->id]);
     }
 }

@@ -46,7 +46,7 @@ class ReservationController extends Controller
             'party_size' => 'required|integer|min:1|max:50',
             'reservation_date' => 'required|date',
             'reservation_time' => 'required|string|max:10',
-            'table_id' => 'nullable|integer|exists:tables,id',
+            'table_id' => 'nullable|integer|exists:meja,id',
             'notes' => 'nullable|string|max:500',
         ]);
 
@@ -77,7 +77,7 @@ class ReservationController extends Controller
             'party_size' => 'required|integer|min:1|max:50',
             'reservation_date' => 'required|date',
             'reservation_time' => 'required|string|max:10',
-            'table_id' => 'nullable|integer|exists:tables,id',
+            'table_id' => 'nullable|integer|exists:meja,id',
             'notes' => 'nullable|string|max:500',
         ]);
 

@@ -10,6 +10,8 @@ class Reservation extends Model
 {
     use HasFactory;
 
+    protected $table = 'reservasi';
+
     public const STATUSES = [
         'menunggu' => 'Menunggu',
         'dikonfirmasi' => 'Dikonfirmasi',

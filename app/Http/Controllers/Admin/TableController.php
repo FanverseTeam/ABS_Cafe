@@ -20,7 +20,7 @@ class TableController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'number' => 'required|integer|unique:tables,number',
+            'number' => 'required|integer|unique:meja,number',
             'capacity' => 'required|integer|min:1',
             'status' => 'required|in:tersedia,terpakai,nonaktif',
             'location_notes' => 'nullable|string',
@@ -51,7 +51,7 @@ class TableController extends Controller
         $table = Table::findOrFail($id);
 
         $request->validate([
-            'number' => 'required|integer|unique:tables,number,'.$table->id,
+            'number' => 'required|integer|unique:meja,number,'.$table->id,
             'capacity' => 'required|integer|min:1',
             'status' => 'required|in:tersedia,terpakai,nonaktif',
             'location_notes' => 'nullable|string',

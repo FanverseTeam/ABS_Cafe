@@ -24,8 +24,8 @@ class SmokeTest extends TestCase
 
         $this->assertTrue($admin->isAdmin());
         $this->assertSame('admin', $admin->primaryRole());
-        $this->assertDatabaseHas('menus', ['id' => $menu->id]);
-        $this->assertDatabaseHas('tables', ['id' => $table->id]);
-        $this->assertDatabaseHas('orders', ['id' => $order->id]);
+        $this->assertDatabaseHas('menu', ['id' => $menu->id]);
+        $this->assertDatabaseHas('meja', ['id' => $table->id]);
+        $this->assertDatabaseHas('pesanan', ['id' => $order->id]);
     }
 }

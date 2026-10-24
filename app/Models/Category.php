@@ -12,6 +12,8 @@ class Category extends Model
 {
     use HasFactory, LogsActivity;
 
+    protected $table = 'kategori';
+
     protected $fillable = ['name', 'icon', 'order', 'description', 'is_active'];
 
     protected function casts(): array

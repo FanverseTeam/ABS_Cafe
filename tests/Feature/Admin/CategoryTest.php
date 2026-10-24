@@ -30,7 +30,7 @@ class CategoryTest extends TestCase
             'description' => 'Manis-manis',
         ])->assertRedirect();
 
-        $this->assertDatabaseHas('categories', ['name' => 'Dessert']);
+        $this->assertDatabaseHas('kategori', ['name' => 'Dessert']);
     }
 
     public function test_create_category_requires_name(): void
@@ -59,7 +59,7 @@ class CategoryTest extends TestCase
             ->assertRedirect()
             ->assertSessionHas('error');
 
-        $this->assertDatabaseHas('categories', ['id' => $category->id]);
+        $this->assertDatabaseHas('kategori', ['id' => $category->id]);
     }
 
     public function test_empty_category_can_be_deleted(): void
@@ -70,6 +70,6 @@ class CategoryTest extends TestCase
             ->assertRedirect()
             ->assertSessionHas('success');
 
-        $this->assertDatabaseMissing('categories', ['id' => $category->id]);
+        $this->assertDatabaseMissing('kategori', ['id' => $category->id]);
     }
 }

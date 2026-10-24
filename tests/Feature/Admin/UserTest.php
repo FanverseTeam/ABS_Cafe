@@ -42,7 +42,7 @@ class UserTest extends TestCase
         $user = User::where('username', 'stafbaru')->first();
         $this->assertNotNull($user);
         $this->assertTrue(Hash::check('rahasia123', $user->password));
-        $this->assertDatabaseHas('activity_logs', ['activity_type' => 'pengguna']);
+        $this->assertDatabaseHas('log_aktivitas', ['activity_type' => 'pengguna']);
     }
 
     public function test_create_user_rejects_duplicate_username_and_email(): void
@@ -138,7 +138,7 @@ class UserTest extends TestCase
             ->assertRedirect()
             ->assertSessionHas('error');
 
-        $this->assertDatabaseHas('users', ['id' => $self->id]);
+        $this->assertDatabaseHas('pengguna', ['id' => $self->id]);
     }
 
     public function test_admin_can_delete_another_user(): void
@@ -148,6 +148,6 @@ class UserTest extends TestCase
 
         $this->delete("/admin/pengguna/{$other->id}")->assertRedirect();
 
-        $this->assertDatabaseMissing('users', ['id' => $other->id]);
+        $this->assertDatabaseMissing('pengguna', ['id' => $other->id]);
     }
 }

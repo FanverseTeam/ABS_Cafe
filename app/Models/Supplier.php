@@ -11,6 +11,8 @@ class Supplier extends Model
 {
     use LogsActivity;
 
+    protected $table = 'pemasok';
+
     protected $fillable = [
         'name', 'contact_person', 'phone', 'email', 'address', 'notes', 'is_active',
     ];
@@ -22,7 +24,7 @@ class Supplier extends Model
 
     public function stocks(): BelongsToMany
     {
-        return $this->belongsToMany(Stock::class)->withTimestamps();
+        return $this->belongsToMany(Stock::class, 'stok_pemasok', 'supplier_id', 'stock_id')->withTimestamps();
     }
 
     public function scopeSearch(Builder $query, ?string $term): Builder
