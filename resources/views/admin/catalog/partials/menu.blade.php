@@ -249,14 +249,13 @@
             {{-- Action bottom sheet --}}
             <x-mobile.bottom-sheet :id="$sheetId" :title="$menu->name" :subtitle="$menu->category?->name">
                 <div class="space-y-1">
-                    <button
-                        type="button"
-                        onclick="closeBottomSheet('{{ $sheetId }}'); editMenuModal({{ $menuJson }});"
+                    <a
+                        href="{{ route('admin.catalog.menu.edit', $menu->id) }}"
                         class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
                     >
                         <i data-lucide="edit" class="w-5 h-5 text-[#775533] shrink-0"></i>
                         <span>Ubah Menu</span>
-                    </button>
+                    </a>
 
                     <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
                         @csrf
@@ -330,7 +329,7 @@
     id="catalog-fab-add"
     icon="plus"
     label="Tambah Menu"
-    onclick="openMenuModal()"
+    href="{{ route('admin.catalog.menu.create') }}"
 />
 
 {{-- =========================================================
@@ -350,10 +349,10 @@
                 <i data-lucide="combine" class="w-4 h-4 text-cafe-bronze"></i>
                 <span>Gabungkan Menu</span>
             </button>
-            <button onclick="openMenuModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+            <a href="{{ route('admin.catalog.menu.create') }}" class="w-full sm:w-auto px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all flex items-center justify-center gap-2">
                 <i data-lucide="plus" class="w-4 h-4 text-[#D4954D]"></i>
                 <span>Tambah Menu Baru</span>
-            </button>
+            </a>
         </div>
     </div>
 
@@ -477,9 +476,9 @@
                                     <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                                 </button>
                             </form>
-                            <button onclick="editMenuModal({{ Illuminate\Support\Js::from($menu) }})" class="p-1.5 rounded-full text-cafe-brown hover:text-cafe-dark hover:bg-cafe-beige/60 transition-colors" title="Edit Menu">
+                            <a href="{{ route('admin.catalog.menu.edit', $menu->id) }}" class="p-1.5 rounded-full text-cafe-brown hover:text-cafe-dark hover:bg-cafe-beige/60 transition-colors" title="Edit Menu">
                                 <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                            </button>
+                            </a>
                             <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-1.5 rounded-full text-cafe-danger hover:bg-cafe-danger/10 transition-colors" title="Hapus Menu">
                                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                             </button>
@@ -567,9 +566,9 @@
                                     <i data-lucide="copy" class="w-4 h-4"></i>
                                 </button>
                             </form>
-                            <button onclick="editMenuModal({{ Illuminate\Support\Js::from($menu) }})" class="p-2 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark" title="Edit">
+                            <a href="{{ route('admin.catalog.menu.edit', $menu->id) }}" class="p-2 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark inline-flex items-center justify-center" title="Edit">
                                 <i data-lucide="edit" class="w-4 h-4"></i>
-                            </button>
+                            </a>
                             <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-2 rounded-full hover:bg-cafe-danger/10 text-cafe-danger" title="Hapus">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
@@ -627,9 +626,9 @@
                                         <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                                     </button>
                                 </form>
-                                <button onclick="editMenuModal({{ Illuminate\Support\Js::from($menu) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark" title="Edit">
+                                <a href="{{ route('admin.catalog.menu.edit', $menu->id) }}" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark inline-flex items-center justify-center" title="Edit">
                                     <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                                </button>
+                                </a>
                                 <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-1.5 rounded-full hover:bg-cafe-danger/10 text-cafe-danger" title="Hapus">
                                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                 </button>
@@ -653,102 +652,6 @@
 {{-- =========================================================
      SHARED MODALS (mobile + desktop)
      ========================================================= --}}
-
-{{-- MODAL FORM TAMBAH / EDIT MENU --}}
-<div id="menu-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#290024]/60 backdrop-blur-sm" onclick="closeMenuModal()"></div>
-
-    <div class="relative w-full max-w-2xl bg-cafe-card rounded-t-[2rem] sm:rounded-2xl shadow-soft-lg border-t sm:border border-cafe-beige/60 overflow-hidden z-10 pb-[max(1rem,env(safe-area-inset-bottom))]">
-        <div class="sm:hidden w-full pt-3 pb-1 flex justify-center cursor-pointer" onclick="closeMenuModal()">
-            <div class="w-12 h-1 bg-[#775533]/30 rounded-full"></div>
-        </div>
-
-        <div class="flex items-center justify-between px-6 py-4 border-b border-cafe-beige/50 bg-[#F2F5E2]/40">
-            <div>
-                <h3 class="font-serif text-lg sm:text-xl font-bold text-cafe-dark" id="menu-modal-title">Tambah Menu Baru</h3>
-                <p class="text-[10px] sm:text-xs text-cafe-muted mt-0.5">Lengkapi informasi produk, harga, ketersediaan, dan stok kafe.</p>
-            </div>
-            <button onclick="closeMenuModal()" class="w-8 h-8 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-muted hover:text-cafe-dark flex items-center justify-center transition-colors">
-                <i data-lucide="x" class="w-4 h-4"></i>
-            </button>
-        </div>
-
-        <form id="menu-form" method="POST" action="{{ route('admin.catalog.menu.store') }}" class="p-6 max-h-[75vh] overflow-y-auto space-y-4 text-xs">
-            @csrf
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Nama Menu / Produk *</label>
-                    <input type="text" name="name" id="menu-input-name" required placeholder="mis. Caramel Macchiato" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
-
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Kategori *</label>
-                    <select name="category_id" id="menu-input-category" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none cursor-pointer">
-                        @foreach($categories as $cat)
-                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Harga Jual (Rp) *</label>
-                    <input type="number" name="price" id="menu-input-price" required min="0" step="500" placeholder="20000" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
-
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Satuan Produk</label>
-                    <input type="text" name="unit" id="menu-input-unit" value="porsi" placeholder="porsi, pcs, cup, pack" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <label class="font-semibold text-cafe-dark">Deskripsi Menu</label>
-                <textarea name="description" id="menu-input-desc" rows="2" placeholder="Deskripsikan cita rasa, bahan baku, atau porsi menu..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
-            </div>
-
-            <div class="space-y-1">
-                <label class="font-semibold text-cafe-dark">URL Foto Menu</label>
-                <input type="url" name="image" id="menu-input-image" placeholder="https://images.unsplash.com/..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-            </div>
-
-            @include('admin.catalog.partials.variant-form')
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Stok Awal</label>
-                    <input type="number" name="stock" id="menu-input-stock" value="30" min="0" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
-
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Batas Minimum Peringatan</label>
-                    <input type="number" name="min_stock" id="menu-input-min-stock" value="10" min="1" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-6 pt-2">
-                <label class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" name="is_available" id="menu-input-available" value="1" checked class="w-4 h-4 rounded text-cafe-dark accent-[#290024]">
-                    <span class="font-semibold text-cafe-dark">Status Tersedia (Bisa Dipesan)</span>
-                </label>
-
-                <label class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" name="is_best_seller" id="menu-input-bestseller" value="1" class="w-4 h-4 rounded text-cafe-gold accent-[#D4954D]">
-                    <span class="font-semibold text-cafe-dark flex items-center gap-1">
-                        <i data-lucide="star" class="w-3.5 h-3.5 fill-current text-cafe-gold"></i>
-                        <span>Tandai sebagai Best Seller</span>
-                    </span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-cafe-beige">
-                <button type="button" onclick="closeMenuModal()" class="px-5 py-2.5 rounded-full text-xs font-semibold text-cafe-dark hover:bg-cafe-beige/60">Batal</button>
-                <button type="submit" class="px-6 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all">Simpan Menu</button>
-            </div>
-        </form>
-    </div>
-</div>
 
 {{-- MODAL KONFIRMASI HAPUS --}}
 <div id="delete-menu-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
@@ -779,43 +682,6 @@
 @include('admin.catalog.partials.merge-menu', ['mergeAction' => route('admin.catalog.menu.merge')])
 
 <script>
-    function openMenuModal() {
-        document.getElementById('menu-modal-title').innerText = 'Tambah Menu / Produk Baru';
-        document.getElementById('menu-form').action = "{{ route('admin.catalog.menu.store') }}";
-        document.getElementById('menu-input-name').value = '';
-        document.getElementById('menu-input-price').value = '20000';
-        document.getElementById('menu-input-desc').value = '';
-        document.getElementById('menu-input-image').value = 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&auto=format&fit=crop&q=80';
-        document.getElementById('menu-input-stock').value = '30';
-        document.getElementById('menu-input-min-stock').value = '10';
-        document.getElementById('menu-input-unit').value = 'porsi';
-        document.getElementById('menu-input-available').checked = true;
-        document.getElementById('menu-input-bestseller').checked = false;
-        setVariantRows([]);
-        document.getElementById('menu-modal').classList.remove('hidden');
-    }
-
-    function editMenuModal(menu) {
-        document.getElementById('menu-modal-title').innerText = `Edit Menu: ${menu.name}`;
-        document.getElementById('menu-form').action = `/admin/katalog/menu/${menu.id}/update`;
-        document.getElementById('menu-input-name').value = menu.name;
-        document.getElementById('menu-input-category').value = menu.category_id;
-        document.getElementById('menu-input-price').value = parseInt(menu.price);
-        document.getElementById('menu-input-desc').value = menu.description || '';
-        document.getElementById('menu-input-image').value = menu.image || '';
-        document.getElementById('menu-input-stock').value = menu.stock;
-        document.getElementById('menu-input-min-stock').value = menu.min_stock;
-        document.getElementById('menu-input-unit').value = menu.unit;
-        document.getElementById('menu-input-available').checked = Boolean(menu.is_available);
-        document.getElementById('menu-input-bestseller').checked = Boolean(menu.is_best_seller);
-        setVariantRows(menu.variants || []);
-        document.getElementById('menu-modal').classList.remove('hidden');
-    }
-
-    function closeMenuModal() {
-        document.getElementById('menu-modal').classList.add('hidden');
-    }
-
     function openDeleteMenuModal(id, name) {
         document.getElementById('delete-menu-message').innerText = `Apakah Anda yakin ingin menghapus "${name}"? Tindakan ini tidak dapat dibatalkan.`;
         document.getElementById('delete-menu-form').action = `/admin/katalog/menu/${id}`;

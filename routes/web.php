@@ -96,7 +96,9 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
         Route::get('/', [CatalogController::class, 'index'])->name('index');
 
         Route::prefix('menu')->name('menu.')->group(function () {
+            Route::get('/create', [CatalogController::class, 'createMenu'])->name('create');
             Route::post('/store', [CatalogController::class, 'storeMenu'])->name('store');
+            Route::get('/{id}/edit', [CatalogController::class, 'editMenu'])->name('edit');
             Route::post('/gabungkan', [CatalogController::class, 'mergeMenus'])->name('merge');
             Route::post('/{id}/update', [CatalogController::class, 'updateMenu'])->name('update');
             Route::post('/{id}/duplicate', [CatalogController::class, 'duplicateMenu'])->name('duplicate');
@@ -126,7 +128,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
         });
     });
 
-    // 3. Meja & Metode Pembayaran
+    // 3. Meja
     Route::prefix('operasional')->name('operations.')->group(function () {
         Route::get('/', [OperationsController::class, 'index'])->name('index');
 

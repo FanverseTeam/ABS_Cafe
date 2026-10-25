@@ -94,6 +94,27 @@ class CatalogController extends Controller
         ));
     }
 
+    public function createMenu()
+    {
+        $categories = Category::where('is_active', true)->orderBy('order', 'asc')->get();
+        if ($categories->isEmpty()) {
+            $categories = Category::orderBy('order', 'asc')->get();
+        }
+
+        return view('admin.catalog.create', compact('categories'));
+    }
+
+    public function editMenu($id)
+    {
+        $menu = Menu::with('variants')->findOrFail($id);
+        $categories = Category::where('is_active', true)->orderBy('order', 'asc')->get();
+        if ($categories->isEmpty()) {
+            $categories = Category::orderBy('order', 'asc')->get();
+        }
+
+        return view('admin.catalog.edit', compact('menu', 'categories'));
+    }
+
     public function storeMenu(Request $request)
     {
         $this->validateMenu($request);
@@ -122,7 +143,7 @@ class CatalogController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return back()->with('success', "Menu {$menu->name} berhasil ditambahkan!");
+        return redirect()->route('admin.catalog.index')->with('success', "Menu {$menu->name} berhasil ditambahkan!");
     }
 
     public function updateMenu(Request $request, $id)
@@ -156,7 +177,7 @@ class CatalogController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return back()->with('success', "Perubahan menu {$menu->name} berhasil disimpan.");
+        return redirect()->route('admin.catalog.index')->with('success', "Perubahan menu {$menu->name} berhasil disimpan.");
     }
 
     public function duplicateMenu($id)

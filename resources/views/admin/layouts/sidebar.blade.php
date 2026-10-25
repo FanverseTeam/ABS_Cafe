@@ -6,7 +6,7 @@
         ['route' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'layout-dashboard', 'badge' => null],
         ['route' => 'admin.staff.index', 'label' => 'Manajemen User Staf & Hak Akses', 'icon' => 'users', 'badge' => null],
         ['route' => 'admin.catalog.index', 'label' => 'Manajemen Menu', 'icon' => 'coffee', 'badge' => null],
-        ['route' => 'admin.operations.index', 'label' => 'Meja & Metode Pembayaran', 'icon' => 'grid-3x3', 'badge' => null],
+        ['route' => 'admin.operations.index', 'label' => 'Meja', 'icon' => 'grid-3x3', 'badge' => null],
         ['route' => 'admin.vouchers.index', 'label' => 'Promo / Voucher', 'icon' => 'percent', 'badge' => null],
         ['route' => 'admin.website.index', 'label' => 'Pengaturan Website', 'icon' => 'settings', 'badge' => null],
         ['route' => 'admin.activity.index', 'label' => 'Log Aktivitas', 'icon' => 'history', 'badge' => null],

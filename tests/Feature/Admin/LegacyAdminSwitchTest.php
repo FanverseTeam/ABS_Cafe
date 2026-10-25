@@ -40,7 +40,7 @@ class LegacyAdminSwitchTest extends TestCase
             ->assertSee('Dashboard')
             ->assertSee('Manajemen User Staf & Hak Akses')
             ->assertSee('Manajemen Menu')
-            ->assertSee('Meja & Metode Pembayaran')
+            ->assertSee('Meja')
             ->assertSee('Promo / Voucher')
             ->assertSee('Pengaturan Website')
             ->assertSee('Log Aktivitas')

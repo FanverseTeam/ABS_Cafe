@@ -51,7 +51,7 @@ return [
                     'icon' => 'menu',
                     'children' => [
                         [
-                            'label' => 'Meja & Metode Pembayaran',
+                            'label' => 'Meja',
                             'route' => 'admin.operations.index',
                             'icon' => 'grid-3x3',
                             'active' => ['admin.operations.*'],

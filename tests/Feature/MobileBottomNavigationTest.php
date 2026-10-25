@@ -41,7 +41,7 @@ class MobileBottomNavigationTest extends TestCase
         $sheetLabels = $this->labelsWithin($html, 'mobile-more-sheet');
 
         foreach ([
-            'Meja & Metode Pembayaran',
+            'Meja',
             'Pengaturan Website',
             'Log Aktivitas',
         ] as $label) {

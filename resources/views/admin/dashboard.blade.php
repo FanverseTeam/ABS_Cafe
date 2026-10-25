@@ -94,7 +94,7 @@
             <p class="text-[10px] text-cafe-muted mt-0.5 group-hover:text-cafe-brown">Kelola staf &rarr;</p>
         </a>
 
-        <a href="{{ route('admin.operations.index', ['tab' => 'meja']) }}" class="bg-cafe-card rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between group col-span-2 md:col-span-1">
+        <a href="{{ route('admin.operations.index') }}" class="bg-cafe-card rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between group col-span-2 md:col-span-1">
             <div class="flex items-center justify-between gap-2">
                 <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-cafe-muted">Jumlah Meja</p>
                 <div class="w-9 h-9 rounded-xl bg-cafe-info/15 flex items-center justify-center text-cafe-info">

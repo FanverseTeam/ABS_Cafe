@@ -31,7 +31,7 @@ class AdminWorkspaceTest extends TestCase
             ->assertSee('Dashboard')
             ->assertSee('Manajemen User Staf & Hak Akses')
             ->assertSee('Manajemen Menu')
-            ->assertSee('Meja & Metode Pembayaran')
+            ->assertSee('Meja')
             ->assertSee('Promo / Voucher')
             ->assertSee('Pengaturan Website')
             ->assertSee('Log Aktivitas')
@@ -147,6 +147,10 @@ class AdminWorkspaceTest extends TestCase
 
         $category = Category::where('name', 'Kopi Spesial')->firstOrFail();
 
+        $this->get(route('admin.catalog.menu.create'))
+            ->assertOk()
+            ->assertSee('Tambah Menu Baru');
+
         $this->post(route('admin.catalog.menu.store'), [
             'name' => 'Kopi Baru',
             'category_id' => $category->id,
@@ -154,9 +158,13 @@ class AdminWorkspaceTest extends TestCase
             'stock' => 10,
             'min_stock' => 3,
             'unit' => 'cup',
-        ])->assertRedirect();
+        ])->assertRedirect(route('admin.catalog.index'));
 
         $menu = Menu::where('name', 'Kopi Baru')->firstOrFail();
+
+        $this->get(route('admin.catalog.menu.edit', $menu->id))
+            ->assertOk()
+            ->assertSee('Edit Menu: Kopi Baru');
 
         $this->post(route('admin.catalog.stock.adjust', $menu->id), [
             'type' => 'masuk',
@@ -175,10 +183,10 @@ class AdminWorkspaceTest extends TestCase
 
         $this->assertDatabaseHas('pemasok', ['name' => 'Supplier Kopi']);
 
-        $this->get(route('admin.catalog.index', ['tab' => 'stock']))
+        $this->get(route('admin.catalog.index'))
             ->assertOk()
             ->assertSee('Kopi Baru')
-            ->assertSee('Supplier Kopi');
+            ->assertDontSee('Stok & Supplier');
     }
 
     public function test_operations_tables_and_payment_methods_work(): void
@@ -208,9 +216,10 @@ class AdminWorkspaceTest extends TestCase
         $this->post(route('admin.operations.payments.toggle.active', $method->id))->assertRedirect();
         $this->assertFalse($method->fresh()->is_active);
 
-        $this->get(route('admin.operations.index', ['tab' => 'pembayaran']))
+        $this->get(route('admin.operations.index'))
             ->assertOk()
-            ->assertSee('QRIS Baru');
+            ->assertSee('Denah Meja')
+            ->assertDontSee('Metode Pembayaran');
     }
 
     public function test_voucher_page_and_crud_work(): void
