@@ -113,7 +113,7 @@
 
             <div class="px-4 py-5 text-center border-t border-black/20 space-y-1">
                 <p class="text-[10px] leading-relaxed">{{ $setting['footer'] }}</p>
-                <p class="text-[9px] text-gray-500">Dicetak {{ now()->format('d/m/Y H:i') }} &bull; ABS Cafe Boyolangu</p>
+                <p class="text-[9px] text-gray-500">Dicetak {{ now()->format('d/m/Y H:i') }} &bull; {{ $setting['name'] }}</p>
             </div>
         </div>
     </div>

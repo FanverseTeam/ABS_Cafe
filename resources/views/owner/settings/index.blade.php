@@ -132,14 +132,18 @@
                 <!-- Operational -->
                 <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 space-y-4">
                     <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4 text-cafe-gold"></i> Operasional</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="space-y-1.5">
                             <label class="text-xs font-semibold text-cafe-text">Jam Hari Kerja</label>
-                            <input type="text" name="hours_weekday" value="{{ old('hours_weekday', $settings['hours_weekday']) }}" placeholder="09:00 - 22:00" class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                            <input type="text" name="hours_weekday" value="{{ old('hours_weekday', $settings['hours_weekday']) }}" placeholder="09:00 - 23:00" class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
                         </div>
                         <div class="space-y-1.5">
                             <label class="text-xs font-semibold text-cafe-text">Jam Akhir Pekan</label>
-                            <input type="text" name="hours_weekend" value="{{ old('hours_weekend', $settings['hours_weekend']) }}" placeholder="09:00 - 23:30" class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                            <input type="text" name="hours_weekend" value="{{ old('hours_weekend', $settings['hours_weekend']) }}" placeholder="09:00 - 23:00" class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-cafe-text">Batas Order (Last Order)</label>
+                            <input type="text" name="last_order" value="{{ old('last_order', $settings['last_order'] ?? '') }}" placeholder="22.00 WIB" class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
                         </div>
                         <div class="space-y-1.5">
                             <label class="text-xs font-semibold text-cafe-text">Min. Stok Default</label>

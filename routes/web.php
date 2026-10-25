@@ -30,43 +30,45 @@ use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
 use App\Http\Controllers\Owner\PromoController as OwnerPromoController;
 use App\Http\Controllers\Owner\ReportController as OwnerReportController;
 use App\Http\Controllers\Owner\SettingController as OwnerSettingController;
+use App\Http\Controllers\Pelanggan\PelangganController;
 use Illuminate\Support\Facades\Route;
 
 // Splash / Layar Animasi Selamat Datang Staf (Portal Staf ABS Cafe)
 // Catatan: Untuk mengaktifkan kembali landing lama, ubah return view('staf.splash') menjadi return view('landing')
-Route::get('/staf', function () {
-    if (auth()->check()) {
-        return redirect(LoginController::dashboardFor(auth()->user()));
-    }
+Route::middleware('noindex.staf')->group(function () {
+    Route::get('/staf', function () {
+        if (auth()->check()) {
+            return redirect(LoginController::dashboardFor(auth()->user()));
+        }
 
-    return view('staf.splash');
-})->name('staf.landing');
+        return view('staf.splash');
+    })->name('staf.landing');
 
-// Root redirect ke halaman staf (sementara; nanti untuk customer landing)
-Route::get('/', function () {
-    return redirect()->route('staf.landing');
+    Route::get('/login', [LoginController::class, 'show'])->name('login');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.post')->middleware('throttle:10,1');
+
+    Route::get('/admin/login', fn () => redirect()->route('login'))->name('admin.login');
+    Route::post('/admin/login', [LoginController::class, 'login'])->name('admin.login.post')->middleware('throttle:10,1');
+    Route::post('/admin/logout', [LoginController::class, 'logout'])->name('admin.logout');
+
+    Route::get('/owner/login', fn () => redirect()->route('login'))->name('owner.login');
+    Route::post('/owner/login', [LoginController::class, 'login'])->name('owner.login.post')->middleware('throttle:10,1');
+    Route::post('/owner/logout', [LoginController::class, 'logout'])->name('owner.logout');
+
+    Route::get('/kasir/login', fn () => redirect()->route('login'))->name('kasir.login');
+    Route::post('/kasir/logout', [LoginController::class, 'logout'])->name('kasir.logout');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Login Terpadu (Admin / Owner / Kasir)
-|--------------------------------------------------------------------------
-| Satu halaman untuk semua peran. URL lama berfungsi sebagai pengalih:
-| /admin/login, /owner/login, /kasir/login semuanya mengarah ke /login.
-*/
-Route::get('/login', [LoginController::class, 'show'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login.post')->middleware('throttle:10,1');
+// Halaman Publik Customer
+Route::get('/', [PelangganController::class, 'index'])->name('pelanggan.beranda');
+Route::get('/menu', [PelangganController::class, 'menu'])->name('pelanggan.menu');
+Route::get('/reservasi', [PelangganController::class, 'reservasi'])->name('pelanggan.reservasi');
 
-Route::get('/admin/login', fn () => redirect()->route('login'))->name('admin.login');
-Route::post('/admin/login', [LoginController::class, 'login'])->name('admin.login.post')->middleware('throttle:10,1');
-Route::post('/admin/logout', [LoginController::class, 'logout'])->name('admin.logout');
-
-Route::get('/owner/login', fn () => redirect()->route('login'))->name('owner.login');
-Route::post('/owner/login', [LoginController::class, 'login'])->name('owner.login.post')->middleware('throttle:10,1');
-Route::post('/owner/logout', [LoginController::class, 'logout'])->name('owner.logout');
-
-Route::get('/kasir/login', fn () => redirect()->route('login'))->name('kasir.login');
-Route::post('/kasir/logout', [LoginController::class, 'logout'])->name('kasir.logout');
+// robots.txt dilayani via route agar dapat diuji dan di-override per environment
+Route::get('/robots.txt', function () {
+    return response(file_get_contents(public_path('robots.txt')), 200)
+        ->header('Content-Type', 'text/plain');
+})->name('robots.txt');
 
 /*
 |--------------------------------------------------------------------------
@@ -75,7 +77,7 @@ Route::post('/kasir/logout', [LoginController::class, 'logout'])->name('kasir.lo
 | Admin memiliki Dashboard + enam modul aktif. Halaman lama tetap tersedia
 | di bawah sebagai grup LEGACY ADMIN yang dikendalikan FEATURE_LEGACY_ADMIN.
 */
-Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji', 'noindex.staf'])->group(function () {
     // ACTIVE ADMIN: Dashboard tetap aktif meskipun FEATURE_LEGACY_ADMIN=false.
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -185,7 +187,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
 | FEATURE_LEGACY_ADMIN=true to restore the previous admin experience.
 */
 if (config('features.legacy_admin')) {
-    Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'])->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji', 'noindex.staf'])->group(function () {
         // LEGACY ADMIN: Pesanan
         Route::prefix('pesanan')->name('orders.')->group(function () {
             Route::get('/', [OrderController::class, 'index'])->name('index');
@@ -278,7 +280,7 @@ if (config('features.legacy_admin')) {
 | Owner bersifat melihat & menganalisis. Tidak mengelola user staf, menu,
 | atau stok. Semua data bersumber dari modul admin.
 */
-Route::prefix('owner')->name('owner.')->middleware(['auth', 'role:owner'])->group(function () {
+Route::prefix('owner')->name('owner.')->middleware(['auth', 'role:owner', 'noindex.staf'])->group(function () {
     // 1. Dashboard Bisnis
     Route::get('/', [OwnerDashboardController::class, 'index'])->name('dashboard');
 
@@ -326,7 +328,7 @@ Route::prefix('owner')->name('owner.')->middleware(['auth', 'role:owner'])->grou
 | Rute transaksi (POS, pembayaran, ubah status, catat kas) mengharuskan
 | shift aktif melalui middleware 'kasir.shift'.
 */
-Route::prefix('kasir')->name('kasir.')->middleware(['auth', 'role:kasir'])->group(function () {
+Route::prefix('kasir')->name('kasir.')->middleware(['auth', 'role:kasir', 'noindex.staf'])->group(function () {
     // 1. Dashboard Shift
     Route::get('/', [KasirDashboardController::class, 'index'])->name('dashboard');
     Route::get('/notifikasi/pending', [KasirDashboardController::class, 'pendingCount'])->name('notifications.pending');

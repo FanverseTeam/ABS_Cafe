@@ -1955,7 +1955,7 @@ CREATE TABLE `pengaturan` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `pengaturan_key_unique` (`key`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1967,9 +1967,9 @@ LOCK TABLES `pengaturan` WRITE;
 /*!40000 ALTER TABLE `pengaturan` DISABLE KEYS */;
 INSERT INTO `pengaturan` VALUES
 (1,'cafe_name','ABS Cafe',NULL,'2026-10-11 23:41:00','2026-10-11 23:41:00'),
-(2,'cafe_tagline','Accessories & Cafe',NULL,'2026-10-11 23:41:00','2026-10-11 23:41:00'),
-(3,'cafe_address','Jl. Ki Mangunsarkoro No. 88, Beji, Kec. Boyolangu, Kabupaten Tulungagung, Jawa Timur 66233',NULL,'2026-10-11 23:41:00','2026-10-11 23:41:00'),
-(4,'cafe_phone','0812-3456-7890',NULL,'2026-10-11 23:41:00','2026-10-11 23:41:00'),
+(2,'cafe_tagline','Good Coffee, Better Moments.',NULL,'2026-10-11 23:41:00','2026-10-25 12:00:00'),
+(3,'cafe_address','Jl. Letjend Suprapto No.44, Kepatihan, Kec. Tulungagung, Kabupaten Tulungagung, Jawa Timur 66219',NULL,'2026-10-11 23:41:00','2026-10-25 14:30:00'),
+(4,'cafe_phone','0896-2010-2010',NULL,'2026-10-11 23:41:00','2026-10-25 14:30:00'),
 (5,'cafe_email','halo@abscafe.com',NULL,'2026-10-11 23:41:00','2026-10-11 23:41:00'),
 (6,'tax_percent','10',NULL,'2026-10-11 23:41:00','2026-10-11 23:41:00'),
 (7,'service_charge_active','0',NULL,'2026-10-11 23:41:00','2026-10-11 23:41:00'),
@@ -1977,13 +1977,13 @@ INSERT INTO `pengaturan` VALUES
 (9,'payment_cash','1',NULL,'2026-10-11 23:41:00','2026-10-11 23:41:00'),
 (10,'payment_qris','1',NULL,'2026-10-11 23:41:00','2026-10-11 23:41:00'),
 (11,'payment_debit','1',NULL,'2026-10-11 23:41:00','2026-10-11 23:41:00'),
-(12,'receipt_header','ABS CAFE - ACCESSORIES & CAFE\nJl. Ki Mangunsarkoro No. 88, Boyolangu, Tulungagung\nTelp: 0812-3456-7890',NULL,'2026-10-11 23:41:01','2026-10-11 23:41:01'),
-(13,'receipt_footer','Terima kasih atas kunjungan Anda!\nFollow Instagram kami: @abscafe.tulungagung\n\"Good Coffee, Good Mood\"',NULL,'2026-10-11 23:41:01','2026-10-11 23:41:01'),
+(12,'receipt_header','ABS CAFE - ACCESSORIES & CAFE\nJl. Letjend Suprapto No.44, Kepatihan, Kec. Tulungagung, Kabupaten Tulungagung, Jawa Timur 66219\nTelp: 0896-2010-2010',NULL,'2026-10-11 23:41:01','2026-10-25 14:30:00'),
+(13,'receipt_footer','Terima kasih atas kunjungan Anda!\nFollow Instagram kami: @abs_tulungagung_24\n\"Good Coffee, Better Moments\"',NULL,'2026-10-11 23:41:01','2026-10-25 12:00:00'),
 (14,'receipt_show_logo','1',NULL,'2026-10-11 23:41:01','2026-10-11 23:41:01'),
 (15,'banner_title','Nikmati Kopi Pilihan & Hidangan Spesial',NULL,'2026-10-11 23:41:01','2026-10-15 14:15:51'),
 (16,'banner_subtitle','Tempat berkumpul hangat dengan aroma kopi terbaik di Boyolangu Tulungagung',NULL,'2026-10-11 23:41:01','2026-10-11 23:41:01'),
-(17,'hours_weekday','09:00 - 22:00',NULL,'2026-10-11 23:41:01','2026-10-11 23:41:01'),
-(18,'hours_weekend','09:00 - 23:30',NULL,'2026-10-11 23:41:01','2026-10-11 23:41:01'),
+(17,'hours_weekday','09:00 - 23:00',NULL,'2026-10-11 23:41:01','2026-10-25 14:30:00'),
+(18,'hours_weekend','09:00 - 23:00',NULL,'2026-10-11 23:41:01','2026-10-25 14:30:00'),
 (19,'target_daily_sales','2000000',NULL,'2026-10-12 09:43:05','2026-10-12 09:43:05'),
 (20,'target_monthly_sales','45000000',NULL,'2026-10-12 09:43:05','2026-10-12 09:43:05'),
 (21,'profit_margin_percent','40',NULL,'2026-10-12 09:43:05','2026-10-12 09:43:05'),
@@ -1993,7 +1993,32 @@ INSERT INTO `pengaturan` VALUES
 (25,'notif_daily_report','1',NULL,'2026-10-12 09:43:05','2026-10-12 09:43:05'),
 (26,'notif_weekly_report','0',NULL,'2026-10-12 09:43:05','2026-10-12 09:43:05'),
 (27,'cafe_logo','images/logo.png',NULL,'2026-10-19 00:00:00','2026-10-19 00:00:00'),
-(28,'landing_bg_url','https://www.google.com/url?sa=t&source=web&rct=j&url=https%3A%2F%2Finterbox.id%2Farticle%2Ffurniture-cafe&ved=0CBcQjRxqGAoTCIDHjb-wx5cDFQAAAAAdAAAAABCHAg&opi=89978449',NULL,'2026-10-20 00:54:48','2026-10-20 00:54:48');
+(28,'landing_bg_url','https://www.google.com/url?sa=t&source=web&rct=j&url=https%3A%2F%2Finterbox.id%2Farticle%2Ffurniture-cafe&ved=0CBcQjRxqGAoTCIDHjb-wx5cDFQAAAAAdAAAAABCHAg&opi=89978449',NULL,'2026-10-20 00:54:48','2026-10-20 00:54:48'),
+(29,'cafe_hours','Buka Setiap Hari 09.00 - 23.00 WIB',NULL,'2026-10-25 12:00:00','2026-10-25 14:30:00'),
+(30,'cafe_maps_url','https://maps.app.goo.gl/pPSXXjtJptYwrDB37',NULL,'2026-10-25 12:00:00','2026-10-25 15:15:00'),
+(31,'cafe_instagram','abs_tulungagung_24',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(32,'cafe_tiktok','abs_tulungagung_24',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(33,'hero_badge','SELAMAT DATANG DI ABS CAFE',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(34,'hero_title_prefix','Temukan Momen Terbaik di',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(35,'hero_title_highlight','ABS Cafe',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(36,'hero_description','Nikmati kopi berkualitas, makanan lezat, dan suasana nyaman yang cocok untuk bekerja, belajar, atau sekadar bersantai bersama orang-orang tercinta.',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(37,'about_badge','TENTANG KAMI',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(38,'about_title','ABS Cafe',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(39,'about_description','ABS Cafe adalah tempat yang dirancang untuk memberikan pengalaman menikmati kopi terbaik dengan suasana yang hangat dan nyaman. Kami percaya, setiap cangkir kopi bisa menjadi awal dari cerita yang indah.',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(40,'about_tagline','Good Coffee, Better Moments',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(41,'feature_1_title','Kopi Berkualitas',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(42,'feature_2_title','Menu Lezat',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(43,'feature_3_title','Suasana Nyaman',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(44,'feature_4_title','Cocok untuk Semua',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(45,'atmosphere_badge','SUASANA',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(46,'atmosphere_title','Nyaman & Elegan',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(47,'atmosphere_description','Desain interior kami yang modern dengan sentuhan alami menciptakan suasana yang hangat dan menenangkan.',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(48,'location_badge','LOKASI',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(49,'location_title','Temukan Kami',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(50,'social_title','Ikuti Kami di Sosial Media',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
+(51,'peta_lat','-8.0646338',NULL,'2026-10-25 14:30:00','2026-10-25 15:15:00'),
+(52,'peta_lng','111.9111798',NULL,'2026-10-25 14:30:00','2026-10-25 15:15:00'),
+(53,'last_order','22.00 WIB',NULL,'2026-10-25 14:30:00','2026-10-25 14:30:00');
 /*!40000 ALTER TABLE `pengaturan` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;

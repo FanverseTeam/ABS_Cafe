@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Selamat Datang - ABS Cafe</title>
     <meta name="description" content="Portal Staf ABS Cafe. Selamat datang di sistem operasional ABS Cafe.">
+    <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#290024">
 
     <!-- Favicon -->

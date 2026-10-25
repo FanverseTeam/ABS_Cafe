@@ -175,9 +175,10 @@ class LandingPageTest extends TestCase
             ->assertDontSee('Memuat halaman login');
     }
 
-    public function test_root_redirects_to_staf_landing(): void
+    public function test_root_returns_customer_landing_page_and_staf_landing_renders_splash(): void
     {
-        $this->get('/')->assertRedirect(route('staf.landing'));
+        $this->get('/')->assertOk()->assertSee('ABS Cafe');
+        $this->get(route('staf.landing'))->assertOk()->assertSee('Selamat datang di');
     }
 
     public function test_logout_redirects_to_login_with_success_message(): void
