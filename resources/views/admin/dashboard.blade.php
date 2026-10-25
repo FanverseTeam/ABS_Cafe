@@ -50,7 +50,7 @@
 
     <!-- ACTIVE ADMIN DASHBOARD: stats from Dashboard + six active modules only. -->
     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-5">
-        <a href="{{ route('admin.catalog.index', ['tab' => 'menu']) }}" class="bg-cafe-card rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between group">
+        <a href="{{ route('admin.catalog.index') }}" class="bg-cafe-card rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between group">
             <div class="flex items-center justify-between gap-2">
                 <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-cafe-muted">Total Menu</p>
                 <div class="w-9 h-9 rounded-xl bg-cafe-beige/80 flex items-center justify-center text-cafe-dark">
@@ -61,7 +61,7 @@
             <p class="text-[10px] text-cafe-muted mt-0.5 group-hover:text-cafe-brown">Lihat katalog &rarr;</p>
         </a>
 
-        <a href="{{ route('admin.catalog.index', ['tab' => 'stock']) }}" class="bg-cafe-card rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between group">
+        <a href="{{ route('admin.catalog.index') }}" class="bg-cafe-card rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between group">
             <div class="flex items-center justify-between gap-2">
                 <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-cafe-muted">Menu Stok Menipis/Habis</p>
                 <div class="w-9 h-9 rounded-xl bg-cafe-warning/15 flex items-center justify-center text-cafe-warning">
@@ -151,69 +151,114 @@
         </div>
     </div>
 
-    <!-- ACTIVE ADMIN DASHBOARD: activity log + stock warnings. -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-cafe-card rounded-2xl p-6 shadow-soft border border-cafe-beige/40">
-            <div class="flex items-center justify-between gap-3 mb-4">
-                <div>
-                    <h3 class="font-serif text-lg font-bold text-cafe-dark">Aktivitas Terbaru</h3>
-                    <p class="text-xs text-cafe-muted">5 catatan terakhir dari Log Aktivitas.</p>
+    <!-- ACTIVE ADMIN DASHBOARD: 5 Menu Bestseller -->
+    <div class="bg-cafe-card rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-soft border border-cafe-beige/40">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-cafe-gold/20 text-cafe-brown flex items-center justify-center shrink-0">
+                        <i data-lucide="award" class="w-4 h-4 text-cafe-gold"></i>
+                    </span>
+                    <h3 class="font-serif text-lg sm:text-xl font-bold text-cafe-dark">5 Menu Bestseller</h3>
                 </div>
-                <a href="{{ route('admin.activity.index') }}" class="text-xs font-semibold text-cafe-brown hover:text-cafe-dark whitespace-nowrap">
-                    Lihat Semua &rarr;
-                </a>
+                <p class="text-xs text-cafe-muted mt-1">Daftar menu terlaris dan produk unggulan paling diminati di ABS Cafe</p>
             </div>
-
-            <div class="space-y-3">
-                @forelse ($recentActivities as $log)
-                    <div class="flex items-start gap-3 p-3 rounded-2xl bg-cafe-cream/60 border border-cafe-beige/40">
-                        <span class="w-8 h-8 rounded-full bg-cafe-gold/20 text-cafe-brown flex items-center justify-center shrink-0">
-                            <i data-lucide="history" class="w-4 h-4"></i>
-                        </span>
-                        <div class="min-w-0 flex-1">
-                            <p class="text-xs font-semibold text-cafe-dark leading-snug">{{ $log->activity }}</p>
-                            <p class="text-[10px] text-cafe-muted mt-0.5">
-                                {{ $log->user_name }} &bull; {{ ucfirst($log->role) }} &bull; {{ $log->created_at->diffForHumans() }}
-                            </p>
-                        </div>
-                    </div>
-                @empty
-                    <div class="py-8 text-center text-xs text-cafe-muted">
-                        Belum ada aktivitas tercatat.
-                    </div>
-                @endforelse
+            <div class="flex items-center gap-2 self-start sm:self-auto">
+                <a href="{{ route('admin.catalog.menu.create') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-cafe-gold text-cafe-dark hover:bg-[#c4853d] font-semibold text-xs shadow-xs transition-all">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    <span>Tambah Menu</span>
+                </a>
+                <a href="{{ route('admin.catalog.index') }}" class="text-xs font-semibold text-cafe-brown hover:text-cafe-dark flex items-center gap-1.5 whitespace-nowrap group">
+                    <span>Kelola Menu</span>
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5"></i>
+                </a>
             </div>
         </div>
 
-        <div class="bg-cafe-card rounded-2xl p-6 shadow-soft border border-cafe-beige/40">
-            <div class="flex items-center justify-between gap-3 mb-4">
-                <div>
-                    <h3 class="font-serif text-lg font-bold text-cafe-dark">Peringatan Stok Menipis</h3>
-                    <p class="text-xs text-cafe-muted">Data dari Stok &amp; Supplier untuk menu yang menipis atau habis.</p>
-                </div>
-                <a href="{{ route('admin.catalog.index', ['tab' => 'stock']) }}" class="text-xs font-semibold text-cafe-brown hover:text-cafe-dark whitespace-nowrap">
-                    Kelola Stok &rarr;
-                </a>
-            </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
+            @forelse ($bestSellerMenus as $index => $bMenu)
+                <div class="p-3.5 rounded-2xl bg-cafe-cream/60 hover:bg-cafe-cream border border-cafe-beige/50 transition-all flex flex-col justify-between group relative shadow-xs hover:shadow-soft">
+                    <!-- Top row: Rank & Badge -->
+                    <div class="flex items-center justify-between mb-2.5">
+                        <span class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black {{ $index === 0 ? 'bg-amber-400 text-amber-950 shadow-xs' : ($index === 1 ? 'bg-slate-300 text-slate-800' : ($index === 2 ? 'bg-amber-700/25 text-amber-900' : 'bg-cafe-beige/80 text-cafe-muted')) }}">
+                            #{{ $index + 1 }}
+                        </span>
+                        @if($bMenu->is_best_seller)
+                            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-cafe-gold/20 text-cafe-brown flex items-center gap-1">
+                                <i data-lucide="star" class="w-3 h-3 fill-current text-cafe-gold"></i>
+                                <span>Bestseller</span>
+                            </span>
+                        @endif
+                    </div>
 
-            <div class="space-y-3">
-                @forelse ($lowStockMenus->take(5) as $menu)
-                    <div class="flex items-center justify-between gap-3 p-3 rounded-2xl bg-cafe-cream/60 border border-cafe-beige/40">
-                        <div class="min-w-0">
-                            <p class="text-xs font-semibold text-cafe-dark truncate">{{ $menu->name }}</p>
-                            <p class="text-[10px] text-cafe-muted">
-                                Sisa <strong class="{{ $menu->stock <= 0 ? 'text-cafe-danger' : 'text-cafe-warning' }}">{{ $menu->stock }}</strong> {{ $menu->unit }} (Min: {{ $menu->min_stock }})
-                            </p>
+                    <!-- Image & Titles -->
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-xl bg-cafe-beige overflow-hidden shrink-0 border border-cafe-beige/60">
+                            @if($bMenu->image)
+                                <img src="{{ $bMenu->image }}" alt="{{ $bMenu->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-cafe-muted">
+                                    <i data-lucide="coffee" class="w-5 h-5"></i>
+                                </div>
+                            @endif
                         </div>
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold shrink-0 {{ $menu->stock <= 0 ? 'bg-cafe-danger/15 text-cafe-danger' : 'bg-cafe-warning/15 text-cafe-warning' }}">
-                            {{ $menu->stock <= 0 ? 'Habis' : 'Menipis' }}
+                        <div class="min-w-0 flex-1">
+                            <h4 class="font-serif font-bold text-xs text-cafe-dark truncate group-hover:text-cafe-gold transition-colors">{{ $bMenu->name }}</h4>
+                            <p class="text-[10px] text-cafe-muted truncate">{{ $bMenu->category?->name ?? 'Menu' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Footer: Price & Sold Count -->
+                    <div class="pt-2.5 border-t border-cafe-beige/50 flex items-center justify-between text-xs">
+                        <span class="font-bold text-cafe-dark">{{ $bMenu->priceRangeLabel() }}</span>
+                        <span class="text-[10px] text-cafe-muted flex items-center gap-1">
+                            <i data-lucide="trending-up" class="w-3 h-3 text-cafe-success"></i>
+                            <strong>{{ $bMenu->sold_count }}</strong> terjual
                         </span>
                     </div>
-                @empty
-                    <div class="py-8 text-center text-xs text-cafe-muted">
-                        Semua stok menu berada dalam kondisi aman.
+
+                    <!-- Action Buttons: Edit & Delete -->
+                    <div class="mt-2.5 pt-2 border-t border-cafe-beige/50 flex items-center gap-2">
+                        <a href="{{ route('admin.catalog.menu.edit', $bMenu->id) }}" class="flex-1 inline-flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg bg-cafe-beige/70 hover:bg-cafe-gold/30 text-cafe-dark text-[10px] font-semibold transition-colors" title="Edit {{ $bMenu->name }}">
+                            <i data-lucide="pencil" class="w-3 h-3"></i>
+                            <span>Edit</span>
+                        </a>
+                        <button type="button" onclick="openDashboardDeleteModal({{ $bMenu->id }}, '{{ addslashes($bMenu->name) }}')" class="flex-1 inline-flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg bg-cafe-danger/10 hover:bg-cafe-danger/20 text-cafe-danger text-[10px] font-semibold transition-colors" title="Hapus {{ $bMenu->name }}">
+                            <i data-lucide="trash-2" class="w-3 h-3"></i>
+                            <span>Hapus</span>
+                        </button>
                     </div>
-                @endforelse
+                </div>
+            @empty
+                <div class="col-span-full py-8 text-center text-xs text-cafe-muted">
+                    Belum ada menu yang terdaftar atau ditandai sebagai bestseller.
+                </div>
+            @endforelse
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal for Dashboard Bestseller -->
+    <div id="dashboard-delete-menu-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden" role="dialog" aria-modal="true">
+        <div class="bg-cafe-card rounded-2xl p-6 shadow-xl max-w-sm w-full mx-4 border border-cafe-beige/50">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-12 h-12 rounded-full bg-cafe-danger/15 flex items-center justify-center mb-3">
+                    <i data-lucide="alert-triangle" class="w-6 h-6 text-cafe-danger"></i>
+                </div>
+                <h4 class="font-serif font-bold text-lg text-cafe-dark mb-1">Hapus Menu?</h4>
+                <p class="text-xs text-cafe-muted mb-4">Menu <strong id="dashboard-delete-menu-name" class="text-cafe-dark"></strong> akan dihapus permanen dan tidak dapat dikembalikan.</p>
+
+                <form id="dashboard-delete-menu-form" method="POST" class="w-full">
+                    @csrf
+                    @method('DELETE')
+                    <div class="flex items-center gap-3">
+                        <button type="button" onclick="closeDashboardDeleteModal()" class="flex-1 px-4 py-2.5 rounded-xl bg-cafe-beige/70 hover:bg-cafe-beige text-cafe-dark text-xs font-semibold transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" class="flex-1 px-4 py-2.5 rounded-xl bg-cafe-danger hover:bg-red-700 text-white text-xs font-semibold transition-colors">
+                            Ya, Hapus
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -458,6 +503,32 @@
     @endif
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    // Dashboard Bestseller: Delete confirmation modal
+    function openDashboardDeleteModal(id, name) {
+        const modal = document.getElementById('dashboard-delete-menu-modal');
+        const form = document.getElementById('dashboard-delete-menu-form');
+        const nameEl = document.getElementById('dashboard-delete-menu-name');
+
+        nameEl.textContent = name;
+        form.action = '/admin/katalog/menu/' + id;
+        modal.classList.remove('hidden');
+    }
+
+    function closeDashboardDeleteModal() {
+        document.getElementById('dashboard-delete-menu-modal').classList.add('hidden');
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('dashboard-delete-menu-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDashboardDeleteModal();
+        }
+    });
+</script>
+@endpush
 
 @if ($legacyAdmin)
     @push('scripts')

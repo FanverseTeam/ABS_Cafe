@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\ActivityLog;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Order;
@@ -46,8 +45,9 @@ class DashboardTest extends TestCase
             ->assertSee('Tambah Menu')
             ->assertSee('Tambah Promo')
             ->assertSee('Tambah Staf')
-            ->assertSee('Aktivitas Terbaru')
-            ->assertSee('Peringatan Stok Menipis')
+            ->assertSee('5 Menu Bestseller')
+            ->assertDontSee('Aktivitas Terbaru')
+            ->assertDontSee('Peringatan Stok Menipis')
             ->assertDontSee('Pesanan Terbaru')
             ->assertDontSee('Pendapatan')
             ->assertDontSee('Menunggu Bayar')
@@ -80,30 +80,27 @@ class DashboardTest extends TestCase
             ->assertViewHas('totalTables', 3);
     }
 
-    public function test_dashboard_shows_only_the_five_latest_activity_logs(): void
+    public function test_dashboard_shows_top_five_bestseller_menus(): void
     {
         $this->requireLegacyAdminDisabled();
 
-        foreach (range(0, 5) as $index) {
-            $log = ActivityLog::create([
-                'user_name' => 'Admin ABS',
-                'role' => 'admin',
-                'activity' => "Aktivitas {$index}",
-                'activity_type' => 'sistem',
-                'ip_address' => '127.0.0.1',
+        $category = Category::factory()->create();
+        foreach (range(1, 6) as $index) {
+            Menu::factory()->for($category)->create([
+                'name' => "Kopi Mantap {$index}",
+                'sold_count' => $index * 10,
+                'is_best_seller' => true,
             ]);
-
-            $log->forceFill(['created_at' => now()->subMinutes($index)])->save();
         }
 
         $response = $this->actingAsAdmin()->get('/admin');
 
         $response->assertOk()
-            ->assertSee('Aktivitas 0')
-            ->assertSee('Aktivitas 4')
-            ->assertDontSee('Aktivitas 5');
+            ->assertSee('5 Menu Bestseller')
+            ->assertSee('Kopi Mantap 6')
+            ->assertSee('Kopi Mantap 2');
 
-        $this->assertCount(5, $response->viewData('recentActivities'));
+        $this->assertCount(5, $response->viewData('bestSellerMenus'));
     }
 
     public function test_dashboard_links_to_active_admin_pages_only_when_switch_is_off(): void
