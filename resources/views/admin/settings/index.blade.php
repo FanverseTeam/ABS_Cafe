@@ -308,7 +308,7 @@
     @if($tab === 'akun')
         <div class="bg-cafe-card rounded-2xl p-6 sm:p-8 shadow-soft border border-cafe-beige/40 max-w-2xl">
             <h3 class="font-serif font-bold text-lg text-cafe-dark mb-1">Akun Administrator Saya</h3>
-            <p class="text-xs text-cafe-muted mb-6">Ubah nama, email login, dan perbarui kata sandi akun administrator.</p>
+            <p class="text-xs text-cafe-muted mb-6">Ubah nama, username login, dan perbarui kata sandi akun administrator.</p>
 
             <form action="{{ route('admin.settings.account') }}" method="POST" class="space-y-4 text-xs">
                 @csrf
@@ -318,8 +318,8 @@
                         <input type="text" name="name" value="{{ Auth::user()->name }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                     <div class="space-y-1">
-                        <label class="font-semibold text-cafe-dark">Email Admin *</label>
-                        <input type="email" name="email" value="{{ Auth::user()->email }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <label class="font-semibold text-cafe-dark">Username Admin *</label>
+                        <input type="text" name="username" value="{{ Auth::user()->username }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                 </div>
 

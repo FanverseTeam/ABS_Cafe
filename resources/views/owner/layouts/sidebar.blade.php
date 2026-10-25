@@ -71,25 +71,16 @@
         </div>
     </nav>
 
-    <!-- Footer Profile & Logout -->
+    <!-- Footer Profile -->
     <div class="p-4 border-t border-white/10 bg-[#3D1236]/50 shrink-0">
-        <div class="flex items-center justify-between p-2 rounded-2xl bg-white/5">
-            <div class="flex items-center gap-2.5 min-w-0">
-                <div class="w-9 h-9 rounded-full bg-[#D4954D] text-[#290024] font-serif font-bold flex items-center justify-center text-xs shrink-0 shadow">
-                    {{ Auth::user()->initials() ?? 'O' }}
-                </div>
-                <div class="min-w-0">
-                    <p class="text-xs font-semibold text-[#F2F5E2] truncate">{{ Auth::user()->name ?? 'Owner ABS' }}</p>
-                    <p class="text-[10px] text-[#D4954D]">Pemilik Usaha</p>
-                </div>
+        <div class="flex items-center gap-2.5 p-2 rounded-2xl bg-white/5">
+            <div class="w-9 h-9 rounded-full bg-[#D4954D] text-[#290024] font-serif font-bold flex items-center justify-center text-xs shrink-0 shadow">
+                {{ Auth::user()->initials() ?? 'O' }}
             </div>
-
-            <form action="{{ route('owner.logout') }}" method="POST" data-cafe-confirm class="inline">
-                @csrf
-                <button type="submit" title="Keluar" class="p-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-colors">
-                    <i data-lucide="log-out" class="w-4 h-4"></i>
-                </button>
-            </form>
+            <div class="min-w-0 flex-1">
+                <p class="text-xs font-semibold text-[#F2F5E2] truncate">{{ Auth::user()->name ?? 'Owner ABS' }}</p>
+                <p class="text-[10px] text-[#D4954D]">Pemilik Usaha</p>
+            </div>
         </div>
     </div>
 </aside>

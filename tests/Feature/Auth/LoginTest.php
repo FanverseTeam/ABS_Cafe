@@ -40,15 +40,15 @@ class LoginTest extends TestCase
         $this->get('/')->assertRedirect(route('staf.landing'));
     }
 
-    public function test_admin_can_login_with_email_and_is_redirected_to_admin_dashboard(): void
+    public function test_admin_can_login_with_username_and_is_redirected_to_admin_dashboard(): void
     {
         $admin = User::factory()->admin()->create([
-            'email' => 'admin@example.com',
+            'username' => 'adminuser',
             'password' => Hash::make('secret123'),
         ]);
 
         $response = $this->post('/login', [
-            'login' => 'admin@example.com',
+            'login' => 'adminuser',
             'password' => 'secret123',
         ]);
 
@@ -91,12 +91,12 @@ class LoginTest extends TestCase
     public function test_login_fails_with_wrong_password(): void
     {
         User::factory()->admin()->create([
-            'email' => 'admin@example.com',
+            'username' => 'adminuser',
             'password' => Hash::make('secret123'),
         ]);
 
         $this->from('/login')->post('/login', [
-            'login' => 'admin@example.com',
+            'login' => 'adminuser',
             'password' => 'salah',
         ])->assertRedirect('/login')->assertSessionHas('error');
 
@@ -112,12 +112,12 @@ class LoginTest extends TestCase
     public function test_inactive_user_cannot_login(): void
     {
         User::factory()->admin()->inactive()->create([
-            'email' => 'nonaktif@example.com',
+            'username' => 'nonaktifuser',
             'password' => Hash::make('secret123'),
         ]);
 
         $this->from('/login')->post('/login', [
-            'login' => 'nonaktif@example.com',
+            'login' => 'nonaktifuser',
             'password' => 'secret123',
         ])->assertRedirect('/login')->assertSessionHas('error');
 
@@ -127,13 +127,13 @@ class LoginTest extends TestCase
     public function test_staf_role_without_portal_cannot_login(): void
     {
         User::factory()->create([
-            'email' => 'staf@example.com',
+            'username' => 'stafuser',
             'password' => Hash::make('secret123'),
             'role' => 'staf',
         ]);
 
         $this->from('/login')->post('/login', [
-            'login' => 'staf@example.com',
+            'login' => 'stafuser',
             'password' => 'secret123',
         ])->assertRedirect('/login')->assertSessionHas('error');
 
@@ -159,19 +159,19 @@ class LoginTest extends TestCase
     public function test_login_is_rate_limited_after_ten_attempts(): void
     {
         User::factory()->admin()->create([
-            'email' => 'admin@example.com',
+            'username' => 'adminuser',
             'password' => Hash::make('secret123'),
         ]);
 
         for ($i = 0; $i < 10; $i++) {
             $this->post('/login', [
-                'login' => 'admin@example.com',
+                'login' => 'adminuser',
                 'password' => 'salah',
             ])->assertStatus(302);
         }
 
         $this->post('/login', [
-            'login' => 'admin@example.com',
+            'login' => 'adminuser',
             'password' => 'salah',
         ])->assertStatus(429);
     }
@@ -186,12 +186,36 @@ class LoginTest extends TestCase
     public function test_login_activity_is_logged(): void
     {
         $admin = User::factory()->admin()->create([
-            'email' => 'admin@example.com',
+            'username' => 'adminuser',
             'password' => Hash::make('secret123'),
         ]);
 
-        $this->post('/login', ['login' => 'admin@example.com', 'password' => 'secret123']);
+        $this->post('/login', ['login' => 'adminuser', 'password' => 'secret123']);
 
         $this->assertSame(1, ActivityLog::where('activity_type', 'sistem')->count());
+    }
+
+    public function test_login_page_does_not_contain_demo_section_or_demo_credentials(): void
+    {
+        $response = $this->get('/login')
+            ->assertOk()
+            ->assertSee('Masuk ke Dashboard')
+            ->assertSee('name="login"', false)
+            ->assertSee('name="password"', false)
+            ->assertSee('name="remember"', false)
+            ->assertSee('Lupa kata sandi? Hubungi admin.')
+            ->assertDontSee('Akun Demo')
+            ->assertDontSee('Gunakan akun ini')
+            ->assertDontSee('admin@abscafe.com')
+            ->assertDontSee('owner@abscafe.com')
+            ->assertDontSee('kasir@abscafe.com')
+            ->assertDontSee('admin123')
+            ->assertDontSee('owner123')
+            ->assertDontSee('kasir123')
+            ->assertDontSee('useDemo', false)
+            ->assertDontSee('showDemoHint', false);
+
+        $this->assertStringNotContainsString('Akun Demo', $response->getContent());
+        $this->assertStringNotContainsString('Gunakan akun ini', $response->getContent());
     }
 }

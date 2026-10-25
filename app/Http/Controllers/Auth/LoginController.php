@@ -52,15 +52,15 @@ class LoginController extends Controller
             'login' => 'required|string',
             'password' => 'required|string',
         ], [
-            'login.required' => 'Email atau username wajib diisi.',
+            'login.required' => 'Username wajib diisi.',
             'password.required' => 'Kata sandi wajib diisi.',
         ]);
 
-        $login = $request->input('login');
-        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $login = trim($request->input('login'));
+        $loginLower = strtolower($login);
 
         $credentials = [
-            $field => $login,
+            'username' => $loginLower,
             'password' => $request->input('password'),
         ];
 
@@ -70,7 +70,7 @@ class LoginController extends Controller
 
         if (! Auth::attempt($credentials, $remember)) {
             return back()->withInput()
-                ->with('error', 'Email/username atau kata sandi tidak cocok. Silakan periksa kembali.');
+                ->with('error', 'Username atau kata sandi salah.');
         }
 
         $user = Auth::user();

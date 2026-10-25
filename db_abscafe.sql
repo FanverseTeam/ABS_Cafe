@@ -788,7 +788,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -825,7 +825,8 @@ INSERT INTO `migrations` VALUES
 (24,'2026_10_20_083704_strip_emoji_from_stored_text',1),
 (25,'2026_10_20_201926_add_variant_merging_support',3),
 (26,'2026_10_21_082105_cleanup_database_schema_and_add_table_comments',4),
-(27,'2026_10_24_210000_sederhanakan_dan_lebur_tabel_database',4);
+(27,'2026_10_24_210000_sederhanakan_dan_lebur_tabel_database',4),
+(28,'2026_10_25_105343_2026_10_25_login_username_only',4);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -2008,8 +2009,8 @@ DROP TABLE IF EXISTS `pengguna`;
 CREATE TABLE `pengguna` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  `email` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
   `role` varchar(255) NOT NULL DEFAULT 'kasir',
   `phone` varchar(255) DEFAULT NULL,
   `photo_path` varchar(255) DEFAULT NULL,
@@ -2023,7 +2024,7 @@ CREATE TABLE `pengguna` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `pengguna_email_unique` (`email`)
+  UNIQUE KEY `pengguna_username_unique` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

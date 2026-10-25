@@ -139,7 +139,6 @@
                         <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="w-10 h-10 rounded-full object-cover bg-cafe-beige border border-cafe-gold/30 shrink-0">
                         <div class="min-w-0">
                             <h4 class="font-bold text-xs sm:text-sm text-cafe-dark truncate">{{ $user->name }}</h4>
-                            <p class="text-[10px] text-cafe-muted font-mono truncate">{{ '@' . $user->username }}</p>
                         </div>
                     </div>
 
@@ -161,7 +160,7 @@
                 <div class="text-[11px] text-cafe-muted space-y-0.5 pt-1 border-t border-cafe-beige/40">
                     <p class="flex items-center gap-1.5">
                         <i data-lucide="mail" class="w-3.5 h-3.5 text-cafe-gold shrink-0"></i>
-                        <span class="truncate">{{ $user->email }}</span>
+                        <span class="truncate">{{ $user->username }}</span>
                     </p>
                     @if($user->phone)
                         <p class="flex items-center gap-1.5">
@@ -214,7 +213,7 @@
                 <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted uppercase font-semibold text-[11px] tracking-wider">
                     <tr>
                         <th class="py-3.5 pl-6">Foto &amp; Nama</th>
-                        <th class="py-3.5 px-3">Email / Username</th>
+                        <th class="py-3.5 px-3">Username</th>
                         <th class="py-3.5 px-3">No. HP</th>
                         <th class="py-3.5 px-3">Peran</th>
                         <th class="py-3.5 px-3">Status</th>
@@ -232,8 +231,7 @@
                                 </div>
                             </td>
                             <td class="py-4 px-3">
-                                <p class="text-cafe-text font-medium">{{ $user->email }}</p>
-                                <p class="text-[11px] text-cafe-muted font-mono">{{ '@' . $user->username }}</p>
+                                <p class="text-cafe-text font-medium">{{ $user->username }}</p>
                             </td>
                             <td class="py-4 px-3 text-cafe-muted">{{ $user->phone ?? '-' }}</td>
                             <td class="py-4 px-3">
@@ -336,13 +334,6 @@
                     <input type="text" name="username" id="u-username" required placeholder="siti_kasir" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
                 <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Email *</label>
-                    <input type="email" name="email" id="u-email" required placeholder="siti@abscafe.com" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Peran / Jabatan *</label>
                     <select name="role" id="u-role" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         <option value="kasir">Kasir</option>
@@ -350,6 +341,7 @@
                         <option value="admin">Administrator</option>
                     </select>
                 </div>
+            </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Nomor Telepon (WhatsApp)</label>
                     <input type="text" name="phone" id="u-phone" placeholder="08123456789" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
@@ -409,7 +401,6 @@
         document.getElementById('user-form').action = "{{ route('admin.users.store') }}";
         document.getElementById('u-name').value = '';
         document.getElementById('u-username').value = '';
-        document.getElementById('u-email').value = '';
         document.getElementById('u-role').value = 'kasir';
         document.getElementById('u-phone').value = '';
         document.getElementById('u-pass').required = true;
@@ -424,7 +415,6 @@
         document.getElementById('user-form').action = `/admin/pengguna/${user.id}/update`;
         document.getElementById('u-name').value = user.name;
         document.getElementById('u-username').value = user.username || '';
-        document.getElementById('u-email').value = user.email;
         document.getElementById('u-role').value = user.role;
         document.getElementById('u-phone').value = user.phone || '';
         document.getElementById('u-pass').required = false;

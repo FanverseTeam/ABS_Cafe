@@ -139,12 +139,17 @@ class SettingController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:pengguna,email,'.$user->id,
+            'username' => 'required|string|max:30|min:3|regex:/^[a-z0-9._]+$/|unique:pengguna,username,'.$user->id,
             'password' => 'nullable|string|min:6|confirmed',
+        ], [
+            'username.unique' => 'Username ini sudah dipakai oleh pengguna lain.',
+            'username.min' => 'Username minimal 3 karakter.',
+            'username.max' => 'Username maksimal 30 karakter.',
+            'username.regex' => 'Username hanya boleh mengandung huruf kecil, angka, titik, dan garis bawah.',
         ]);
 
         $user->name = $request->input('name');
-        $user->email = $request->input('email');
+        $user->username = $request->input('username');
         if ($request->filled('password')) {
             $user->password = Hash::make($request->input('password'));
         }

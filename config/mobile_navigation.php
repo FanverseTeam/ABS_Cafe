@@ -68,12 +68,6 @@ return [
                             'icon' => 'history',
                             'active' => ['admin.activity.*'],
                         ],
-                        [
-                            'label' => 'Keluar',
-                            'type' => 'logout',
-                            'route' => 'admin.logout',
-                            'icon' => 'log-out',
-                        ],
                     ],
                 ],
             ],
@@ -187,12 +181,6 @@ return [
                             'icon' => 'briefcase',
                             'active' => ['owner.settings.*'],
                         ],
-                        [
-                            'label' => 'Keluar',
-                            'type' => 'logout',
-                            'route' => 'owner.logout',
-                            'icon' => 'log-out',
-                        ],
                     ],
                 ],
             ],
@@ -248,12 +236,6 @@ return [
                             'icon' => 'wallet',
                             'active' => ['kasir.shift.*'],
                         ],
-                        [
-                            'label' => 'Keluar',
-                            'type' => 'logout',
-                            'route' => 'kasir.logout',
-                            'icon' => 'log-out',
-                        ],
                     ],
                 ],
             ],
@@ -269,6 +251,10 @@ return [
     |
     */
     'hidden_on' => [
+        'admin.vouchers.create',
+        'admin.vouchers.edit',
+        'owner.promos.create',
+        'owner.promos.edit',
         'kasir.payments.receipt',
         'kasir.shift.receipt',
         'owner.reports.print',
@@ -284,6 +270,10 @@ return [
     |
     */
     'back_routes' => [
+        'admin.vouchers.create' => 'admin.vouchers.index',
+        'admin.vouchers.edit' => 'admin.vouchers.index',
+        'owner.promos.create' => 'owner.promos.index',
+        'owner.promos.edit' => 'owner.promos.index',
         'owner.cashiers.show' => 'owner.cashiers.index',
         'kasir.shift.show' => 'kasir.shift.index',
         'kasir.payments.checkout' => 'kasir.orders.index',

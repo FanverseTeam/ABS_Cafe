@@ -61,6 +61,12 @@ class User extends Authenticatable
                 $user->setRememberToken(Str::random(60));
             }
         });
+
+        static::saving(function (User $user): void {
+            if ($user->isDirty('username') && $user->username) {
+                $user->username = strtolower(trim($user->username));
+            }
+        });
     }
 
     public function activityLogs(): HasMany
