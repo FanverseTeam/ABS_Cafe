@@ -146,7 +146,9 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
     // 4. Promo / Voucher
     Route::prefix('promo-voucher')->name('vouchers.')->group(function () {
         Route::get('/', [VoucherController::class, 'index'])->name('index');
+        Route::get('/tambah', [VoucherController::class, 'create'])->name('create');
         Route::post('/store', [VoucherController::class, 'store'])->name('store');
+        Route::get('/{promo}/ubah', [VoucherController::class, 'edit'])->name('edit');
         Route::post('/{id}/update', [VoucherController::class, 'update'])->name('update');
         Route::post('/{id}/toggle-active', [VoucherController::class, 'toggleActive'])->name('toggle.active');
         Route::delete('/{id}', [VoucherController::class, 'destroy'])->name('destroy');
@@ -290,7 +292,9 @@ Route::prefix('owner')->name('owner.')->middleware(['auth', 'role:owner'])->grou
     // 4. Promo & Diskon
     Route::prefix('promo')->name('promos.')->group(function () {
         Route::get('/', [OwnerPromoController::class, 'index'])->name('index');
+        Route::get('/tambah', [OwnerPromoController::class, 'create'])->name('create');
         Route::post('/store', [OwnerPromoController::class, 'store'])->name('store');
+        Route::get('/{promo}/ubah', [OwnerPromoController::class, 'edit'])->name('edit');
         Route::post('/{id}/update', [OwnerPromoController::class, 'update'])->name('update');
         Route::post('/{id}/toggle-active', [OwnerPromoController::class, 'toggleActive'])->name('toggle');
         Route::delete('/{id}', [OwnerPromoController::class, 'destroy'])->name('destroy');

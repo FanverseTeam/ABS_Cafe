@@ -93,7 +93,7 @@ class SettingTest extends TestCase
 
         $this->post('/admin/pengaturan/account', [
             'name' => 'Admin Ganteng',
-            'email' => $user->email,
+            'username' => $user->username,
             'password' => 'passwordbaru',
             'password_confirmation' => 'passwordbaru',
         ])->assertRedirect();
@@ -110,13 +110,13 @@ class SettingTest extends TestCase
 
         $this->post('/admin/pengaturan/account', [
             'name' => $user->name,
-            'email' => $user->email,
+            'username' => $user->username,
             'password' => 'passwordbaru',
             'password_confirmation' => 'beda',
         ])->assertSessionHasErrors('password');
     }
 
-    public function test_account_email_must_be_unique(): void
+    public function test_account_username_must_be_unique(): void
     {
         $this->actingAsAdmin();
         $user = auth()->user();
@@ -124,7 +124,7 @@ class SettingTest extends TestCase
 
         $this->post('/admin/pengaturan/account', [
             'name' => $user->name,
-            'email' => $other->email,
-        ])->assertSessionHasErrors('email');
+            'username' => $other->username,
+        ])->assertSessionHasErrors('username');
     }
 }

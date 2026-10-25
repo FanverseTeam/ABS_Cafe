@@ -33,7 +33,7 @@
         <form method="GET" action="{{ route('admin.staff.index') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama, email, username..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama, username..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
             </div>
 
             <div>
@@ -59,7 +59,7 @@
     <x-responsive-table :paginate="$users">
         <x-slot:headers>
             <th class="py-3.5 pl-6">Foto &amp; Nama</th>
-            <th class="py-3.5 px-3">Email / Username</th>
+            <th class="py-3.5 px-3">Username</th>
             <th class="py-3.5 px-3">No. HP</th>
             <th class="py-3.5 px-3">Peran</th>
             <th class="py-3.5 px-3">Status</th>
@@ -95,7 +95,7 @@
                 </x-slot:badge>
 
                 <x-slot:fields>
-                    <x-responsive-table.field label="Email" :value="$user->email" />
+                    <x-responsive-table.field label="Username" :value="$user->username" />
                     <x-responsive-table.field label="No. HP" :value="$user->phone ?? '-'" />
                     <x-responsive-table.field label="Login Terakhir" :value="$user->last_login_at ? $user->last_login_at->diffForHumans() : 'Belum pernah'" full-width />
                 </x-slot:fields>
@@ -137,8 +137,7 @@
                         </div>
                     </td>
                     <td class="hidden md:table-cell py-4 px-3">
-                        <p class="text-cafe-text font-medium">{{ $user->email }}</p>
-                        <p class="text-[11px] text-cafe-muted font-mono">{{ '@' . $user->username }}</p>
+                        <p class="text-cafe-text font-medium">{{ $user->username }}</p>
                     </td>
                     <td class="hidden md:table-cell py-4 px-3 text-cafe-muted">{{ $user->phone ?? '-' }}</td>
                     <td class="hidden md:table-cell py-4 px-3">
@@ -226,13 +225,6 @@
                     <input type="text" name="username" id="u-username" required placeholder="siti_kasir" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
                 <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Email *</label>
-                    <input type="email" name="email" id="u-email" required placeholder="siti@abscafe.com" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Peran / Jabatan *</label>
                     <select name="role" id="u-role" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         <option value="kasir">Kasir</option>
@@ -240,6 +232,7 @@
                         <option value="admin">Administrator</option>
                     </select>
                 </div>
+            </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Nomor Telepon (WhatsApp)</label>
                     <input type="text" name="phone" id="u-phone" placeholder="08123456789" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
@@ -299,7 +292,6 @@
         document.getElementById('user-form').action = "{{ route('admin.staff.store') }}";
         document.getElementById('u-name').value = '';
         document.getElementById('u-username').value = '';
-        document.getElementById('u-email').value = '';
         document.getElementById('u-role').value = 'kasir';
         document.getElementById('u-phone').value = '';
         document.getElementById('u-pass').required = true;
@@ -314,7 +306,6 @@
         document.getElementById('user-form').action = `/admin/staf/${user.id}/update`;
         document.getElementById('u-name').value = user.name;
         document.getElementById('u-username').value = user.username || '';
-        document.getElementById('u-email').value = user.email;
         document.getElementById('u-role').value = user.role;
         document.getElementById('u-phone').value = user.phone || '';
         document.getElementById('u-pass').required = false;

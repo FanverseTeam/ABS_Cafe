@@ -112,7 +112,7 @@ class SettingController extends Controller
     }
 
     /**
-     * Perbarui informasi akun owner (nama, username, email, telepon).
+     * Perbarui informasi akun owner (nama, username, telepon).
      */
     public function updateAccount(Request $request)
     {
@@ -120,9 +120,13 @@ class SettingController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:50|alpha_dash|unique:pengguna,username,'.$user->id,
-            'email' => 'required|email|max:255|unique:pengguna,email,'.$user->id,
+            'username' => 'required|string|max:30|min:3|regex:/^[a-z0-9._]+$/|unique:pengguna,username,'.$user->id,
             'phone' => 'nullable|string|max:30',
+        ], [
+            'username.unique' => 'Username ini sudah dipakai oleh pengguna lain.',
+            'username.min' => 'Username minimal 3 karakter.',
+            'username.max' => 'Username maksimal 30 karakter.',
+            'username.regex' => 'Username hanya boleh mengandung huruf kecil, angka, titik, dan garis bawah.',
         ]);
 
         $user->update($validated);

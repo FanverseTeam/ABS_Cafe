@@ -22,14 +22,14 @@
             <p class="text-xs text-cafe-muted mt-0.5">Kelola penawaran diskon, bundling Buy 2 Get 1, dan cashback pelanggan kafe</p>
         </div>
 
-        <button onclick="openPromoModal()" class="px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all flex items-center gap-2">
+        <a href="{{ route('admin.vouchers.create') }}" class="px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all flex items-center gap-2">
             <i data-lucide="plus" class="w-4 h-4"></i>
             <span>Buat Promo Baru</span>
-        </button>
+        </a>
     </div>
 
     {{-- Mobile FAB for Buat Promo Baru --}}
-    <x-mobile.fab icon="plus" label="Buat Promo" onclick="openPromoModal()" />
+    <x-mobile.fab icon="plus" label="Buat Promo" href="{{ route('admin.vouchers.create') }}" />
 
     <!-- Promo Cards Grid (1 col on mobile, 2 cols on tablet, 3 cols on desktop) -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
@@ -100,9 +100,9 @@
                     </form>
 
                     <div class="flex items-center gap-1">
-                        <button onclick="editPromoModal({{ json_encode($promo) }})" class="p-1.5 rounded-full text-cafe-brown hover:text-cafe-dark hover:bg-cafe-beige/60 transition-colors" title="Edit Promo">
+                        <a href="{{ route('admin.vouchers.edit', $promo->id) }}" class="p-1.5 rounded-full text-cafe-brown hover:text-cafe-dark hover:bg-cafe-beige/60 transition-colors" title="Ubah Promo">
                             <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                        </button>
+                        </a>
                         <form action="{{ route('admin.vouchers.destroy', $promo->id) }}" method="POST" onsubmit="return confirm('Hapus promo ini?');" class="inline">
                             @csrf
                             @method('DELETE')
@@ -123,137 +123,4 @@
     </div>
 </div>
 
-<!-- MODAL FORM TAMBAH / EDIT PROMO (Bottom Sheet on Mobile) -->
-<div id="promo-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#290024]/60 backdrop-blur-sm" onclick="closePromoModal()"></div>
-
-    <div class="relative w-full max-w-xl bg-cafe-card rounded-t-[2rem] sm:rounded-2xl shadow-soft-lg border-t sm:border border-cafe-beige/60 overflow-hidden z-10 pb-[max(1rem,env(safe-area-inset-bottom))]">
-        <!-- Handle for mobile -->
-        <div class="sm:hidden w-full pt-3 pb-1 flex justify-center cursor-pointer" onclick="closePromoModal()">
-            <div class="w-12 h-1 bg-[#775533]/30 rounded-full"></div>
-        </div>
-
-        <div class="flex items-center justify-between px-6 py-4 border-b border-cafe-beige/50 bg-[#F2F5E2]/40">
-            <div>
-                <h3 class="font-serif text-lg font-bold text-cafe-dark" id="promo-modal-title">Buat Promo Baru</h3>
-                <p class="text-[10px] sm:text-xs text-cafe-muted mt-0.5">Tentukan nilai diskon, masa berlaku, dan target menu kafe.</p>
-            </div>
-            <button onclick="closePromoModal()" class="w-8 h-8 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-muted hover:text-cafe-dark flex items-center justify-center">
-                <i data-lucide="x" class="w-4 h-4"></i>
-            </button>
-        </div>
-
-        <form id="promo-form" method="POST" action="{{ route('admin.vouchers.store') }}" class="p-6 space-y-4 text-xs">
-            @csrf
-            <div class="space-y-1">
-                <label class="font-semibold text-cafe-dark">Judul Promo *</label>
-                <input type="text" name="title" id="prm-title" required placeholder="misal: Buy 2 Get 1 Free All Coffee" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-            </div>
-
-            <div class="space-y-1">
-                <label class="font-semibold text-cafe-dark">Deskripsi Promo *</label>
-                <textarea name="description" id="prm-desc" required rows="2" placeholder="Jelaskan syarat dan ketentuan promo..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Jenis Promo *</label>
-                    <select name="type" id="prm-type" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                        <option value="buy_x_get_y">Buy X Get Y (Beli 2 Gratis 1)</option>
-                        <option value="persen">Diskon Persen (%)</option>
-                        <option value="nominal">Potongan Nominal (Rp)</option>
-                    </select>
-                </div>
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Nilai / Diskon *</label>
-                    <input type="number" name="value" id="prm-value" value="100" min="0" required placeholder="20 atau 10000" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Berlaku Untuk *</label>
-                    <select name="applies_to" id="prm-applies" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                        <option value="semua">Semua Menu</option>
-                        <option value="kategori">Kategori Tertentu</option>
-                    </select>
-                </div>
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Kategori Target (Jika Kategori)</label>
-                    <select name="target_category_id" id="prm-cat" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                        <option value="">Pilih Kategori</option>
-                        @foreach($categories as $cat)
-                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Tanggal Mulai *</label>
-                    <input type="date" name="start_date" id="prm-start" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Tanggal Selesai *</label>
-                    <input type="date" name="end_date" id="prm-end" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <label class="font-semibold text-cafe-dark">URL Gambar Banner</label>
-                <input type="url" name="banner" id="prm-banner" placeholder="https://images.unsplash.com/..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-            </div>
-
-            <div class="pt-1">
-                <label class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" name="is_active" id="prm-active" value="1" checked class="w-4 h-4 rounded text-cafe-dark accent-[#290024]">
-                    <span class="font-semibold text-cafe-dark">Aktifkan promo sekarang</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-cafe-beige">
-                <button type="button" onclick="closePromoModal()" class="px-5 py-2.5 rounded-full text-xs font-semibold text-cafe-dark hover:bg-cafe-beige/60">Batal</button>
-                <button type="submit" class="px-6 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all">Simpan Promo</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    function openPromoModal() {
-        document.getElementById('promo-modal-title').innerText = 'Buat Promo Baru';
-        document.getElementById('promo-form').action = "{{ route('admin.vouchers.store') }}";
-        document.getElementById('prm-title').value = '';
-        document.getElementById('prm-desc').value = '';
-        document.getElementById('prm-type').value = 'buy_x_get_y';
-        document.getElementById('prm-value').value = '100';
-        document.getElementById('prm-applies').value = 'semua';
-        document.getElementById('prm-banner').value = 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&auto=format&fit=crop&q=80';
-        document.getElementById('prm-start').value = new Date().toISOString().split('T')[0];
-        document.getElementById('prm-end').value = new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0];
-        document.getElementById('prm-active').checked = true;
-        document.getElementById('promo-modal').classList.remove('hidden');
-    }
-
-    function editPromoModal(promo) {
-        document.getElementById('promo-modal-title').innerText = `Edit Promo: ${promo.title}`;
-        document.getElementById('promo-form').action = `/admin/promo-voucher/${promo.id}/update`;
-        document.getElementById('prm-title').value = promo.title;
-        document.getElementById('prm-desc').value = promo.description;
-        document.getElementById('prm-type').value = promo.type;
-        document.getElementById('prm-value').value = parseInt(promo.value);
-        document.getElementById('prm-applies').value = promo.applies_to;
-        document.getElementById('prm-cat').value = promo.target_category_id || '';
-        document.getElementById('prm-banner').value = promo.banner || '';
-        document.getElementById('prm-start').value = promo.start_date.split('T')[0];
-        document.getElementById('prm-end').value = promo.end_date.split('T')[0];
-        document.getElementById('prm-active').checked = Boolean(promo.is_active);
-        document.getElementById('promo-modal').classList.remove('hidden');
-    }
-
-    function closePromoModal() {
-        document.getElementById('promo-modal').classList.add('hidden');
-    }
-</script>
 @endsection

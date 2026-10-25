@@ -84,33 +84,18 @@
             <div class="mx-auto max-w-lg space-y-1">
                 @foreach($more['children'] as $child)
                     @php
-                        $isDanger = $child['type'] === 'logout';
                         $isActiveChild = (bool) $child['active'];
                     @endphp
 
-                    @if($child['type'] === 'logout')
-                        <form action="{{ $child['url'] }}" method="POST" data-cafe-confirm>
-                            @csrf
-                            <button type="submit"
-                                    data-mobile-nav-item
-                                    class="flex min-h-[48px] w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-xs font-semibold text-[#B03A2E] transition-colors hover:bg-[#B03A2E]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B03A2E]/40">
-                                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#B03A2E]/10 text-[#B03A2E]">
-                                    <i data-lucide="{{ $child['icon'] }}" class="h-4 w-4"></i>
-                                </span>
-                                <span data-nav-label>{{ $child['label'] }}</span>
-                            </button>
-                        </form>
-                    @else
-                        <a href="{{ $child['url'] }}"
-                           data-mobile-nav-item
-                           @if($isActiveChild) aria-current="page" @endif
-                           class="flex min-h-[48px] items-center gap-3 rounded-2xl px-3 py-2.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]/70 {{ $isActiveChild ? 'bg-[#E3DEA4]/55 text-[#290024]' : 'text-[#290024] hover:bg-[#E3DEA4]/45' }}">
-                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl {{ $isDanger ? 'bg-[#B03A2E]/10 text-[#B03A2E]' : ($isActiveChild ? 'bg-[#D4954D]/35 text-[#290024]' : 'bg-[#E3DEA4]/70 text-[#775533]') }}">
-                                <i data-lucide="{{ $child['icon'] }}" class="h-4 w-4"></i>
-                            </span>
-                            <span data-nav-label class="min-w-0 truncate">{{ $child['label'] }}</span>
-                        </a>
-                    @endif
+                    <a href="{{ $child['url'] }}"
+                       data-mobile-nav-item
+                       @if($isActiveChild) aria-current="page" @endif
+                       class="flex min-h-[48px] items-center gap-3 rounded-2xl px-3 py-2.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]/70 {{ $isActiveChild ? 'bg-[#E3DEA4]/55 text-[#290024]' : 'text-[#290024] hover:bg-[#E3DEA4]/45' }}">
+                        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl {{ $isActiveChild ? 'bg-[#D4954D]/35 text-[#290024]' : 'bg-[#E3DEA4]/70 text-[#775533]' }}">
+                            <i data-lucide="{{ $child['icon'] }}" class="h-4 w-4"></i>
+                        </span>
+                        <span data-nav-label class="min-w-0 truncate">{{ $child['label'] }}</span>
+                    </a>
                 @endforeach
             </div>
         </div>

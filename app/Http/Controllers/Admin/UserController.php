@@ -19,7 +19,6 @@ class UserController extends Controller
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('username', 'like', "%{$search}%");
             });
         }
@@ -41,22 +40,23 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:50|unique:pengguna,username',
-            'email' => 'required|email|max:255|unique:pengguna,email',
+            'username' => 'required|string|max:30|min:3|regex:/^[a-z0-9._]+$/|unique:pengguna,username',
             'password' => 'required|string|min:6',
             'role' => 'required|in:admin,kasir,staf',
             'phone' => 'nullable|string|max:20',
             'status' => 'required|in:aktif,nonaktif',
         ], [
             'username.unique' => 'Username ini sudah dipakai oleh pengguna lain.',
-            'email.unique' => 'Email ini sudah terdaftar.',
+            'username.min' => 'Username minimal 3 karakter.',
+            'username.max' => 'Username maksimal 30 karakter.',
+            'username.regex' => 'Username hanya boleh mengandung huruf kecil, angka, titik, dan garis bawah.',
             'password.min' => 'Password minimal 6 karakter.',
         ]);
 
         $user = User::create([
             'name' => $request->input('name'),
             'username' => $request->input('username'),
-            'email' => $request->input('email'),
+            'email' => null,
             'password' => Hash::make($request->input('password')),
             'role' => $request->input('role'),
             'phone' => $request->input('phone'),
@@ -81,17 +81,20 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:50|unique:pengguna,username,'.$user->id,
-            'email' => 'required|email|max:255|unique:pengguna,email,'.$user->id,
+            'username' => 'required|string|max:30|min:3|regex:/^[a-z0-9._]+$/|unique:pengguna,username,'.$user->id,
             'role' => 'required|in:admin,kasir,staf',
             'phone' => 'nullable|string|max:20',
             'status' => 'required|in:aktif,nonaktif',
+        ], [
+            'username.unique' => 'Username ini sudah dipakai oleh pengguna lain.',
+            'username.min' => 'Username minimal 3 karakter.',
+            'username.max' => 'Username maksimal 30 karakter.',
+            'username.regex' => 'Username hanya boleh mengandung huruf kecil, angka, titik, dan garis bawah.',
         ]);
 
         $user->update([
             'name' => $request->input('name'),
             'username' => $request->input('username'),
-            'email' => $request->input('email'),
             'role' => $request->input('role'),
             'phone' => $request->input('phone'),
             'status' => $request->input('status'),

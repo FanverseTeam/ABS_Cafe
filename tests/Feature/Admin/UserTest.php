@@ -20,7 +20,6 @@ class UserTest extends TestCase
         return array_merge([
             'name' => 'Staf Baru',
             'username' => 'stafbaru',
-            'email' => 'stafbaru@abscafe.com',
             'password' => 'rahasia123',
             'role' => 'kasir',
             'status' => 'aktif',
@@ -45,12 +44,12 @@ class UserTest extends TestCase
         $this->assertDatabaseHas('log_aktivitas', ['activity_type' => 'pengguna']);
     }
 
-    public function test_create_user_rejects_duplicate_username_and_email(): void
+    public function test_create_user_rejects_duplicate_username(): void
     {
-        User::factory()->create(['username' => 'stafbaru', 'email' => 'stafbaru@abscafe.com']);
+        User::factory()->create(['username' => 'stafbaru']);
 
         $this->actingAsAdmin()->post('/admin/pengguna/store', $this->payload())
-            ->assertSessionHasErrors(['username', 'email']);
+            ->assertSessionHasErrors(['username']);
     }
 
     public function test_create_user_validates_role_and_password_length(): void
@@ -68,7 +67,6 @@ class UserTest extends TestCase
         $this->actingAsAdmin()->post("/admin/pengguna/{$user->id}/update", [
             'name' => 'Budi Santoso',
             'username' => $user->username,
-            'email' => $user->email,
             'role' => 'kasir',
             'status' => 'aktif',
         ])->assertRedirect();

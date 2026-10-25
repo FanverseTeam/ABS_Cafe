@@ -10,7 +10,7 @@
     $totalNotif = $lowStockItems->count() + $endingPromos->count();
 @endphp
 
-<header class="sticky top-0 z-30 min-h-[4rem] sm:min-h-[5rem] bg-[#FAFCF3]/95 backdrop-blur-md border-b border-cafe-beige/60 px-4 sm:px-8 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">
+<header class="sticky top-0 z-30 min-h-[4rem] sm:min-h-[5rem] bg-[#FAFCF3]/95 backdrop-blur-md border-b border-cafe-beige/60 px-4 sm:px-8 shadow-sm transition-all @if(View::hasSection('has_form_header') || request()->routeIs('*.create', '*.edit')) hidden lg:block @endif" style="padding-top: env(safe-area-inset-top, 0px);">
     <div class="h-16 sm:h-20 flex items-center justify-between gap-3 sm:gap-4 w-full">
         <!-- Left: Mobile Logo & Title -->
         <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
@@ -102,8 +102,15 @@
 
         <!-- Profile Dropdown -->
         <div class="relative" id="profile-dropdown-wrapper">
-            <button onclick="toggleProfileDropdown()" class="flex items-center gap-2 p-1.5 pr-3 rounded-full bg-cafe-beige/40 hover:bg-cafe-beige/70 transition-all border border-cafe-beige/60">
-                <div class="w-8 h-8 rounded-full bg-[#290024] text-[#D4954D] font-serif font-bold text-xs flex items-center justify-center shadow-sm">
+            <button type="button"
+                    id="profile-dropdown-button"
+                    onclick="toggleProfileDropdown()"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    aria-controls="profile-dropdown"
+                    aria-label="Menu profil {{ Auth::user()->name ?? 'Owner' }}"
+                    class="flex min-h-[44px] min-w-[44px] items-center gap-2 p-1.5 sm:pr-3 rounded-full bg-cafe-beige/40 hover:bg-cafe-beige/70 transition-all border border-cafe-beige/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
+                <div class="w-8 h-8 rounded-full bg-[#290024] text-[#D4954D] font-serif font-bold text-xs flex items-center justify-center shadow-sm shrink-0">
                     {{ Auth::user()->initials() ?? 'O' }}
                 </div>
                 <div class="text-left hidden sm:block">
@@ -113,21 +120,21 @@
                 <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-cafe-muted ml-0.5"></i>
             </button>
 
-            <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 p-2 z-50">
+            <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 p-2 z-50 animate-in fade-in" role="menu" aria-labelledby="profile-dropdown-button">
                 <div class="px-3 py-2 border-b border-cafe-beige/50">
                     <p class="text-xs font-bold text-cafe-dark truncate">{{ Auth::user()->name ?? 'Owner' }}</p>
-                    <p class="text-[10px] text-cafe-muted truncate">{{ Auth::user()->email ?? 'owner@abscafe.com' }}</p>
+                    <p class="text-[10px] text-cafe-muted truncate">{{ '@' . strtolower(Auth::user()->username ?? 'owner') }}</p>
                 </div>
 
                 <div class="py-1 space-y-0.5">
-                    <a href="{{ route('owner.settings.index') }}#password" class="flex items-center gap-2.5 px-3 py-2 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors">
-                        <i data-lucide="key-round" class="w-4 h-4 text-cafe-muted"></i>
+                    <a href="{{ route('owner.settings.index') }}#password" role="menuitem" class="flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
+                        <i data-lucide="key-round" class="w-4 h-4 text-cafe-muted shrink-0"></i>
                         <span>Ganti Password</span>
                     </a>
                     <form action="{{ route('owner.logout') }}" method="POST" data-cafe-confirm class="pt-1 border-t border-cafe-beige/40">
                         @csrf
-                        <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-cafe-danger hover:bg-cafe-danger/10 rounded-xl transition-colors text-left">
-                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                        <button type="submit" role="menuitem" class="w-full flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-cafe-danger hover:bg-cafe-danger/10 rounded-xl transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-danger/40">
+                            <i data-lucide="log-out" class="w-4 h-4 shrink-0"></i>
                             <span>Keluar</span>
                         </button>
                     </form>
@@ -140,21 +147,56 @@
 
 <script>
     function toggleNotifDropdown() {
-        document.getElementById('notif-dropdown').classList.toggle('hidden');
-        document.getElementById('profile-dropdown').classList.add('hidden');
+        const notif = document.getElementById('notif-dropdown');
+        if (!notif) return;
+        notif.classList.toggle('hidden');
+        setProfileOpen(false);
     }
+
+    function setProfileOpen(open) {
+        const profile = document.getElementById('profile-dropdown');
+        const btn = document.getElementById('profile-dropdown-button');
+        if (!profile) return;
+        if (open) {
+            profile.classList.remove('hidden');
+            if (btn) btn.setAttribute('aria-expanded', 'true');
+        } else {
+            profile.classList.add('hidden');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+    }
+
     function toggleProfileDropdown() {
-        document.getElementById('profile-dropdown').classList.toggle('hidden');
-        document.getElementById('notif-dropdown').classList.add('hidden');
+        const profile = document.getElementById('profile-dropdown');
+        if (!profile) return;
+        const willOpen = profile.classList.contains('hidden');
+        document.getElementById('notif-dropdown')?.classList.add('hidden');
+        setProfileOpen(willOpen);
     }
+
+    // Close on click outside & Escape key
     document.addEventListener('click', function(e) {
         const notifWrapper = document.getElementById('notif-dropdown-wrapper');
         const profileWrapper = document.getElementById('profile-dropdown-wrapper');
         if (notifWrapper && !notifWrapper.contains(e.target)) {
-            document.getElementById('notif-dropdown').classList.add('hidden');
+            document.getElementById('notif-dropdown')?.classList.add('hidden');
         }
         if (profileWrapper && !profileWrapper.contains(e.target)) {
-            document.getElementById('profile-dropdown').classList.add('hidden');
+            setProfileOpen(false);
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' || e.key === 'Esc') {
+            const profile = document.getElementById('profile-dropdown');
+            if (profile && !profile.classList.contains('hidden')) {
+                setProfileOpen(false);
+                document.getElementById('profile-dropdown-button')?.focus();
+            }
+            const notif = document.getElementById('notif-dropdown');
+            if (notif && !notif.classList.contains('hidden')) {
+                notif.classList.add('hidden');
+            }
         }
     });
 </script>

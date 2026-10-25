@@ -27,15 +27,15 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (*Accessories &
 
 ---
 
-## Kredensial Akun Demo (Administrator)
+## Kredensial Akun Awal (Administrator)
 
-| Peran | Email | Username | Password |
-|---|---|---|---|
-| Admin Utama | `admin@abscafe.com` | `admin` | `admin123` |
-| Kasir 1 | `siti.kasir@abscafe.com` | `siti_kasir` | `password` |
-| Kasir 2 | `budi.kasir@abscafe.com` | `budi_kasir` | `password` |
+| Peran | Username | Password |
+|---|---|---|
+| Admin Utama | `admin` | `admin123` |
+| Owner | `owner` | `owner123` |
+| Kasir Demo | `kasir` | `password` |
 
-> **Catatan:** Hak akses dashboard back-office dilindungi oleh middleware `admin.auth`. Hanya akun dengan peran **Admin** yang diizinkan mengakses menu administrator.
+> **Catatan:** Login sekarang menggunakan **username** saja (tidak pakai email). Hak akses dashboard back-office dilindungi oleh middleware `admin.auth`. Hanya akun dengan peran **Admin** yang diizinkan mengakses menu administrator.
 
 ---
 
@@ -44,9 +44,11 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (*Accessories &
 ### 1. Login Admin (`/admin/login`)
 
 - Layout dua kolom estetis dengan foto kafe dan tagline *Good Coffee, Good Mood*.
+- **Login menggunakan username saja** (tidak ada field email).
+- Label "Username", placeholder "username", autocomplete="username", autocapitalize="none", spellcheck="false".
 - Toggle sembunyikan/tampilkan kata sandi.
 - Fitur *Remember Me*.
-- Tombol otomatis untuk mengisi akun demo.
+- Teks bantuan: "Lupa kata sandi? Hubungi admin." (tidak ada alur reset via email).
 
 ### 2. Dashboard (`/admin`)
 
@@ -97,12 +99,14 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (*Accessories &
 - Status promo berjalan, terjadwal, atau berakhir berdasarkan tanggal.
 - Switch untuk mengaktifkan atau menonaktifkan promo.
 
-### 8. Pengguna & Staf (`/admin/pengguna`)
+### 8. Pengguna & Staf (`/admin/staf`)
 
 - Tabel akun staf dengan peran Admin, Kasir, dan Staf Barista/Dapur.
-- Tambah dan edit data staf.
+- Tambah dan edit data staf **hanya dengan username** (field email dihapus).
+- Username wajib, unik, 3-30 karakter (huruf kecil, angka, titik, garis bawah).
+- Pencarian berdasarkan nama dan username.
 - Mengaktifkan atau menonaktifkan akun.
-- Fitur reset password.
+- Fitur reset password (oleh admin, tanpa email).
 
 ### 9. Denah & Meja (`/admin/meja`)
 
@@ -117,7 +121,7 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (*Accessories &
 - **Tab Pembayaran & QRIS:** Pilihan metode pembayaran kasir berupa Tunai, QRIS, dan Debit, serta preview QRIS.
 - **Tab Format Nota:** Pengaturan teks header dan footer nota dengan pratinjau langsung (*Live Preview*) struk kasir.
 - **Tab Tampilan:** Pengaturan banner headline beranda.
-- **Tab Akun Saya:** Mengganti nama, email, dan password admin.
+- **Tab Akun Saya:** Mengganti nama, username, nomor telepon, dan password admin.
 
 ### 11. Log Aktivitas (`/admin/log`)
 
@@ -153,8 +157,8 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (*Accessories &
    - Halaman login admin: `http://127.0.0.1:8000/admin/login`
    - Jika virtual host Laragon sudah dikonfigurasi: `http://abscafe.test/admin/login`
 
-6. Gunakan akun demo administrator:
-   - Email: `admin@abscafe.com`
+6. Gunakan akun awal administrator:
+   - Username: `admin`
    - Password: `admin123`
 
 ---

@@ -85,7 +85,7 @@
             </div>
 
             <!-- Middle Tagline & Info -->
-            <div class="relative z-10 my-6 sm:my-10 lg:my-16 space-y-3 sm:space-y-4">
+            <div class="relative z-10 my-6 sm:my-8 lg:my-10 space-y-3 sm:space-y-4">
                 <div class="hidden lg:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-[#D4954D] text-xs font-medium border border-[#D4954D]/20">
                     <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
                     <span>Satu Akses untuk Semua Peran</span>
@@ -126,12 +126,12 @@
         </div>
 
         <!-- Kolom Kanan: Form Login (Di mobile: Kartu krem naik membulat) -->
-        <div class="p-6 sm:p-12 lg:p-16 flex flex-col justify-center bg-[#FAFCF3] -mt-6 sm:mt-0 rounded-t-3xl sm:rounded-none relative z-20 shadow-lg sm:shadow-none flex-1">
+        <div class="p-6 sm:p-10 lg:p-12 flex flex-col justify-center bg-[#FAFCF3] -mt-6 sm:mt-0 rounded-t-3xl sm:rounded-none relative z-20 shadow-lg sm:shadow-none flex-1">
             <div class="max-w-md w-full mx-auto space-y-6">
                 <div>
                     <h3 class="font-serif text-2xl sm:text-3xl font-bold text-cafe-dark">Masuk ke Dashboard</h3>
                     <p class="text-xs sm:text-sm text-cafe-muted mt-1">
-                        Gunakan email atau username Anda. Sistem akan otomatis mengenali peran akun.
+                        Masuk dengan username Anda.
                     </p>
                 </div>
 
@@ -161,12 +161,12 @@
                 <form action="{{ route('login.post') }}" method="POST" class="space-y-4">
                     @csrf
 
-                    <!-- Email / Username -->
+                    <!-- Username -->
                     <div class="space-y-1.5">
-                        <label class="block text-xs font-semibold text-cafe-text">Email atau Username</label>
+                        <label class="block text-xs font-semibold text-cafe-text">Username</label>
                         <div class="relative">
                             <i data-lucide="user" class="w-4 h-4 text-cafe-muted absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                            <input type="text" name="login" id="login-input" value="{{ old('login') }}" required autofocus placeholder="email atau username" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs sm:text-sm text-cafe-text placeholder:text-cafe-muted/60 pl-11 pr-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">
+                            <input type="text" name="login" id="login-input" value="{{ old('login') }}" required autofocus placeholder="username" autocomplete="username" autocapitalize="none" spellcheck="false" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs sm:text-sm text-cafe-text placeholder:text-cafe-muted/60 pl-11 pr-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">
                         </div>
                     </div>
 
@@ -174,7 +174,7 @@
                     <div class="space-y-1.5">
                         <div class="flex items-center justify-between">
                             <label class="block text-xs font-semibold text-cafe-text">Kata Sandi</label>
-                            <a href="javascript:void(0)" onclick="showDemoHint()" class="text-xs text-cafe-brown hover:text-cafe-dark hover:underline font-medium">Lupa password?</a>
+                            <span class="text-xs text-cafe-muted">Lupa kata sandi? Hubungi admin.</span>
                         </div>
                         <div class="relative">
                             <i data-lucide="lock" class="w-4 h-4 text-cafe-muted absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
@@ -197,49 +197,6 @@
                         <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </button>
                 </form>
-
-                <!-- Demo Accounts -->
-                <div class="pt-4 border-t border-cafe-beige/60 space-y-2.5">
-                    <p class="text-[11px] font-semibold text-cafe-muted uppercase tracking-wide">Akun Demo</p>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                        <div class="p-3 rounded-2xl bg-cafe-beige/40 border border-cafe-beige/70">
-                            <div class="flex items-center gap-2">
-                                <i data-lucide="settings" class="w-4 h-4 text-cafe-bronze shrink-0"></i>
-                                <p class="text-[11px] font-bold text-cafe-dark">Administrator</p>
-                            </div>
-                            <p class="text-[10px] text-cafe-muted mt-1 font-mono">admin@abscafe.com</p>
-                            <p class="text-[10px] text-cafe-muted font-mono">admin123</p>
-                            <button type="button" onclick="useDemo('admin@abscafe.com', 'admin123')" class="mt-2 w-full text-[11px] font-bold text-cafe-brown hover:text-cafe-dark underline">
-                                Gunakan akun ini
-                            </button>
-                        </div>
-
-                        <div class="p-3 rounded-2xl bg-cafe-beige/40 border border-cafe-beige/70">
-                            <div class="flex items-center gap-2">
-                                <i data-lucide="crown" class="w-4 h-4 text-cafe-gold shrink-0"></i>
-                                <p class="text-[11px] font-bold text-cafe-dark">Owner</p>
-                            </div>
-                            <p class="text-[10px] text-cafe-muted mt-1 font-mono">owner@abscafe.com</p>
-                            <p class="text-[10px] text-cafe-muted font-mono">owner123</p>
-                            <button type="button" onclick="useDemo('owner@abscafe.com', 'owner123')" class="mt-2 w-full text-[11px] font-bold text-cafe-brown hover:text-cafe-dark underline">
-                                Gunakan akun ini
-                            </button>
-                        </div>
-
-                        <div class="p-3 rounded-2xl bg-cafe-beige/40 border border-cafe-beige/70">
-                            <div class="flex items-center gap-2">
-                                <i data-lucide="calculator" class="w-4 h-4 text-cafe-warning shrink-0"></i>
-                                <p class="text-[11px] font-bold text-cafe-dark">Kasir</p>
-                            </div>
-                            <p class="text-[10px] text-cafe-muted mt-1 font-mono">kasir@abscafe.com</p>
-                            <p class="text-[10px] text-cafe-muted font-mono">kasir123</p>
-                            <button type="button" onclick="useDemo('kasir@abscafe.com', 'kasir123')" class="mt-2 w-full text-[11px] font-bold text-cafe-brown hover:text-cafe-dark underline">
-                                Gunakan akun ini
-                            </button>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -258,16 +215,6 @@
                 eyeIcon.setAttribute('data-lucide', 'eye');
             }
             lucide.createIcons();
-        }
-
-        function useDemo(login, password) {
-            document.getElementById('login-input').value = login;
-            document.getElementById('password-input').value = password;
-            document.getElementById('login-input').focus();
-        }
-
-        function showDemoHint() {
-            alert('Untuk demonstrasi proyek, gunakan salah satu akun demo yang tersedia di bawah form ini:\n\nAdministrator: admin@abscafe.com / admin123\nOwner: owner@abscafe.com / owner123\nKasir: kasir@abscafe.com / kasir123');
         }
     </script>
 </body>

@@ -44,14 +44,14 @@ class MobileBottomNavigationTest extends TestCase
             'Meja & Metode Pembayaran',
             'Pengaturan Website',
             'Log Aktivitas',
-            'Keluar',
         ] as $label) {
             $this->assertContains($label, $sheetLabels);
         }
 
+        $this->assertNotContains('Keluar', $sheetLabels);
         $this->assertNotContains('Profil Saya', $sheetLabels);
 
-        $this->assertStringContainsString('action="'.route('admin.logout').'"', $sheet);
+        $this->assertStringNotContainsString('action="'.route('admin.logout').'"', $sheet);
         $this->assertStringNotContainsString('/admin/pesanan', $sheet);
         $this->assertStringNotContainsString('/admin/kategori', $sheet);
     }
@@ -108,10 +108,8 @@ class MobileBottomNavigationTest extends TestCase
         $sheet = $this->regionHtml($html, 'mobile-more-sheet');
         $sheetLabels = $this->labelsWithin($html, 'mobile-more-sheet');
 
-        foreach (['Pengaturan Bisnis', 'Keluar'] as $label) {
-            $this->assertContains($label, $sheetLabels);
-        }
-
+        $this->assertContains('Pengaturan Bisnis', $sheetLabels);
+        $this->assertNotContains('Keluar', $sheetLabels);
         $this->assertNotContains('Profil Saya', $sheetLabels);
 
         $this->assertStringNotContainsString('Manajemen User Staf', $sheet);
@@ -171,11 +169,11 @@ class MobileBottomNavigationTest extends TestCase
         foreach ([
             'Pembayaran & Struk',
             'Buka/Tutup Shift & Rekap Kas',
-            'Keluar',
         ] as $label) {
             $this->assertContains($label, $sheetLabels);
         }
 
+        $this->assertNotContains('Keluar', $sheetLabels);
         $this->assertNotContains('Profil Saya', $sheetLabels);
 
         $this->assertStringNotContainsString('Manajemen User Staf', $sheet);

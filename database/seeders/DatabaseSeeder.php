@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Users
         $admin = User::updateOrCreate(
-            ['email' => 'admin@abscafe.com'],
+            ['username' => 'admin'],
             [
                 'name' => 'Admin Utama ABS Cafe',
                 'username' => 'admin',
@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $owner = User::updateOrCreate(
-            ['email' => 'owner@abscafe.com'],
+            ['username' => 'owner'],
             [
                 'name' => 'Owner ABS Cafe',
                 'username' => 'owner',
@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $kasir1 = User::updateOrCreate(
-            ['email' => 'siti.kasir@abscafe.com'],
+            ['username' => 'siti_kasir'],
             [
                 'name' => 'Siti Rahma',
                 'username' => 'siti_kasir',
@@ -67,7 +67,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $kasir2 = User::updateOrCreate(
-            ['email' => 'budi.kasir@abscafe.com'],
+            ['username' => 'budi_kasir'],
             [
                 'name' => 'Budi Santoso',
                 'username' => 'budi_kasir',

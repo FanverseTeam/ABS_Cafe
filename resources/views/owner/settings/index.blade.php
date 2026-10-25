@@ -46,10 +46,6 @@
                             <input type="text" name="username" value="{{ old('username', $user->username) }}" required class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
                         </div>
                         <div class="space-y-1.5">
-                            <label class="text-xs font-semibold text-cafe-text">Email</label>
-                            <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
-                        </div>
-                        <div class="space-y-1.5">
                             <label class="text-xs font-semibold text-cafe-text">Telepon</label>
                             <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
                         </div>

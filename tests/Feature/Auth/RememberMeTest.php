@@ -15,12 +15,12 @@ class RememberMeTest extends TestCase
     public function test_login_with_remember_sets_recaller_cookie_and_stores_remember_token(): void
     {
         $admin = User::factory()->admin()->create([
-            'email' => 'admin@example.com',
+            'username' => 'adminuser',
             'password' => Hash::make('secret123'),
         ]);
 
         $response = $this->post('/login', [
-            'login' => 'admin@example.com',
+            'login' => 'adminuser',
             'password' => 'secret123',
             'remember' => '1',
         ]);
@@ -45,7 +45,7 @@ class RememberMeTest extends TestCase
     public function test_login_without_remember_does_not_set_recaller_cookie(): void
     {
         $admin = User::factory()->admin()->create([
-            'email' => 'admin@example.com',
+            'username' => 'adminuser',
             'password' => Hash::make('secret123'),
             'remember_token' => null,
         ]);
@@ -53,7 +53,7 @@ class RememberMeTest extends TestCase
         $this->assertNull($admin->fresh()->remember_token);
 
         $response = $this->post('/login', [
-            'login' => 'admin@example.com',
+            'login' => 'adminuser',
             'password' => 'secret123',
         ]);
 
@@ -67,12 +67,12 @@ class RememberMeTest extends TestCase
     public function test_login_without_remember_clears_previous_recaller_cookie_and_rotates_token(): void
     {
         $admin = User::factory()->admin()->create([
-            'email' => 'admin@example.com',
+            'username' => 'adminuser',
             'password' => Hash::make('secret123'),
         ]);
 
         $firstLogin = $this->post('/login', [
-            'login' => 'admin@example.com',
+            'login' => 'adminuser',
             'password' => 'secret123',
             'remember' => '1',
         ]);
@@ -89,7 +89,7 @@ class RememberMeTest extends TestCase
 
         $secondLogin = $this->withCookie($recallerName, $oldCookie->getValue())
             ->post('/login', [
-                'login' => 'admin@example.com',
+                'login' => 'adminuser',
                 'password' => 'secret123',
             ]);
 
@@ -113,12 +113,12 @@ class RememberMeTest extends TestCase
     public function test_session_loss_without_remember_redirects_to_login(): void
     {
         $admin = User::factory()->admin()->create([
-            'email' => 'admin@example.com',
+            'username' => 'adminuser',
             'password' => Hash::make('secret123'),
         ]);
 
         $this->post('/login', [
-            'login' => 'admin@example.com',
+            'login' => 'adminuser',
             'password' => 'secret123',
         ])->assertRedirect($this->adminHomeRoute());
 
@@ -143,12 +143,12 @@ class RememberMeTest extends TestCase
     public function test_clearing_session_cookie_keeps_user_authenticated_via_remember_cookie(): void
     {
         $admin = User::factory()->admin()->create([
-            'email' => 'admin@example.com',
+            'username' => 'adminuser',
             'password' => Hash::make('secret123'),
         ]);
 
         $loginResponse = $this->post('/login', [
-            'login' => 'admin@example.com',
+            'login' => 'adminuser',
             'password' => 'secret123',
             'remember' => '1',
         ]);
@@ -172,12 +172,12 @@ class RememberMeTest extends TestCase
     public function test_logout_invalidates_remember_cookie_and_cycles_remember_token(): void
     {
         $admin = User::factory()->admin()->create([
-            'email' => 'admin@example.com',
+            'username' => 'adminuser',
             'password' => Hash::make('secret123'),
         ]);
 
         $loginResponse = $this->post('/login', [
-            'login' => 'admin@example.com',
+            'login' => 'adminuser',
             'password' => 'secret123',
             'remember' => '1',
         ]);
@@ -212,13 +212,13 @@ class RememberMeTest extends TestCase
     public function test_inactive_account_with_remember_cookie_is_rejected(): void
     {
         $admin = User::factory()->admin()->create([
-            'email' => 'admin@example.com',
+            'username' => 'adminuser',
             'password' => Hash::make('secret123'),
             'status' => 'aktif',
         ]);
 
         $loginResponse = $this->post('/login', [
-            'login' => 'admin@example.com',
+            'login' => 'adminuser',
             'password' => 'secret123',
             'remember' => '1',
         ]);
@@ -253,12 +253,12 @@ class RememberMeTest extends TestCase
     public function test_password_change_invalidates_remember_cookie(): void
     {
         $admin = User::factory()->admin()->create([
-            'email' => 'admin@example.com',
+            'username' => 'adminuser',
             'password' => Hash::make('secret123'),
         ]);
 
         $loginResponse = $this->post('/login', [
-            'login' => 'admin@example.com',
+            'login' => 'adminuser',
             'password' => 'secret123',
             'remember' => '1',
         ]);
@@ -343,21 +343,21 @@ class RememberMeTest extends TestCase
         $roles = [
             'admin' => [
                 'factory' => 'admin',
-                'email' => 'admin_logout@example.com',
+                'username' => 'admin_logout',
                 'logout' => 'admin.logout',
                 'home' => 'admin.dashboard',
                 'redirect' => 'admin.login',
             ],
             'owner' => [
                 'factory' => 'owner',
-                'email' => 'owner_logout@example.com',
+                'username' => 'owner_logout',
                 'logout' => 'owner.logout',
                 'home' => 'owner.dashboard',
                 'redirect' => 'login',
             ],
             'kasir' => [
                 'factory' => 'kasir',
-                'email' => 'kasir_logout@example.com',
+                'username' => 'kasir_logout',
                 'logout' => 'kasir.logout',
                 'home' => 'kasir.dashboard',
                 'redirect' => 'login',
@@ -366,12 +366,12 @@ class RememberMeTest extends TestCase
 
         foreach ($roles as $role => $config) {
             $user = User::factory()->{$config['factory']}()->create([
-                'email' => $config['email'],
+                'username' => $config['username'],
                 'password' => Hash::make('secret123'),
             ]);
 
             $loginResponse = $this->post('/login', [
-                'login' => $config['email'],
+                'login' => $config['username'],
                 'password' => 'secret123',
                 'remember' => '1',
             ]);
