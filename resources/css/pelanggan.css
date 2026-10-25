@@ -1,0 +1,48 @@
+@import 'tailwindcss';
+
+@source '../views/pelanggan/**/*.blade.php';
+
+@theme {
+    /* Tipografi */
+    --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-serif: 'Noto Serif', Georgia, serif;
+
+    /* Palet ABS Cafe */
+    --color-beige: #f2f5e2;
+    --color-beige-50: #fafcf3;
+    --color-beige-100: #f2f5e2;
+    --color-beige-200: #e8edd0;
+
+    --color-custard: #e3dea4;
+    --color-custard-100: #f1eecb;
+    --color-custard-200: #e3dea4;
+    --color-custard-300: #d4cd7d;
+
+    --color-apricot: #d4954d;
+    --color-apricot-100: #f6e3c9;
+    --color-apricot-200: #e8bd85;
+    --color-apricot-300: #d4954d;
+    --color-apricot-400: #b87c37;
+    --color-apricot-500: #9a6528;
+
+    --color-olive: #775533;
+    --color-olive-100: #cdbba5;
+    --color-olive-200: #a78b68;
+    --color-olive-300: #775533;
+    --color-olive-400: #5c4127;
+    --color-olive-500: #3f2c1b;
+
+    --color-midnight: #290024;
+    --color-midnight-100: #6b4a63;
+    --color-midnight-200: #4a2440;
+    --color-midnight-300: #290024;
+    --color-midnight-400: #1c0019;
+    --color-midnight-500: #12000f;
+}
+
+@layer base {
+    body {
+        @apply antialiased;
+    }
+}

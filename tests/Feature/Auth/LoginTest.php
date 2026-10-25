@@ -35,9 +35,10 @@ class LoginTest extends TestCase
         );
     }
 
-    public function test_root_redirects_to_staf_landing(): void
+    public function test_root_returns_customer_landing_page_and_staf_route_shows_splash(): void
     {
-        $this->get('/')->assertRedirect(route('staf.landing'));
+        $this->get('/')->assertOk()->assertSee('ABS Cafe');
+        $this->get(route('staf.landing'))->assertOk()->assertSee('Selamat Datang');
     }
 
     public function test_admin_can_login_with_username_and_is_redirected_to_admin_dashboard(): void

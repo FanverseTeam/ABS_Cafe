@@ -256,8 +256,8 @@ class AdminWorkspaceTest extends TestCase
             'cafe_address' => 'Alamat Baru',
             'cafe_phone' => '081200000000',
             'cafe_email' => 'halo@abscafe.com',
-            'hours_weekday' => '08:00 - 22:00',
-            'hours_weekend' => '08:00 - 23:00',
+            'hours_weekday' => '09:00 - 23:00',
+            'hours_weekend' => '09:00 - 23:00',
         ])->assertRedirect(route('admin.website.index', ['tab' => 'profil']));
 
         $this->assertDatabaseHas('pengaturan', ['key' => 'cafe_name', 'value' => 'ABS Cafe Baru']);

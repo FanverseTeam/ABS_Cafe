@@ -34,8 +34,8 @@ class SettingTest extends TestCase
             'cafe_address' => 'Alamat',
             'cafe_phone' => '0812',
             'cafe_email' => 'halo@abscafe.com',
-            'hours_weekday' => '08:00 - 22:00',
-            'hours_weekend' => '08:00 - 23:00',
+            'hours_weekday' => '09:00 - 23:00',
+            'hours_weekend' => '09:00 - 23:00',
         ])->assertRedirect(route('admin.settings.index', ['tab' => 'profil']));
 
         $this->assertSame('ABS Cafe Baru', CafeSetting::get('cafe_name'));

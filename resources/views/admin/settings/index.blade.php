@@ -78,14 +78,45 @@
                     </div>
                 </div>
 
+                <div class="space-y-1 pt-1">
+                    <label class="font-semibold text-cafe-dark">Tautan Google Maps</label>
+                    <input type="url" name="cafe_maps_url" value="{{ $settings['cafe_maps_url'] ?? '' }}" placeholder="https://maps.app.goo.gl/..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <p class="text-[10px] text-cafe-muted">Tautan yang dibuka ketika pengunjung mengklik tombol "Lihat di Google Maps".</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                    <div class="space-y-1">
+                        <label class="font-semibold text-cafe-dark">Koordinat Latitude (Peta &amp; Schema)</label>
+                        <input type="text" name="peta_lat" value="{{ $settings['peta_lat'] ?? '-8.0646338' }}" placeholder="-8.0646338" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        @error('peta_lat')<p class="text-[10px] text-red-600 mt-1">{{ $message }}</p>@enderror
+                    </div>
+                    <div class="space-y-1">
+                        <label class="font-semibold text-cafe-dark">Koordinat Longitude (Peta &amp; Schema)</label>
+                        <input type="text" name="peta_lng" value="{{ $settings['peta_lng'] ?? '111.9111798' }}" placeholder="111.9111798" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        @error('peta_lng')<p class="text-[10px] text-red-600 mt-1">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+                <p class="text-[10px] text-cafe-muted mt-1">Ambil koordinat dari tautan Google Maps bagian !3d dan !4d, bukan angka setelah tanda @ (itu titik tengah peta).</p>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Jam Buka Hari Kerja (Senin - Kamis)</label>
-                        <input type="text" name="hours_weekday" value="{{ $settings['hours_weekday'] }}" placeholder="09:00 - 22:00" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="hours_weekday" value="{{ $settings['hours_weekday'] }}" placeholder="09:00 - 23:00" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Jam Buka Akhir Pekan (Jumat - Minggu)</label>
-                        <input type="text" name="hours_weekend" value="{{ $settings['hours_weekend'] }}" placeholder="09:00 - 23:30" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="hours_weekend" value="{{ $settings['hours_weekend'] }}" placeholder="09:00 - 23:00" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                    <div class="space-y-1">
+                        <label class="font-semibold text-cafe-dark">Teks Jam Buka Beranda</label>
+                        <input type="text" name="cafe_hours" value="{{ $settings['cafe_hours'] ?? '' }}" placeholder="Buka Setiap Hari 09.00 - 23.00 WIB" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="font-semibold text-cafe-dark">Batas Order Terakhir (Last Order)</label>
+                        <input type="text" name="last_order" value="{{ $settings['last_order'] ?? '' }}" placeholder="22.00 WIB" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                 </div>
 

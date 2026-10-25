@@ -1,6 +1,10 @@
-# ABS Cafe — Web App Halaman Admin (Back-Office)
+# ABS Cafe — Web App (Customer & Back-Office)
 
-Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (*Accessories & Cafe*), Boyolangu, Kabupaten Tulungagung. Dikembangkan menggunakan **Laravel (PHP, Blade, CSS Tailwind, dan JavaScript)** dengan nuansa hangat ala coffee shop premium (palet coklat dan krem).
+Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (*Accessories & Cafe*), Kabupaten Tulungagung. Dikembangkan menggunakan **Laravel (PHP, Blade, CSS Tailwind, dan JavaScript)** dengan nuansa hangat ala coffee shop premium (palet coklat dan krem).
+
+- **Alamat:** Jl. Letjend Suprapto No.44, Kepatihan, Kec. Tulungagung, Kabupaten Tulungagung, Jawa Timur 66219
+- **Telepon:** 0896-2010-2010
+- **Jam Operasional:** Setiap Hari 09.00 - 23.00 WIB (Last Order: 22.00 WIB)
 
 ---
 

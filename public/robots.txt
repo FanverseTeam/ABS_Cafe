@@ -1,2 +1,10 @@
 User-agent: *
-Disallow:
+Disallow: /staf
+Disallow: /login
+Disallow: /admin
+Disallow: /owner
+Disallow: /kasir
+
+Allow: /
+Allow: /menu
+Allow: /reservasi
