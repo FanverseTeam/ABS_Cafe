@@ -217,7 +217,6 @@
                         <th class="py-3.5 px-3">No. HP</th>
                         <th class="py-3.5 px-3">Peran</th>
                         <th class="py-3.5 px-3">Status</th>
-                        <th class="py-3.5 px-3">Login Terakhir</th>
                         <th class="py-3.5 pr-6 text-right">Aksi</th>
                     </tr>
                 </thead>
@@ -247,9 +246,6 @@
                                 <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold {{ $user->status === 'aktif' ? 'bg-cafe-success/15 text-cafe-success' : 'bg-cafe-muted/15 text-cafe-muted' }}">
                                     {{ ucfirst($user->status) }}
                                 </span>
-                            </td>
-                            <td class="py-4 px-3 text-cafe-muted">
-                                {{ $user->last_login_at ? $user->last_login_at->diffForHumans() : 'Belum pernah' }}
                             </td>
                             <td class="py-4 pr-6 text-right">
                                 <div class="flex items-center justify-end gap-1.5">
