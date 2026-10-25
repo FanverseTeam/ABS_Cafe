@@ -36,6 +36,11 @@ class StaffController extends Controller
         return view('admin.staff.index', compact('users'));
     }
 
+    public function create()
+    {
+        return view('admin.staff.create');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -72,7 +77,14 @@ class StaffController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return back()->with('success', "Pengguna {$user->name} berhasil ditambahkan!");
+        return redirect()->route('admin.staff.index')->with('success', "Pengguna {$user->name} berhasil ditambahkan!");
+    }
+
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+
+        return view('admin.staff.edit', compact('user'));
     }
 
     public function update(Request $request, $id)
@@ -112,7 +124,7 @@ class StaffController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return back()->with('success', "Data pengguna {$user->name} berhasil disimpan.");
+        return redirect()->route('admin.staff.index')->with('success', "Data pengguna {$user->name} berhasil disimpan.");
     }
 
     public function toggleStatus($id)

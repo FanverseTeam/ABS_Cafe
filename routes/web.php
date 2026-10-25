@@ -82,7 +82,9 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
     // 1. Manajemen User Staf & Hak Akses
     Route::prefix('staf')->name('staff.')->group(function () {
         Route::get('/', [StaffController::class, 'index'])->name('index');
+        Route::get('/tambah', [StaffController::class, 'create'])->name('create');
         Route::post('/store', [StaffController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [StaffController::class, 'edit'])->name('edit');
         Route::post('/{id}/update', [StaffController::class, 'update'])->name('update');
         Route::post('/{id}/toggle-status', [StaffController::class, 'toggleStatus'])->name('toggle.status');
         Route::post('/{id}/reset-password', [StaffController::class, 'resetPassword'])->name('reset_password');

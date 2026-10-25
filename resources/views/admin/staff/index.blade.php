@@ -22,10 +22,10 @@
             <p class="text-xs text-cafe-muted mt-0.5">Kelola akun administrator, kasir kasir, dan staf barista ABS Cafe</p>
         </div>
 
-        <button onclick="openUserModal()" class="px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all flex items-center gap-2">
+        <a href="{{ route('admin.staff.create') }}" class="px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all flex items-center gap-2 active:scale-95">
             <i data-lucide="user-plus" class="w-4 h-4"></i>
             <span>Tambah Staf Baru</span>
-        </button>
+        </a>
     </div>
 
     <!-- Filters & Search Toolbar -->
@@ -111,9 +111,9 @@
                         <button onclick="openResetPassModal({{ $user->id }}, '{{ addslashes($user->name) }}')" class="p-2 rounded-full bg-cafe-gold/20 text-cafe-dark hover:bg-cafe-gold/40" title="Reset Password">
                             <i data-lucide="key-round" class="w-3.5 h-3.5"></i>
                         </button>
-                        <button onclick="editUserModal({{ json_encode($user) }})" class="p-2 rounded-full bg-cafe-beige/70 text-cafe-dark hover:bg-cafe-beige" title="Edit">
+                        <a href="{{ route('admin.staff.edit', $user->id) }}" class="p-2 rounded-full bg-cafe-beige/70 text-cafe-dark hover:bg-cafe-beige flex items-center justify-center transition-colors" title="Edit">
                             <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                        </button>
+                        </a>
                         @if($user->id !== Auth::id())
                             <form action="{{ route('admin.staff.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Hapus pengguna ini?');" class="inline">
                                 @csrf
@@ -163,9 +163,9 @@
                             <button onclick="openResetPassModal({{ $user->id }}, '{{ addslashes($user->name) }}')" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-gold hover:text-cafe-dark" title="Reset Password">
                                 <i data-lucide="key-round" class="w-3.5 h-3.5"></i>
                             </button>
-                            <button onclick="editUserModal({{ json_encode($user) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark" title="Edit">
+                            <a href="{{ route('admin.staff.edit', $user->id) }}" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark inline-flex items-center justify-center transition-colors" title="Edit">
                                 <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                            </button>
+                            </a>
                             @if($user->id !== Auth::id())
                                 <form action="{{ route('admin.staff.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Hapus pengguna ini?');" class="inline">
                                     @csrf
@@ -187,141 +187,69 @@
     </x-responsive-table>
 </div>
 
-<!-- MODAL FORM TAMBAH / EDIT USER (Bottom Sheet on Mobile) -->
-<div id="user-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#290024]/60 backdrop-blur-sm" onclick="closeUserModal()"></div>
+<!-- MODAL RESET PASSWORD -->
+<div id="reset-pass-modal" class="fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6 overflow-y-auto hidden">
+    <div class="fixed inset-0 bg-[#290024]/50 backdrop-blur-sm transition-opacity" onclick="closeResetPassModal()"></div>
 
-    <div class="relative w-full max-w-lg bg-cafe-card rounded-t-[2rem] sm:rounded-2xl shadow-soft-lg border-t sm:border border-cafe-beige/60 overflow-hidden z-10 pb-[max(1rem,env(safe-area-inset-bottom))]">
-        <!-- Handle for mobile -->
-        <div class="sm:hidden w-full pt-3 pb-1 flex justify-center cursor-pointer" onclick="closeUserModal()">
-            <div class="w-12 h-1 bg-[#775533]/30 rounded-full"></div>
+    <div class="relative w-full max-w-sm bg-cafe-card rounded-t-[2rem] sm:rounded-3xl shadow-soft-lg border-t sm:border border-cafe-beige/60 z-10 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200">
+        <!-- Drag Handle for Mobile -->
+        <div class="sm:hidden w-full pt-3 pb-1 flex justify-center cursor-pointer shrink-0" onclick="closeResetPassModal()">
+            <div class="w-12 h-1.5 bg-[#775533]/25 rounded-full"></div>
         </div>
 
-        <div class="flex items-center justify-between px-6 py-4 border-b border-cafe-beige/50 bg-[#F2F5E2]/40">
-            <div>
-                <h3 class="font-serif text-lg font-bold text-cafe-dark" id="user-modal-title">Tambah Staf Baru</h3>
-                <p class="text-[10px] sm:text-xs text-cafe-muted mt-0.5">Daftarkan akun kasir, barista, atau admin operasional.</p>
+        <div class="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-cafe-beige/60 bg-[#F2F5E2]/80 backdrop-blur-md shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-2xl bg-cafe-gold/20 text-cafe-dark flex items-center justify-center shrink-0">
+                    <i data-lucide="key-round" class="w-4 h-4 text-cafe-gold"></i>
+                </div>
+                <div>
+                    <h4 class="font-serif text-base font-bold text-cafe-dark">Reset Password</h4>
+                    <p class="text-[10px] text-cafe-muted truncate max-w-[12rem] sm:max-w-[14rem]" id="reset-pass-name">-</p>
+                </div>
             </div>
-            <button onclick="closeUserModal()" class="w-8 h-8 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-muted hover:text-cafe-dark flex items-center justify-center">
+            <button type="button" onclick="closeResetPassModal()" class="w-8 h-8 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-muted hover:text-cafe-dark flex items-center justify-center transition-colors active:scale-95" aria-label="Tutup">
                 <i data-lucide="x" class="w-4 h-4"></i>
             </button>
         </div>
 
-        <form id="user-form" method="POST" action="{{ route('admin.staff.store') }}" class="p-6 space-y-4 text-xs">
+        <form id="reset-pass-form" method="POST" action="" class="p-5 sm:p-6 space-y-4 text-xs">
             @csrf
             <div class="space-y-1">
-                <label class="font-semibold text-cafe-dark">Nama Lengkap *</label>
-                <input type="text" name="name" id="u-name" required placeholder="misal: Siti Rahma" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Username *</label>
-                    <input type="text" name="username" id="u-username" required placeholder="siti_kasir" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <label class="font-semibold text-cafe-dark block text-[11px] sm:text-xs">Password Baru</label>
+                <div class="relative">
+                    <i data-lucide="lock" class="w-4 h-4 text-cafe-muted/60 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                    <input type="text" name="new_password" value="password123" required class="w-full bg-[#FAFCF3] focus:bg-white text-xs text-cafe-dark pl-9 pr-3.5 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none font-mono transition-all shadow-sm">
                 </div>
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Peran / Jabatan *</label>
-                    <select name="role" id="u-role" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                        <option value="kasir">Kasir</option>
-                        <option value="staf">Staf (Barista/Kitchen)</option>
-                        <option value="admin">Administrator</option>
-                    </select>
-                </div>
-            </div>
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Nomor Telepon (WhatsApp)</label>
-                    <input type="text" name="phone" id="u-phone" placeholder="08123456789" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
+                <p class="text-[10px] text-cafe-muted mt-1">Default: <code class="font-mono font-bold text-cafe-dark">password123</code> (dapat diganti oleh staf setelah login)</p>
             </div>
 
-            <div class="space-y-1" id="u-pass-container">
-                <label class="font-semibold text-cafe-dark">Password Awal *</label>
-                <input type="password" name="password" id="u-pass" placeholder="••••••••" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                <p class="text-[10px] text-cafe-muted" id="u-pass-note">Kosongkan jika tidak ingin mengubah password saat mengedit.</p>
-            </div>
-
-            <div class="space-y-1">
-                <label class="font-semibold text-cafe-dark">Status Akun *</label>
-                <select name="status" id="u-status" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                    <option value="aktif">Aktif</option>
-                    <option value="nonaktif">Nonaktif</option>
-                </select>
-            </div>
-
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-cafe-beige">
-                <button type="button" onclick="closeUserModal()" class="px-5 py-2.5 rounded-full text-xs font-semibold text-cafe-dark hover:bg-cafe-beige/60">Batal</button>
-                <button type="submit" class="px-6 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all">Simpan Pengguna</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- MODAL RESET PASSWORD -->
-<div id="reset-pass-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeResetPassModal()"></div>
-
-    <div class="relative w-full max-w-sm bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8 p-6 space-y-4">
-        <div>
-            <h4 class="font-serif text-lg font-bold text-cafe-dark">Reset Password</h4>
-            <p class="text-xs text-cafe-muted mt-0.5" id="reset-pass-name">-</p>
-        </div>
-
-        <form id="reset-pass-form" method="POST" action="" class="space-y-3 text-xs">
-            @csrf
-            <div class="space-y-1">
-                <label class="font-semibold text-cafe-dark">Password Baru</label>
-                <input type="text" name="new_password" value="password123" required class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none font-mono">
-            </div>
-
-            <div class="flex items-center justify-end gap-3 pt-3 border-t border-cafe-beige/60">
-                <button type="button" onclick="closeResetPassModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-cafe-dark hover:bg-cafe-beige/60">Batal</button>
-                <button type="submit" class="px-5 py-2 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-sm">Reset Sekarang</button>
+            <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-cafe-beige/60">
+                <button type="button" onclick="closeResetPassModal()" class="px-4 py-2.5 rounded-xl border border-cafe-beige bg-cafe-card hover:bg-cafe-beige/60 text-xs font-semibold text-cafe-dark transition-all active:scale-95">Batal</button>
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-sm transition-all active:scale-95">Reset Sekarang</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
-    function openUserModal() {
-        document.getElementById('user-modal-title').innerText = 'Tambah Staf Baru';
-        document.getElementById('user-form').action = "{{ route('admin.staff.store') }}";
-        document.getElementById('u-name').value = '';
-        document.getElementById('u-username').value = '';
-        document.getElementById('u-role').value = 'kasir';
-        document.getElementById('u-phone').value = '';
-        document.getElementById('u-pass').required = true;
-        document.getElementById('u-pass').value = '';
-        document.getElementById('u-pass-note').classList.add('hidden');
-        document.getElementById('u-status').value = 'aktif';
-        document.getElementById('user-modal').classList.remove('hidden');
-    }
-
-    function editUserModal(user) {
-        document.getElementById('user-modal-title').innerText = `Edit Staf: ${user.name}`;
-        document.getElementById('user-form').action = `/admin/staf/${user.id}/update`;
-        document.getElementById('u-name').value = user.name;
-        document.getElementById('u-username').value = user.username || '';
-        document.getElementById('u-role').value = user.role;
-        document.getElementById('u-phone').value = user.phone || '';
-        document.getElementById('u-pass').required = false;
-        document.getElementById('u-pass').value = '';
-        document.getElementById('u-pass-note').classList.remove('hidden');
-        document.getElementById('u-status').value = user.status;
-        document.getElementById('user-modal').classList.remove('hidden');
-    }
-
-    function closeUserModal() {
-        document.getElementById('user-modal').classList.add('hidden');
-    }
-
     function openResetPassModal(id, name) {
         document.getElementById('reset-pass-name').innerText = `Atur password baru untuk ${name}`;
         document.getElementById('reset-pass-form').action = `/admin/staf/${id}/reset-password`;
         document.getElementById('reset-pass-modal').classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+        if (window.lucide) lucide.createIcons();
     }
 
     function closeResetPassModal() {
         document.getElementById('reset-pass-modal').classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
     }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeResetPassModal();
+        }
+    });
 </script>
 @endsection
