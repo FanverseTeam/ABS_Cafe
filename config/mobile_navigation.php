@@ -209,7 +209,7 @@ return [
                 ],
                 [
                     'key' => 'pos',
-                    'label' => 'POS',
+                    'label' => 'Menu',
                     'route' => 'kasir.pos.index',
                     'icon' => 'calculator',
                     'active' => ['kasir.pos.*'],

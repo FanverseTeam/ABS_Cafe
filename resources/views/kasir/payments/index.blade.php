@@ -25,7 +25,7 @@
             <p class="text-xs text-cafe-muted mt-4">Tidak ada tagihan menunggu pembayaran. Semua pesanan sudah lunas!</p>
         </div>
     @else
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 landscape:grid-cols-2 lg:landscape:grid-cols-3 gap-3 sm:gap-4">
             @foreach($unpaid as $order)
                 <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft overflow-hidden flex flex-col">
                     <div class="px-5 py-4 border-b border-cafe-beige/50 flex items-center justify-between bg-cafe-cream/50">

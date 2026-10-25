@@ -26,7 +26,7 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:landscape:grid-cols-5 lg:grid-cols-5 gap-3">
                 <div class="p-4 rounded-2xl bg-white/10 border border-white/10 text-center">
                     <p class="text-[10px] text-[#F2F5E2]/70 uppercase tracking-wide">Transaksi</p>
                     <p class="font-serif text-xl font-bold text-[#D4954D] mt-1">{{ $summary['orders_count'] }}</p>
@@ -53,9 +53,9 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:landscape:grid-cols-3 lg:grid-cols-3 gap-6">
         <!-- Pesanan dalam shift -->
-        <div class="lg:col-span-2 bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft overflow-hidden">
+        <div class="md:landscape:col-span-2 lg:col-span-2 bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft overflow-hidden">
             <div class="px-6 py-4 border-b border-cafe-beige/50">
                 <h3 class="font-serif font-bold text-sm text-cafe-dark">Pesanan pada Shift Ini</h3>
             </div>

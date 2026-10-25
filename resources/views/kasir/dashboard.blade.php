@@ -39,9 +39,29 @@
         </div>
     @endif
 
+    <!-- Quick Action: Pesan Manual untuk Customer -->
+    <div class="bg-gradient-to-r from-[#290024] via-[#3D1236] to-[#775533] text-[#FAFCF3] rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-soft-lg flex flex-col sm:flex-row items-center justify-between gap-3 border border-[#D4954D]/30">
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#D4954D] text-[#290024] flex items-center justify-center shrink-0 shadow">
+                <i data-lucide="plus-circle" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+            </div>
+            <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                    <h3 class="font-serif font-bold text-sm sm:text-base text-[#FAFCF3] truncate">Pesan Manual untuk Customer</h3>
+                    <span class="text-[9px] bg-[#D4954D] text-[#290024] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kasir Mobile</span>
+                </div>
+                <p class="text-[11px] text-[#E3DEA4] truncate">Catat pesanan pelanggan langsung di kasir atau pesan antar meja (Dine In & Take Away)</p>
+            </div>
+        </div>
+        <a href="{{ route('kasir.pos.index') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#D4954D] hover:bg-[#c4853d] text-[#290024] text-xs font-bold shadow-md transition-all active:scale-95 shrink-0">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>Buat Pesanan Sekarang</span>
+        </a>
+    </div>
+
     <!-- Stat Cards -->
     @if($shift && $summary)
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 landscape:grid-cols-4 gap-3 sm:gap-4">
             <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 p-5 shadow-soft">
                 <div class="flex items-center justify-between">
                     <p class="text-[11px] font-semibold text-cafe-muted uppercase tracking-wide">Penjualan Shift</p>

@@ -141,6 +141,17 @@ class OrderServiceTest extends TestCase
         $this->assertDatabaseHas('pesanan_riwayat', ['order_id' => $order->id, 'status' => 'SIAP']);
     }
 
+    public function test_advance_status_from_baru_to_diproses(): void
+    {
+        $order = Order::factory()->create(['source' => 'offline', 'order_status' => 'baru']);
+        $user = User::factory()->kasir()->create();
+
+        $this->service->advanceStatus($order, $user, 'diproses');
+
+        $this->assertSame('diproses', $order->fresh()->order_status);
+        $this->assertDatabaseHas('pesanan_riwayat', ['order_id' => $order->id, 'status' => 'DIPROSES']);
+    }
+
     public function test_advance_status_rejects_invalid_target(): void
     {
         $order = Order::factory()->create(['source' => 'offline', 'order_status' => 'diproses']);

@@ -41,4 +41,9 @@ class PaymentMethod extends Model
             default => 'credit-card',
         };
     }
+
+    public function getIconAttribute(): string
+    {
+        return $this->icon();
+    }
 }

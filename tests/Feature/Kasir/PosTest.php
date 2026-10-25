@@ -81,14 +81,16 @@ class PosTest extends TestCase
 
         $this->post('/kasir/pos/store', [
             'order_type' => 'take_away',
+            'customer_name' => 'Budi Santoso',
             'cart' => $this->cart($menu, 2),
             'action' => 'save',
         ])->assertRedirect(route('kasir.pos.index'));
 
         $this->assertDatabaseHas('pesanan', [
             'cash_shift_id' => $shift->id,
+            'customer_name' => 'Budi Santoso',
             'payment_status' => 'menunggu_pembayaran',
-            'order_status' => 'diproses',
+            'order_status' => 'baru',
             'source' => 'offline',
         ]);
         $this->assertDatabaseHas('pesanan_item', ['name' => $menu->name, 'quantity' => 2]);
@@ -102,6 +104,7 @@ class PosTest extends TestCase
 
         $response = $this->post('/kasir/pos/store', [
             'order_type' => 'take_away',
+            'customer_name' => 'Siti Rahma',
             'cart' => $this->cart($menu),
             'action' => 'pay',
             'payment_method' => 'tunai',
@@ -122,11 +125,26 @@ class PosTest extends TestCase
 
         $this->post('/kasir/pos/store', [
             'order_type' => 'dine_in',
+            'customer_name' => 'Andi',
             'cart' => $this->cart($menu),
             'action' => 'save',
         ])->assertSessionHas('error');
 
         $this->assertDatabaseCount('pesanan', 0);
+    }
+
+    public function test_store_requires_customer_name(): void
+    {
+        $this->actingAsKasir();
+        $this->openShift();
+        $menu = Menu::factory()->create();
+
+        $this->post('/kasir/pos/store', [
+            'order_type' => 'take_away',
+            'customer_name' => '',
+            'cart' => $this->cart($menu),
+            'action' => 'save',
+        ])->assertSessionHasErrors(['customer_name']);
     }
 
     public function test_store_rejects_empty_cart(): void
@@ -136,6 +154,7 @@ class PosTest extends TestCase
 
         $this->post('/kasir/pos/store', [
             'order_type' => 'take_away',
+            'customer_name' => 'Andi',
             'cart' => '[]',
             'action' => 'save',
         ])->assertSessionHas('error');
@@ -150,6 +169,7 @@ class PosTest extends TestCase
 
         $this->post('/kasir/pos/store', [
             'order_type' => 'dine_in',
+            'customer_name' => 'Rian',
             'table_number' => 9,
             'cart' => $this->cart($menu),
             'action' => 'save',

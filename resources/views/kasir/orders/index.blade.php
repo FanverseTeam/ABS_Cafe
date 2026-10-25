@@ -5,8 +5,32 @@
 
 @section('content')
 <div class="space-y-4 lg:space-y-5">
-    {{-- Mobile FAB for Pesanan Baru --}}
-    <x-mobile.fab icon="plus" label="Pesanan Baru" href="{{ route('kasir.pos.index') }}" />
+    {{-- Dedicated Mobile Floating Action Button (Pesan Manual) --}}
+    <div class="lg:hidden fixed z-30 right-4 sm:right-6 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] landscape:bottom-[calc(3.75rem+env(safe-area-inset-bottom))]">
+        <a href="{{ route('kasir.pos.index') }}"
+           class="flex items-center gap-2 px-4 py-3 rounded-full bg-[#290024] hover:bg-[#775533] text-[#FAFCF3] border border-[#D4954D]/60 shadow-xl active:scale-95 transition-transform"
+           aria-label="Pesan Manual untuk Customer">
+            <i data-lucide="plus-circle" class="w-5 h-5 text-cafe-gold shrink-0"></i>
+            <span class="text-xs font-bold whitespace-nowrap">Pesan Manual</span>
+        </a>
+    </div>
+
+    <!-- Pesan Manual Quick Card on Mobile / Tablet -->
+    <div class="lg:hidden bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4] p-3 sm:p-4 shadow-soft flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded-xl bg-cafe-gold/20 text-[#290024] flex items-center justify-center shrink-0">
+                <i data-lucide="utensils" class="w-4 h-4 text-cafe-gold"></i>
+            </div>
+            <div class="min-w-0">
+                <p class="text-xs font-bold text-cafe-dark truncate">Pesan Manual untuk Customer</p>
+                <p class="text-[10px] text-cafe-muted truncate">Catat pesanan walk-in / pesan langsung di meja</p>
+            </div>
+        </div>
+        <a href="{{ route('kasir.pos.index') }}" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#B87C3C] transition-all shadow-sm shrink-0">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>Pesan</span>
+        </a>
+    </div>
 
     <!-- Tabs & Filter -->
     <div class="flex items-center justify-between gap-3">
@@ -48,21 +72,25 @@
 
         <!-- Desktop Action Button -->
         <a href="{{ route('kasir.pos.index') }}" class="hidden lg:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#B87C3C] transition-colors shadow-md shrink-0">
-            <i data-lucide="plus" class="w-4 h-4"></i>
-            Pesanan Baru
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            Pesan Manual (Customer)
         </a>
     </div>
 
     <!-- List Pesanan -->
     @if($orders->count() === 0)
-        <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-10 text-center">
+        <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-8 sm:p-10 text-center">
             <div class="w-16 h-16 mx-auto rounded-full bg-cafe-cream flex items-center justify-center text-cafe-muted">
                 <i data-lucide="inbox" class="w-7 h-7"></i>
             </div>
             <p class="text-xs text-cafe-muted mt-4">Tidak ada pesanan pada tab ini.</p>
+            <a href="{{ route('kasir.pos.index') }}" class="mt-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#B87C3C] transition-colors shadow-md">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                Buat Pesanan Manual untuk Customer
+            </a>
         </div>
     @else
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 landscape:grid-cols-2 lg:landscape:grid-cols-3 gap-3 sm:gap-4">
             @foreach($orders as $order)
                 @php $statusBadge = $order->orderStatusBadge(); $payBadge = $order->paymentStatusBadge(); @endphp
                 <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft overflow-hidden flex flex-col">
@@ -111,39 +139,90 @@
                         </div>
 
                         @php
-                            $flow = $order->source === 'web'
-                                ? ['baru', 'diterima', 'diproses', 'siap', 'selesai']
-                                : ['diproses', 'siap', 'selesai'];
-                            $idx = array_search($order->order_status, $flow, true);
-                            $nextStatus = ($idx !== false && isset($flow[$idx + 1])) ? $flow[$idx + 1] : null;
+                            // Alur tombol: Bayar → Masak → Siap → Selesai
+                            // 1. Jika belum lunas & belum batal → Tombol "Bayar"
+                            // 2. Jika sudah lunas & status baru/diterima → Tombol "Masak" (→ diproses)
+                            // 3. Jika sudah lunas & status diproses → Tombol "Siap" (→ siap)
+                            // 4. Jika sudah lunas & status siap → Tombol "Selesai" (→ selesai)
+                            // 5. Jika selesai → Label "Selesai" + tombol cetak Struk
+                            $isPaid = $order->isPaid();
+                            $isCancelled = $order->isCancelled();
+                            $status = $order->order_status;
                         @endphp
-                        <div class="grid grid-cols-2 gap-2 mt-1">
-                            @if($nextStatus)
-                                <form action="{{ route('kasir.orders.status', $order) }}" method="POST">
-                                    @csrf
-                                    <button class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full bg-cafe-dark text-white text-[11px] font-bold hover:bg-cafe-brown transition-colors">
-                                        <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                                        {{ match ($nextStatus) { 'diterima' => 'Terima', 'diproses' => 'Proses', 'siap' => 'Siap', 'selesai' => 'Selesai' } }}
-                                    </button>
-                                </form>
-                            @else
-                                <span class="inline-flex items-center justify-center px-3 py-2.5 rounded-full bg-cafe-beige/50 text-cafe-muted text-[11px] font-semibold">Selesai</span>
-                            @endif
-
-                            @if(! $order->isPaid() && ! $order->isCancelled())
-                                <a href="{{ route('kasir.payments.checkout', $order) }}" class="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-[11px] font-bold hover:bg-[#B87C3C] transition-colors">
+                        <div class="mt-1">
+                            @if($isCancelled)
+                                {{-- Pesanan dibatalkan --}}
+                                <span class="w-full inline-flex items-center justify-center px-3 py-2.5 rounded-full bg-cafe-danger/10 text-cafe-danger text-[11px] font-semibold">
+                                    <i data-lucide="x-circle" class="w-3.5 h-3.5 mr-1.5"></i>
+                                    Dibatalkan
+                                </span>
+                            @elseif(! $isPaid)
+                                {{-- 1. Belum bayar → Tombol Bayar Dulu --}}
+                                <a href="{{ route('kasir.payments.checkout', $order) }}"
+                                   class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-[11px] font-bold hover:bg-[#B87C3C] transition-colors shadow-sm active:scale-95">
                                     <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
-                                    Bayar
+                                    Bayar Dulu
                                 </a>
-                            @elseif(! $order->isCancelled())
-                                <button onclick="showOrder({{ $order->id }})" class="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full bg-cafe-beige/60 text-cafe-brown text-[11px] font-bold hover:bg-cafe-beige transition-colors">
-                                    <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
-                                    Struk
-                                </button>
+                            @elseif($status === 'baru' || $status === 'diterima')
+                                {{-- 2. Lunas, status baru → Tombol Masak --}}
+                                <div class="flex items-center gap-2">
+                                    <form action="{{ route('kasir.orders.status', $order) }}" method="POST" class="flex-1">
+                                        @csrf
+                                        <input type="hidden" name="status" value="diproses">
+                                        <button type="submit" class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full bg-[#D4954D] text-[#290024] font-bold text-[11px] hover:bg-[#c4853d] transition-all shadow-sm active:scale-95">
+                                            <i data-lucide="flame" class="w-3.5 h-3.5"></i>
+                                            Masak
+                                        </button>
+                                    </form>
+                                    <a href="{{ route('kasir.payments.receipt', $order) }}" title="Lihat / Cetak Struk" class="shrink-0 p-2.5 rounded-full bg-cafe-beige/60 text-cafe-brown hover:bg-cafe-beige transition-colors flex items-center justify-center" aria-label="Struk">
+                                        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                                    </a>
+                                </div>
+                            @elseif($status === 'diproses')
+                                {{-- 3. Lunas, sedang dimasak → Tombol Siap --}}
+                                <div class="flex items-center gap-2">
+                                    <form action="{{ route('kasir.orders.status', $order) }}" method="POST" class="flex-1">
+                                        @csrf
+                                        <input type="hidden" name="status" value="siap">
+                                        <button type="submit" class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full bg-cafe-info/15 text-cafe-info border border-cafe-info/30 text-[11px] font-bold hover:bg-cafe-info/25 transition-all active:scale-95">
+                                            <i data-lucide="bell-ring" class="w-3.5 h-3.5"></i>
+                                            Siap
+                                        </button>
+                                    </form>
+                                    <a href="{{ route('kasir.payments.receipt', $order) }}" title="Lihat / Cetak Struk" class="shrink-0 p-2.5 rounded-full bg-cafe-beige/60 text-cafe-brown hover:bg-cafe-beige transition-colors flex items-center justify-center" aria-label="Struk">
+                                        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                                    </a>
+                                </div>
+                            @elseif($status === 'siap')
+                                {{-- 4. Lunas, siap disajikan → Tombol Selesai --}}
+                                <div class="flex items-center gap-2">
+                                    <form action="{{ route('kasir.orders.status', $order) }}" method="POST" class="flex-1">
+                                        @csrf
+                                        <input type="hidden" name="status" value="selesai">
+                                        <button type="submit" class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full bg-cafe-success/15 text-cafe-success border border-cafe-success/30 text-[11px] font-bold hover:bg-cafe-success/25 transition-all active:scale-95">
+                                            <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                                            Selesai
+                                        </button>
+                                    </form>
+                                    <a href="{{ route('kasir.payments.receipt', $order) }}" title="Lihat / Cetak Struk" class="shrink-0 p-2.5 rounded-full bg-cafe-beige/60 text-cafe-brown hover:bg-cafe-beige transition-colors flex items-center justify-center" aria-label="Struk">
+                                        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                                    </a>
+                                </div>
+                            @else
+                                {{-- 5. Sudah selesai --}}
+                                <div class="flex items-center gap-2">
+                                    <span class="flex-1 inline-flex items-center justify-center px-3 py-2.5 rounded-full bg-cafe-success/10 text-cafe-success text-[11px] font-semibold">
+                                        <i data-lucide="circle-check" class="w-3.5 h-3.5 mr-1.5"></i>
+                                        Selesai
+                                    </span>
+                                    <a href="{{ route('kasir.payments.receipt', $order) }}" title="Lihat / Cetak Struk" class="shrink-0 p-2.5 rounded-full bg-cafe-beige/60 text-cafe-brown hover:bg-cafe-beige transition-colors flex items-center justify-center" aria-label="Struk">
+                                        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                                    </a>
+                                </div>
                             @endif
                         </div>
 
-                        @if(! $order->isCancelled())
+                        @if(! $isCancelled && $status !== 'selesai')
                             <form action="{{ route('kasir.orders.cancel', $order) }}" method="POST" onsubmit="return confirmCancel(event)">
                                 @csrf
                                 <input type="text" name="cancel_reason" placeholder="Alasan pembatalan (wajib)" required class="mt-2 w-full text-[10px] bg-[#E3DEA4]/40 border border-cafe-danger/30 text-cafe-text placeholder:text-cafe-muted/50 px-3 py-2 rounded-xl focus:border-cafe-danger focus:outline-none">
@@ -161,9 +240,9 @@
 </div>
 
 <!-- Modal Detail (Bottom Sheet on Mobile, Centered Modal on Tablet/Desktop) -->
-<div id="order-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+<div id="order-modal" class="hidden fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="fixed inset-0 bg-[#290024]/60 backdrop-blur-sm" onclick="closeOrderModal()"></div>
-    <div class="relative bg-[#FAFCF3] rounded-t-[2rem] sm:rounded-3xl shadow-soft-lg w-full max-w-lg border-t sm:border border-[#E3DEA4] z-10 max-h-[90vh] overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]">
+    <div class="relative bg-[#FAFCF3] rounded-t-[2rem] sm:rounded-3xl shadow-soft-lg w-full max-w-lg landscape:max-w-xl border-t sm:border border-[#E3DEA4] z-10 max-h-[90vh] landscape:max-h-[95vh] overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]">
         <!-- Handle for mobile -->
         <div class="sm:hidden w-full pt-3 pb-1 flex justify-center cursor-pointer" onclick="closeOrderModal()">
             <div class="w-12 h-1 bg-[#775533]/30 rounded-full"></div>
@@ -189,11 +268,10 @@ function showOrder(id) {
             document.getElementById('om-code').textContent = o.code;
             document.getElementById('om-meta').textContent = o.customer + ' • ' + o.type + (o.table ? ' • Meja ' + o.table : '') + ' • ' + o.created;
 
-            const badge = o.status;
             document.getElementById('om-body').innerHTML = `
                 <div class="flex flex-wrap gap-2">
-                    <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-cafe-cream border border-cafe-beige">Status: ${o.status}</span>
-                    <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-cafe-cream border border-cafe-beige">Bayar: ${o.payment}</span>
+                    <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-cafe-cream border border-cafe-beige">Status: ${o.status?.label || o.status}</span>
+                    <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-cafe-cream border border-cafe-beige">Bayar: ${o.payment?.label || o.payment}</span>
                 </div>
 
                 <div class="space-y-2">

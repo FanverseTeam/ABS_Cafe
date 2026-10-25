@@ -151,13 +151,13 @@ class MobileBottomNavigationTest extends TestCase
         $html = $this->load(route('kasir.dashboard'));
 
         $this->assertSame(
-            ['Beranda', 'POS', 'Pesanan', 'Meja', 'Lainnya'],
+            ['Beranda', 'Menu', 'Pesanan', 'Meja', 'Lainnya'],
             $this->labelsWithin($html, 'mobile-bottom-nav'),
         );
         $this->assertCount(5, $this->itemsWithin($html, 'mobile-bottom-nav'));
 
         $labels = $this->labelsWithin($html, 'mobile-bottom-nav');
-        $this->assertNotContains('Menu', $labels);
+        $this->assertNotContains('POS', $labels);
         $this->assertNotContains('Laporan', $labels);
         $this->assertNotContains('Promo', $labels);
 

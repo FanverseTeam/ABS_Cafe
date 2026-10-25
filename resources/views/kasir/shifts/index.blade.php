@@ -7,13 +7,20 @@
 <div class="space-y-4 lg:space-y-6">
     {{-- Mobile FAB when no active shift --}}
     @if(!$activeShift)
-        <x-mobile.fab icon="play" label="Buka Shift" href="{{ route('kasir.shift.open') }}" />
+        <div class="lg:hidden fixed z-30 right-4 sm:right-6 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] landscape:bottom-[calc(3.75rem+env(safe-area-inset-bottom))]">
+            <a href="{{ route('kasir.shift.open') }}"
+               class="flex items-center gap-2 px-4 py-3 rounded-full bg-cafe-gold hover:bg-[#c4853d] text-cafe-dark shadow-xl active:scale-95 transition-transform font-bold text-xs"
+               aria-label="Buka Shift">
+                <i data-lucide="play" class="w-5 h-5 shrink-0"></i>
+                <span class="whitespace-nowrap">Buka Shift</span>
+            </a>
+        </div>
     @endif
 
     <!-- Shift Aktif -->
     @if($activeShift)
         <div class="bg-cafe-card border border-cafe-success/40 rounded-2xl sm:rounded-3xl shadow-soft-lg overflow-hidden">
-            <div class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-cafe-beige/40">
+            <div class="grid grid-cols-1 md:landscape:grid-cols-3 lg:grid-cols-3 divide-y md:landscape:divide-y-0 lg:divide-y-0 md:landscape:divide-x lg:divide-x divide-cafe-beige/40">
                 <div class="p-5 md:p-6 lg:p-8 flex flex-col justify-center">
                     <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cafe-success/15 text-cafe-success text-xs font-semibold border border-cafe-success/30 w-fit">
                         <span class="relative flex h-2 w-2">

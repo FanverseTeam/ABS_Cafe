@@ -92,13 +92,18 @@ class PosController extends Controller
         $data = $request->validate([
             'order_type' => 'required|in:dine_in,take_away',
             'table_number' => 'nullable|integer|exists:meja,number',
-            'customer_name' => 'nullable|string|max:100',
+            'customer_name' => 'required|string|max:100',
+            'customer_phone' => 'nullable|string|max:30',
+            'customer_email' => 'nullable|email|max:100',
             'cart' => 'required|string',
             'voucher' => 'nullable|string|max:50',
             'action' => 'required|in:save,pay',
             'payment_method' => 'nullable|string|max:30',
             'cash_received' => 'nullable|numeric|min:0',
             'reference' => 'nullable|string|max:100',
+        ], [
+            'customer_name.required' => 'Nama pelanggan wajib diisi.',
+            'table_number.exists' => 'Nomor meja yang dipilih tidak valid.',
         ]);
 
         $cart = json_decode($data['cart'], true);
@@ -120,10 +125,12 @@ class PosController extends Controller
                 'items' => $cart,
                 'order_type' => $data['order_type'],
                 'table_number' => $data['table_number'] ?? null,
-                'customer_name' => $data['customer_name'] ?? null,
+                'customer_name' => $data['customer_name'],
+                'customer_phone' => $data['customer_phone'] ?? null,
+                'customer_email' => $data['customer_email'] ?? null,
                 'voucher' => $data['voucher'] ?? null,
                 'source' => 'offline',
-                'order_status' => 'diproses',
+                'order_status' => 'baru',
                 'payment_method' => $data['payment_method'] ?? 'tunai',
             ], Auth::user(), $shift);
 

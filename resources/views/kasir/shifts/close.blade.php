@@ -65,7 +65,7 @@
         </div>
         <div class="p-5">
             @if(count($summary['methods']) > 0)
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 landscape:grid-cols-3 lg:grid-cols-3 gap-3">
                     @foreach($summary['methods'] as $m)
                         <div class="p-4 rounded-2xl bg-cafe-cream/70 border border-cafe-beige/50">
                             <div class="flex items-center justify-between">
@@ -109,7 +109,7 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 landscape:grid-cols-2 lg:grid-cols-2 gap-4 lg:gap-6">
         <!-- Catat Kas Masuk/Keluar -->
         <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft overflow-hidden">
             <div class="px-6 py-4 border-b border-cafe-beige/50">

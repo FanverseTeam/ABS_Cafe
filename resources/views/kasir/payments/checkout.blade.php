@@ -19,7 +19,7 @@
             </a>
         </div>
 
-        <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="p-4 sm:p-6 lg:p-8 grid grid-cols-1 landscape:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
             <!-- Rincian Pesanan -->
             <div>
                 <h4 class="text-[10px] font-semibold text-cafe-muted uppercase tracking-wide mb-3">Rincian Pesanan</h4>

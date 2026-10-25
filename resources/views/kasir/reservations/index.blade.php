@@ -28,7 +28,14 @@
     </div>
 
     {{-- Mobile FAB for Buat Reservasi --}}
-    <x-mobile.fab icon="plus" label="Reservasi" onclick="openCreateModal()" />
+    <div class="lg:hidden fixed z-30 right-4 sm:right-6 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] landscape:bottom-[calc(3.75rem+env(safe-area-inset-bottom))]">
+        <button type="button" onclick="openCreateModal()"
+           class="flex items-center gap-2 px-4 py-3 rounded-full bg-[#290024] hover:bg-[#775533] text-[#FAFCF3] border border-[#D4954D]/60 shadow-xl active:scale-95 transition-transform"
+           aria-label="Buat Reservasi">
+            <i data-lucide="plus" class="w-5 h-5 text-cafe-gold shrink-0"></i>
+            <span class="text-xs font-bold whitespace-nowrap">Reservasi</span>
+        </button>
+    </div>
 
     <!-- Peta Meja -->
     <div id="section-tables" class="bg-[#FAFCF3] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
@@ -41,7 +48,7 @@
         </div>
 
         <div class="p-5">
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 landscape:grid-cols-3 sm:landscape:grid-cols-4 gap-3">
                 @foreach($tables as $table)
                     @php $badge = $table->statusBadge(); @endphp
                     <div class="p-3 rounded-2xl border {{ $table->status === 'terpakai' ? 'bg-cafe-danger/10 border-cafe-danger/40' : ($table->status === 'nonaktif' ? 'bg-cafe-beige/30 border-cafe-beige' : 'bg-cafe-success/10 border-cafe-success/40') }}">

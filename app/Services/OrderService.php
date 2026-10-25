@@ -261,6 +261,8 @@ class OrderService
             $order = Order::create([
                 'order_code' => $this->generateCode(),
                 'customer_name' => $data['customer_name'] ?: 'Pelanggan',
+                'customer_phone' => $data['customer_phone'] ?? null,
+                'customer_email' => $data['customer_email'] ?? null,
                 'table_number' => $data['order_type'] === 'dine_in' ? ($data['table_number'] ?? null) : null,
                 'order_type' => $data['order_type'] ?? 'dine_in',
                 'source' => $data['source'] ?? 'offline',
@@ -317,7 +319,7 @@ class OrderService
     {
         return $order->source === 'web'
             ? ['baru', 'diterima', 'diproses', 'siap', 'selesai']
-            : ['diproses', 'siap', 'selesai'];
+            : ['baru', 'diproses', 'siap', 'selesai'];
     }
 
     public function nextStatus(Order $order): ?string
@@ -331,14 +333,17 @@ class OrderService
     public function advanceStatus(Order $order, User $actor, ?string $target = null): Order
     {
         $target = $target ?: $this->nextStatus($order);
+        $flow = $this->statusFlow($order);
+        $currIdx = array_search($order->order_status, $flow, true);
+        $targetIdx = $target ? array_search($target, $flow, true) : false;
 
-        if (! $target || ! in_array($target, $this->statusFlow($order), true)) {
+        if (! $target || $targetIdx === false || ($currIdx !== false && $targetIdx <= $currIdx)) {
             throw ValidationException::withMessages(['status' => 'Status tujuan tidak valid untuk pesanan ini.']);
         }
 
         $description = match ($target) {
             'diterima' => 'Pesanan Web diterima kasir',
-            'diproses' => 'Pesanan mulai diproses bar/dapur',
+            'diproses' => 'Pesanan mulai dimasak bar/dapur',
             'siap' => 'Pesanan siap disajikan',
             'selesai' => $order->order_type === 'take_away' ? 'Pesanan diambil pelanggan' : 'Pesanan selesai disajikan',
             default => 'Status pesanan diperbarui',
