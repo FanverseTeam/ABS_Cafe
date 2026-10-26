@@ -212,7 +212,7 @@ class LandingPageCustomerTest extends TestCase
         $response->assertSee('href="tel:+6289620102010"', false);
 
         // Tautan Google Maps resmi baru dan atribut keamanan
-        $response->assertSee('href="https://maps.app.goo.gl/pPSXXjtJptYwrDB37"', false);
+        $response->assertSee('href="https://maps.app.goo.gl/mvEr6sWCacKH5j677"', false);
         $response->assertSee('rel="noopener noreferrer"', false);
         $response->assertSee('target="_blank"', false);
 
@@ -319,5 +319,102 @@ class LandingPageCustomerTest extends TestCase
         $migration->up();
 
         $this->assertEquals($adminCustomAddress, CafeSetting::get('cafe_address'));
+    }
+
+    public function test_whatsapp_button_renders_correct_wa_me_link(): void
+    {
+        Cache::flush();
+        CafeSetting::set('whatsapp_nomor', '6289620102010');
+        CafeSetting::set('whatsapp_pesan', 'Halo ABS Cafe, saya ingin bertanya.');
+        Cache::flush();
+
+        $response = $this->get(route('pelanggan.beranda'))->assertOk();
+
+        $expectedUrl = 'https://wa.me/6289620102010?text='.rawurlencode('Halo ABS Cafe, saya ingin bertanya.');
+        $response->assertSee('href="'.e($expectedUrl).'"', false);
+        $response->assertSee('target="_blank"', false);
+        $response->assertSee('rel="noopener noreferrer"', false);
+        $response->assertSee('Chat via WhatsApp');
+    }
+
+    public function test_whatsapp_number_normalisation_formats(): void
+    {
+        $cases = [
+            '08962010-2010' => '6289620102010',
+            '6289620102010' => '6289620102010',
+            '+6289620102010' => '6289620102010',
+        ];
+
+        foreach ($cases as $input => $expected) {
+            Cache::flush();
+            CafeSetting::set('whatsapp_nomor', $input);
+            Cache::flush();
+
+            $data = LandingData::build();
+            $this->assertSame(
+                $expected,
+                $data['cafe']['whatsapp_nomor'],
+                "Format '$input' seharusnya dinormalisasi menjadi '$expected'"
+            );
+            $this->assertStringContainsString(
+                'wa.me/'.$expected,
+                $data['cafe']['whatsapp_url'] ?? '',
+                "URL WhatsApp untuk format '$input' harus berisi '$expected'"
+            );
+        }
+    }
+
+    public function test_whatsapp_button_hidden_when_number_empty(): void
+    {
+        Cache::flush();
+        CafeSetting::set('whatsapp_nomor', '');
+        Cache::flush();
+
+        $response = $this->get(route('pelanggan.beranda'))->assertOk();
+        $response->assertDontSee('wa.me', false);
+        $response->assertDontSee('Chat via WhatsApp');
+    }
+
+    public function test_admin_can_update_whatsapp_settings_and_reflects_on_landing(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'is_active' => true]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.website.profile'), [
+                'cafe_name' => 'ABS Cafe',
+                'cafe_tagline' => 'Accessories & Cafe',
+                'cafe_address' => 'Jl. Letjend Suprapto No.44',
+                'cafe_phone' => '0896-2010-2010',
+                'cafe_email' => 'halo@abscafe.com',
+                'whatsapp_nomor' => '0896-2010-2010',
+                'whatsapp_pesan' => 'Halo, mau tanya menu ya.',
+                'hours_weekday' => '09:00 - 23:00',
+                'hours_weekend' => '09:00 - 23:00',
+            ])
+            ->assertRedirect();
+
+        Cache::flush();
+        $response = $this->get(route('pelanggan.beranda'))->assertOk();
+
+        $expectedUrl = 'https://wa.me/6289620102010?text='.rawurlencode('Halo, mau tanya menu ya.');
+        $response->assertSee('href="'.e($expectedUrl).'"', false);
+    }
+
+    public function test_whatsapp_validation_rejects_invalid_number(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'is_active' => true]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.website.profile'), [
+                'cafe_name' => 'ABS Cafe',
+                'cafe_tagline' => 'Accessories & Cafe',
+                'cafe_address' => 'Jl. Letjend Suprapto No.44',
+                'cafe_phone' => '0896-2010-2010',
+                'cafe_email' => 'halo@abscafe.com',
+                'whatsapp_nomor' => '12345',
+                'hours_weekday' => '09:00 - 23:00',
+                'hours_weekend' => '09:00 - 23:00',
+            ])
+            ->assertSessionHasErrors('whatsapp_nomor');
     }
 }

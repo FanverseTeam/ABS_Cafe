@@ -141,6 +141,31 @@
                     </div>
                 </div>
 
+                <div class="pt-3 border-t border-cafe-beige/40">
+                    <p class="text-xs font-bold text-cafe-dark mb-3 uppercase tracking-wide">WhatsApp</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="font-semibold text-cafe-dark">Nomor WhatsApp</label>
+                            <input type="text" name="whatsapp_nomor" id="whatsapp_nomor"
+                                   value="{{ $settings['whatsapp_nomor'] ?? '' }}"
+                                   placeholder="6289620102010 atau 08962010..."
+                                   class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                            @error('whatsapp_nomor')<p class="text-[10px] text-red-600 mt-1">{{ $message }}</p>@enderror
+                            <p class="text-[10px] text-cafe-muted">Format: 08..., 628..., atau +628... Dikosongkan untuk menyembunyikan tombol WhatsApp.</p>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="font-semibold text-cafe-dark">Pesan Awal Chat</label>
+                            <input type="text" name="whatsapp_pesan" id="whatsapp_pesan"
+                                   value="{{ $settings['whatsapp_pesan'] ?? '' }}"
+                                   placeholder="Halo ABS Cafe, saya ingin bertanya."
+                                   maxlength="200"
+                                   class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                            @error('whatsapp_pesan')<p class="text-[10px] text-red-600 mt-1">{{ $message }}</p>@enderror
+                            <p class="text-[10px] text-cafe-muted">Teks yang otomatis muncul saat pengunjung membuka chat. Maks 200 karakter.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="pt-4 border-t border-cafe-beige/60 flex justify-end">
                     <button type="submit" class="px-6 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all">Simpan Profil Cafe</button>
                 </div>

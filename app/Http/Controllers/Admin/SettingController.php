@@ -23,7 +23,7 @@ class SettingController extends Controller
             'cafe_address' => CafeSetting::get('cafe_address', 'Jl. Letjend Suprapto No.44, Kepatihan, Kec. Tulungagung, Kabupaten Tulungagung, Jawa Timur 66219'),
             'cafe_phone' => CafeSetting::get('cafe_phone', '0896-2010-2010'),
             'cafe_email' => CafeSetting::get('cafe_email', 'halo@abscafe.com'),
-            'cafe_maps_url' => CafeSetting::get('cafe_maps_url', 'https://maps.app.goo.gl/pPSXXjtJptYwrDB37'),
+            'cafe_maps_url' => CafeSetting::get('cafe_maps_url', 'https://maps.app.goo.gl/mvEr6sWCacKH5j677'),
             'peta_lat' => CafeSetting::get('peta_lat', '-8.0646338'),
             'peta_lng' => CafeSetting::get('peta_lng', '111.9111798'),
             'cafe_hours' => CafeSetting::get('cafe_hours', 'Buka Setiap Hari 09.00 - 23.00 WIB'),
