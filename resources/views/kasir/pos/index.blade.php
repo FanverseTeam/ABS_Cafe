@@ -51,7 +51,7 @@
                            placeholder="Cari menu untuk customer (misal: Latte, Toast, Croissant)..."
                            oninput="handleMenuSearch(this.value)"
                            autocomplete="off"
-                           class="w-full bg-[#FAFCF3] text-xs text-[#290024] placeholder:text-[#775533]/60 pl-9 pr-8 py-2 sm:py-2.5 rounded-full border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none focus:ring-1 focus:ring-[#D4954D]/50 shadow-sm transition-all">
+                           class="w-full bg-[#F2F5E2] text-xs text-[#290024] placeholder:text-[#775533]/60 pl-9 pr-8 py-2 sm:py-2.5 rounded-full border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none focus:ring-1 focus:ring-[#D4954D]/50 shadow-sm transition-all">
                     <i data-lucide="search" class="w-4 h-4 text-[#775533] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                     <button type="button"
                             id="clear-search-btn"
@@ -68,7 +68,7 @@
                             Semua
                         </button>
                         @foreach($categories as $category)
-                            <button type="button" data-cat="{{ $category->id }}" class="cat-tab shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-semibold bg-[#FAFCF3] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]/60 transition-all duration-200">
+                            <button type="button" data-cat="{{ $category->id }}" class="cat-tab shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-semibold bg-[#F2F5E2] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]/60 transition-all duration-200">
                                 {{ $category->name }}
                             </button>
                         @endforeach
@@ -102,7 +102,7 @@
                                 $priceLabel = $hasVariants ? $menu->priceRangeLabel() : 'Rp '.number_format($defaultPrice, 0, ',', '.');
                                 $isSoldOut = ! $menu->is_available || ($menu->variants->isNotEmpty() && $availableVariants->isEmpty());
                             @endphp
-                            <div class="menu-item-wrapper pos-menu-card bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4]/70 p-2.5 sm:p-3 landscape:p-2.5 shadow-soft flex flex-col justify-between cursor-pointer group {{ $isSoldOut ? 'opacity-50 pointer-events-none' : '' }}"
+                            <div class="menu-item-wrapper pos-menu-card bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/70 p-2.5 sm:p-3 landscape:p-2.5 shadow-soft flex flex-col justify-between cursor-pointer group {{ $isSoldOut ? 'opacity-50 pointer-events-none' : '' }}"
                                  data-menu-name="{{ strtolower($menu->name) }}"
                                  data-cat-id="{{ $category->id }}"
                                  onclick="handleMenuClick({{ $menu->id }})">
@@ -123,7 +123,7 @@
                                             </span>
                                         @endif
                                         @if($isSoldOut)
-                                            <span class="absolute inset-0 bg-[#290024]/75 text-white text-[10px] sm:text-xs font-bold flex items-center justify-center uppercase tracking-wide">
+                                            <span class="absolute inset-0 bg-[#290024]/75 text-beige text-[10px] sm:text-xs font-bold flex items-center justify-center uppercase tracking-wide">
                                                 Habis
                                             </span>
                                         @endif
@@ -139,13 +139,13 @@
                                     <span class="font-serif font-bold text-xs sm:text-sm text-[#290024]">
                                         {{ $priceLabel }}
                                     </span>
-                                    <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#290024] text-white flex items-center justify-center group-hover:bg-[#D4954D] group-hover:text-[#290024] transition-colors shadow-sm">
+                                    <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#290024] text-beige flex items-center justify-center group-hover:bg-[#D4954D] group-hover:text-[#290024] transition-colors shadow-sm">
                                         <i data-lucide="plus" class="w-3.5 h-3.5"></i>
                                     </span>
                                 </div>
                             </div>
                         @empty
-                            <p class="col-span-full text-xs text-[#775533] py-4 text-center bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4]/50">
+                            <p class="col-span-full text-xs text-[#775533] py-4 text-center bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/50">
                                 Tidak ada menu pada kategori ini.
                             </p>
                         @endforelse
@@ -156,8 +156,8 @@
 
         <!-- Sidebar Keranjang di Desktop & Landscape Tablet -->
         <div class="hidden md:landscape:block lg:block xl:block md:landscape:col-span-5 lg:col-span-5 xl:col-span-4 md:landscape:sticky md:landscape:top-14 lg:sticky lg:top-20 xl:top-24 h-fit">
-            <div class="bg-[#FAFCF3] rounded-3xl border border-[#E3DEA4]/80 shadow-soft-lg overflow-hidden">
-                <div class="px-4 py-2.5 bg-gradient-to-r from-[#290024] to-[#3D1236] text-[#FAFCF3] flex items-center justify-between gap-2 border-b border-[#D4954D]/30">
+            <div class="bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft-lg overflow-hidden">
+                <div class="px-4 py-2.5 bg-gradient-to-r from-[#290024] to-[#290024] text-[#F2F5E2] flex items-center justify-between gap-2 border-b border-[#D4954D]/30">
                     <div class="flex items-center gap-2 min-w-0">
                         <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-pulse shrink-0"></span>
                         <span class="text-xs font-bold tracking-wide truncate">Pesan Manual Customer</span>
@@ -175,7 +175,7 @@
                             <p id="catalog-cart-count" class="text-[10px] text-[#775533]">0 item</p>
                         </div>
                     </div>
-                    <button type="button" onclick="clearCart()" class="text-[10px] text-[#775533] hover:text-[#B03A2E] font-medium flex items-center gap-1 transition-colors">
+                    <button type="button" onclick="clearCart()" class="text-[10px] text-[#775533] hover:text-[#775533] font-medium flex items-center gap-1 transition-colors">
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Kosongkan
                     </button>
                 </div>
@@ -194,7 +194,7 @@
                         <span id="catalog-cart-total" class="font-serif font-bold text-[#290024] text-base">Rp 0</span>
                     </div>
 
-                    <button type="button" onclick="goToCheckout()" class="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-[#290024] hover:bg-[#775533] text-[#FAFCF3] font-bold text-xs shadow-md transition-all active:scale-95">
+                    <button type="button" onclick="goToCheckout()" class="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-[#290024] hover:bg-[#775533] text-[#F2F5E2] font-bold text-xs shadow-md transition-all active:scale-95">
                         <i data-lucide="credit-card" class="w-4 h-4 text-[#D4954D]"></i>
                         <span>Lanjut ke Menu Bayar</span>
                         <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
@@ -204,7 +204,7 @@
 
             <!-- Pesanan Ditahan -->
             @if($heldOrders->isNotEmpty())
-                <div class="mt-3 bg-[#FAFCF3] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
+                <div class="mt-3 bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
                     <div class="px-4 py-2.5 border-b border-[#E3DEA4]/50 flex items-center justify-between">
                         <h4 class="font-serif font-bold text-xs text-[#290024]">Pesanan Ditahan ({{ $heldOrders->count() }})</h4>
                     </div>
@@ -218,7 +218,7 @@
                                 </div>
                                 <div class="flex gap-1.5 shrink-0">
                                     <a href="{{ route('kasir.pos.index', ['resume' => $held->id]) }}" class="px-2.5 py-1 rounded-full bg-[#E3DEA4] text-[#290024] text-[10px] font-semibold hover:bg-[#D4954D] transition-colors">Buka</a>
-                                    <a href="{{ route('kasir.payments.checkout', $held) }}" class="px-2.5 py-1 rounded-full bg-[#290024] text-[#FAFCF3] text-[10px] font-semibold hover:bg-[#775533] transition-colors">Bayar</a>
+                                    <a href="{{ route('kasir.payments.checkout', $held) }}" class="px-2.5 py-1 rounded-full bg-[#290024] text-[#F2F5E2] text-[10px] font-semibold hover:bg-[#775533] transition-colors">Bayar</a>
                                 </div>
                             </div>
                         @endforeach
@@ -232,7 +232,7 @@
 <!-- ==================== VIEW 2: MENU BAYAR (FULL SCREEN / PAGE, BUKAN POP-UP) ==================== -->
 <div id="pos-view-checkout" class="hidden space-y-4 sm:space-y-6">
     <!-- Header Menu Bayar: Kembali ke Katalog & Judul -->
-    <div class="flex flex-wrap items-center justify-between gap-3 bg-[#FAFCF3] p-4 sm:p-5 rounded-3xl border border-[#E3DEA4] shadow-soft">
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-[#F2F5E2] p-4 sm:p-5 rounded-3xl border border-[#E3DEA4] shadow-soft">
         <button type="button" onclick="goToCatalog()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#E3DEA4]/60 hover:bg-[#E3DEA4] text-[#290024] text-xs font-bold transition-all shadow-sm active:scale-95">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             <span>Tambah Menu Lain / Kembali ke Katalog</span>
@@ -260,7 +260,7 @@
             <!-- Kolom Kiri: Data Pelanggan & Metode Pembayaran -->
             <div class="lg:col-span-7 space-y-4">
                 <!-- KARTU DATA PELANGGAN -->
-                <div class="bg-[#FAFCF3] rounded-3xl border border-[#E3DEA4]/80 shadow-soft p-5 sm:p-6 space-y-4">
+                <div class="bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft p-5 sm:p-6 space-y-4">
                     <div class="flex items-center gap-2.5 border-b border-[#E3DEA4]/50 pb-3">
                         <div class="w-8 h-8 rounded-2xl bg-[#D4954D]/20 text-[#D4954D] flex items-center justify-center">
                             <i data-lucide="user" class="w-4 h-4"></i>
@@ -273,14 +273,14 @@
 
                     <!-- Tipe Pemesanan -->
                     <div>
-                        <label class="block text-xs font-bold text-[#775533] uppercase tracking-wider mb-1.5">Tipe Pemesanan <span class="text-[#B03A2E]">*</span></label>
+                        <label class="block text-xs font-bold text-[#775533] uppercase tracking-wider mb-1.5">Tipe Pemesanan <span class="text-[#775533]">*</span></label>
                         <div class="grid grid-cols-2 gap-2.5">
-                            <label class="flex items-center justify-center gap-2 p-3 rounded-2xl border border-[#E3DEA4] bg-[#FAFCF3] has-[:checked]:border-[#290024] has-[:checked]:bg-[#290024] has-[:checked]:text-[#FAFCF3] cursor-pointer transition-all select-none">
+                            <label class="flex items-center justify-center gap-2 p-3 rounded-2xl border border-[#E3DEA4] bg-[#F2F5E2] has-[:checked]:border-[#290024] has-[:checked]:bg-[#290024] has-[:checked]:text-[#F2F5E2] cursor-pointer transition-all select-none">
                                 <input type="radio" name="order_type" value="dine_in" checked onchange="handleOrderTypeChange('dine_in')" class="sr-only">
                                 <i data-lucide="utensils" class="w-4 h-4 text-[#D4954D]"></i>
                                 <span class="text-xs font-semibold">Dine In (Makan di Tempat)</span>
                             </label>
-                            <label class="flex items-center justify-center gap-2 p-3 rounded-2xl border border-[#E3DEA4] bg-[#FAFCF3] has-[:checked]:border-[#290024] has-[:checked]:bg-[#290024] has-[:checked]:text-[#FAFCF3] cursor-pointer transition-all select-none">
+                            <label class="flex items-center justify-center gap-2 p-3 rounded-2xl border border-[#E3DEA4] bg-[#F2F5E2] has-[:checked]:border-[#290024] has-[:checked]:bg-[#290024] has-[:checked]:text-[#F2F5E2] cursor-pointer transition-all select-none">
                                 <input type="radio" name="order_type" value="take_away" onchange="handleOrderTypeChange('take_away')" class="sr-only">
                                 <i data-lucide="shopping-bag" class="w-4 h-4 text-[#D4954D]"></i>
                                 <span class="text-xs font-semibold">Take Away (Bawa Pulang)</span>
@@ -291,10 +291,10 @@
                     <!-- Nomor Meja (Wajib jika Dine In) -->
                     <div id="checkout-table-wrapper" class="transition-all">
                         <label class="block text-xs font-bold text-[#290024] mb-1.5 flex items-center justify-between">
-                            <span>Nomor Meja <span class="text-[#B03A2E]" id="table-star">*</span></span>
-                            <span class="text-[10px] font-semibold text-[#B03A2E]" id="table-badge-req">Wajib untuk Dine In</span>
+                            <span>Nomor Meja <span class="text-[#775533]" id="table-star">*</span></span>
+                            <span class="text-[10px] font-semibold text-[#775533]" id="table-badge-req">Wajib untuk Dine In</span>
                         </label>
-                        <select id="table-number" name="table_number" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs font-medium text-[#290024] px-3.5 py-2.5 sm:py-3 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none transition-all">
+                        <select id="table-number" name="table_number" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs font-medium text-[#290024] px-3.5 py-2.5 sm:py-3 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none transition-all">
                             <option value="">— Pilih Nomor Meja —</option>
                             @foreach($tables as $table)
                                 <option value="{{ $table->number }}" {{ $table->status === 'nonaktif' ? 'disabled' : '' }}>
@@ -308,11 +308,11 @@
                     <!-- Nama Pelanggan (Wajib) -->
                     <div>
                         <label class="block text-xs font-bold text-[#290024] mb-1.5 flex items-center justify-between">
-                            <span>Nama Pelanggan <span class="text-[#B03A2E]">*</span></span>
-                            <span class="text-[10px] font-semibold text-[#B03A2E]">Wajib Diisi</span>
+                            <span>Nama Pelanggan <span class="text-[#775533]">*</span></span>
+                            <span class="text-[10px] font-semibold text-[#775533]">Wajib Diisi</span>
                         </label>
                         <input type="text" id="customer-name" name="customer_name" required value="{{ $resume?->customer_name ?? '' }}" placeholder="Masukkan nama pelanggan..."
-                               class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs font-medium text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 sm:py-3 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none transition-all">
+                               class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs font-medium text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 sm:py-3 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none transition-all">
                     </div>
 
                     <!-- No. Telepon & Email (Opsional) -->
@@ -320,18 +320,18 @@
                         <div>
                             <label class="block text-xs font-bold text-[#775533] mb-1.5">No. Telepon / WA <span class="text-[10px] font-normal text-[#775533]/70">(Opsional)</span></label>
                             <input type="tel" id="customer-phone" name="customer_phone" value="{{ $resume?->customer_phone ?? '' }}" placeholder="08xxxxxxxxxx"
-                                   class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 sm:py-3 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none transition-all">
+                                   class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 sm:py-3 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none transition-all">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-[#775533] mb-1.5">Email Pelanggan <span class="text-[10px] font-normal text-[#775533]/70">(Opsional)</span></label>
                             <input type="email" id="customer-email" name="customer_email" value="{{ $resume?->customer_email ?? '' }}" placeholder="pelanggan@email.com"
-                                   class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 sm:py-3 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none transition-all">
+                                   class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 sm:py-3 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none transition-all">
                         </div>
                     </div>
                 </div>
 
                 <!-- KARTU METODE PEMBAYARAN -->
-                <div class="bg-[#FAFCF3] rounded-3xl border border-[#E3DEA4]/80 shadow-soft p-5 sm:p-6 space-y-4">
+                <div class="bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft p-5 sm:p-6 space-y-4">
                     <div class="flex items-center gap-2.5 border-b border-[#E3DEA4]/50 pb-3">
                         <div class="w-8 h-8 rounded-2xl bg-[#D4954D]/20 text-[#D4954D] flex items-center justify-center">
                             <i data-lucide="wallet" class="w-4 h-4"></i>
@@ -346,7 +346,7 @@
                     <div class="grid grid-cols-2 gap-2 sm:gap-2.5" id="checkout-method-buttons">
                         @foreach($paymentMethods as $method)
                             <div data-method="{{ $method->code }}" onclick="selectMethod('{{ $method->code }}', this)"
-                                 class="method-btn p-3 rounded-2xl border cursor-pointer transition-all flex items-center justify-between gap-2.5 {{ $method->code === 'tunai' ? 'bg-[#FAFCF3] border-[#290024] ring-2 ring-[#290024]/10 shadow-sm' : 'bg-[#FAFCF3] border-[#E3DEA4] hover:border-[#D4954D]' }}">
+                                 class="method-btn p-3 rounded-2xl border cursor-pointer transition-all flex items-center justify-between gap-2.5 {{ $method->code === 'tunai' ? 'bg-[#F2F5E2] border-[#290024] ring-2 ring-[#290024]/10 shadow-sm' : 'bg-[#F2F5E2] border-[#E3DEA4] hover:border-[#D4954D]' }}">
                                 <div class="flex items-center gap-2 min-w-0">
                                     <div class="w-8 h-8 rounded-xl bg-[#E3DEA4]/50 text-[#775533] flex items-center justify-center shrink-0">
                                         <i data-lucide="{{ $method->icon() }}" class="w-4 h-4"></i>
@@ -357,7 +357,7 @@
                                     </div>
                                 </div>
                                 <div class="method-radio w-4 h-4 rounded-full border-2 {{ $method->code === 'tunai' ? 'border-[#290024] bg-[#290024]' : 'border-[#775533]/40' }} flex items-center justify-center shrink-0">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-white {{ $method->code === 'tunai' ? '' : 'hidden' }}"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full bg-beige {{ $method->code === 'tunai' ? '' : 'hidden' }}"></span>
                                 </div>
                             </div>
                         @endforeach
@@ -367,20 +367,20 @@
                     <div id="checkout-cash-field" class="p-4 rounded-2xl bg-[#F2F5E2] border border-[#E3DEA4]/80 space-y-3">
                         <label class="block text-xs font-bold text-[#290024]">Uang Tunai Diterima (Rp)</label>
                         <input type="number" id="checkout-cash" value="" step="1000" min="0" placeholder="0"
-                               class="w-full bg-[#FAFCF3] focus:bg-white text-base font-bold text-[#290024] px-4 py-2.5 rounded-xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
+                               class="w-full bg-[#F2F5E2] focus:bg-beige text-base font-bold text-[#290024] px-4 py-2.5 rounded-xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
 
                         <div class="flex flex-wrap gap-1.5 pt-0.5">
-                            <button type="button" onclick="setCash(0)" class="px-3 py-1 rounded-full bg-[#FAFCF3] border border-[#E3DEA4] text-[#290024] text-[10px] font-bold hover:bg-[#E3DEA4] transition-colors">Uang Pas</button>
-                            <button type="button" onclick="setCash(20000)" class="px-3 py-1 rounded-full bg-[#FAFCF3] border border-[#E3DEA4] text-[#290024] text-[10px] font-bold hover:bg-[#E3DEA4] transition-colors">20rb</button>
-                            <button type="button" onclick="setCash(50000)" class="px-3 py-1 rounded-full bg-[#FAFCF3] border border-[#E3DEA4] text-[#290024] text-[10px] font-bold hover:bg-[#E3DEA4] transition-colors">50rb</button>
-                            <button type="button" onclick="setCash(100000)" class="px-3 py-1 rounded-full bg-[#FAFCF3] border border-[#E3DEA4] text-[#290024] text-[10px] font-bold hover:bg-[#E3DEA4] transition-colors">100rb</button>
-                            <button type="button" onclick="setCash(150000)" class="px-3 py-1 rounded-full bg-[#FAFCF3] border border-[#E3DEA4] text-[#290024] text-[10px] font-bold hover:bg-[#E3DEA4] transition-colors">150rb</button>
-                            <button type="button" onclick="setCash(200000)" class="px-3 py-1 rounded-full bg-[#FAFCF3] border border-[#E3DEA4] text-[#290024] text-[10px] font-bold hover:bg-[#E3DEA4] transition-colors">200rb</button>
+                            <button type="button" onclick="setCash(0)" class="px-3 py-1 rounded-full bg-[#F2F5E2] border border-[#E3DEA4] text-[#290024] text-[10px] font-bold hover:bg-[#E3DEA4] transition-colors">Uang Pas</button>
+                            <button type="button" onclick="setCash(20000)" class="px-3 py-1 rounded-full bg-[#F2F5E2] border border-[#E3DEA4] text-[#290024] text-[10px] font-bold hover:bg-[#E3DEA4] transition-colors">20rb</button>
+                            <button type="button" onclick="setCash(50000)" class="px-3 py-1 rounded-full bg-[#F2F5E2] border border-[#E3DEA4] text-[#290024] text-[10px] font-bold hover:bg-[#E3DEA4] transition-colors">50rb</button>
+                            <button type="button" onclick="setCash(100000)" class="px-3 py-1 rounded-full bg-[#F2F5E2] border border-[#E3DEA4] text-[#290024] text-[10px] font-bold hover:bg-[#E3DEA4] transition-colors">100rb</button>
+                            <button type="button" onclick="setCash(150000)" class="px-3 py-1 rounded-full bg-[#F2F5E2] border border-[#E3DEA4] text-[#290024] text-[10px] font-bold hover:bg-[#E3DEA4] transition-colors">150rb</button>
+                            <button type="button" onclick="setCash(200000)" class="px-3 py-1 rounded-full bg-[#F2F5E2] border border-[#E3DEA4] text-[#290024] text-[10px] font-bold hover:bg-[#E3DEA4] transition-colors">200rb</button>
                         </div>
 
                         <div class="flex justify-between items-center pt-2 border-t border-[#E3DEA4]/70">
                             <span class="text-xs font-semibold text-[#775533]">Kembalian Pelanggan:</span>
-                            <span id="checkout-change" class="font-serif font-bold text-base sm:text-lg text-[#4F7A4A]">Rp 0</span>
+                            <span id="checkout-change" class="font-serif font-bold text-base sm:text-lg text-[#775533]">Rp 0</span>
                         </div>
                     </div>
 
@@ -388,14 +388,14 @@
                     <div>
                         <label class="block text-[11px] font-semibold text-[#775533] uppercase tracking-wide mb-1">Nomor Referensi / No. Bukti Transfer (Opsional)</label>
                         <input type="text" id="checkout-reference" placeholder="Misal: No. invoice EDC, kode transaksi QRIS..."
-                               class="w-full bg-[#E3DEA4]/30 focus:bg-white text-xs text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 rounded-xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
+                               class="w-full bg-[#E3DEA4]/30 focus:bg-beige text-xs text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 rounded-xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
                     </div>
                 </div>
             </div>
 
             <!-- Kolom Kanan: Rincian Pesanan & Ringkasan Tagihan -->
             <div class="lg:col-span-5 space-y-4">
-                <div class="bg-[#FAFCF3] rounded-3xl border border-[#E3DEA4]/80 shadow-soft-lg p-5 space-y-4 lg:sticky lg:top-20">
+                <div class="bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft-lg p-5 space-y-4 lg:sticky lg:top-20">
                     <div class="flex items-center justify-between border-b border-[#E3DEA4]/50 pb-3">
                         <div class="flex items-center gap-2">
                             <i data-lucide="shopping-bag" class="w-4 h-4 text-[#D4954D]"></i>
@@ -419,7 +419,7 @@
                     <div class="pt-2 border-t border-[#E3DEA4]/60 space-y-1.5">
                         <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider">Kode Voucher / Promo</label>
                         <div class="relative">
-                            <input type="text" id="voucher-code" placeholder="Ketik kode promo..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-[#290024] placeholder:text-[#775533]/50 px-3 py-2 rounded-xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
+                            <input type="text" id="voucher-code" placeholder="Ketik kode promo..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] placeholder:text-[#775533]/50 px-3 py-2 rounded-xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
                         </div>
                         @if($promos->isNotEmpty())
                             <div class="flex flex-wrap gap-1 pt-1">
@@ -437,7 +437,7 @@
                     <!-- Ringkasan Tagihan -->
                     <div class="rounded-2xl bg-[#F2F5E2] border border-[#E3DEA4]/80 p-3.5 space-y-1.5 text-xs">
                         <div class="flex justify-between text-[#775533]"><span>Subtotal</span><span id="sum-subtotal">Rp 0</span></div>
-                        <div class="flex justify-between text-[#775533]"><span>Diskon</span><span id="sum-discount" class="text-[#B03A2E] font-medium">-Rp 0</span></div>
+                        <div class="flex justify-between text-[#775533]"><span>Diskon</span><span id="sum-discount" class="text-[#775533] font-medium">-Rp 0</span></div>
                         <div class="flex justify-between text-[#775533]"><span>Pajak (10%)</span><span id="sum-tax">Rp 0</span></div>
                         <div class="flex justify-between text-[#775533]"><span>Service Charge</span><span id="sum-service">Rp 0</span></div>
                         <div class="flex justify-between border-t border-[#E3DEA4] pt-2 mt-1">
@@ -448,11 +448,11 @@
 
                     <!-- Tombol Aksi Utama -->
                     <div class="space-y-2 pt-1">
-                        <button type="button" onclick="submitPosPayment('pay', event)" class="w-full inline-flex items-center justify-center gap-2 py-3.5 sm:py-4 px-4 rounded-full bg-[#290024] hover:bg-[#775533] text-[#FAFCF3] font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all active:scale-[0.98]">
+                        <button type="button" onclick="submitPosPayment('pay', event)" class="w-full inline-flex items-center justify-center gap-2 py-3.5 sm:py-4 px-4 rounded-full bg-[#290024] hover:bg-[#775533] text-[#F2F5E2] font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all active:scale-[0.98]">
                             <i data-lucide="check-circle" class="w-4 h-4 text-[#D4954D]"></i>
                             <span>Bayar Sekarang &amp; Cetak Struk</span>
                         </button>
-                        <button type="button" onclick="submitPosPayment('save', event)" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-full bg-[#FAFCF3] border border-[#775533]/40 text-[#775533] hover:bg-[#E3DEA4]/40 text-xs font-bold transition-all active:scale-[0.98]">
+                        <button type="button" onclick="submitPosPayment('save', event)" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-full bg-[#F2F5E2] border border-[#775533]/40 text-[#775533] hover:bg-[#E3DEA4]/40 text-xs font-bold transition-all active:scale-[0.98]">
                             <i data-lucide="bookmark" class="w-3.5 h-3.5"></i>
                             <span>Simpan Pesanan (Bayar Nanti)</span>
                         </button>
@@ -465,15 +465,15 @@
 
 <!-- FLOATING CART BAR (Melayang di atas Bottom Nav pada Mobile Portrait Katalog) -->
 <div id="mobile-floating-cart" class="md:landscape:hidden lg:hidden fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] landscape:bottom-3 inset-x-3 z-30 hidden transition-all duration-300">
-    <div class="bg-[#290024] text-[#FAFCF3] p-3 rounded-2xl shadow-xl border border-[#D4954D]/40 flex items-center justify-between gap-3 backdrop-blur-md">
+    <div class="bg-[#290024] text-[#F2F5E2] p-3 rounded-2xl shadow-xl border border-[#D4954D]/40 flex items-center justify-between gap-3 backdrop-blur-md">
         <div class="flex items-center gap-2.5 min-w-0">
             <div class="relative w-9 h-9 rounded-xl bg-[#D4954D] text-[#290024] flex items-center justify-center shrink-0 font-bold">
                 <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                <span id="float-cart-count" class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[#B03A2E] text-white text-[9px] flex items-center justify-center font-bold">0</span>
+                <span id="float-cart-count" class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[#775533] text-beige text-[9px] flex items-center justify-center font-bold">0</span>
             </div>
             <div class="min-w-0">
                 <p class="text-[10px] text-[#E3DEA4] uppercase tracking-wider font-semibold">Total Pesanan</p>
-                <p id="float-cart-total" class="font-serif font-bold text-sm sm:text-base text-[#FAFCF3] leading-none">Rp 0</p>
+                <p id="float-cart-total" class="font-serif font-bold text-sm sm:text-base text-[#F2F5E2] leading-none">Rp 0</p>
             </div>
         </div>
 
@@ -487,7 +487,7 @@
 <!-- BOTTOM SHEET: DETAIL MENU (Pilih Varian, Ukuran, Stepper, Catatan) -->
 <div id="menu-detail-sheet" class="fixed inset-0 z-[70] hidden transition-all duration-300">
     <div class="fixed inset-0 bg-[#290024]/60 backdrop-blur-sm transition-opacity" onclick="closeMenuDetailSheet()"></div>
-    <div class="fixed inset-x-0 bottom-0 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-full sm:max-w-lg landscape:max-w-2xl max-h-[92vh] landscape:max-h-[96vh] bg-[#FAFCF3] rounded-t-[2rem] sm:rounded-3xl border-t sm:border border-[#E3DEA4] shadow-2xl flex flex-col z-10 transform translate-y-full transition-transform duration-300 ease-out mx-auto">
+    <div class="fixed inset-x-0 bottom-0 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-full sm:max-w-lg landscape:max-w-2xl max-h-[92vh] landscape:max-h-[96vh] bg-[#F2F5E2] rounded-t-[2rem] sm:rounded-3xl border-t sm:border border-[#E3DEA4] shadow-2xl flex flex-col z-10 transform translate-y-full transition-transform duration-300 ease-out mx-auto">
         <!-- Handle -->
         <div class="w-full pt-3 pb-1 flex justify-center cursor-pointer" onclick="closeMenuDetailSheet()">
             <div class="w-12 h-1 bg-[#775533]/30 rounded-full"></div>
@@ -512,12 +512,12 @@
                     <!-- Stepper Jumlah (- 1 +) -->
                     <div class="flex items-center justify-between bg-[#F2F5E2]/80 p-2.5 sm:p-3 rounded-2xl border border-[#E3DEA4]/60">
                         <span class="text-xs font-bold text-[#290024]">Jumlah Pesanan</span>
-                        <div class="inline-flex items-center gap-2 bg-[#FAFCF3] p-1 rounded-full border border-[#E3DEA4]">
+                        <div class="inline-flex items-center gap-2 bg-[#F2F5E2] p-1 rounded-full border border-[#E3DEA4]">
                             <button type="button" onclick="adjustSheetQty(-1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#E3DEA4]/50 hover:bg-[#E3DEA4] text-[#290024] flex items-center justify-center font-bold text-sm">
                                 <i data-lucide="minus" class="w-3.5 h-3.5"></i>
                             </button>
                             <span id="sheet-qty" class="w-7 sm:w-8 text-center text-xs font-bold text-[#290024]">1</span>
-                            <button type="button" onclick="adjustSheetQty(1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#290024] text-[#FAFCF3] flex items-center justify-center font-bold text-sm">
+                            <button type="button" onclick="adjustSheetQty(1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#290024] text-[#F2F5E2] flex items-center justify-center font-bold text-sm">
                                 <i data-lucide="plus" class="w-3.5 h-3.5"></i>
                             </button>
                         </div>
@@ -541,7 +541,7 @@
                     <!-- Catatan Tambahan -->
                     <div>
                         <label class="block text-[10px] sm:text-[11px] font-bold text-[#775533] uppercase tracking-wider mb-1">Catatan Khusus (opsional)</label>
-                        <input type="text" id="sheet-notes" placeholder="Misal: Kurang manis, tanpa sedotan..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-[#290024] placeholder:text-[#775533]/50 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
+                        <input type="text" id="sheet-notes" placeholder="Misal: Kurang manis, tanpa sedotan..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] placeholder:text-[#775533]/50 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
                     </div>
                 </div>
             </div>
@@ -549,7 +549,7 @@
 
         <!-- Sticky Submit Button di Bawah -->
         <div class="shrink-0 p-3 sm:p-4 bg-[#F2F5E2] border-t border-[#E3DEA4]/60 pb-[max(0.85rem,env(safe-area-inset-bottom))]">
-            <button type="button" id="sheet-add-btn" class="w-full py-3.5 px-4 rounded-full bg-[#290024] hover:bg-[#775533] text-[#FAFCF3] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98]">
+            <button type="button" id="sheet-add-btn" class="w-full py-3.5 px-4 rounded-full bg-[#290024] hover:bg-[#775533] text-[#F2F5E2] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98]">
                 <i data-lucide="plus" class="w-4 h-4 text-[#D4954D]"></i>
                 <span id="sheet-add-btn-text">Tambah ke Keranjang &amp; Bayar</span>
             </button>
@@ -698,7 +698,7 @@ function renderCart() {
                     <div class="flex items-center gap-1 shrink-0">
                         <button type="button" onclick="changeQty(${idx}, -1)" class="qty-btn w-5 h-5 rounded-full bg-[#E3DEA4]/60 text-[#775533] flex items-center justify-center text-xs font-bold">-</button>
                         <span class="w-5 text-center text-xs font-bold text-[#290024]">${item.qty}</span>
-                        <button type="button" onclick="changeQty(${idx}, 1)" class="qty-btn w-5 h-5 rounded-full bg-[#290024] text-white flex items-center justify-center text-xs font-bold">+</button>
+                        <button type="button" onclick="changeQty(${idx}, 1)" class="qty-btn w-5 h-5 rounded-full bg-[#290024] text-beige flex items-center justify-center text-xs font-bold">+</button>
                     </div>
                 </div>
             `).join('');
@@ -716,7 +716,7 @@ function renderCart() {
                 <div class="py-8 text-center text-[#775533]">
                     <i data-lucide="shopping-bag" class="w-8 h-8 mx-auto text-[#775533]/40"></i>
                     <p class="text-xs mt-2 font-medium">Keranjang masih kosong.</p>
-                    <button type="button" onclick="goToCatalog()" class="mt-3 px-4 py-2 rounded-full bg-[#290024] text-white text-xs font-bold">
+                    <button type="button" onclick="goToCatalog()" class="mt-3 px-4 py-2 rounded-full bg-[#290024] text-beige text-xs font-bold">
                         Pilih Menu Sekarang
                     </button>
                 </div>
@@ -734,8 +734,8 @@ function renderCart() {
                     <div class="flex items-center gap-1.5 shrink-0 pt-0.5">
                         <button type="button" onclick="changeQty(${idx}, -1)" class="qty-btn w-6 h-6 rounded-full bg-[#E3DEA4]/60 text-[#775533] flex items-center justify-center"><i data-lucide="minus" class="w-3 h-3"></i></button>
                         <span class="w-6 text-center text-xs font-bold text-[#290024]">${item.qty}</span>
-                        <button type="button" onclick="changeQty(${idx}, 1)" class="qty-btn w-6 h-6 rounded-full bg-[#290024] text-white flex items-center justify-center"><i data-lucide="plus" class="w-3 h-3"></i></button>
-                        <button type="button" onclick="removeItem(${idx})" class="w-6 h-6 rounded-full text-[#775533] hover:text-[#B03A2E] flex items-center justify-center transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                        <button type="button" onclick="changeQty(${idx}, 1)" class="qty-btn w-6 h-6 rounded-full bg-[#290024] text-beige flex items-center justify-center"><i data-lucide="plus" class="w-3 h-3"></i></button>
+                        <button type="button" onclick="removeItem(${idx})" class="w-6 h-6 rounded-full text-[#775533] hover:text-[#775533] flex items-center justify-center transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                     </div>
                 </div>
             `).join('');
@@ -765,8 +765,8 @@ function optionCard(label, sublabel, selected, disabled, onClick) {
     card.disabled = disabled;
     card.className = `p-2.5 rounded-2xl border transition-all text-left flex items-center justify-between gap-2 ${
         selected
-            ? 'border-[#290024] bg-[#290024] text-[#FAFCF3]'
-            : 'border-[#E3DEA4] bg-[#FAFCF3] text-[#290024]'
+            ? 'border-[#290024] bg-[#290024] text-[#F2F5E2]'
+            : 'border-[#E3DEA4] bg-[#F2F5E2] text-[#290024]'
     } ${disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:border-[#D4954D]'}`;
     card.innerHTML = `
         <div class="min-w-0">
@@ -818,8 +818,8 @@ function selectVariantGroup(group) {
             if (! item) return;
             card.className = `p-2.5 rounded-2xl border transition-all text-left flex items-center justify-between gap-2 ${
                 item.name === currentSelectedVariantName
-                    ? 'border-[#290024] bg-[#290024] text-[#FAFCF3]'
-                    : 'border-[#E3DEA4] bg-[#FAFCF3] text-[#290024]'
+                    ? 'border-[#290024] bg-[#290024] text-[#F2F5E2]'
+                    : 'border-[#E3DEA4] bg-[#F2F5E2] text-[#290024]'
             } ${item.available ? 'cursor-pointer hover:border-[#D4954D]' : 'opacity-40 cursor-not-allowed'}`;
         });
     };
@@ -1066,7 +1066,7 @@ function selectMethod(code, btn) {
     document.getElementById('payment-method-input').value = code;
 
     document.querySelectorAll('.method-btn').forEach(b => {
-        b.className = 'method-btn p-3 rounded-2xl border cursor-pointer transition-all flex items-center justify-between gap-2.5 bg-[#FAFCF3] border-[#E3DEA4] hover:border-[#D4954D]';
+        b.className = 'method-btn p-3 rounded-2xl border cursor-pointer transition-all flex items-center justify-between gap-2.5 bg-[#F2F5E2] border-[#E3DEA4] hover:border-[#D4954D]';
         const rad = b.querySelector('.method-radio');
         if (rad) {
             rad.className = 'method-radio w-4 h-4 rounded-full border-2 border-[#775533]/40 flex items-center justify-center';
@@ -1074,7 +1074,7 @@ function selectMethod(code, btn) {
         }
     });
 
-    btn.className = 'method-btn p-3 rounded-2xl border cursor-pointer transition-all flex items-center justify-between gap-2.5 bg-[#FAFCF3] border-[#290024] ring-2 ring-[#290024]/10 shadow-sm';
+    btn.className = 'method-btn p-3 rounded-2xl border cursor-pointer transition-all flex items-center justify-between gap-2.5 bg-[#F2F5E2] border-[#290024] ring-2 ring-[#290024]/10 shadow-sm';
     const activeRad = btn.querySelector('.method-radio');
     if (activeRad) {
         activeRad.className = 'method-radio w-4 h-4 rounded-full border-2 border-[#290024] bg-[#290024] flex items-center justify-center';
@@ -1219,7 +1219,7 @@ document.querySelectorAll('.cat-tab').forEach(btn => {
     btn.addEventListener('click', function () {
         currentActiveCat = this.dataset.cat;
         document.querySelectorAll('.cat-tab').forEach(b => {
-            b.className = 'cat-tab shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-semibold bg-[#FAFCF3] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]/60 transition-all duration-200';
+            b.className = 'cat-tab shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-semibold bg-[#F2F5E2] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]/60 transition-all duration-200';
         });
         this.className = 'cat-tab shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-semibold bg-[#290024] text-[#F2F5E2] shadow-sm transition-all duration-200';
         filterMenus();

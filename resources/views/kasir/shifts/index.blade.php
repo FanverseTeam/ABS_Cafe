@@ -9,7 +9,7 @@
     @if(!$activeShift)
         <div class="lg:hidden fixed z-30 right-4 sm:right-6 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] landscape:bottom-[calc(3.75rem+env(safe-area-inset-bottom))]">
             <a href="{{ route('kasir.shift.open') }}"
-               class="flex items-center gap-2 px-4 py-3 rounded-full bg-cafe-gold hover:bg-[#c4853d] text-cafe-dark shadow-xl active:scale-95 transition-transform font-bold text-xs"
+               class="flex items-center gap-2 px-4 py-3 rounded-full bg-cafe-gold hover:bg-[#D4954D] text-cafe-dark shadow-xl active:scale-95 transition-transform font-bold text-xs"
                aria-label="Buka Shift">
                 <i data-lucide="play" class="w-5 h-5 shrink-0"></i>
                 <span class="whitespace-nowrap">Buka Shift</span>
@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="p-6 sm:p-8 flex flex-col justify-center gap-3">
-                    <a href="{{ route('kasir.shift.close') }}" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-cafe-dark text-white text-xs font-bold hover:bg-cafe-brown transition-colors shadow-md">
+                    <a href="{{ route('kasir.shift.close') }}" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-cafe-dark text-beige text-xs font-bold hover:bg-cafe-brown transition-colors shadow-md">
                         <i data-lucide="square" class="w-4 h-4"></i>
                         Tutup Shift &amp; Rekap Kas
                     </a>
@@ -78,7 +78,7 @@
                     <p class="text-xs text-cafe-muted mt-0.5">Buka shift untuk mulai menerima transaksi POS & pembayaran.</p>
                 </div>
             </div>
-            <a href="{{ route('kasir.shift.open') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-cafe-gold text-cafe-dark font-bold text-xs hover:bg-[#B87C3C] transition-colors shadow-md shrink-0">
+            <a href="{{ route('kasir.shift.open') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-cafe-gold text-cafe-dark font-bold text-xs hover:bg-[#D4954D] transition-colors shadow-md shrink-0">
                 <i data-lucide="play" class="w-4 h-4"></i>
                 Buka Shift
             </a>

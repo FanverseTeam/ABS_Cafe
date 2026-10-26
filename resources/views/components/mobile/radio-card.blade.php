@@ -14,7 +14,7 @@
 @endphp
 
 <label for="{{ $inputId }}" 
-       class="relative flex items-center gap-3.5 p-3.5 rounded-2xl border cursor-pointer transition-all duration-200 select-none bg-[#FAFCF3] border-[#E3DEA4] has-[:checked]:border-[#D4954D] has-[:checked]:bg-[#E3DEA4]/25 has-[:checked]:shadow-sm hover:border-[#D4954D]/60">
+       class="relative flex items-center gap-3.5 p-3.5 rounded-2xl border cursor-pointer transition-all duration-200 select-none bg-[#F2F5E2] border-[#E3DEA4] has-[:checked]:border-[#D4954D] has-[:checked]:bg-[#E3DEA4]/25 has-[:checked]:shadow-sm hover:border-[#D4954D]/60">
     <input type="radio" 
            id="{{ $inputId }}" 
            name="{{ $name }}" 
@@ -46,6 +46,6 @@
 
     <!-- Custom Radio Circle Indicator -->
     <div class="w-5 h-5 rounded-full border-2 border-[#775533]/40 peer-checked:border-[#290024] peer-checked:bg-[#290024] flex items-center justify-center shrink-0 transition-colors">
-        <span class="w-2 h-2 rounded-full bg-[#FAFCF3] opacity-0 peer-checked:opacity-100 transition-opacity"></span>
+        <span class="w-2 h-2 rounded-full bg-[#F2F5E2] opacity-0 peer-checked:opacity-100 transition-opacity"></span>
     </div>
 </label>

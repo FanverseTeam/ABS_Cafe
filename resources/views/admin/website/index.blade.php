@@ -7,14 +7,12 @@
 <div class="space-y-4 lg:space-y-6">
     <!-- Breadcrumb (Desktop only) -->
     <div class="hidden lg:block space-y-4">
-        <nav class="flex items-center gap-1.5 text-xs text-cafe-muted">
-            <a href="{{ route('admin.website.index') }}" class="hover:text-cafe-dark flex items-center gap-1">
-                <i data-lucide="home" class="w-3.5 h-3.5"></i>
-                <span>Admin</span>
-            </a>
-            <i data-lucide="chevron-right" class="w-3 h-3 text-cafe-muted/60"></i>
-            <span class="font-semibold text-cafe-dark">Pengaturan Website</span>
-        </nav>
+        <x-breadcrumb
+            :items="[
+                ['label' => 'Admin', 'url' => route('admin.website.index'), 'icon' => 'home'],
+                ['label' => 'Pengaturan Website'],
+            ]"
+        />
 
         <div>
             <h2 class="font-serif text-2xl font-bold text-cafe-dark">Pengaturan Website &amp; Operasional</h2>
@@ -66,11 +64,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Nama Cafe *</label>
-                        <input type="text" name="cafe_name" value="{{ $settings['cafe_name'] }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="cafe_name" value="{{ $settings['cafe_name'] }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Tagline *</label>
-                        <input type="text" name="cafe_tagline" value="{{ $settings['cafe_tagline'] }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="cafe_tagline" value="{{ $settings['cafe_tagline'] }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                 </div>
 
@@ -78,43 +76,43 @@
                     <label class="font-semibold text-cafe-dark">Logo Website</label>
                     <div class="flex flex-col gap-3 rounded-xl border border-cafe-beige bg-[#F2F5E2]/60 p-3 sm:flex-row sm:items-center">
                         <x-logo size="sm" :show-text="false" />
-                        <input type="text" name="cafe_logo" value="{{ $settings['cafe_logo'] }}" placeholder="images/logo.png" class="w-full bg-white focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="cafe_logo" value="{{ $settings['cafe_logo'] }}" placeholder="images/logo.png" class="w-full bg-beige focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                     <p class="text-[10px] text-cafe-muted">Path lokal atau URL gambar. Default: <span class="font-mono">images/logo.png</span>.</p>
                 </div>
 
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Alamat Lengkap</label>
-                    <textarea name="cafe_address" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">{{ $settings['cafe_address'] }}</textarea>
+                    <textarea name="cafe_address" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">{{ $settings['cafe_address'] }}</textarea>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Nomor Telepon / WhatsApp</label>
-                        <input type="text" name="cafe_phone" value="{{ $settings['cafe_phone'] }}" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="cafe_phone" value="{{ $settings['cafe_phone'] }}" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Email Kontak</label>
-                        <input type="email" name="cafe_email" value="{{ $settings['cafe_email'] }}" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="email" name="cafe_email" value="{{ $settings['cafe_email'] }}" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                 </div>
 
                 <div class="space-y-1 pt-1">
                     <label class="font-semibold text-cafe-dark">Tautan Google Maps</label>
-                    <input type="url" name="cafe_maps_url" value="{{ $settings['cafe_maps_url'] ?? '' }}" placeholder="https://maps.app.goo.gl/..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="url" name="cafe_maps_url" value="{{ $settings['cafe_maps_url'] ?? '' }}" placeholder="https://maps.app.goo.gl/..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     <p class="text-[10px] text-cafe-muted">Tautan yang dibuka ketika pengunjung mengklik tombol "Lihat di Google Maps".</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Koordinat Latitude (Peta &amp; Schema)</label>
-                        <input type="text" name="peta_lat" value="{{ $settings['peta_lat'] ?? '-8.0646338' }}" placeholder="-8.0646338" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                        @error('peta_lat')<p class="text-[10px] text-red-600 mt-1">{{ $message }}</p>@enderror
+                        <input type="text" name="peta_lat" value="{{ $settings['peta_lat'] ?? '-8.0646338' }}" placeholder="-8.0646338" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        @error('peta_lat')<p class="text-[10px] text-midnight mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Koordinat Longitude (Peta &amp; Schema)</label>
-                        <input type="text" name="peta_lng" value="{{ $settings['peta_lng'] ?? '111.9111798' }}" placeholder="111.9111798" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                        @error('peta_lng')<p class="text-[10px] text-red-600 mt-1">{{ $message }}</p>@enderror
+                        <input type="text" name="peta_lng" value="{{ $settings['peta_lng'] ?? '111.9111798' }}" placeholder="111.9111798" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        @error('peta_lng')<p class="text-[10px] text-midnight mt-1">{{ $message }}</p>@enderror
                     </div>
                 </div>
                 <p class="text-[10px] text-cafe-muted mt-1">Ambil koordinat dari tautan Google Maps bagian !3d dan !4d, bukan angka setelah tanda @ (itu titik tengah peta).</p>
@@ -122,22 +120,22 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Jam Buka Hari Kerja (Senin - Kamis)</label>
-                        <input type="text" name="hours_weekday" value="{{ $settings['hours_weekday'] }}" placeholder="09:00 - 23:00" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="hours_weekday" value="{{ $settings['hours_weekday'] }}" placeholder="09:00 - 23:00" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Jam Buka Akhir Pekan (Jumat - Minggu)</label>
-                        <input type="text" name="hours_weekend" value="{{ $settings['hours_weekend'] }}" placeholder="09:00 - 23:00" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="hours_weekend" value="{{ $settings['hours_weekend'] }}" placeholder="09:00 - 23:00" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Teks Jam Buka Beranda</label>
-                        <input type="text" name="cafe_hours" value="{{ $settings['cafe_hours'] ?? '' }}" placeholder="Buka Setiap Hari 09.00 - 23.00 WIB" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="cafe_hours" value="{{ $settings['cafe_hours'] ?? '' }}" placeholder="Buka Setiap Hari 09.00 - 23.00 WIB" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Batas Order Terakhir (Last Order)</label>
-                        <input type="text" name="last_order" value="{{ $settings['last_order'] ?? '' }}" placeholder="22.00 WIB" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="last_order" value="{{ $settings['last_order'] ?? '' }}" placeholder="22.00 WIB" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                 </div>
 
@@ -149,8 +147,8 @@
                             <input type="text" name="whatsapp_nomor" id="whatsapp_nomor"
                                    value="{{ $settings['whatsapp_nomor'] ?? '' }}"
                                    placeholder="6289620102010 atau 08962010..."
-                                   class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                            @error('whatsapp_nomor')<p class="text-[10px] text-red-600 mt-1">{{ $message }}</p>@enderror
+                                   class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                            @error('whatsapp_nomor')<p class="text-[10px] text-midnight mt-1">{{ $message }}</p>@enderror
                             <p class="text-[10px] text-cafe-muted">Format: 08..., 628..., atau +628... Dikosongkan untuk menyembunyikan tombol WhatsApp.</p>
                         </div>
                         <div class="space-y-1">
@@ -159,8 +157,8 @@
                                    value="{{ $settings['whatsapp_pesan'] ?? '' }}"
                                    placeholder="Halo ABS Cafe, saya ingin bertanya."
                                    maxlength="200"
-                                   class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                            @error('whatsapp_pesan')<p class="text-[10px] text-red-600 mt-1">{{ $message }}</p>@enderror
+                                   class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                            @error('whatsapp_pesan')<p class="text-[10px] text-midnight mt-1">{{ $message }}</p>@enderror
                             <p class="text-[10px] text-cafe-muted">Teks yang otomatis muncul saat pengunjung membuka chat. Maks 200 karakter.</p>
                         </div>
                     </div>
@@ -184,7 +182,7 @@
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Pajak Restoran / PB1 (%)</label>
                     <div class="relative w-48">
-                        <input type="number" name="tax_percent" value="{{ $settings['tax_percent'] }}" min="0" max="100" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 pr-8 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="number" name="tax_percent" value="{{ $settings['tax_percent'] }}" min="0" max="100" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 pr-8 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         <span class="absolute right-3 top-1/2 -translate-y-1/2 font-bold text-cafe-muted">%</span>
                     </div>
                     <p class="text-[10px] text-cafe-muted">Standar pajak restoran daerah Kabupaten Tulungagung adalah 10%.</p>
@@ -199,7 +197,7 @@
                     <div class="space-y-1 w-48 pl-6">
                         <label class="font-semibold text-cafe-muted">Persentase Service Charge (%)</label>
                         <div class="relative">
-                            <input type="number" name="service_charge_percent" value="{{ $settings['service_charge_percent'] }}" min="0" max="100" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 pr-8 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                            <input type="number" name="service_charge_percent" value="{{ $settings['service_charge_percent'] }}" min="0" max="100" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 pr-8 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                             <span class="absolute right-3 top-1/2 -translate-y-1/2 font-bold text-cafe-muted">%</span>
                         </div>
                     </div>
@@ -223,11 +221,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Nama Admin *</label>
-                        <input type="text" name="name" value="{{ Auth::user()->name }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="name" value="{{ Auth::user()->name }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Username Admin *</label>
-                        <input type="text" name="username" value="{{ Auth::user()->username }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <input type="text" name="username" value="{{ Auth::user()->username }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     </div>
                 </div>
 
@@ -237,11 +235,11 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="space-y-1">
                             <label class="font-semibold text-cafe-muted">Password Baru</label>
-                            <input type="password" name="password" placeholder="Minimal 6 karakter" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                            <input type="password" name="password" placeholder="Minimal 6 karakter" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         </div>
                         <div class="space-y-1">
                             <label class="font-semibold text-cafe-muted">Ulangi Password Baru</label>
-                            <input type="password" name="password_confirmation" placeholder="Ulangi password baru" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                            <input type="password" name="password_confirmation" placeholder="Ulangi password baru" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         </div>
                     </div>
                 </div>

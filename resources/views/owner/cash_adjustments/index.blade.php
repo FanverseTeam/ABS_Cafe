@@ -42,7 +42,7 @@
                     <input type="number" name="amount" step="1000" required
                         value="{{ old('amount') }}"
                         placeholder="cth. 50000 atau -50000"
-                        class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                        class="w-full bg-cafe-cream/60 focus:bg-beige text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
                     @error('amount')
                         <p class="text-[11px] text-cafe-danger">{{ $message }}</p>
                     @enderror
@@ -52,7 +52,7 @@
                     <label class="text-xs font-semibold text-cafe-text">Alasan <span class="text-cafe-danger">*</span></label>
                     <textarea name="reason" rows="3" required maxlength="500"
                         placeholder="Jelaskan alasan penyesuaian kas..."
-                        class="w-full bg-cafe-cream/60 focus:bg-white text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all resize-none">{{ old('reason') }}</textarea>
+                        class="w-full bg-cafe-cream/60 focus:bg-beige text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all resize-none">{{ old('reason') }}</textarea>
                     @error('reason')
                         <p class="text-[11px] text-cafe-danger">{{ $message }}</p>
                     @enderror

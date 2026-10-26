@@ -3,7 +3,7 @@
     'rowClass' => '',
 ])
 
-<tr {{ $attributes->merge(['class' => 'block md:table-row bg-cafe-card rounded-2xl md:rounded-none border border-cafe-beige/60 md:border-0 shadow-soft md:shadow-none p-4 md:p-0 hover:bg-cafe-cream/80 transition-colors ' . ($index % 2 === 1 ? 'md:bg-[#FAFCF3]/40 ' : '') . $rowClass]) }} data-responsive-row>
+<tr {{ $attributes->merge(['class' => 'block md:table-row bg-cafe-card rounded-2xl md:rounded-none border border-cafe-beige/60 md:border-0 shadow-soft md:shadow-none p-4 md:p-0 hover:bg-cafe-cream/80 transition-colors ' . ($index % 2 === 1 ? 'md:bg-[#F2F5E2]/40 ' : '') . $rowClass]) }} data-responsive-row>
     <!-- Mobile Card View (< md) -->
     <td class="block md:hidden p-0 border-0" colspan="100%" data-mobile-card>
         @if(isset($card))

@@ -10,7 +10,7 @@
     'actionHref' => null,
 ])
 
-<div {{ $attributes->merge(['class' => 'flex items-center gap-3 p-3 bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4]/60 shadow-sm transition-all hover:border-[#D4954D]/50']) }}>
+<div {{ $attributes->merge(['class' => 'flex items-center gap-3 p-3 bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/60 shadow-sm transition-all hover:border-[#D4954D]/50']) }}>
     <!-- Thumbnail / Icon Box -->
     <div class="w-14 h-14 rounded-2xl bg-[#F2F5E2] overflow-hidden shrink-0 flex items-center justify-center border border-[#E3DEA4]/50">
         @if($image)
@@ -51,11 +51,11 @@
     <!-- Right Action -->
     <div class="shrink-0">
         @if($actionHref)
-            <a href="{{ $actionHref }}" class="w-9 h-9 rounded-full bg-[#E3DEA4]/40 hover:bg-[#290024] text-[#290024] hover:text-[#FAFCF3] flex items-center justify-center transition-all shadow-sm" aria-label="Buka {{ $title }}">
+            <a href="{{ $actionHref }}" class="w-9 h-9 rounded-full bg-[#E3DEA4]/40 hover:bg-[#290024] text-[#290024] hover:text-[#F2F5E2] flex items-center justify-center transition-all shadow-sm" aria-label="Buka {{ $title }}">
                 <i data-lucide="{{ $actionIcon }}" class="w-4 h-4"></i>
             </a>
         @elseif($actionCallback)
-            <button type="button" onclick="{{ $actionCallback }}" class="w-9 h-9 rounded-full bg-[#290024] hover:bg-[#D4954D] text-[#FAFCF3] hover:text-[#290024] flex items-center justify-center transition-all shadow-sm active:scale-95" aria-label="Aksi {{ $title }}">
+            <button type="button" onclick="{{ $actionCallback }}" class="w-9 h-9 rounded-full bg-[#290024] hover:bg-[#D4954D] text-[#F2F5E2] hover:text-[#290024] flex items-center justify-center transition-all shadow-sm active:scale-95" aria-label="Aksi {{ $title }}">
                 <i data-lucide="{{ $actionIcon }}" class="w-4 h-4"></i>
             </button>
         @endif

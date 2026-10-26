@@ -53,7 +53,7 @@
 
     $badgeBackground = '#290024';
     if ($thermal) {
-        $badgeBackground = '#000000';
+        $badgeBackground = '#290024';
     }
 
     $badgeStyle = $onDark

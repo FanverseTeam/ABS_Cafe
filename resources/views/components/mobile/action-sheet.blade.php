@@ -21,7 +21,7 @@
         onclick="openBottomSheet('{{ $id }}')"
         aria-label="{{ $label }}"
         aria-controls="{{ $id }}"
-        class="flex items-center justify-center w-10 h-10 rounded-full bg-[#FAFCF3] border border-[#E3DEA4] text-[#290024] transition-colors hover:bg-[#E3DEA4]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]/70 {{ $buttonClass }}"
+        class="flex items-center justify-center w-10 h-10 rounded-full bg-[#F2F5E2] border border-[#E3DEA4] text-[#290024] transition-colors hover:bg-[#E3DEA4]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]/70 {{ $buttonClass }}"
     >
         <i data-lucide="{{ $icon }}" class="w-4 h-4 text-[#775533]"></i>
     </button>

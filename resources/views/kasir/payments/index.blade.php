@@ -55,7 +55,7 @@
                             <span class="text-[10px] text-cafe-muted">{{ $order->created_at->format('H:i') }} WIB</span>
                             <span class="font-serif font-bold text-cafe-dark text-lg">Rp {{ number_format($order->total, 0, ',', '.') }}</span>
                         </div>
-                        <a href="{{ route('kasir.payments.checkout', $order) }}" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#B87C3C] transition-colors shadow-md">
+                        <a href="{{ route('kasir.payments.checkout', $order) }}" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#D4954D] transition-colors shadow-md">
                             <i data-lucide="credit-card" class="w-4 h-4"></i>
                             Proses Pembayaran
                         </a>

@@ -9,7 +9,7 @@
 
 @endphp
 
-<header class="sticky top-0 z-30 bg-[#FAFCF3]/95 backdrop-blur-md border-b border-cafe-beige/60 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">
+<header class="sticky top-0 z-30 bg-[#F2F5E2]/95 backdrop-blur-md border-b border-cafe-beige/60 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">
     <div class="h-14 sm:h-16 landscape:h-12 sm:landscape:h-14 flex items-center justify-between gap-3 px-3 sm:px-6 lg:px-8 w-full">
 
         {{-- ═══ LEFT: Logo / Back + Page Title ═══ --}}
@@ -43,7 +43,7 @@
                         title="Notifikasi Pesanan">
                     <i data-lucide="bell" class="w-[18px] h-[18px]"></i>
                     <span id="notif-badge"
-                          class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-cafe-danger text-white text-[10px] font-bold flex items-center justify-center px-1 ring-2 ring-[#FAFCF3]
+                          class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] rounded-full bg-cafe-danger text-beige text-[10px] font-bold flex items-center justify-center px-1 ring-2 ring-[#F2F5E2]
                                  {{ $totalNotif > 0 ? 'animate-pulse' : 'hidden' }}">
                         {{ $totalNotif > 0 ? $totalNotif : '' }}
                     </span>
@@ -64,7 +64,7 @@
                     <div class="divide-y divide-cafe-beige/30 max-h-72 overflow-y-auto">
                         @forelse($unpaidOrders as $unpaid)
                             <a href="{{ route('kasir.payments.index') }}" class="p-3 hover:bg-cafe-cream/80 transition-colors flex items-start gap-3 block">
-                                <div class="w-8 h-8 rounded-xl bg-[#C98A2B]/15 text-[#C98A2B] flex items-center justify-center shrink-0">
+                                <div class="w-8 h-8 rounded-xl bg-[#D4954D]/15 text-[#D4954D] flex items-center justify-center shrink-0">
                                     <i data-lucide="clock" class="w-4 h-4"></i>
                                 </div>
                                 <div class="min-w-0 flex-1">

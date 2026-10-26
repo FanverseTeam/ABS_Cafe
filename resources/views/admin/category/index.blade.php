@@ -6,14 +6,13 @@
 @section('content')
 <div class="space-y-6">
     <!-- Breadcrumb -->
-    <nav class="flex items-center gap-1.5 text-xs text-cafe-muted mb-3">
-        <a href="{{ route('admin.dashboard') }}" class="hover:text-cafe-dark flex items-center gap-1">
-            <i data-lucide="home" class="w-3.5 h-3.5"></i>
-            <span>Admin</span>
-        </a>
-        <i data-lucide="chevron-right" class="w-3 h-3 text-cafe-muted/60"></i>
-        <span class="font-semibold text-cafe-dark">Kategori</span>
-    </nav>
+    <x-breadcrumb
+        :items="[
+            ['label' => 'Admin', 'url' => route('admin.dashboard'), 'icon' => 'home'],
+            ['label' => 'Kategori'],
+        ]"
+        class="mb-3"
+    />
 
     <!-- Page Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -130,23 +129,23 @@
             @csrf
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Nama Kategori *</label>
-                <input type="text" name="name" id="cat-input-name" required placeholder="misal: Coffee, Artisan Tea" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <input type="text" name="name" id="cat-input-name" required placeholder="misal: Coffee, Artisan Tea" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
             </div>
 
             <div class="grid grid-cols-2 gap-3">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Ikon (Lucide)</label>
-                    <input type="text" name="icon" id="cat-input-icon" value="coffee" placeholder="coffee, utensils" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="icon" id="cat-input-icon" value="coffee" placeholder="coffee, utensils" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Urutan Tampil</label>
-                    <input type="number" name="order" id="cat-input-order" value="1" min="1" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="number" name="order" id="cat-input-order" value="1" min="1" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Deskripsi Singkat</label>
-                <textarea name="description" id="cat-input-desc" rows="2" placeholder="Keterangan singkat kategori ini..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
+                <textarea name="description" id="cat-input-desc" rows="2" placeholder="Keterangan singkat kategori ini..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
             </div>
 
             <div class="pt-1">
@@ -188,7 +187,7 @@
             @method('DELETE')
             <div class="flex items-center justify-end gap-3 pt-3 border-t border-cafe-beige/60">
                 <button type="button" onclick="closeDeleteCategoryModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-cafe-dark hover:bg-cafe-beige/60">Batal</button>
-                <button type="submit" id="delete-cat-btn" class="px-5 py-2 rounded-full bg-cafe-danger hover:bg-cafe-danger/90 text-white font-semibold text-xs shadow-sm">Hapus Kategori</button>
+                <button type="submit" id="delete-cat-btn" class="px-5 py-2 rounded-full bg-cafe-danger hover:bg-cafe-danger/90 text-beige font-semibold text-xs shadow-sm">Hapus Kategori</button>
             </div>
         </form>
     </div>

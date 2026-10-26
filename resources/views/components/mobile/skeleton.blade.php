@@ -14,7 +14,7 @@
 @if($type === 'square-grid' || $type === 'grid')
     <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
         @for($i = 0; $i < $count; $i++)
-            <div class="bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4]/60 overflow-hidden animate-pulse">
+            <div class="bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/60 overflow-hidden animate-pulse">
                 <div class="aspect-square bg-[#E3DEA4]/60"></div>
                 <div class="px-2.5 pt-2 pb-1 space-y-1.5">
                     <div class="h-3 bg-[#E3DEA4]/80 rounded-full w-3/4"></div>
@@ -31,7 +31,7 @@
 @else
     <div class="space-y-2">
         @for($i = 0; $i < $count; $i++)
-            <div class="flex items-center gap-3 p-3 bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4]/60 animate-pulse">
+            <div class="flex items-center gap-3 p-3 bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/60 animate-pulse">
                 <div class="w-16 h-16 rounded-xl bg-[#E3DEA4]/60 shrink-0"></div>
                 <div class="flex-1 space-y-2">
                     <div class="h-3 bg-[#E3DEA4]/80 rounded-full w-3/4"></div>

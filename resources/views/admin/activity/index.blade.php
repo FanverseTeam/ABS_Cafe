@@ -6,14 +6,13 @@
 @section('content')
 <div class="space-y-4 lg:space-y-6">
     <!-- Breadcrumb (Desktop only) -->
-    <nav class="hidden lg:flex items-center gap-1.5 text-xs text-cafe-muted mb-3">
-        <a href="{{ route('admin.activity.index') }}" class="hover:text-cafe-dark flex items-center gap-1">
-            <i data-lucide="home" class="w-3.5 h-3.5"></i>
-            <span>Admin</span>
-        </a>
-        <i data-lucide="chevron-right" class="w-3 h-3 text-cafe-muted/60"></i>
-        <span class="font-semibold text-cafe-dark">Log Aktivitas</span>
-    </nav>
+    <x-breadcrumb
+        :items="[
+            ['label' => 'Admin', 'url' => route('admin.activity.index'), 'icon' => 'home'],
+            ['label' => 'Log Aktivitas'],
+        ]"
+        class="mb-3"
+    />
 
     <!-- Page Header & Action (Desktop only) -->
     <div class="hidden lg:flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -111,11 +110,11 @@
         <form method="GET" action="{{ route('admin.activity.index') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari aktivitas atau nama staf..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari aktivitas atau nama staf..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
             </div>
 
             <div>
-                <select name="type" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="type" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Jenis Aktivitas</option>
                     <option value="pesanan" {{ request('type') === 'pesanan' ? 'selected' : '' }}>Pesanan &amp; Kasir</option>
                     <option value="menu" {{ request('type') === 'menu' ? 'selected' : '' }}>Menu &amp; Harga</option>
@@ -127,7 +126,7 @@
             </div>
 
             <div>
-                <select name="user" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="user" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Pengguna</option>
                     @foreach($users as $userName)
                         <option value="{{ $userName }}" {{ request('user') === $userName ? 'selected' : '' }}>{{ $userName }}</option>

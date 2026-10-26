@@ -10,7 +10,7 @@
          onclick="closeBottomSheet('{{ $id }}')"></div>
 
     <!-- Sheet Container -->
-    <div class="fixed inset-x-0 bottom-0 max-h-[90vh] bg-[#FAFCF3] rounded-t-[2rem] border-t border-[#E3DEA4] shadow-2xl flex flex-col z-10 transform translate-y-full transition-transform duration-300 ease-out">
+    <div class="fixed inset-x-0 bottom-0 max-h-[90vh] bg-[#F2F5E2] rounded-t-[2rem] border-t border-[#E3DEA4] shadow-2xl flex flex-col z-10 transform translate-y-full transition-transform duration-300 ease-out">
         <!-- Drag Handle Indicator -->
         <div class="w-full pt-3 pb-1 flex justify-center cursor-pointer" onclick="closeBottomSheet('{{ $id }}')">
             <div class="w-12 h-1.5 bg-[#775533]/30 rounded-full"></div>

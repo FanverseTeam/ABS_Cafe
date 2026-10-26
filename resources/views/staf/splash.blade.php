@@ -81,7 +81,7 @@
     <style>
         /* ==========================================================================
            SPLASH SCREEN INLINE STYLES (Zero external CSS dependency)
-           Palet: Midnight Violet (#290024), Beige (#FAFCF3),
+           Palet: Midnight Violet (#290024), Beige (#F2F5E2),
                   Vanilla Custard (#E3DEA4), Golden Apricot (#D4954D), Olive Wood (#775533)
            ========================================================================== */
         *, *::before, *::after {
@@ -97,7 +97,7 @@
             height: 100svh;
             overflow: hidden;
             background-color: #290024;
-            color: #FAFCF3;
+            color: #F2F5E2;
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -236,7 +236,7 @@
             font-family: 'Noto Serif', Georgia, serif;
             font-size: clamp(2.25rem, 8vw, 3.75rem);
             font-weight: 700;
-            color: #FAFCF3;
+            color: #F2F5E2;
             line-height: 1.1;
             letter-spacing: -0.01em;
             margin-bottom: 0.75rem;

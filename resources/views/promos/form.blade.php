@@ -11,7 +11,7 @@
 
     <!-- Error Summary (Tampil bila ada kegagalan validasi) -->
     @if($errors->any())
-        <div class="mt-4 mb-2 p-4 rounded-2xl bg-[#B03A2E]/10 border border-[#B03A2E]/30 text-cafe-text animate-in fade-in">
+        <div class="mt-4 mb-2 p-4 rounded-2xl bg-[#775533]/10 border border-[#775533]/30 text-cafe-text animate-in fade-in">
             <div class="flex items-center gap-2 mb-2 text-cafe-danger font-semibold text-xs sm:text-sm">
                 <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
                 <span>Terdapat kesalahan pada isian form:</span>
@@ -45,7 +45,7 @@
                                value="{{ old('title', $promo->title) }}"
                                required
                                placeholder="misal: Buy 2 Get 1 Free All Coffee"
-                               class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
+                               class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
                         @error('title')
                             <p class="text-[11px] text-cafe-danger mt-1">{{ $message }}</p>
                         @enderror
@@ -58,7 +58,7 @@
                                id="code"
                                value="{{ old('code', $promo->code) }}"
                                placeholder="misal: KOPIHEMAT (kosongkan jika tanpa kode)"
-                               class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all uppercase min-h-[44px]">
+                               class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all uppercase min-h-[44px]">
                         <p class="text-[10px] text-cafe-muted">Otomatis diubah menjadi huruf besar saat disimpan.</p>
                         @error('code')
                             <p class="text-[11px] text-cafe-danger mt-1">{{ $message }}</p>
@@ -72,7 +72,7 @@
                                   rows="3"
                                   required
                                   placeholder="Jelaskan syarat dan ketentuan promo kafe..."
-                                  class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">{{ old('description', $promo->description) }}</textarea>
+                                  class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">{{ old('description', $promo->description) }}</textarea>
                         @error('description')
                             <p class="text-[11px] text-cafe-danger mt-1">{{ $message }}</p>
                         @enderror
@@ -95,7 +95,7 @@
                                 id="type"
                                 required
                                 onchange="updateTypeFields()"
-                                class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
+                                class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
                             @php
                                 $selectedType = old('type', $promo->type ?: 'buy_x_get_y');
                             @endphp
@@ -123,7 +123,7 @@
                                    value="{{ old('value', $promo->value !== null ? (float) $promo->value : 100) }}"
                                    required
                                    placeholder="100"
-                                   class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
+                                   class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
                             <span id="value-suffix" class="absolute right-4 text-xs font-bold text-cafe-muted">%</span>
                         </div>
                         <p id="value-helper" class="text-[10px] text-cafe-muted mt-1 leading-snug"></p>
@@ -139,7 +139,7 @@
                                 id="applies_to"
                                 required
                                 onchange="updateAppliesToFields()"
-                                class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
+                                class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
                             @php
                                 $selectedApplies = old('applies_to', $promo->applies_to ?: 'semua');
                             @endphp
@@ -159,7 +159,7 @@
                         </label>
                         <select name="target_category_id"
                                 id="target_category_id"
-                                class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
+                                class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
                             <option value="">Pilih Kategori</option>
                             @php
                                 $selectedCat = old('target_category_id', $promo->target_category_id);
@@ -186,7 +186,7 @@
                                id="min_spend"
                                value="{{ old('min_spend', $promo->min_spend !== null ? (float) $promo->min_spend : 0) }}"
                                placeholder="0"
-                               class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
+                               class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
                         @error('min_spend')
                             <p class="text-[11px] text-cafe-danger mt-1">{{ $message }}</p>
                         @enderror
@@ -201,7 +201,7 @@
                                id="quota"
                                value="{{ old('quota', $promo->quota) }}"
                                placeholder="Kosongkan jika tanpa batas"
-                               class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
+                               class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
                         @error('quota')
                             <p class="text-[11px] text-cafe-danger mt-1">{{ $message }}</p>
                         @enderror
@@ -224,7 +224,7 @@
                                id="start_date"
                                value="{{ old('start_date', $promo->start_date ? \Carbon\Carbon::parse($promo->start_date)->toDateString() : now()->toDateString()) }}"
                                required
-                               class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
+                               class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
                         @error('start_date')
                             <p class="text-[11px] text-cafe-danger mt-1">{{ $message }}</p>
                         @enderror
@@ -237,7 +237,7 @@
                                id="end_date"
                                value="{{ old('end_date', $promo->end_date ? \Carbon\Carbon::parse($promo->end_date)->toDateString() : now()->addDays(30)->toDateString()) }}"
                                required
-                               class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
+                               class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
                         @error('end_date')
                             <p class="text-[11px] text-cafe-danger mt-1">{{ $message }}</p>
                         @enderror
@@ -261,7 +261,7 @@
                                value="{{ old('banner', $promo->banner ?: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&auto=format&fit=crop&q=80') }}"
                                oninput="updateBannerPreview()"
                                placeholder="https://images.unsplash.com/..."
-                               class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
+                               class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
                         @error('banner')
                             <p class="text-[11px] text-cafe-danger mt-1">{{ $message }}</p>
                         @enderror
@@ -302,7 +302,7 @@
                                value="1"
                                {{ $isActiveChecked ? 'checked' : '' }}
                                class="sr-only peer">
-                        <div class="w-11 h-6 bg-cafe-beige/80 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cafe-gold/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cafe-success relative"></div>
+                        <div class="w-11 h-6 bg-cafe-beige/80 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cafe-gold/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-beige after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-beige after:border-olive/40 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cafe-success relative"></div>
                         <span class="font-semibold text-xs sm:text-sm text-cafe-dark">Aktifkan promo sekarang</span>
                     </label>
                     <p class="text-[10px] text-cafe-muted mt-1">Jika dinonaktifkan, promo tidak dapat diterapkan pada transaksi pelanggan.</p>
@@ -311,7 +311,7 @@
         </div>
 
         <!-- Bilah Aksi: Sticky di bawah pada Mobile & Tablet (dengan safe-area); di Desktop berada di bawah kartu -->
-        <div class="fixed inset-x-0 bottom-0 z-30 bg-[#FAFCF3]/95 backdrop-blur-md border-t border-cafe-beige/60 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-soft-lg lg:static lg:bg-transparent lg:border-t-0 lg:p-0 lg:shadow-none lg:mt-6">
+        <div class="fixed inset-x-0 bottom-0 z-30 bg-[#F2F5E2]/95 backdrop-blur-md border-t border-cafe-beige/60 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-soft-lg lg:static lg:bg-transparent lg:border-t-0 lg:p-0 lg:shadow-none lg:mt-6">
             <div class="max-w-[800px] mx-auto flex items-center justify-end gap-3">
                 <a href="{{ $backUrl }}"
                    id="btn-cancel"

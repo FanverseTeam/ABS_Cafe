@@ -17,28 +17,43 @@
     <script>
         tailwind.config = {
             theme: {
+                colors: {
+                    transparent: 'transparent',
+                    current: 'currentColor',
+                    inherit: 'inherit',
+                    beige: '#F2F5E2',
+                    vanilla: '#E3DEA4',
+                    custard: '#E3DEA4',
+                    apricot: '#D4954D',
+                    olive: '#775533',
+                    midnight: '#290024',
+                    plum: '#290024',
+                    bronze: '#D4954D',
+                    success: '#775533',
+                    warning: '#D4954D',
+                    danger: '#775533',
+                    info: '#D4954D',
+                    cafe: {
+                        dark: '#290024',
+                        plum: '#290024',
+                        brown: '#775533',
+                        olive: '#775533',
+                        gold: '#D4954D',
+                        apricot: '#D4954D',
+                        bronze: '#D4954D',
+                        cream: '#F2F5E2',
+                        beige: '#E3DEA4',
+                        custard: '#E3DEA4',
+                        card: 'rgb(227 222 164 / 0.35)',
+                        text: '#290024',
+                        muted: '#775533',
+                        success: '#775533',
+                        warning: '#D4954D',
+                        danger: '#775533',
+                        info: '#D4954D',
+                    }
+                },
                 extend: {
-                    colors: {
-                        cafe: {
-                            dark: '#290024',
-                            plum: '#3D1236',
-                            brown: '#775533',
-                            olive: '#775533',
-                            gold: '#D4954D',
-                            apricot: '#D4954D',
-                            bronze: '#B87C3C',
-                            cream: '#F2F5E2',
-                            beige: '#E3DEA4',
-                            custard: '#E3DEA4',
-                            card: '#FAFCF3',
-                            text: '#290024',
-                            muted: '#775533',
-                            success: '#4F7A4A',
-                            warning: '#C98A2B',
-                            danger: '#B03A2E',
-                            info: '#5B7C99',
-                        }
-                    },
                     fontFamily: {
                         serif: ['"Noto Serif"', 'Georgia', 'serif'],
                         sans: ['"Poppins"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
@@ -79,7 +94,7 @@
                     <x-logo on-dark size="md" loading="eager" />
                 </div>
 
-                <div class="lg:hidden inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-[#D4954D] text-[10px] font-medium border border-[#D4954D]/20">
+                <div class="lg:hidden inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-beige/10 backdrop-blur-md text-[#D4954D] text-[10px] font-medium border border-[#D4954D]/20">
                     <i data-lucide="shield-check" class="w-3 h-3"></i>
                     <span>Portal Staf</span>
                 </div>
@@ -87,12 +102,12 @@
 
             <!-- Middle Tagline & Info -->
             <div class="relative z-10 my-6 sm:my-8 lg:my-10 space-y-3 sm:space-y-4">
-                <div class="hidden lg:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-[#D4954D] text-xs font-medium border border-[#D4954D]/20">
+                <div class="hidden lg:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-beige/10 backdrop-blur-md text-[#D4954D] text-xs font-medium border border-[#D4954D]/20">
                     <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
                     <span>Satu Akses untuk Semua Peran</span>
                 </div>
 
-                <h2 class="font-serif text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#FAFCF3] leading-tight">
+                <h2 class="font-serif text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#F2F5E2] leading-tight">
                     Good Coffee, <br class="hidden sm:inline">
                     <span class="text-[#D4954D] italic font-serif">Good Mood.</span>
                 </h2>
@@ -104,20 +119,20 @@
 
                 <!-- Role Pills -->
                 <div class="flex flex-wrap gap-2 pt-1 sm:pt-2">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-[#F2F5E2]/90 text-[10px] sm:text-[11px] font-medium">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-beige/10 text-[#F2F5E2]/90 text-[10px] sm:text-[11px] font-medium">
                         <i data-lucide="settings" class="w-3 h-3 text-[#D4954D]"></i> Admin
                     </span>
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-[#F2F5E2]/90 text-[10px] sm:text-[11px] font-medium">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-beige/10 text-[#F2F5E2]/90 text-[10px] sm:text-[11px] font-medium">
                         <i data-lucide="crown" class="w-3 h-3 text-[#D4954D]"></i> Owner
                     </span>
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-[#F2F5E2]/90 text-[10px] sm:text-[11px] font-medium">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-beige/10 text-[#F2F5E2]/90 text-[10px] sm:text-[11px] font-medium">
                         <i data-lucide="calculator" class="w-3 h-3 text-[#D4954D]"></i> Kasir
                     </span>
                 </div>
             </div>
 
             <!-- Footer Badge -->
-            <div class="relative z-10 pt-4 sm:pt-6 border-t border-white/10 hidden sm:flex items-center justify-between text-xs text-[#F2F5E2]/60">
+            <div class="relative z-10 pt-4 sm:pt-6 border-t border-beige/10 hidden sm:flex items-center justify-between text-xs text-[#F2F5E2]/60">
                 <div class="flex items-center gap-2">
                     <i data-lucide="coffee" class="w-4 h-4 text-[#D4954D]"></i>
                     <span>ABS Cafe &bull; Tulungagung</span>
@@ -127,7 +142,7 @@
         </div>
 
         <!-- Kolom Kanan: Form Login (Di mobile: Kartu krem naik membulat) -->
-        <div class="p-6 sm:p-10 lg:p-12 flex flex-col justify-center bg-[#FAFCF3] -mt-6 sm:mt-0 rounded-t-3xl sm:rounded-none relative z-20 shadow-lg sm:shadow-none flex-1">
+        <div class="p-6 sm:p-10 lg:p-12 flex flex-col justify-center bg-[#F2F5E2] -mt-6 sm:mt-0 rounded-t-3xl sm:rounded-none relative z-20 shadow-lg sm:shadow-none flex-1">
             <div class="max-w-md w-full mx-auto space-y-6">
                 <div>
                     <h3 class="font-serif text-2xl sm:text-3xl font-bold text-cafe-dark">Masuk ke Dashboard</h3>
@@ -138,21 +153,21 @@
 
                 <!-- Status Messages -->
                 @if(session('error'))
-                    <div class="p-3.5 rounded-2xl bg-[#B03A2E]/10 border border-[#B03A2E]/20 text-[#B03A2E] text-xs leading-relaxed flex items-start gap-2.5">
+                    <div class="p-3.5 rounded-2xl bg-[#775533]/10 border border-[#775533]/20 text-[#775533] text-xs leading-relaxed flex items-start gap-2.5">
                         <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 mt-0.5"></i>
                         <span>{{ session('error') }}</span>
                     </div>
                 @endif
 
                 @if(session('success'))
-                    <div class="p-3.5 rounded-2xl bg-[#4F7A4A]/10 border border-[#4F7A4A]/20 text-[#4F7A4A] text-xs leading-relaxed flex items-start gap-2.5">
+                    <div class="p-3.5 rounded-2xl bg-[#775533]/10 border border-[#775533]/20 text-[#775533] text-xs leading-relaxed flex items-start gap-2.5">
                         <i data-lucide="check-circle-2" class="w-4 h-4 shrink-0 mt-0.5"></i>
                         <span>{{ session('success') }}</span>
                     </div>
                 @endif
 
                 @if($errors->any())
-                    <div class="p-3.5 rounded-2xl bg-[#B03A2E]/10 border border-[#B03A2E]/20 text-[#B03A2E] text-xs leading-relaxed">
+                    <div class="p-3.5 rounded-2xl bg-[#775533]/10 border border-[#775533]/20 text-[#775533] text-xs leading-relaxed">
                         @foreach ($errors->all() as $err)
                             <p>&bull; {{ $err }}</p>
                         @endforeach
@@ -167,7 +182,7 @@
                         <label class="block text-xs font-semibold text-cafe-text">Username</label>
                         <div class="relative">
                             <i data-lucide="user" class="w-4 h-4 text-cafe-muted absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                            <input type="text" name="login" id="login-input" value="{{ old('login') }}" required autofocus placeholder="username" autocomplete="username" autocapitalize="none" spellcheck="false" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs sm:text-sm text-cafe-text placeholder:text-cafe-muted/60 pl-11 pr-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">
+                            <input type="text" name="login" id="login-input" value="{{ old('login') }}" required autofocus placeholder="username" autocomplete="username" autocapitalize="none" spellcheck="false" class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-xs sm:text-sm text-cafe-text placeholder:text-cafe-muted/60 pl-11 pr-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">
                         </div>
                     </div>
 
@@ -179,7 +194,7 @@
                         </div>
                         <div class="relative">
                             <i data-lucide="lock" class="w-4 h-4 text-cafe-muted absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                            <input type="password" name="password" id="password-input" required placeholder="••••••••" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs sm:text-sm text-cafe-text placeholder:text-cafe-muted/60 pl-11 pr-11 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">
+                            <input type="password" name="password" id="password-input" required placeholder="••••••••" class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-xs sm:text-sm text-cafe-text placeholder:text-cafe-muted/60 pl-11 pr-11 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">
                             <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-cafe-muted hover:text-cafe-dark transition-colors p-1">
                                 <i id="eye-icon" data-lucide="eye" class="w-4 h-4"></i>
                             </button>

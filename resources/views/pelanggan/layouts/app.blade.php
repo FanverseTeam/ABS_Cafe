@@ -102,7 +102,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col bg-[#290024] text-[#F2F5E2] selection:bg-[#D4954D]/30 selection:text-[#F2F5E2]">
+<body class="min-h-screen flex flex-col @yield('body_class', 'bg-[#290024] text-[#F2F5E2]') selection:bg-[#D4954D]/30 selection:text-[#F2F5E2]">
     <!-- Aksesibilitas: Lewati ke konten utama -->
     <a href="#main-content"
        class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2.5 focus:rounded-full focus:bg-[#D4954D] focus:text-[#290024] focus:font-semibold focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#F2F5E2]">
@@ -110,7 +110,11 @@
     </a>
 
     <!-- Header Pelanggan -->
-    @include('pelanggan.components.header')
+    @hasSection('header')
+        @yield('header')
+    @else
+        @include('pelanggan.components.header')
+    @endif
 
     <!-- Konten Utama -->
     <main id="main-content" class="flex-1 w-full" tabindex="-1">
@@ -118,7 +122,11 @@
     </main>
 
     <!-- Footer Pelanggan -->
-    @include('pelanggan.components.footer')
+    @hasSection('footer')
+        @yield('footer')
+    @else
+        @include('pelanggan.components.footer')
+    @endif
 
     @stack('scripts')
 </body>

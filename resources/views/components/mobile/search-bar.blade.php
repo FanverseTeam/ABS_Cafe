@@ -51,7 +51,7 @@
         placeholder="{{ $placeholder }}"
         @if($autofocus) autofocus @endif
         autocomplete="off"
-        class="w-full h-12 bg-[#FAFCF3] border border-[#E3DEA4] rounded-full pl-10 pr-10 text-sm text-[#290024] placeholder:text-[#775533]/60 focus:outline-none focus:border-[#290024] focus:ring-2 focus:ring-[#290024]/20 transition-all"
+        class="w-full h-12 bg-[#F2F5E2] border border-[#E3DEA4] rounded-full pl-10 pr-10 text-sm text-[#290024] placeholder:text-[#775533]/60 focus:outline-none focus:border-[#290024] focus:ring-2 focus:ring-[#290024]/20 transition-all"
     >
 
     {{-- Clear button (shown when value not empty) --}}

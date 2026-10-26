@@ -57,8 +57,8 @@ class LandingPageCustomerTest extends TestCase
     {
         $menuResponse = $this->get(route('pelanggan.menu'));
         $menuResponse->assertOk();
-        $menuResponse->assertSee('Segera Hadir');
-        $menuResponse->assertSee('Menu Kafe');
+        $menuResponse->assertSee('Menu');
+        $menuResponse->assertSee('Rasa Yang Selalu Bikin Rindu');
         $menuResponse->assertSee(route('pelanggan.beranda'));
 
         $reservasiResponse = $this->get(route('pelanggan.reservasi'));

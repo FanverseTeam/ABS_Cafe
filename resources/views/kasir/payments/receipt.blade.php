@@ -6,10 +6,10 @@
 @section('content')
 <div class="max-w-xl mx-auto space-y-6">
     <!-- Success Hero Card (Persis Layar 8 Referensi) -->
-    <div class="bg-[#FAFCF3] rounded-3xl border border-[#E3DEA4]/80 shadow-soft-lg p-6 sm:p-8 text-center flex flex-col items-center">
+    <div class="bg-beige/40 rounded-3xl border border-custard shadow-soft-lg p-6 sm:p-8 text-center flex flex-col items-center">
         <!-- Lingkaran Gelap Centang -->
         <div class="relative mb-4">
-            <div class="w-20 h-20 rounded-full bg-[#290024] text-[#D4954D] flex items-center justify-center shadow-soft-lg animate-in zoom-in-75 duration-300">
+            <div class="w-20 h-20 rounded-full bg-midnight text-apricot flex items-center justify-center shadow-soft-lg animate-in zoom-in-75 duration-300">
                 <i data-lucide="check" class="w-10 h-10 stroke-[3]"></i>
             </div>
             <span class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#D4954D] animate-ping opacity-75"></span>
@@ -39,7 +39,7 @@
 
         <!-- Tombol Aksi Layar 8 -->
         <div class="w-full mt-6 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <button onclick="window.print()" class="w-full py-3.5 px-4 rounded-full bg-[#290024] hover:bg-[#775533] text-[#FAFCF3] font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+            <button onclick="window.print()" class="w-full py-3.5 px-4 rounded-full bg-midnight hover:bg-olive text-beige font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
                 <i data-lucide="printer" class="w-4 h-4 text-[#D4954D]"></i>
                 <span>Cetak Struk Fisik</span>
             </button>
@@ -57,9 +57,9 @@
 
     <!-- Kertas Struk Fisik (80mm) -->
     <div class="bg-white rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden p-4 sm:p-6">
-        <div class="flex items-center justify-between pb-4 mb-4 border-b border-gray-100">
-            <span class="text-xs font-bold text-gray-700">Preview Struk Kasir</span>
-            <span class="text-[10px] text-gray-500 font-mono">{{ $order->paid_at?->format('d/m/Y H:i') }}</span>
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-custard">
+            <span class="text-xs font-bold text-olive">Preview Struk Kasir</span>
+            <span class="text-[10px] text-olive/80 font-mono">{{ $order->paid_at?->format('d/m/Y H:i') }}</span>
         </div>
 
         <div id="printable-receipt" class="bg-white text-black mx-auto rounded-none" style="width:80mm">
@@ -91,7 +91,7 @@
                             <span>{{ $item->quantity }}x Rp {{ number_format($item->price, 0, ',', '.') }}</span>
                         </div>
                         @if($item->notes)
-                            <p class="text-[9px] text-right text-gray-600">-{{ $item->notes }}</p>
+                            <p class="text-[9px] text-right text-olive">-{{ $item->notes }}</p>
                         @endif
                     @endforeach
                 </div>
@@ -113,7 +113,7 @@
 
             <div class="px-4 py-5 text-center border-t border-black/20 space-y-1">
                 <p class="text-[10px] leading-relaxed">{{ $setting['footer'] }}</p>
-                <p class="text-[9px] text-gray-500">Dicetak {{ now()->format('d/m/Y H:i') }} &bull; {{ $setting['name'] }}</p>
+                <p class="text-[9px] text-olive/80">Dicetak {{ now()->format('d/m/Y H:i') }} &bull; {{ $setting['name'] }}</p>
             </div>
         </div>
     </div>

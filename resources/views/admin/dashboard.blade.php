@@ -6,7 +6,7 @@
 @section('content')
 <div class="space-y-4 lg:space-y-8">
     <!-- ACTIVE ADMIN DASHBOARD: welcome banner for the always-on modules. -->
-    <div class="w-full max-w-[900px] mx-auto lg:max-w-none flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-[#290024] via-[#3D1236] to-[#775533] text-cafe-cream p-5 md:p-6 lg:p-8 rounded-2xl lg:rounded-3xl shadow-soft-lg relative">
+    <div class="w-full max-w-[900px] mx-auto lg:max-w-none flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-[#290024] via-[#290024] to-[#775533] text-cafe-cream p-5 md:p-6 lg:p-8 rounded-2xl lg:rounded-3xl shadow-soft-lg relative">
         <!-- Line art aesthetic circles - isolated in decoration layer with overflow-hidden -->
         <div class="absolute inset-0 rounded-2xl lg:rounded-3xl overflow-hidden pointer-events-none z-0" aria-hidden="true">
             <div class="absolute -top-10 -right-10 w-44 h-44 rounded-full border border-cafe-gold/20 opacity-40"></div>
@@ -17,30 +17,30 @@
             <span class="text-xs font-semibold text-cafe-gold uppercase tracking-wider block mb-2">
                 {{ \Carbon\Carbon::now()->translatedFormat('l, j F Y') }}
             </span>
-            <h2 class="font-serif leading-[1.25] break-words text-[#FAFCF3]">
-                <span class="block lg:inline text-xs sm:text-sm lg:text-3xl font-normal lg:font-bold text-cafe-cream/85 lg:text-[#FAFCF3] mb-0.5 lg:mb-0">Selamat datang, </span>
+            <h2 class="font-serif leading-[1.25] break-words text-[#F2F5E2]">
+                <span class="block lg:inline text-xs sm:text-sm lg:text-3xl font-normal lg:font-bold text-cafe-cream/85 lg:text-[#F2F5E2] mb-0.5 lg:mb-0">Selamat datang, </span>
                 <span class="block lg:inline text-[22px] sm:text-[24px] md:text-[28px] lg:text-3xl font-bold tracking-tight line-clamp-2 lg:line-clamp-none">
                     {{ Auth::user()->name }}
                 </span>
             </h2>
             <p class="text-sm leading-[1.5] text-cafe-beige/85 mt-2 max-w-xl line-clamp-3 sm:line-clamp-none">
                 @if ($legacyAdmin)
-                    Ikhtisar operasional ABS Cafe Tulungagung hari ini. Terdapat <strong class="font-semibold text-[#FAFCF3]">{{ $pendingPaymentsCount }} pesanan</strong> menunggu pembayaran dan <strong class="font-semibold text-[#FAFCF3]">{{ $lowStockCount }} menu</strong> dengan stok menipis.
+                    Ikhtisar operasional ABS Cafe Tulungagung hari ini. Terdapat <strong class="font-semibold text-[#F2F5E2]">{{ $pendingPaymentsCount }} pesanan</strong> menunggu pembayaran dan <strong class="font-semibold text-[#F2F5E2]">{{ $lowStockCount }} menu</strong> dengan stok menipis.
                 @else
-                    Ikhtisar operasional ABS Cafe Tulungagung hari ini. Ada <strong class="font-semibold text-[#FAFCF3]">{{ $activePromoCount }} promo aktif</strong> dan <strong class="font-semibold text-[#FAFCF3]">{{ $lowStockCount }} menu</strong> yang perlu diperhatikan stoknya.
+                    Ikhtisar operasional ABS Cafe Tulungagung hari ini. Ada <strong class="font-semibold text-[#F2F5E2]">{{ $activePromoCount }} promo aktif</strong> dan <strong class="font-semibold text-[#F2F5E2]">{{ $lowStockCount }} menu</strong> yang perlu diperhatikan stoknya.
                 @endif
             </p>
         </div>
 
         <div class="mt-4 md:mt-0 flex flex-wrap items-center gap-3 relative z-10 shrink-0">
-            <a href="{{ route('admin.catalog.index', ['tab' => 'menu']) }}" class="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-full bg-cafe-gold text-cafe-dark hover:bg-[#c4853d] font-semibold text-xs sm:text-sm shadow-md transition-all">
+            <a href="{{ route('admin.catalog.index', ['tab' => 'menu']) }}" class="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-full bg-cafe-gold text-cafe-dark hover:bg-[#D4954D] font-semibold text-xs sm:text-sm shadow-md transition-all">
                 <i data-lucide="plus" class="w-4 h-4 shrink-0"></i>
                 <span>Kelola Menu</span>
             </a>
 
             @if ($legacyAdmin)
                 <!-- LEGACY ADMIN: order shortcut only exists while the switch is on. -->
-                <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-full bg-white/15 hover:bg-white/25 text-[#FAFCF3] font-semibold text-xs sm:text-sm border border-white/20 transition-all">
+                <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-full bg-beige/15 hover:bg-beige/25 text-[#F2F5E2] font-semibold text-xs sm:text-sm border border-beige/20 transition-all">
                     <span>Semua Pesanan</span>
                     <i data-lucide="arrow-right" class="w-3.5 h-3.5 shrink-0"></i>
                 </a>
@@ -164,7 +164,7 @@
                 <p class="text-xs text-cafe-muted mt-1">Daftar menu terlaris dan produk unggulan paling diminati di ABS Cafe</p>
             </div>
             <div class="flex items-center gap-2 self-start sm:self-auto">
-                <a href="{{ route('admin.catalog.menu.create') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-cafe-gold text-cafe-dark hover:bg-[#c4853d] font-semibold text-xs shadow-xs transition-all">
+                <a href="{{ route('admin.catalog.menu.create') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-cafe-gold text-cafe-dark hover:bg-[#D4954D] font-semibold text-xs shadow-xs transition-all">
                     <i data-lucide="plus" class="w-3.5 h-3.5"></i>
                     <span>Tambah Menu</span>
                 </a>
@@ -180,7 +180,7 @@
                 <div class="p-3.5 rounded-2xl bg-cafe-cream/60 hover:bg-cafe-cream border border-cafe-beige/50 transition-all flex flex-col justify-between group relative shadow-xs hover:shadow-soft">
                     <!-- Top row: Rank & Badge -->
                     <div class="flex items-center justify-between mb-2.5">
-                        <span class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black {{ $index === 0 ? 'bg-amber-400 text-amber-950 shadow-xs' : ($index === 1 ? 'bg-slate-300 text-slate-800' : ($index === 2 ? 'bg-amber-700/25 text-amber-900' : 'bg-cafe-beige/80 text-cafe-muted')) }}">
+                        <span class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black {{ $index === 0 ? 'bg-apricot text-midnight shadow-xs' : ($index === 1 ? 'bg-custard text-olive' : ($index === 2 ? 'bg-apricot/25 text-midnight' : 'bg-cafe-beige/80 text-cafe-muted')) }}">
                             #{{ $index + 1 }}
                         </span>
                         @if($bMenu->is_best_seller)
@@ -238,7 +238,7 @@
     </div>
 
     <!-- Delete Confirmation Modal for Dashboard Bestseller -->
-    <div id="dashboard-delete-menu-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden" role="dialog" aria-modal="true">
+    <div id="dashboard-delete-menu-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-midnight/50 backdrop-blur-sm hidden" role="dialog" aria-modal="true">
         <div class="bg-cafe-card rounded-2xl p-6 shadow-xl max-w-sm w-full mx-4 border border-cafe-beige/50">
             <div class="flex flex-col items-center text-center">
                 <div class="w-12 h-12 rounded-full bg-cafe-danger/15 flex items-center justify-center mb-3">
@@ -254,7 +254,7 @@
                         <button type="button" onclick="closeDashboardDeleteModal()" class="flex-1 px-4 py-2.5 rounded-xl bg-cafe-beige/70 hover:bg-cafe-beige text-cafe-dark text-xs font-semibold transition-colors">
                             Batal
                         </button>
-                        <button type="submit" class="flex-1 px-4 py-2.5 rounded-xl bg-cafe-danger hover:bg-red-700 text-white text-xs font-semibold transition-colors">
+                        <button type="submit" class="flex-1 px-4 py-2.5 rounded-xl bg-cafe-danger hover:bg-olive text-beige text-xs font-semibold transition-colors">
                             Ya, Hapus
                         </button>
                     </div>
@@ -422,11 +422,11 @@
 
                                 <x-slot:badge>
                                     @if ($rOrd->payment_status === 'lunas')
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#4F7A4A]/15 text-[#4F7A4A] border border-[#4F7A4A]/30">Lunas</span>
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#775533]/15 text-[#775533] border border-[#775533]/30">Lunas</span>
                                     @elseif ($rOrd->payment_status === 'menunggu_pembayaran')
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#C98A2B]/15 text-[#C98A2B] border border-[#C98A2B]/30">Menunggu</span>
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#D4954D]/15 text-[#D4954D] border border-[#D4954D]/30">Menunggu</span>
                                     @else
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#B03A2E]/15 text-[#B03A2E] border border-[#B03A2E]/30">Batal</span>
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#775533]/15 text-[#775533] border border-[#775533]/30">Batal</span>
                                     @endif
                                 </x-slot:badge>
 
@@ -449,11 +449,11 @@
                                     <td class="hidden md:table-cell py-3 font-semibold text-cafe-dark">Rp {{ number_format($rOrd->total, 0, ',', '.') }}</td>
                                     <td class="hidden md:table-cell py-3">
                                         @if ($rOrd->payment_status === 'lunas')
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#4F7A4A]/15 text-[#4F7A4A] border border-[#4F7A4A]/30">Lunas</span>
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#775533]/15 text-[#775533] border border-[#775533]/30">Lunas</span>
                                         @elseif ($rOrd->payment_status === 'menunggu_pembayaran')
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#C98A2B]/15 text-[#C98A2B] border border-[#C98A2B]/30">Menunggu</span>
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#D4954D]/15 text-[#D4954D] border border-[#D4954D]/30">Menunggu</span>
                                         @else
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#B03A2E]/15 text-[#B03A2E] border border-[#B03A2E]/30">Batal</span>
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#775533]/15 text-[#775533] border border-[#775533]/30">Batal</span>
                                         @endif
                                     </td>
                                     <td class="hidden md:table-cell py-3 text-right pr-2">

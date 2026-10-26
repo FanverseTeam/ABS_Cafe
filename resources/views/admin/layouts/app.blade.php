@@ -18,23 +18,37 @@
     <script>
         tailwind.config = {
             theme: {
+                colors: {
+                    transparent: 'transparent',
+                    current: 'currentColor',
+                    inherit: 'inherit',
+                    beige: '#F2F5E2',
+                    vanilla: '#E3DEA4',
+                    custard: '#E3DEA4',
+                    apricot: '#D4954D',
+                    olive: '#775533',
+                    midnight: '#290024',
+                    success: '#775533',
+                    warning: '#D4954D',
+                    danger: '#775533',
+                    info: '#D4954D',
+                    cafe: {
+                        dark: '#290024',
+                        brown: '#775533',
+                        gold: '#D4954D',
+                        cream: '#F2F5E2',
+                        beige: '#E3DEA4',
+                        card: 'rgb(227 222 164 / 0.35)',
+                        text: '#290024',
+                        muted: '#775533',
+                        bronze: '#D4954D',
+                        success: '#775533',
+                        warning: '#D4954D',
+                        danger: '#775533',
+                        info: '#D4954D',
+                    }
+                },
                 extend: {
-                    colors: {
-                        cafe: {
-                            dark: '#290024',    // Coklat tua (primer, tombol utama, sidebar aktif, judul)
-                            brown: '#775533',   // Coklat sedang (hover, aksen)
-                            gold: '#D4954D',    // Emas/karamel (tombol sekunder, badge, highlight)
-                            cream: '#F2F5E2',   // Krem terang (background halaman)
-                            beige: '#E3DEA4',   // Beige (kartu, panel, input)
-                            card: '#FAFCF3',    // Putih krem (kartu utama)
-                            text: '#290024',    // Teks utama
-                            muted: '#775533',   // Teks sekunder
-                            success: '#4F7A4A', // Sukses
-                            warning: '#C98A2B', // Peringatan
-                            danger: '#B03A2E',  // Bahaya / batal
-                            info: '#5B7C99',    // Info
-                        }
-                    },
                     fontFamily: {
                         serif: ['"Noto Serif"', 'Georgia', 'serif'],
                         sans: ['"Poppins"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
@@ -54,6 +68,17 @@
 
     <!-- Custom CSS (ABS Cafe Admin) -->
     <link rel="stylesheet" href="{{ asset('css/admin-custom.css') }}">
+    <style>
+        :root { color-scheme: light; accent-color: #D4954D; caret-color: #290024; }
+        ::selection { background: #D4954D; color: #290024; }
+        :focus-visible { outline: 2px solid #D4954D; outline-offset: 2px; }
+        input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 1000px #F2F5E2 inset;
+            box-shadow: 0 0 0 1000px #F2F5E2 inset;
+            -webkit-text-fill-color: #290024;
+            caret-color: #290024;
+        }
+    </style>
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -136,7 +161,7 @@
     <!-- Toast Notifications (elevated above bottom nav on mobile) -->
     <div id="toast-container" class="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] lg:bottom-5 right-3 sm:right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
         @if(session('success'))
-            <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#FAFCF3]/95 border-[#4F7A4A]/30 text-cafe-text backdrop-blur-md animate-in slide-in-from-bottom-5 transition-all">
+            <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#F2F5E2]/95 border-[#775533]/30 text-cafe-text backdrop-blur-md animate-in slide-in-from-bottom-5 transition-all">
                 <i data-lucide="check-circle-2" class="w-5 h-5 text-cafe-success shrink-0 mt-0.5"></i>
                 <div class="flex-1 min-w-0">
                     <h5 class="font-semibold text-xs text-cafe-dark">Berhasil</h5>
@@ -149,7 +174,7 @@
         @endif
 
         @if(session('error'))
-            <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#FAFCF3]/95 border-[#B03A2E]/30 text-cafe-text backdrop-blur-md animate-in slide-in-from-bottom-5 transition-all">
+            <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#F2F5E2]/95 border-[#775533]/30 text-cafe-text backdrop-blur-md animate-in slide-in-from-bottom-5 transition-all">
                 <i data-lucide="alert-circle" class="w-5 h-5 text-cafe-danger shrink-0 mt-0.5"></i>
                 <div class="flex-1 min-w-0">
                     <h5 class="font-semibold text-xs text-cafe-dark">Peringatan</h5>
@@ -171,11 +196,11 @@
         function showToast(title, message, type = 'success') {
             const container = document.getElementById('toast-container');
             const item = document.createElement('div');
-            const borderColor = type === 'success' ? 'border-[#4F7A4A]/30' : (type === 'error' ? 'border-[#B03A2E]/30' : 'border-cafe-gold/30');
+            const borderColor = type === 'success' ? 'border-[#775533]/30' : (type === 'error' ? 'border-[#775533]/30' : 'border-cafe-gold/30');
             const iconColor = type === 'success' ? 'text-cafe-success' : (type === 'error' ? 'text-cafe-danger' : 'text-cafe-gold');
             const iconName = type === 'success' ? 'check-circle-2' : (type === 'error' ? 'alert-circle' : 'info');
 
-            item.className = `toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#FAFCF3]/95 ${borderColor} text-cafe-text backdrop-blur-md transition-all duration-300`;
+            item.className = `toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#F2F5E2]/95 ${borderColor} text-cafe-text backdrop-blur-md transition-all duration-300`;
             item.innerHTML = `
                 <i data-lucide="${iconName}" class="w-5 h-5 ${iconColor} shrink-0 mt-0.5"></i>
                 <div class="flex-1 min-w-0">

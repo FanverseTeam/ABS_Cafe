@@ -9,7 +9,7 @@
 <div class="inline-flex items-center gap-2 bg-[#E3DEA4]/40 p-1 rounded-full border border-[#E3DEA4]">
     <button type="button" 
             onclick="decrementStepper('{{ $id }}', {{ $min }})"
-            class="w-8 h-8 rounded-full bg-[#FAFCF3] hover:bg-[#E3DEA4] text-[#290024] flex items-center justify-center font-bold text-sm shadow-sm transition-colors active:scale-95" 
+            class="w-8 h-8 rounded-full bg-[#F2F5E2] hover:bg-[#E3DEA4] text-[#290024] flex items-center justify-center font-bold text-sm shadow-sm transition-colors active:scale-95" 
             aria-label="Kurangi">
         <i data-lucide="minus" class="w-3.5 h-3.5"></i>
     </button>
@@ -25,7 +25,7 @@
 
     <button type="button" 
             onclick="incrementStepper('{{ $id }}', {{ $max }})"
-            class="w-8 h-8 rounded-full bg-[#290024] hover:bg-[#775533] text-[#FAFCF3] flex items-center justify-center font-bold text-sm shadow-sm transition-colors active:scale-95" 
+            class="w-8 h-8 rounded-full bg-[#290024] hover:bg-[#775533] text-[#F2F5E2] flex items-center justify-center font-bold text-sm shadow-sm transition-colors active:scale-95" 
             aria-label="Tambah">
         <i data-lucide="plus" class="w-3.5 h-3.5"></i>
     </button>

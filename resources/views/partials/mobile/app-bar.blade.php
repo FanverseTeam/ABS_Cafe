@@ -8,7 +8,7 @@
 ])
 
 <!-- Mobile Top App Bar (only visible below the lg breakpoint) -->
-<header class="lg:hidden sticky top-0 z-30 h-16 bg-[#FAFCF3]/95 backdrop-blur-md border-b border-[#E3DEA4]/70 px-4 flex items-center justify-between gap-3 shadow-sm">
+<header class="lg:hidden sticky top-0 z-30 h-16 bg-[#F2F5E2]/95 backdrop-blur-md border-b border-[#E3DEA4]/70 px-4 flex items-center justify-between gap-3 shadow-sm">
     <div class="flex items-center gap-2.5 min-w-0">
         @if($backUrl)
             <a href="{{ $backUrl }}" class="w-10 h-10 -ml-1 rounded-full flex items-center justify-center text-[#290024] hover:bg-[#E3DEA4]/50 active:scale-95 transition-all" aria-label="Kembali">

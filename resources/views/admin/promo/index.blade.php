@@ -6,14 +6,13 @@
 @section('content')
 <div class="space-y-6">
     <!-- Breadcrumb -->
-    <nav class="flex items-center gap-1.5 text-xs text-cafe-muted mb-3">
-        <a href="{{ route('admin.dashboard') }}" class="hover:text-cafe-dark flex items-center gap-1">
-            <i data-lucide="home" class="w-3.5 h-3.5"></i>
-            <span>Admin</span>
-        </a>
-        <i data-lucide="chevron-right" class="w-3 h-3 text-cafe-muted/60"></i>
-        <span class="font-semibold text-cafe-dark">Promo &amp; Diskon</span>
-    </nav>
+    <x-breadcrumb
+        :items="[
+            ['label' => 'Admin', 'url' => route('admin.dashboard'), 'icon' => 'home'],
+            ['label' => 'Promo & Diskon'],
+        ]"
+        class="mb-3"
+    />
 
     <!-- Page Header & Action -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -41,11 +40,11 @@
                         <!-- Status Badge Otomatis -->
                         <div class="absolute top-3 left-3">
                             @if($promo->status_label === 'berjalan')
-                                <span class="px-3 py-1 rounded-full bg-[#4F7A4A] text-white text-[10px] font-bold shadow-sm">Berjalan</span>
+                                <span class="px-3 py-1 rounded-full bg-[#775533] text-beige text-[10px] font-bold shadow-sm">Berjalan</span>
                             @elseif($promo->status_label === 'terjadwal')
-                                <span class="px-3 py-1 rounded-full bg-[#C98A2B] text-white text-[10px] font-bold shadow-sm">Terjadwal</span>
+                                <span class="px-3 py-1 rounded-full bg-[#D4954D] text-beige text-[10px] font-bold shadow-sm">Terjadwal</span>
                             @else
-                                <span class="px-3 py-1 rounded-full bg-[#775533] text-white text-[10px] font-bold shadow-sm">Berakhir</span>
+                                <span class="px-3 py-1 rounded-full bg-[#775533] text-beige text-[10px] font-bold shadow-sm">Berakhir</span>
                             @endif
                         </div>
 
@@ -63,7 +62,7 @@
                         </div>
 
                         <!-- Periode Tanggal -->
-                        <div class="absolute bottom-3 left-3 right-3 text-white text-xs flex items-center gap-1.5 drop-shadow">
+                        <div class="absolute bottom-3 left-3 right-3 text-beige text-xs flex items-center gap-1.5 drop-shadow">
                             <i data-lucide="calendar" class="w-3.5 h-3.5 text-cafe-gold"></i>
                             <span>{{ $promo->start_date->format('d M') }} - {{ $promo->end_date->format('d M Y') }}</span>
                         </div>
@@ -90,7 +89,7 @@
                         @csrf
                         <button type="submit" class="flex items-center gap-2 cursor-pointer select-none">
                             <div class="w-8 h-4.5 rounded-full p-0.5 transition-colors {{ $promo->is_active ? 'bg-cafe-success' : 'bg-cafe-muted/40' }}">
-                                <div class="w-3.5 h-3.5 rounded-full bg-white transition-transform {{ $promo->is_active ? 'translate-x-3.5' : 'translate-x-0' }}"></div>
+                                <div class="w-3.5 h-3.5 rounded-full bg-beige transition-transform {{ $promo->is_active ? 'translate-x-3.5' : 'translate-x-0' }}"></div>
                             </div>
                             <span class="text-[11px] font-medium text-cafe-text">{{ $promo->is_active ? 'Aktif' : 'Nonaktif' }}</span>
                         </button>
@@ -144,18 +143,18 @@
             @csrf
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Judul Promo *</label>
-                <input type="text" name="title" id="prm-title" required placeholder="misal: Buy 2 Get 1 Free All Coffee" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <input type="text" name="title" id="prm-title" required placeholder="misal: Buy 2 Get 1 Free All Coffee" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Deskripsi Promo *</label>
-                <textarea name="description" id="prm-desc" required rows="2" placeholder="Jelaskan syarat dan ketentuan promo..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
+                <textarea name="description" id="prm-desc" required rows="2" placeholder="Jelaskan syarat dan ketentuan promo..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Jenis Promo *</label>
-                    <select name="type" id="prm-type" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <select name="type" id="prm-type" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         <option value="buy_x_get_y">Buy X Get Y (Beli 2 Gratis 1)</option>
                         <option value="persen">Diskon Persen (%)</option>
                         <option value="nominal">Potongan Nominal (Rp)</option>
@@ -163,14 +162,14 @@
                 </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Nilai / Diskon *</label>
-                    <input type="number" name="value" id="prm-value" value="100" min="0" required placeholder="20 atau 10000" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="number" name="value" id="prm-value" value="100" min="0" required placeholder="20 atau 10000" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Berlaku Untuk *</label>
-                    <select name="applies_to" id="prm-applies" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <select name="applies_to" id="prm-applies" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         <option value="semua">Semua Menu</option>
                         <option value="kategori">Kategori Tertentu</option>
                         <option value="menu">Menu Tertentu</option>
@@ -178,7 +177,7 @@
                 </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Kategori Target</label>
-                    <select name="target_category_id" id="prm-cat" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <select name="target_category_id" id="prm-cat" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         <option value="">Pilih Kategori</option>
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -187,7 +186,7 @@
                 </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Menu Target</label>
-                    <select name="target_menu_id" id="prm-menu" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <select name="target_menu_id" id="prm-menu" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                         <option value="">Pilih Menu</option>
                         @foreach($menus as $menu)
                             <option value="{{ $menu->id }}">{{ $menu->name }}</option>
@@ -199,17 +198,17 @@
             <div class="grid grid-cols-2 gap-3">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Tanggal Mulai *</label>
-                    <input type="date" name="start_date" id="prm-start" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="date" name="start_date" id="prm-start" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Tanggal Selesai *</label>
-                    <input type="date" name="end_date" id="prm-end" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="date" name="end_date" id="prm-end" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">URL Gambar Banner</label>
-                <input type="url" name="banner" id="prm-banner" placeholder="https://images.unsplash.com/..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <input type="url" name="banner" id="prm-banner" placeholder="https://images.unsplash.com/..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
             </div>
 
             <div class="pt-1">

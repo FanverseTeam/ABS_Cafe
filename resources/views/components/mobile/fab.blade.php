@@ -15,7 +15,7 @@
 --}}
 
 @php
-    $btnClasses = 'flex items-center justify-center gap-2 shadow-soft-lg transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]/70 w-14 h-14 rounded-full sm:w-auto sm:h-12 sm:rounded-full sm:px-5 bg-[#290024] hover:bg-[#775533] text-[#FAFCF3]';
+    $btnClasses = 'flex items-center justify-center gap-2 shadow-soft-lg transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]/70 w-14 h-14 rounded-full sm:w-auto sm:h-12 sm:rounded-full sm:px-5 bg-[#290024] hover:bg-[#775533] text-[#F2F5E2]';
 @endphp
 
 <div

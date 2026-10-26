@@ -8,7 +8,7 @@
     {{-- Dedicated Mobile Floating Action Button (Pesan Manual) --}}
     <div class="lg:hidden fixed z-30 right-4 sm:right-6 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] landscape:bottom-[calc(3.75rem+env(safe-area-inset-bottom))]">
         <a href="{{ route('kasir.pos.index') }}"
-           class="flex items-center gap-2 px-4 py-3 rounded-full bg-[#290024] hover:bg-[#775533] text-[#FAFCF3] border border-[#D4954D]/60 shadow-xl active:scale-95 transition-transform"
+           class="flex items-center gap-2 px-4 py-3 rounded-full bg-[#290024] hover:bg-[#775533] text-[#F2F5E2] border border-[#D4954D]/60 shadow-xl active:scale-95 transition-transform"
            aria-label="Pesan Manual untuk Customer">
             <i data-lucide="plus-circle" class="w-5 h-5 text-cafe-gold shrink-0"></i>
             <span class="text-xs font-bold whitespace-nowrap">Pesan Manual</span>
@@ -16,7 +16,7 @@
     </div>
 
     <!-- Pesan Manual Quick Card on Mobile / Tablet -->
-    <div class="lg:hidden bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4] p-3 sm:p-4 shadow-soft flex items-center justify-between gap-3">
+    <div class="lg:hidden bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4] p-3 sm:p-4 shadow-soft flex items-center justify-between gap-3">
         <div class="flex items-center gap-2.5 min-w-0">
             <div class="w-8 h-8 rounded-xl bg-cafe-gold/20 text-[#290024] flex items-center justify-center shrink-0">
                 <i data-lucide="utensils" class="w-4 h-4 text-cafe-gold"></i>
@@ -26,7 +26,7 @@
                 <p class="text-[10px] text-cafe-muted truncate">Catat pesanan walk-in / pesan langsung di meja</p>
             </div>
         </div>
-        <a href="{{ route('kasir.pos.index') }}" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#B87C3C] transition-all shadow-sm shrink-0">
+        <a href="{{ route('kasir.pos.index') }}" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#D4954D] transition-all shadow-sm shrink-0">
             <i data-lucide="plus-circle" class="w-4 h-4"></i>
             <span>Pesan</span>
         </a>
@@ -61,17 +61,17 @@
         <div class="hidden lg:flex gap-2 overflow-x-auto no-scrollbar py-1">
             @foreach($tabDefs as $key => $tabItem)
                 <a href="{{ route('kasir.orders.index', ['tab' => $key]) }}"
-                   class="shrink-0 px-4 py-2 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 {{ $currentTab == $key ? 'bg-[#290024] text-[#F2F5E2] shadow-sm' : 'bg-[#FAFCF3] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]/60' }}">
+                   class="shrink-0 px-4 py-2 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 {{ $currentTab == $key ? 'bg-[#290024] text-[#F2F5E2] shadow-sm' : 'bg-[#F2F5E2] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]/60' }}">
                     {{ $tabItem['label'] }}
                     @if($tabItem['badge'])
-                        <span class="px-1.5 py-0.5 rounded-full text-[9px] font-bold {{ $currentTab == $key ? 'bg-[#D4954D] text-[#290024]' : 'bg-[#290024] text-white' }}">{{ $tabItem['badge'] }}</span>
+                        <span class="px-1.5 py-0.5 rounded-full text-[9px] font-bold {{ $currentTab == $key ? 'bg-[#D4954D] text-[#290024]' : 'bg-[#290024] text-beige' }}">{{ $tabItem['badge'] }}</span>
                     @endif
                 </a>
             @endforeach
         </div>
 
         <!-- Desktop Action Button -->
-        <a href="{{ route('kasir.pos.index') }}" class="hidden lg:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#B87C3C] transition-colors shadow-md shrink-0">
+        <a href="{{ route('kasir.pos.index') }}" class="hidden lg:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#D4954D] transition-colors shadow-md shrink-0">
             <i data-lucide="plus-circle" class="w-4 h-4"></i>
             Pesan Manual (Customer)
         </a>
@@ -84,7 +84,7 @@
                 <i data-lucide="inbox" class="w-7 h-7"></i>
             </div>
             <p class="text-xs text-cafe-muted mt-4">Tidak ada pesanan pada tab ini.</p>
-            <a href="{{ route('kasir.pos.index') }}" class="mt-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#B87C3C] transition-colors shadow-md">
+            <a href="{{ route('kasir.pos.index') }}" class="mt-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#D4954D] transition-colors shadow-md">
                 <i data-lucide="plus-circle" class="w-4 h-4"></i>
                 Buat Pesanan Manual untuk Customer
             </a>
@@ -159,7 +159,7 @@
                             @elseif(! $isPaid)
                                 {{-- 1. Belum bayar → Tombol Bayar Dulu --}}
                                 <a href="{{ route('kasir.payments.checkout', $order) }}"
-                                   class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-[11px] font-bold hover:bg-[#B87C3C] transition-colors shadow-sm active:scale-95">
+                                   class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-[11px] font-bold hover:bg-[#D4954D] transition-colors shadow-sm active:scale-95">
                                     <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
                                     Bayar Dulu
                                 </a>
@@ -169,7 +169,7 @@
                                     <form action="{{ route('kasir.orders.status', $order) }}" method="POST" class="flex-1">
                                         @csrf
                                         <input type="hidden" name="status" value="diproses">
-                                        <button type="submit" class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full bg-[#D4954D] text-[#290024] font-bold text-[11px] hover:bg-[#c4853d] transition-all shadow-sm active:scale-95">
+                                        <button type="submit" class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full bg-[#D4954D] text-[#290024] font-bold text-[11px] hover:bg-[#D4954D] transition-all shadow-sm active:scale-95">
                                             <i data-lucide="flame" class="w-3.5 h-3.5"></i>
                                             Masak
                                         </button>
@@ -242,13 +242,13 @@
 <!-- Modal Detail (Bottom Sheet on Mobile, Centered Modal on Tablet/Desktop) -->
 <div id="order-modal" class="hidden fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="fixed inset-0 bg-[#290024]/60 backdrop-blur-sm" onclick="closeOrderModal()"></div>
-    <div class="relative bg-[#FAFCF3] rounded-t-[2rem] sm:rounded-3xl shadow-soft-lg w-full max-w-lg landscape:max-w-xl border-t sm:border border-[#E3DEA4] z-10 max-h-[90vh] landscape:max-h-[95vh] overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]">
+    <div class="relative bg-[#F2F5E2] rounded-t-[2rem] sm:rounded-3xl shadow-soft-lg w-full max-w-lg landscape:max-w-xl border-t sm:border border-[#E3DEA4] z-10 max-h-[90vh] landscape:max-h-[95vh] overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]">
         <!-- Handle for mobile -->
         <div class="sm:hidden w-full pt-3 pb-1 flex justify-center cursor-pointer" onclick="closeOrderModal()">
             <div class="w-12 h-1 bg-[#775533]/30 rounded-full"></div>
         </div>
 
-        <div class="px-6 py-4 border-b border-[#E3DEA4]/60 flex items-center justify-between sticky top-0 bg-[#FAFCF3] z-10">
+        <div class="px-6 py-4 border-b border-[#E3DEA4]/60 flex items-center justify-between sticky top-0 bg-[#F2F5E2] z-10">
             <div>
                 <h3 class="font-serif font-bold text-base text-[#290024]" id="om-code">Pesanan</h3>
                 <p class="text-[10px] text-[#775533]" id="om-meta"></p>

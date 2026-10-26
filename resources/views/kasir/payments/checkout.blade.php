@@ -61,7 +61,7 @@
                     <div class="grid grid-cols-2 gap-2">
                         @foreach($paymentMethods as $method)
                             <button type="button" data-method="{{ $method->code }}" onclick="selectMethod('{{ $method->code }}', this)"
-                                class="method-btn p-3.5 rounded-2xl border text-[11px] font-semibold transition-all flex flex-col items-center gap-1.5 {{ $method->code === 'tunai' ? 'bg-cafe-dark text-white border-cafe-dark shadow-md' : 'bg-cafe-beige/30 text-cafe-brown border-cafe-beige hover:bg-cafe-beige' }}">
+                                class="method-btn p-3.5 rounded-2xl border text-[11px] font-semibold transition-all flex flex-col items-center gap-1.5 {{ $method->code === 'tunai' ? 'bg-cafe-dark text-beige border-cafe-dark shadow-md' : 'bg-cafe-beige/30 text-cafe-brown border-cafe-beige hover:bg-cafe-beige' }}">
                                 <i data-lucide="{{ $method->icon() }}" class="w-5 h-5"></i>
                                 <span>{{ $method->name }}</span>
                             </button>
@@ -71,7 +71,7 @@
 
                     <div id="cash-block" class="space-y-2.5">
                         <label class="block text-[10px] font-semibold text-cafe-muted uppercase tracking-wide">Uang Diterima (Rp)</label>
-                        <input type="number" name="cash_received" id="pay-cash" value="{{ ceil($order->total / 1000) * 1000 }}" step="1000" min="0" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-lg font-serif font-bold text-cafe-text px-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20">
+                        <input type="number" name="cash_received" id="pay-cash" value="{{ ceil($order->total / 1000) * 1000 }}" step="1000" min="0" class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-lg font-serif font-bold text-cafe-text px-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20">
                         <div class="flex flex-wrap gap-1.5">
                             @foreach([20000, 50000, 100000, 150000, 200000] as $amount)
                                 <button type="button" onclick="document.getElementById('pay-cash').value = {{ $amount }}; calcChange()" class="px-3 py-1.5 rounded-full bg-cafe-beige/60 text-cafe-brown text-[10px] font-bold hover:bg-cafe-gold/30">{{ number_format($amount, 0, ',', '.') }}</button>
@@ -85,10 +85,10 @@
 
                     <div>
                         <label class="block text-[10px] font-semibold text-cafe-muted uppercase tracking-wide mb-1.5">Referensi (opsional)</label>
-                        <input type="text" name="reference" placeholder="No. invoice / referensi transfer" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/60 px-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20">
+                        <input type="text" name="reference" placeholder="No. invoice / referensi transfer" class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-xs text-cafe-text placeholder:text-cafe-muted/60 px-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20">
                     </div>
 
-                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-5 py-4 rounded-full bg-cafe-success text-white text-xs font-bold shadow-md hover:bg-cafe-success/90 transition-colors">
+                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-5 py-4 rounded-full bg-cafe-success text-beige text-xs font-bold shadow-md hover:bg-cafe-success/90 transition-colors">
                         <i data-lucide="check-circle" class="w-4 h-4"></i>
                         Terima Pembayaran &amp; Cetak Struk
                     </button>
@@ -106,7 +106,7 @@ function selectMethod(code, btn) {
     document.querySelectorAll('.method-btn').forEach(b => {
         b.className = 'method-btn p-3.5 rounded-2xl border text-[11px] font-semibold transition-all flex flex-col items-center gap-1.5 bg-cafe-beige/30 text-cafe-brown border-cafe-beige hover:bg-cafe-beige';
     });
-    btn.className = 'method-btn p-3.5 rounded-2xl border text-[11px] font-semibold transition-all flex flex-col items-center gap-1.5 bg-cafe-dark text-white border-cafe-dark shadow-md';
+    btn.className = 'method-btn p-3.5 rounded-2xl border text-[11px] font-semibold transition-all flex flex-col items-center gap-1.5 bg-cafe-dark text-beige border-cafe-dark shadow-md';
     lucide.createIcons();
 
     if (code === 'tunai') {

@@ -31,8 +31,8 @@
             theme: { extend: {
                 colors: { cafe: {
                     dark: '#290024', brown: '#775533', gold: '#D4954D', cream: '#F2F5E2',
-                    beige: '#E3DEA4', card: '#FAFCF3', text: '#290024', muted: '#775533',
-                    success: '#4F7A4A', warning: '#C98A2B', danger: '#B03A2E', info: '#5B7C99',
+                    beige: '#E3DEA4', card: '#F2F5E2', text: '#290024', muted: '#775533',
+                    success: '#775533', warning: '#D4954D', danger: '#775533', info: '#D4954D',
                 } },
                 fontFamily: { serif: ['"Noto Serif"', 'Georgia', 'serif'], sans: ['"Poppins"', 'sans-serif'] },
             } }
