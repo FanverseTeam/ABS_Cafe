@@ -9632,3 +9632,20 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
 -- Dump completed on 2026-10-24 21:38:42
+ATURAN: Dilarang git commit/push/branch (saya yang lakukan). Perubahan database wajib diedit langsung di db_abscafe.sql yang ada (tanpa file .sql baru).
+
+TUGAS
+Di landing customer ("/") ABS Cafe, tambahkan tombol WhatsApp di baris media sosial dengan gaya sama seperti Instagram dan TikTok (ikon SVG inline, teks nomor "0896-2010-2010", warna palet, hover Apricot). Tambahkan juga tautan "Chat via WhatsApp" di bagian Lokasi. Tanpa emoji. Halaman customer tetap tanpa tautan ke area staf.
+
+PERILAKU
+- Klik membuka https://wa.me/{nomor}?text={pesan} di tab baru (rel="noopener noreferrer"); nomor tanpa +, spasi, strip (0896-2010-2010 menjadi 6289620102010); pesan bawaan "Halo ABS Cafe, saya ingin bertanya." (di-urlencode)
+- Nomor kosong atau tidak valid: tombol disembunyikan
+
+DATA
+- Key pengaturan baru whatsapp_nomor (6289620102010) dan whatsapp_pesan; tambahkan ke seeder dan db_abscafe.sql, plus migration kecil untuk database berjalan (tanpa menimpa nilai yang ada)
+- Pengaturan Website (Admin): kolom "Nomor WhatsApp" dan "Pesan Awal Chat"; nomor 08.../628.../+628... dinormalkan ke 628..., 10-15 digit; pesan maks 200 karakter
+
+TEST
+Tautan wa.me benar (tab baru), normalisasi nomor, tombol tersembunyi bila kosong, perubahan di Admin ikut berubah di landing; semua test lama lulus; db_abscafe.sql bisa di-import ke database kosong.
+
+HASIL: ringkasan singkat file diubah dan bagian db_abscafe.sql yang diubah.
