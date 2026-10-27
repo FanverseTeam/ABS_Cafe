@@ -24,7 +24,7 @@
 
     <!-- Alert Blokir Pesanan Belum Selesai -->
     @if(isset($pendingOrders) && $pendingOrders->isNotEmpty())
-        <div class="p-5 rounded-3xl bg-[#B03A2E]/10 border border-[#B03A2E]/30 text-[#B03A2E] space-y-3 shadow-soft">
+        <div class="p-5 rounded-3xl bg-[#775533]/10 border border-[#775533]/30 text-[#775533] space-y-3 shadow-soft">
             <div class="flex items-start gap-3">
                 <i data-lucide="alert-octagon" class="w-5 h-5 shrink-0 mt-0.5 text-cafe-danger"></i>
                 <div class="space-y-1">
@@ -126,13 +126,13 @@
                         </select>
                     </div>
                     <div>
-                        <input type="number" name="amount" min="1" required placeholder="Jumlah (Rp)" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs text-cafe-dark placeholder:text-cafe-muted/60 px-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20">
+                        <input type="number" name="amount" min="1" required placeholder="Jumlah (Rp)" class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-xs text-cafe-dark placeholder:text-cafe-muted/60 px-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20">
                     </div>
                     <div>
-                        <input type="text" name="reason" required maxlength="200" placeholder="Alasan wajib (mis. beli es batu)" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs text-cafe-dark placeholder:text-cafe-muted/60 px-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20">
+                        <input type="text" name="reason" required maxlength="200" placeholder="Alasan wajib (mis. beli es batu)" class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-xs text-cafe-dark placeholder:text-cafe-muted/60 px-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20">
                     </div>
                     <div class="sm:col-span-2">
-                        <button class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-cafe-dark text-white text-xs font-semibold hover:bg-cafe-brown transition-colors">
+                        <button class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-cafe-dark text-beige text-xs font-semibold hover:bg-cafe-brown transition-colors">
                             <i data-lucide="plus" class="w-4 h-4"></i>
                             Tambahkan Catatan Kas
                         </button>
@@ -191,19 +191,19 @@
                                 <span class="text-[10px] text-cafe-warning font-semibold">Mode hitung fisik aktif</span>
                             </div>
                             <input type="number" name="closing_cash" id="closing_cash" value="{{ old('closing_cash', (int)$summary['expected_cash']) }}" step="1000" min="0" required
-                                class="w-full bg-[#E3DEA4]/50 focus:bg-white text-lg font-serif font-bold text-cafe-dark px-4 py-3.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">
+                                class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-lg font-serif font-bold text-cafe-dark px-4 py-3.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">
                             @error('closing_cash')<p class="text-[11px] text-cafe-danger mt-1.5">{{ $message }}</p>@enderror
                         </div>
                     @endif
 
                     <div>
                         <label class="block text-xs font-semibold text-cafe-text mb-2">Catatan Penutupan (opsional)</label>
-                        <input type="text" name="notes" maxlength="500" placeholder="Misal: laci rapi, stok cup aman" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs text-cafe-dark placeholder:text-cafe-muted/60 px-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20">
+                        <input type="text" name="notes" maxlength="500" placeholder="Misal: laci rapi, stok cup aman" class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-xs text-cafe-dark placeholder:text-cafe-muted/60 px-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20">
                     </div>
 
                     @php $hasBlockedOrders = isset($pendingOrders) && $pendingOrders->isNotEmpty(); @endphp
                     <button type="submit" {{ $hasBlockedOrders ? 'disabled' : '' }}
-                        class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full {{ $hasBlockedOrders ? 'bg-cafe-muted/50 cursor-not-allowed text-white/70' : 'bg-[#290024] hover:bg-cafe-brown text-[#F2F5E2]' }} text-xs sm:text-sm font-bold shadow-md transition-colors">
+                        class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full {{ $hasBlockedOrders ? 'bg-cafe-muted/50 cursor-not-allowed text-beige/70' : 'bg-[#290024] hover:bg-cafe-brown text-[#F2F5E2]' }} text-xs sm:text-sm font-bold shadow-md transition-colors">
                         <i data-lucide="power" class="w-4 h-4"></i>
                         {{ $requirePhysical ? 'Tutup Shift & Rekap Kas' : 'Akhiri Shift' }}
                     </button>

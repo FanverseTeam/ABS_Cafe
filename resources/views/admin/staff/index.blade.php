@@ -6,14 +6,13 @@
 @section('content')
 <div class="space-y-6">
     <!-- Breadcrumb -->
-    <nav class="flex items-center gap-1.5 text-xs text-cafe-muted mb-3">
-        <a href="{{ route('admin.staff.index') }}" class="hover:text-cafe-dark flex items-center gap-1">
-            <i data-lucide="home" class="w-3.5 h-3.5"></i>
-            <span>Admin</span>
-        </a>
-        <i data-lucide="chevron-right" class="w-3 h-3 text-cafe-muted/60"></i>
-        <span class="font-semibold text-cafe-dark">Pengguna (Staf/Kasir)</span>
-    </nav>
+    <x-breadcrumb
+        :items="[
+            ['label' => 'Admin', 'url' => route('admin.staff.index'), 'icon' => 'home'],
+            ['label' => 'Pengguna (Staf/Kasir)'],
+        ]"
+        class="mb-3"
+    />
 
     <!-- Page Header & Action -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -33,11 +32,11 @@
         <form method="GET" action="{{ route('admin.staff.index') }}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama, username..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama, username..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
             </div>
 
             <div>
-                <select name="role" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="role" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Peran</option>
                     <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="kasir" {{ request('role') === 'kasir' ? 'selected' : '' }}>Kasir</option>
@@ -46,7 +45,7 @@
             </div>
 
             <div>
-                <select name="status" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="status" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Status</option>
                     <option value="aktif" {{ request('status') === 'aktif' ? 'selected' : '' }}>Aktif</option>
                     <option value="nonaktif" {{ request('status') === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
@@ -218,7 +217,7 @@
                 <label class="font-semibold text-cafe-dark block text-[11px] sm:text-xs">Password Baru</label>
                 <div class="relative">
                     <i data-lucide="lock" class="w-4 h-4 text-cafe-muted/60 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                    <input type="text" name="new_password" value="password123" required class="w-full bg-[#FAFCF3] focus:bg-white text-xs text-cafe-dark pl-9 pr-3.5 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none font-mono transition-all shadow-sm">
+                    <input type="text" name="new_password" value="password123" required class="w-full bg-[#F2F5E2] focus:bg-beige text-xs text-cafe-dark pl-9 pr-3.5 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none font-mono transition-all shadow-sm">
                 </div>
                 <p class="text-[10px] text-cafe-muted mt-1">Default: <code class="font-mono font-bold text-cafe-dark">password123</code> (dapat diganti oleh staf setelah login)</p>
             </div>

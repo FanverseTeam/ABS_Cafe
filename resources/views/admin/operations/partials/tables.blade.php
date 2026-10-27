@@ -33,9 +33,9 @@
 
                         <div>
                             @if($table->status === 'tersedia')
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#4F7A4A]/15 text-[#4F7A4A] border border-[#4F7A4A]/30">Tersedia</span>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#775533]/15 text-[#775533] border border-[#775533]/30">Tersedia</span>
                             @elseif($table->status === 'terpakai')
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#C98A2B]/15 text-[#C98A2B] border border-[#C98A2B]/30 animate-pulse">Terpakai</span>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#D4954D]/15 text-[#D4954D] border border-[#D4954D]/30 animate-pulse">Terpakai</span>
                             @else
                                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cafe-muted/15 text-cafe-muted border border-cafe-beige">Nonaktif</span>
                             @endif
@@ -98,7 +98,7 @@
             <p class="text-xs text-cafe-muted mt-0.5">Scan untuk memesan langsung dari meja kafe.</p>
         </div>
 
-        <div class="p-4 bg-white rounded-2xl border border-cafe-beige/80 inline-block shadow-inner mx-auto">
+        <div class="p-4 bg-beige rounded-2xl border border-cafe-beige/80 inline-block shadow-inner mx-auto">
             <img id="qr-modal-image" src="" alt="QR Code" class="w-48 h-48 mx-auto">
         </div>
 
@@ -134,17 +134,17 @@
             <div class="grid grid-cols-2 gap-3">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Nomor Meja *</label>
-                    <input type="number" name="number" id="tbl-number" required min="1" placeholder="misal: 11" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="number" name="number" id="tbl-number" required min="1" placeholder="misal: 11" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Kapasitas (Orang) *</label>
-                    <input type="number" name="capacity" id="tbl-capacity" value="4" required min="1" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="number" name="capacity" id="tbl-capacity" value="4" required min="1" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Status Meja *</label>
-                <select name="status" id="tbl-status" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <select name="status" id="tbl-status" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     <option value="tersedia">Tersedia (Kosong)</option>
                     <option value="terpakai">Terpakai (Ada Tamu)</option>
                     <option value="nonaktif">Nonaktif (Rusak / Sedang Diperbaiki)</option>
@@ -153,7 +153,7 @@
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Catatan Lokasi / Area</label>
-                <input type="text" name="location_notes" id="tbl-location" placeholder="misal: Lantai 1 Dekat Jendela, Outdoor Taman..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <input type="text" name="location_notes" id="tbl-location" placeholder="misal: Lantai 1 Dekat Jendela, Outdoor Taman..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-4 border-t border-cafe-beige">

@@ -49,11 +49,11 @@
 
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                <input type="text" name="supplier_search" value="{{ request('supplier_search') }}" placeholder="Cari nama supplier, kontak, atau telepon..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                <input type="text" name="supplier_search" value="{{ request('supplier_search') }}" placeholder="Cari nama supplier, kontak, atau telepon..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
             </div>
 
             <div>
-                <select name="supplier_status" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="supplier_status" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Status Supplier</option>
                     <option value="aktif" {{ request('supplier_status') === 'aktif' ? 'selected' : '' }}>Aktif</option>
                     <option value="nonaktif" {{ request('supplier_status') === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
@@ -194,33 +194,33 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Nama Supplier *</label>
-                    <input type="text" name="name" id="supplier-input-name" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="name" id="supplier-input-name" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Nama Kontak</label>
-                    <input type="text" name="contact_person" id="supplier-input-contact" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="contact_person" id="supplier-input-contact" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Telepon</label>
-                    <input type="text" name="phone" id="supplier-input-phone" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="phone" id="supplier-input-phone" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Email</label>
-                    <input type="email" name="email" id="supplier-input-email" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="email" name="email" id="supplier-input-email" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Alamat</label>
-                <textarea name="address" id="supplier-input-address" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
+                <textarea name="address" id="supplier-input-address" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Catatan</label>
-                <textarea name="notes" id="supplier-input-notes" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
+                <textarea name="notes" id="supplier-input-notes" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
             </div>
 
             <label class="flex items-center gap-2 cursor-pointer select-none pt-1">

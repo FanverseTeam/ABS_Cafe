@@ -6,18 +6,13 @@
 @section('content')
 <div class="max-w-3xl mx-auto space-y-5 sm:space-y-6">
     <!-- Breadcrumb -->
-    <nav class="flex items-center gap-1.5 text-xs text-cafe-muted">
-        <a href="{{ route('admin.dashboard') }}" class="hover:text-cafe-dark flex items-center gap-1">
-            <i data-lucide="home" class="w-3.5 h-3.5"></i>
-            <span>Admin</span>
-        </a>
-        <i data-lucide="chevron-right" class="w-3 h-3 text-cafe-muted/60"></i>
-        <a href="{{ route('admin.staff.index') }}" class="hover:text-cafe-dark">
-            Pengguna (Staf/Kasir)
-        </a>
-        <i data-lucide="chevron-right" class="w-3 h-3 text-cafe-muted/60"></i>
-        <span class="font-semibold text-cafe-dark">Tambah Baru</span>
-    </nav>
+    <x-breadcrumb
+        :items="[
+            ['label' => 'Admin', 'url' => route('admin.dashboard'), 'icon' => 'home'],
+            ['label' => 'Pengguna (Staf/Kasir)', 'url' => route('admin.staff.index')],
+            ['label' => 'Tambah Baru'],
+        ]"
+    />
 
     <!-- Header with Back Button -->
     <div class="flex items-center justify-between gap-3">
@@ -36,7 +31,7 @@
 
     <!-- Error Summary if any -->
     @if($errors->any())
-        <div class="p-4 rounded-2xl bg-[#B03A2E]/10 border border-[#B03A2E]/30 text-cafe-danger text-xs space-y-1 animate-in fade-in">
+        <div class="p-4 rounded-2xl bg-[#775533]/10 border border-[#775533]/30 text-cafe-danger text-xs space-y-1 animate-in fade-in">
             <div class="flex items-center gap-2 font-bold">
                 <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
                 <span>Terdapat kesalahan pada formulir:</span>
@@ -76,7 +71,7 @@
                                    value="{{ old('name') }}"
                                    required
                                    placeholder="misal: Siti Rahma"
-                                   class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark pl-10 pr-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
+                                   class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark pl-10 pr-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
                         </div>
                     </div>
 
@@ -95,7 +90,7 @@
                                        required
                                        placeholder="siti_kasir"
                                        autocomplete="off"
-                                       class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark font-mono pl-10 pr-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
+                                       class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark font-mono pl-10 pr-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
                             </div>
                             <p class="text-[10px] text-cafe-muted">Hanya huruf kecil, angka, titik, dan garis bawah</p>
                         </div>
@@ -111,7 +106,7 @@
                                        name="phone"
                                        value="{{ old('phone') }}"
                                        placeholder="08123456789"
-                                       class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark pl-10 pr-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
+                                       class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark pl-10 pr-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
                             </div>
                         </div>
                     </div>
@@ -137,7 +132,7 @@
                             </label>
                             <div class="relative">
                                 <i data-lucide="shield" class="w-4 h-4 text-cafe-muted/60 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                                <select name="role" required class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark pl-10 pr-8 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm cursor-pointer appearance-none">
+                                <select name="role" required class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark pl-10 pr-8 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm cursor-pointer appearance-none">
                                     <option value="kasir" {{ old('role', 'kasir') === 'kasir' ? 'selected' : '' }}>Kasir (Kasir &amp; POS)</option>
                                     <option value="staf" {{ old('role') === 'staf' ? 'selected' : '' }}>Staf (Barista &amp; Dapur)</option>
                                     <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Administrator (Akses Penuh)</option>
@@ -153,7 +148,7 @@
                             </label>
                             <div class="relative">
                                 <i data-lucide="activity" class="w-4 h-4 text-cafe-muted/60 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                                <select name="status" required class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark pl-10 pr-8 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm cursor-pointer appearance-none">
+                                <select name="status" required class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark pl-10 pr-8 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm cursor-pointer appearance-none">
                                     <option value="aktif" {{ old('status', 'aktif') === 'aktif' ? 'selected' : '' }}>Aktif (Dapat Login)</option>
                                     <option value="nonaktif" {{ old('status') === 'nonaktif' ? 'selected' : '' }}>Nonaktif (Akses Dikunci)</option>
                                 </select>
@@ -174,7 +169,7 @@
                                    required
                                    placeholder="Minimal 6 karakter"
                                    autocomplete="new-password"
-                                   class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark pl-10 pr-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
+                                   class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark pl-10 pr-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
                         </div>
                         <p class="text-[10px] text-cafe-muted">Staf dapat mengganti password setelah berhasil login</p>
                     </div>

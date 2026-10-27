@@ -10,7 +10,7 @@
             <h3 class="font-serif font-bold text-cafe-dark">Rekap Kas Shift</h3>
             <p class="text-[11px] text-cafe-muted">{{ $shift->opened_at->translatedFormat('l, d M Y') }} &bull; {{ $shift->user->name ?? Auth::user()->name }}</p>
         </div>
-        <button onclick="window.print()" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-cafe-dark text-white text-xs font-semibold hover:bg-cafe-brown transition-colors">
+        <button onclick="window.print()" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-cafe-dark text-beige text-xs font-semibold hover:bg-cafe-brown transition-colors">
             <i data-lucide="printer" class="w-4 h-4"></i>
             Cetak Rekap
         </button>

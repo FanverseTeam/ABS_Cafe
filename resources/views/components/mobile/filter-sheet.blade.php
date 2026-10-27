@@ -29,13 +29,13 @@
         onclick="openBottomSheet('{{ $id }}')"
         aria-label="{{ $label }}"
         aria-controls="{{ $id }}"
-        class="relative flex items-center gap-1.5 h-10 px-3 rounded-full bg-[#FAFCF3] border border-[#E3DEA4] text-[#290024] text-xs font-semibold transition-colors hover:bg-[#E3DEA4]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]/70 {{ $buttonClass }}"
+        class="relative flex items-center gap-1.5 h-10 px-3 rounded-full bg-[#F2F5E2] border border-[#E3DEA4] text-[#290024] text-xs font-semibold transition-colors hover:bg-[#E3DEA4]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]/70 {{ $buttonClass }}"
     >
         <i data-lucide="{{ $icon }}" class="w-4 h-4 shrink-0 text-[#775533]"></i>
         <span class="hidden sm:inline">{{ $label }}</span>
 
         @if($badgeCount > 0)
-            <span class="absolute -top-1 -right-1 min-w-4 h-4 rounded-full bg-[#290024] text-[#FAFCF3] text-[9px] font-bold flex items-center justify-center px-1 leading-none">
+            <span class="absolute -top-1 -right-1 min-w-4 h-4 rounded-full bg-[#290024] text-[#F2F5E2] text-[9px] font-bold flex items-center justify-center px-1 leading-none">
                 {{ $badgeCount > 9 ? '9+' : $badgeCount }}
             </span>
         @endif

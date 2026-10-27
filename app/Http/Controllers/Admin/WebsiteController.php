@@ -23,11 +23,13 @@ class WebsiteController extends Controller
             'cafe_address' => CafeSetting::get('cafe_address', 'Jl. Letjend Suprapto No.44, Kepatihan, Kec. Tulungagung, Kabupaten Tulungagung, Jawa Timur 66219'),
             'cafe_phone' => CafeSetting::get('cafe_phone', '0896-2010-2010'),
             'cafe_email' => CafeSetting::get('cafe_email', 'halo@abscafe.com'),
-            'cafe_maps_url' => CafeSetting::get('cafe_maps_url', 'https://maps.app.goo.gl/pPSXXjtJptYwrDB37'),
+            'cafe_maps_url' => CafeSetting::get('cafe_maps_url', 'https://maps.app.goo.gl/mvEr6sWCacKH5j677'),
             'peta_lat' => CafeSetting::get('peta_lat', '-8.0646338'),
             'peta_lng' => CafeSetting::get('peta_lng', '111.9111798'),
             'cafe_hours' => CafeSetting::get('cafe_hours', 'Buka Setiap Hari 09.00 - 23.00 WIB'),
             'last_order' => CafeSetting::get('last_order', '22.00 WIB'),
+            'whatsapp_nomor' => CafeSetting::get('whatsapp_nomor', '6289620102010'),
+            'whatsapp_pesan' => CafeSetting::get('whatsapp_pesan', 'Halo ABS Cafe, saya ingin bertanya.'),
             'tax_percent' => CafeSetting::get('tax_percent', '10'),
             'service_charge_active' => CafeSetting::get('service_charge_active', '0'),
             'service_charge_percent' => CafeSetting::get('service_charge_percent', '5'),
@@ -73,6 +75,23 @@ class WebsiteController extends Controller
                     }
                 },
             ],
+            'whatsapp_nomor' => [
+                'nullable',
+                'string',
+                function (string $attribute, mixed $value, \Closure $fail) {
+                    if ($value === '' || $value === null) {
+                        return;
+                    }
+                    $digits = preg_replace('/[^\d]/', '', $value);
+                    if (str_starts_with($digits, '0')) {
+                        $digits = '62'.substr($digits, 1);
+                    }
+                    if (! preg_match('/^628\d{8,12}$/', $digits)) {
+                        $fail('Nomor WhatsApp tidak valid. Format: 08..., 628..., atau +628... (10-15 digit total).');
+                    }
+                },
+            ],
+            'whatsapp_pesan' => ['nullable', 'string', 'max:200'],
         ], [
             'peta_lat.numeric' => 'Latitude harus berupa angka.',
             'peta_lat.between' => 'Latitude harus antara -90 dan 90.',
@@ -101,6 +120,17 @@ class WebsiteController extends Controller
         }
         if ($request->has('cafe_hours')) {
             CafeSetting::set('cafe_hours', $request->input('cafe_hours'));
+        }
+        if ($request->has('whatsapp_nomor')) {
+            $waRaw = $request->input('whatsapp_nomor', '');
+            $waDigits = preg_replace('/[^\d]/', '', $waRaw);
+            if (str_starts_with($waDigits, '0')) {
+                $waDigits = '62'.substr($waDigits, 1);
+            }
+            CafeSetting::set('whatsapp_nomor', $waDigits);
+        }
+        if ($request->has('whatsapp_pesan')) {
+            CafeSetting::set('whatsapp_pesan', $request->input('whatsapp_pesan', ''));
         }
         CafeSetting::set('hours_weekday', $request->input('hours_weekday'));
         CafeSetting::set('hours_weekend', $request->input('hours_weekend'));

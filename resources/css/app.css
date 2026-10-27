@@ -5,55 +5,88 @@
 @source '../views/**/*.blade.php';
 
 @theme {
+    --color-*: initial;
+
     /* Tipografi */
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-serif: 'Noto Serif', Georgia, serif;
 
     /* Palet ABS Cafe */
-    --color-beige: #f2f5e2;
-    --color-beige-50: #fafcf3;
-    --color-beige-100: #f2f5e2;
-    --color-beige-200: #e8edd0;
+    --color-beige: #F2F5E2;
+    --color-beige-50: #F2F5E2;
+    --color-beige-100: #F2F5E2;
+    --color-beige-200: #E3DEA4;
 
-    --color-custard: #e3dea4;
-    --color-custard-100: #f1eecb;
-    --color-custard-200: #e3dea4;
-    --color-custard-300: #d4cd7d;
+    --color-vanilla: #E3DEA4;
+    --color-vanilla-100: #E3DEA4;
 
-    --color-apricot: #d4954d;
-    --color-apricot-100: #f6e3c9;
-    --color-apricot-200: #e8bd85;
-    --color-apricot-300: #d4954d;
-    --color-apricot-400: #b87c37;
-    --color-apricot-500: #9a6528;
+    --color-custard: #E3DEA4;
+    --color-custard-100: rgb(227 222 164 / 0.5);
+    --color-custard-200: #E3DEA4;
+    --color-custard-300: rgb(227 222 164 / 0.8);
+
+    --color-apricot: #D4954D;
+    --color-apricot-100: rgb(212 149 77 / 0.2);
+    --color-apricot-200: rgb(212 149 77 / 0.35);
+    --color-apricot-300: #D4954D;
+    --color-apricot-400: #D4954D;
+    --color-apricot-500: #D4954D;
 
     --color-olive: #775533;
-    --color-olive-100: #cdbba5;
-    --color-olive-200: #a78b68;
+    --color-olive-100: rgb(119 85 51 / 0.45);
+    --color-olive-200: rgb(119 85 51 / 0.7);
     --color-olive-300: #775533;
-    --color-olive-400: #5c4127;
-    --color-olive-500: #3f2c1b;
+    --color-olive-400: #775533;
+    --color-olive-500: #775533;
 
     --color-midnight: #290024;
-    --color-midnight-100: #6b4a63;
-    --color-midnight-200: #4a2440;
+    --color-midnight-100: rgb(41 0 36 / 0.55);
+    --color-midnight-200: rgb(41 0 36 / 0.75);
     --color-midnight-300: #290024;
-    --color-midnight-400: #1c0019;
-    --color-midnight-500: #12000f;
+    --color-midnight-400: rgb(41 0 36 / 0.9);
+    --color-midnight-500: #290024;
 
-    /* Status (turunan lembut) */
-    --color-success-100: #dcf3e2;
-    --color-success-700: #246b3a;
-    --color-warning-100: #fbe8cf;
-    --color-warning-700: #8a5414;
-    --color-danger-100: #f9dcdc;
-    --color-danger-700: #9b2c2c;
-    --color-info-100: #dbe8f9;
-    --color-info-700: #2a4f86;
+    --color-transparent: transparent;
+    --color-current: currentColor;
+    --color-inherit: inherit;
+
+    /* Status (palette-aligned) */
+    --color-success: #775533;
+    --color-success-100: rgb(227 222 164 / 0.55);
+    --color-success-700: #775533;
+    --color-warning: #D4954D;
+    --color-warning-100: rgb(212 149 77 / 0.18);
+    --color-warning-700: #290024;
+    --color-danger: #775533;
+    --color-danger-100: rgb(227 222 164 / 0.45);
+    --color-danger-700: #775533;
+    --color-info: #D4954D;
+    --color-info-100: rgb(212 149 77 / 0.18);
+    --color-info-700: #290024;
+
+    /* Cafe aliases */
+    --color-cafe-dark: #290024;
+    --color-cafe-brown: #775533;
+    --color-cafe-gold: #D4954D;
+    --color-cafe-cream: #F2F5E2;
+    --color-cafe-beige: #E3DEA4;
+    --color-cafe-card: rgb(227 222 164 / 0.35);
+    --color-cafe-text: #290024;
+    --color-cafe-muted: #775533;
+    --color-cafe-bronze: #D4954D;
+    --color-cafe-success: #775533;
+    --color-cafe-warning: #D4954D;
+    --color-cafe-danger: #775533;
+    --color-cafe-info: #D4954D;
 }
 
 @layer base {
+    :root {
+        color-scheme: light;
+        accent-color: var(--color-apricot);
+        caret-color: var(--color-midnight);
+    }
+
     body {
         @apply bg-beige text-midnight antialiased;
     }
@@ -73,6 +106,16 @@
         display: none !important;
     }
 
+    ::selection {
+        background: var(--color-apricot);
+        color: var(--color-midnight);
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-apricot);
+        outline-offset: 2px;
+    }
+
     ::-webkit-scrollbar {
         width: 10px;
         height: 10px;
@@ -83,13 +126,27 @@
     }
 
     ::-webkit-scrollbar-thumb {
-        background: var(--color-custard-300);
+        background: var(--color-olive);
         border-radius: 9999px;
         border: 2px solid var(--color-beige);
     }
 
     ::-webkit-scrollbar-thumb:hover {
-        background: var(--color-olive-200);
+        background: var(--color-midnight);
+    }
+
+    html {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-olive) var(--color-beige);
+    }
+
+    input:-webkit-autofill,
+    textarea:-webkit-autofill,
+    select:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0 1000px var(--color-beige) inset;
+        box-shadow: 0 0 0 1000px var(--color-beige) inset;
+        -webkit-text-fill-color: var(--color-midnight);
+        caret-color: var(--color-midnight);
     }
 }
 
@@ -110,7 +167,7 @@
     }
 
     .btn-apricot {
-        @apply bg-apricot text-white hover:bg-apricot-400;
+        @apply bg-apricot text-midnight hover:bg-apricot/80;
     }
 
     .btn-ghost {
@@ -118,7 +175,7 @@
     }
 
     .btn-danger {
-        @apply bg-danger-100 text-danger-700 hover:bg-danger-700 hover:text-white;
+        @apply bg-custard text-olive hover:bg-olive hover:text-beige;
     }
 
     .btn-sm {
@@ -131,7 +188,7 @@
 
     /* Kartu */
     .card {
-        @apply rounded-2xl border border-custard-200 bg-white/80 shadow-[0_1px_2px_rgba(41,0,36,0.04)] backdrop-blur;
+        @apply rounded-2xl border border-custard-200 bg-custard-100/35 shadow-[0_1px_2px_rgba(41,0,36,0.04)] backdrop-blur;
     }
 
     /* Form */
@@ -140,12 +197,12 @@
     }
 
     .input {
-        @apply w-full rounded-xl border border-custard-300 bg-white px-3.5 py-2.5 text-sm text-midnight
+        @apply w-full rounded-xl border border-custard-300 bg-beige px-3.5 py-2.5 text-sm text-midnight
             placeholder:text-olive-200 focus:border-apricot-300 focus:outline-none focus:ring-2 focus:ring-apricot-100;
     }
 
     .input-error {
-        @apply border-danger-700 focus:border-danger-700 focus:ring-danger-100;
+        @apply border-l-4 border-apricot focus:border-apricot focus:ring-apricot-100;
     }
 
     .help {
@@ -153,7 +210,12 @@
     }
 
     .error-text {
-        @apply mt-1 text-xs font-medium text-danger-700;
+        @apply mt-1 text-xs font-bold text-midnight flex items-center gap-1;
+    }
+
+    .error-text::before {
+        content: "!";
+        @apply inline-flex h-4 w-4 items-center justify-center rounded-full bg-apricot text-midnight text-[10px] font-bold;
     }
 
     /* Badge & pill */
@@ -167,7 +229,7 @@
     }
 
     .table thead th {
-        @apply border-b border-custard-200 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-olive-300;
+        @apply border-b border-custard-200 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-olive;
     }
 
     .table tbody td {
@@ -175,6 +237,6 @@
     }
 
     .table tbody tr:hover {
-        @apply bg-beige-50;
+        @apply bg-custard-100/35;
     }
 }

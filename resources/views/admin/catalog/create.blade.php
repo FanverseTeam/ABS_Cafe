@@ -6,18 +6,13 @@
 @section('content')
 <div class="max-w-3xl mx-auto space-y-5 sm:space-y-6">
     <!-- Breadcrumb -->
-    <nav class="flex items-center gap-1.5 text-xs text-cafe-muted">
-        <a href="{{ route('admin.dashboard') }}" class="hover:text-cafe-dark flex items-center gap-1">
-            <i data-lucide="home" class="w-3.5 h-3.5"></i>
-            <span>Admin</span>
-        </a>
-        <i data-lucide="chevron-right" class="w-3 h-3 text-cafe-muted/60"></i>
-        <a href="{{ route('admin.catalog.index') }}" class="hover:text-cafe-dark">
-            Manajemen Menu
-        </a>
-        <i data-lucide="chevron-right" class="w-3 h-3 text-cafe-muted/60"></i>
-        <span class="font-semibold text-cafe-dark">Tambah Baru</span>
-    </nav>
+    <x-breadcrumb
+        :items="[
+            ['label' => 'Admin', 'url' => route('admin.dashboard'), 'icon' => 'home'],
+            ['label' => 'Manajemen Menu', 'url' => route('admin.catalog.index')],
+            ['label' => 'Tambah Baru'],
+        ]"
+    />
 
     <!-- Header with Back Button -->
     <div class="flex items-center justify-between gap-3">
@@ -36,7 +31,7 @@
 
     <!-- Error Summary if any -->
     @if($errors->any())
-        <div class="p-4 rounded-2xl bg-[#B03A2E]/10 border border-[#B03A2E]/30 text-cafe-danger text-xs space-y-1 animate-in fade-in">
+        <div class="p-4 rounded-2xl bg-[#775533]/10 border border-[#775533]/30 text-cafe-danger text-xs space-y-1 animate-in fade-in">
             <div class="flex items-center gap-2 font-bold">
                 <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
                 <span>Terdapat kesalahan pada formulir:</span>
@@ -74,7 +69,7 @@
                                value="{{ old('name') }}"
                                required
                                placeholder="misal: Caramel Macchiato"
-                               class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
+                               class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
                     </div>
 
                     <!-- Grid: Kategori & Satuan -->
@@ -83,7 +78,7 @@
                             <label class="font-semibold text-cafe-dark block text-xs">
                                 Kategori <span class="text-cafe-danger">*</span>
                             </label>
-                            <select name="category_id" required class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm cursor-pointer">
+                            <select name="category_id" required class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm cursor-pointer">
                                 @foreach($categories as $cat)
                                     <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                                 @endforeach
@@ -98,7 +93,7 @@
                                    name="unit"
                                    value="{{ old('unit', 'porsi') }}"
                                    placeholder="porsi, cup, pcs, pack"
-                                   class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
+                                   class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
                         </div>
                     </div>
 
@@ -116,7 +111,7 @@
                                    min="0"
                                    step="500"
                                    placeholder="20000"
-                                   class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark pl-10 pr-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
+                                   class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark pl-10 pr-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
                         </div>
                         <p class="text-[10px] text-cafe-muted">Jika memiliki varian, harga menu akan otomatis mengikuti harga varian terendah.</p>
                     </div>
@@ -127,7 +122,7 @@
                         <textarea name="description"
                                   rows="2"
                                   placeholder="Deskripsikan cita rasa, bahan baku, atau porsi menu..."
-                                  class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark p-3.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">{{ old('description') }}</textarea>
+                                  class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark p-3.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">{{ old('description') }}</textarea>
                     </div>
 
                     <!-- Foto Menu URL -->
@@ -137,7 +132,7 @@
                                name="image"
                                value="{{ old('image', 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&auto=format&fit=crop&q=80') }}"
                                placeholder="https://images.unsplash.com/..."
-                               class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
+                               class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
                     </div>
                 </div>
             </div>
@@ -173,7 +168,7 @@
                                    name="stock"
                                    value="{{ old('stock', 30) }}"
                                    min="0"
-                                   class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
+                                   class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
                         </div>
 
                         <div class="space-y-1">
@@ -182,7 +177,7 @@
                                    name="min_stock"
                                    value="{{ old('min_stock', 10) }}"
                                    min="1"
-                                   class="w-full bg-[#FAFCF3] focus:bg-white text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
+                                   class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
                         </div>
                     </div>
 

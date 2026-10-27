@@ -826,7 +826,12 @@ INSERT INTO `migrations` VALUES
 (25,'2026_10_20_201926_add_variant_merging_support',3),
 (26,'2026_10_21_082105_cleanup_database_schema_and_add_table_comments',4),
 (27,'2026_10_24_210000_sederhanakan_dan_lebur_tabel_database',4),
-(28,'2026_10_25_105343_2026_10_25_login_username_only',4);
+(28,'2026_10_25_105343_2026_10_25_login_username_only',4),
+(29,'2026_10_25_121756_add_customer_contact_to_pesanan_table',5),
+(30,'2026_10_25_143500_perbarui_data_lokasi_kontak_abs_cafe',5),
+(31,'2026_10_25_152000_koreksi_koordinat_dan_tautan_peta_abs_cafe',5),
+(32,'2026_10_26_111200_perbarui_tautan_google_maps_abs_cafe',5),
+(33,'2026_10_26_112100_tambah_pengaturan_whatsapp_abs_cafe',5);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -1995,7 +2000,7 @@ INSERT INTO `pengaturan` VALUES
 (27,'cafe_logo','images/logo.png',NULL,'2026-10-19 00:00:00','2026-10-19 00:00:00'),
 (28,'landing_bg_url','https://www.google.com/url?sa=t&source=web&rct=j&url=https%3A%2F%2Finterbox.id%2Farticle%2Ffurniture-cafe&ved=0CBcQjRxqGAoTCIDHjb-wx5cDFQAAAAAdAAAAABCHAg&opi=89978449',NULL,'2026-10-20 00:54:48','2026-10-20 00:54:48'),
 (29,'cafe_hours','Buka Setiap Hari 09.00 - 23.00 WIB',NULL,'2026-10-25 12:00:00','2026-10-25 14:30:00'),
-(30,'cafe_maps_url','https://maps.app.goo.gl/pPSXXjtJptYwrDB37',NULL,'2026-10-25 12:00:00','2026-10-25 15:15:00'),
+(30,'cafe_maps_url','https://maps.app.goo.gl/mvEr6sWCacKH5j677',NULL,'2026-10-25 12:00:00','2026-10-26 11:12:00'),
 (31,'cafe_instagram','abs_tulungagung_24',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
 (32,'cafe_tiktok','abs_tulungagung_24',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
 (33,'hero_badge','SELAMAT DATANG DI ABS CAFE',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
@@ -2018,7 +2023,9 @@ INSERT INTO `pengaturan` VALUES
 (50,'social_title','Ikuti Kami di Sosial Media',NULL,'2026-10-25 12:00:00','2026-10-25 12:00:00'),
 (51,'peta_lat','-8.0646338',NULL,'2026-10-25 14:30:00','2026-10-25 15:15:00'),
 (52,'peta_lng','111.9111798',NULL,'2026-10-25 14:30:00','2026-10-25 15:15:00'),
-(53,'last_order','22.00 WIB',NULL,'2026-10-25 14:30:00','2026-10-25 14:30:00');
+(53,'last_order','22.00 WIB',NULL,'2026-10-25 14:30:00','2026-10-25 14:30:00'),
+(54,'whatsapp_nomor','6289620102010',NULL,'2026-10-26 11:21:00','2026-10-26 11:21:00'),
+(55,'whatsapp_pesan','Halo ABS Cafe, saya ingin bertanya.',NULL,'2026-10-26 11:21:00','2026-10-26 11:21:00');
 /*!40000 ALTER TABLE `pengaturan` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -9632,3 +9639,20 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
 -- Dump completed on 2026-10-24 21:38:42
+ATURAN: Dilarang git commit/push/branch (saya yang lakukan). Perubahan database wajib diedit langsung di db_abscafe.sql yang ada (tanpa file .sql baru).
+
+TUGAS
+Di landing customer ("/") ABS Cafe, tambahkan tombol WhatsApp di baris media sosial dengan gaya sama seperti Instagram dan TikTok (ikon SVG inline, teks nomor "0896-2010-2010", warna palet, hover Apricot). Tambahkan juga tautan "Chat via WhatsApp" di bagian Lokasi. Tanpa emoji. Halaman customer tetap tanpa tautan ke area staf.
+
+PERILAKU
+- Klik membuka https://wa.me/{nomor}?text={pesan} di tab baru (rel="noopener noreferrer"); nomor tanpa +, spasi, strip (0896-2010-2010 menjadi 6289620102010); pesan bawaan "Halo ABS Cafe, saya ingin bertanya." (di-urlencode)
+- Nomor kosong atau tidak valid: tombol disembunyikan
+
+DATA
+- Key pengaturan baru whatsapp_nomor (6289620102010) dan whatsapp_pesan; tambahkan ke seeder dan db_abscafe.sql, plus migration kecil untuk database berjalan (tanpa menimpa nilai yang ada)
+- Pengaturan Website (Admin): kolom "Nomor WhatsApp" dan "Pesan Awal Chat"; nomor 08.../628.../+628... dinormalkan ke 628..., 10-15 digit; pesan maks 200 karakter
+
+TEST
+Tautan wa.me benar (tab baru), normalisasi nomor, tombol tersembunyi bila kosong, perubahan di Admin ikut berubah di landing; semua test lama lulus; db_abscafe.sql bisa di-import ke database kosong.
+
+HASIL: ringkasan singkat file diubah dan bagian db_abscafe.sql yang diubah.

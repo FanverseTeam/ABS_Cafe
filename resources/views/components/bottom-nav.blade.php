@@ -9,7 +9,7 @@
 @if($items !== [] && ! $navigation['hidden'])
     <nav id="mobile-bottom-nav"
          aria-label="Navigasi utama {{ ucfirst($role) }}"
-         class="lg:hidden fixed inset-x-0 bottom-0 z-40 bg-[#FAFCF3]/95 backdrop-blur-md border-t border-[#E3DEA4] shadow-[0_-4px_18px_rgba(41,0,36,0.08)] transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none">
+         class="lg:hidden fixed inset-x-0 bottom-0 z-40 bg-beige/95 backdrop-blur-md border-t border-custard shadow-[0_-4px_18px_rgba(41,0,36,0.08)] transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none">
         <div class="mx-auto grid min-h-16 max-w-lg sm:min-h-[4.25rem] sm:max-w-2xl landscape:min-h-12 sm:landscape:min-h-[3.25rem] grid-cols-5 items-stretch gap-0.5 sm:gap-1 px-1 sm:px-3 pt-1 landscape:pt-0.5 pb-[max(0.35rem,env(safe-area-inset-bottom))] landscape:pb-[max(0.15rem,env(safe-area-inset-bottom))]">
             @foreach($items as $item)
                 @php
@@ -30,7 +30,7 @@
                         <span class="relative flex h-7 w-10 sm:h-8 sm:w-12 landscape:h-6 landscape:w-9 items-center justify-center rounded-full transition-colors duration-200 motion-reduce:transition-none {{ $isActive ? 'bg-[#D4954D] text-[#290024] shadow-sm' : 'text-[#775533] group-hover:bg-[#E3DEA4]/55' }}">
                             <i data-lucide="{{ $item['icon'] }}" class="h-4 w-4 sm:h-5 sm:w-5 landscape:h-3.5 landscape:w-3.5"></i>
                             @if($badge)
-                                <span data-nav-badge class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#B03A2E] px-1 text-[9px] font-bold leading-none text-white shadow-sm">{{ $badge > 99 ? '99+' : $badge }}</span>
+                                <span data-nav-badge class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#775533] px-1 text-[9px] font-bold leading-none text-beige shadow-sm">{{ $badge > 99 ? '99+' : $badge }}</span>
                             @endif
                         </span>
                         <span data-nav-label class="max-w-full truncate text-[10px] sm:text-[11px] landscape:text-[9px] leading-none {{ $isActive ? 'font-semibold text-[#290024]' : 'font-medium text-[#775533]' }}">
@@ -46,7 +46,7 @@
                         <span class="relative flex h-7 w-10 sm:h-8 sm:w-12 landscape:h-6 landscape:w-9 items-center justify-center rounded-full transition-colors duration-200 motion-reduce:transition-none {{ $isActive ? 'bg-[#D4954D] text-[#290024] shadow-sm' : 'text-[#775533] group-hover:bg-[#E3DEA4]/55' }}">
                             <i data-lucide="{{ $item['icon'] }}" class="h-4 w-4 sm:h-5 sm:w-5 landscape:h-3.5 landscape:w-3.5"></i>
                             @if($badge)
-                                <span data-nav-badge class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#B03A2E] px-1 text-[9px] font-bold leading-none text-white shadow-sm">{{ $badge > 99 ? '99+' : $badge }}</span>
+                                <span data-nav-badge class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#775533] px-1 text-[9px] font-bold leading-none text-beige shadow-sm">{{ $badge > 99 ? '99+' : $badge }}</span>
                             @endif
                         </span>
                         <span data-nav-label class="max-w-full truncate text-[10px] sm:text-[11px] landscape:text-[9px] leading-none {{ $isActive ? 'font-semibold text-[#290024]' : 'font-medium text-[#775533]' }}">
@@ -67,7 +67,7 @@
              role="dialog"
              aria-modal="true"
              aria-labelledby="mobile-more-title"
-             class="fixed inset-x-0 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-full sm:max-w-[560px] bottom-0 z-50 hidden max-h-[85dvh] overflow-y-auto overflow-x-hidden rounded-t-[2rem] border-t border-[#E3DEA4] bg-[#FAFCF3] px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-12px_40px_rgba(41,0,36,0.18)] lg:hidden">
+             class="fixed inset-x-0 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-full sm:max-w-[560px] bottom-0 z-50 hidden max-h-[85dvh] overflow-y-auto overflow-x-hidden rounded-t-[2rem] border-t border-custard bg-beige px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-12px_40px_rgba(41,0,36,0.18)] lg:hidden">
             <div class="mx-auto mb-3 h-1.5 w-12 rounded-full bg-[#775533]/25"></div>
 
             <div class="mx-auto flex max-w-lg items-center justify-between gap-3 pb-2">

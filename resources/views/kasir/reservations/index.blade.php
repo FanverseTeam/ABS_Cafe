@@ -7,7 +7,7 @@
 <div class="space-y-6">
     <!-- Mobile Pill Switcher: Denah Meja | Reservasi (Sesuai Referensi Layar 9) -->
     <div class="lg:hidden flex items-center p-1 bg-[#E3DEA4]/50 rounded-full border border-[#E3DEA4]">
-        <button type="button" onclick="switchReservationView('tables')" id="tab-btn-tables" class="flex-1 py-2 rounded-full text-xs font-bold transition-all bg-[#290024] text-[#FAFCF3] shadow-sm">
+        <button type="button" onclick="switchReservationView('tables')" id="tab-btn-tables" class="flex-1 py-2 rounded-full text-xs font-bold transition-all bg-[#290024] text-[#F2F5E2] shadow-sm">
             Denah Meja
         </button>
         <button type="button" onclick="switchReservationView('list')" id="tab-btn-list" class="flex-1 py-2 rounded-full text-xs font-bold transition-all text-[#775533] hover:text-[#290024]">
@@ -18,8 +18,8 @@
     <!-- Header: date picker + new reservation -->
     <div class="flex flex-wrap items-center justify-between gap-3">
         <form action="{{ route('kasir.reservations.index') }}" method="GET" class="flex items-center gap-2">
-            <input type="date" name="date" value="{{ $date->format('Y-m-d') }}" class="bg-[#FAFCF3] border border-[#E3DEA4] text-xs text-[#290024] px-3.5 py-2 rounded-2xl focus:border-[#D4954D] focus:outline-none">
-            <button class="px-4 py-2 rounded-2xl bg-[#290024] text-[#FAFCF3] text-xs font-semibold hover:bg-[#775533] transition-colors">Tampilkan</button>
+            <input type="date" name="date" value="{{ $date->format('Y-m-d') }}" class="bg-[#F2F5E2] border border-[#E3DEA4] text-xs text-[#290024] px-3.5 py-2 rounded-2xl focus:border-[#D4954D] focus:outline-none">
+            <button class="px-4 py-2 rounded-2xl bg-[#290024] text-[#F2F5E2] text-xs font-semibold hover:bg-[#775533] transition-colors">Tampilkan</button>
         </form>
         <button onclick="openCreateModal()" class="hidden lg:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#D4954D] text-[#290024] text-xs font-bold hover:brightness-105 transition-all shadow-md active:scale-95">
             <i data-lucide="plus" class="w-4 h-4"></i>
@@ -30,7 +30,7 @@
     {{-- Mobile FAB for Buat Reservasi --}}
     <div class="lg:hidden fixed z-30 right-4 sm:right-6 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] landscape:bottom-[calc(3.75rem+env(safe-area-inset-bottom))]">
         <button type="button" onclick="openCreateModal()"
-           class="flex items-center gap-2 px-4 py-3 rounded-full bg-[#290024] hover:bg-[#775533] text-[#FAFCF3] border border-[#D4954D]/60 shadow-xl active:scale-95 transition-transform"
+           class="flex items-center gap-2 px-4 py-3 rounded-full bg-[#290024] hover:bg-[#775533] text-[#F2F5E2] border border-[#D4954D]/60 shadow-xl active:scale-95 transition-transform"
            aria-label="Buat Reservasi">
             <i data-lucide="plus" class="w-5 h-5 text-cafe-gold shrink-0"></i>
             <span class="text-xs font-bold whitespace-nowrap">Reservasi</span>
@@ -38,7 +38,7 @@
     </div>
 
     <!-- Peta Meja -->
-    <div id="section-tables" class="bg-[#FAFCF3] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
+    <div id="section-tables" class="bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
         <div class="px-6 py-4 border-b border-cafe-beige/50 flex items-center gap-2.5">
             <div class="w-9 h-9 rounded-2xl bg-cafe-gold/15 text-cafe-gold flex items-center justify-center"><i data-lucide="grid-3x3" class="w-4 h-4"></i></div>
             <div>
@@ -73,7 +73,7 @@
     </div>
 
     <!-- Daftar Reservasi -->
-    <div id="section-list" class="bg-[#FAFCF3] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
+    <div id="section-list" class="bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
         <div class="px-6 py-4 border-b border-[#E3DEA4]/50 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-2.5">
                 <div class="w-9 h-9 rounded-2xl bg-[#D4954D]/15 text-[#D4954D] flex items-center justify-center"><i data-lucide="calendar-days" class="w-4 h-4"></i></div>
@@ -89,7 +89,7 @@
                 @endphp
                 @foreach($statusTabs as $key => $label)
                     <a href="{{ route('kasir.reservations.index', ['date' => $date->format('Y-m-d'), 'status' => $key]) }}"
-                       class="px-3 py-1.5 rounded-full text-[10px] font-semibold transition-all {{ $status === $key ? 'bg-[#290024] text-[#FAFCF3]' : 'bg-[#E3DEA4]/50 text-[#775533] hover:bg-[#E3DEA4]' }}">
+                       class="px-3 py-1.5 rounded-full text-[10px] font-semibold transition-all {{ $status === $key ? 'bg-[#290024] text-[#F2F5E2]' : 'bg-[#E3DEA4]/50 text-[#775533] hover:bg-[#E3DEA4]' }}">
                         {{ $label }}{{ isset($counts[$key]) && $key !== 'semua' ? ' ('.$counts[$key].')' : '' }}
                     </a>
                 @endforeach
@@ -145,7 +145,7 @@
                                     <form action="{{ route('kasir.reservations.status', $reservation) }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="status" value="{{ $st }}">
-                                        <button class="px-2.5 py-1.5 rounded-full text-[10px] font-bold transition-all {{ $style === 'btn-primary' ? 'bg-[#290024] text-[#FAFCF3] hover:bg-[#775533]' : ($style === 'btn-danger' ? 'bg-[#B03A2E]/10 text-[#B03A2E] border border-[#B03A2E]/30 hover:bg-[#B03A2E]/20' : 'bg-[#E3DEA4] text-[#290024] hover:bg-[#D4954D]') }}">
+                                        <button class="px-2.5 py-1.5 rounded-full text-[10px] font-bold transition-all {{ $style === 'btn-primary' ? 'bg-[#290024] text-[#F2F5E2] hover:bg-[#775533]' : ($style === 'btn-danger' ? 'bg-[#775533]/10 text-[#775533] border border-[#775533]/30 hover:bg-[#775533]/20' : 'bg-[#E3DEA4] text-[#290024] hover:bg-[#D4954D]') }}">
                                             {{ $label }}
                                         </button>
                                     </form>
@@ -153,7 +153,7 @@
 
                                 <form action="{{ route('kasir.reservations.destroy', $reservation) }}" method="POST" onsubmit="return confirm('Hapus reservasi {{ $reservation->code }}?')">
                                     @csrf @method('DELETE')
-                                    <button class="px-2.5 py-1.5 rounded-full text-[10px] font-bold text-[#775533] hover:text-[#B03A2E] border border-[#E3DEA4] hover:border-[#B03A2E]/40 transition-colors">
+                                    <button class="px-2.5 py-1.5 rounded-full text-[10px] font-bold text-[#775533] hover:text-[#775533] border border-[#E3DEA4] hover:border-[#775533]/40 transition-colors">
                                         Hapus
                                     </button>
                                 </form>
@@ -169,13 +169,13 @@
 <!-- Modal / Bottom Sheet Create Reservasi (Layar 9 Referensi) -->
 <div id="create-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="fixed inset-0 bg-[#290024]/60 backdrop-blur-sm" onclick="closeCreateModal()"></div>
-    <div class="relative bg-[#FAFCF3] rounded-t-[2rem] sm:rounded-3xl shadow-soft-lg w-full max-w-lg border-t sm:border border-[#E3DEA4] z-10 max-h-[92vh] overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]">
+    <div class="relative bg-[#F2F5E2] rounded-t-[2rem] sm:rounded-3xl shadow-soft-lg w-full max-w-lg border-t sm:border border-[#E3DEA4] z-10 max-h-[92vh] overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]">
         <!-- Handle for mobile -->
         <div class="sm:hidden w-full pt-3 pb-1 flex justify-center cursor-pointer" onclick="closeCreateModal()">
             <div class="w-12 h-1 bg-[#775533]/30 rounded-full"></div>
         </div>
 
-        <div class="px-6 py-4 border-b border-[#E3DEA4]/60 flex items-center justify-between sticky top-0 bg-[#FAFCF3] z-10">
+        <div class="px-6 py-4 border-b border-[#E3DEA4]/60 flex items-center justify-between sticky top-0 bg-[#F2F5E2] z-10">
             <div>
                 <h3 class="font-serif font-bold text-base text-[#290024]">Reservasi Meja Baru</h3>
                 <p class="text-[10px] text-[#775533]">Isi formulir reservasi tamu</p>
@@ -188,23 +188,23 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div class="sm:col-span-2">
                     <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Nama Tamu / Pelanggan *</label>
-                    <input type="text" name="customer_name" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none" placeholder="Nama lengkap">
+                    <input type="text" name="customer_name" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none" placeholder="Nama lengkap">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Nomor WhatsApp / HP</label>
-                    <input type="text" name="phone" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none" placeholder="08xxxx">
+                    <input type="text" name="phone" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none" placeholder="08xxxx">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Jumlah Orang *</label>
-                    <input type="number" name="party_size" value="2" min="1" max="50" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-[#290024] px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
+                    <input type="number" name="party_size" value="2" min="1" max="50" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Tanggal *</label>
-                    <input type="date" name="reservation_date" value="{{ $date->format('Y-m-d') }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-[#290024] px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
+                    <input type="date" name="reservation_date" value="{{ $date->format('Y-m-d') }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Jam Datang *</label>
-                    <input type="time" name="reservation_time" value="19:00" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-[#290024] px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
+                    <input type="time" name="reservation_time" value="19:00" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
                 </div>
                 <div class="sm:col-span-2">
                     <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Pilih Meja</label>
@@ -217,12 +217,12 @@
                 </div>
                 <div class="sm:col-span-2">
                     <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Catatan / Permintaan Khusus</label>
-                    <textarea name="notes" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none resize-none" placeholder="Misal: Dekat colokan, smoking area..."></textarea>
+                    <textarea name="notes" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] placeholder:text-[#775533]/50 px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none resize-none" placeholder="Misal: Dekat colokan, smoking area..."></textarea>
                 </div>
             </div>
 
             <div class="pt-2">
-                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-full bg-[#290024] hover:bg-[#775533] text-[#FAFCF3] text-xs font-bold shadow-md transition-all active:scale-[0.98]">
+                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-full bg-[#290024] hover:bg-[#775533] text-[#F2F5E2] text-xs font-bold shadow-md transition-all active:scale-[0.98]">
                     <i data-lucide="calendar-plus" class="w-4 h-4 text-[#D4954D]"></i>
                     Simpan Reservasi
                 </button>
@@ -244,12 +244,12 @@ function switchReservationView(view) {
     if (view === 'tables') {
         secTables.classList.remove('hidden');
         secList.classList.add('hidden');
-        btnTables.className = 'flex-1 py-2 rounded-full text-xs font-bold transition-all bg-[#290024] text-[#FAFCF3] shadow-sm';
+        btnTables.className = 'flex-1 py-2 rounded-full text-xs font-bold transition-all bg-[#290024] text-[#F2F5E2] shadow-sm';
         btnList.className = 'flex-1 py-2 rounded-full text-xs font-bold transition-all text-[#775533] hover:text-[#290024]';
     } else {
         secTables.classList.add('hidden');
         secList.classList.remove('hidden');
-        btnList.className = 'flex-1 py-2 rounded-full text-xs font-bold transition-all bg-[#290024] text-[#FAFCF3] shadow-sm';
+        btnList.className = 'flex-1 py-2 rounded-full text-xs font-bold transition-all bg-[#290024] text-[#F2F5E2] shadow-sm';
         btnTables.className = 'flex-1 py-2 rounded-full text-xs font-bold transition-all text-[#775533] hover:text-[#290024]';
     }
 }

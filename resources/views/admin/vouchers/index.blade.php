@@ -6,14 +6,13 @@
 @section('content')
 <div class="space-y-4 lg:space-y-6">
     <!-- Breadcrumb (Desktop only) -->
-    <nav class="hidden lg:flex items-center gap-1.5 text-xs text-cafe-muted mb-3">
-        <a href="{{ route('admin.vouchers.index') }}" class="hover:text-cafe-dark flex items-center gap-1">
-            <i data-lucide="home" class="w-3.5 h-3.5"></i>
-            <span>Admin</span>
-        </a>
-        <i data-lucide="chevron-right" class="w-3 h-3 text-cafe-muted/60"></i>
-        <span class="font-semibold text-cafe-dark">Promo &amp; Diskon</span>
-    </nav>
+    <x-breadcrumb
+        :items="[
+            ['label' => 'Admin', 'url' => route('admin.vouchers.index'), 'icon' => 'home'],
+            ['label' => 'Promo & Diskon'],
+        ]"
+        class="mb-3"
+    />
 
     <!-- Page Header & Action (Desktop only) -->
     <div class="hidden lg:flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -44,11 +43,11 @@
                         <!-- Status Badge Otomatis -->
                         <div class="absolute top-3 left-3">
                             @if($promo->status_label === 'berjalan')
-                                <span class="px-3 py-1 rounded-full bg-[#4F7A4A] text-white text-[10px] font-bold shadow-sm">Berjalan</span>
+                                <span class="px-3 py-1 rounded-full bg-[#775533] text-beige text-[10px] font-bold shadow-sm">Berjalan</span>
                             @elseif($promo->status_label === 'terjadwal')
-                                <span class="px-3 py-1 rounded-full bg-[#C98A2B] text-white text-[10px] font-bold shadow-sm">Terjadwal</span>
+                                <span class="px-3 py-1 rounded-full bg-[#D4954D] text-beige text-[10px] font-bold shadow-sm">Terjadwal</span>
                             @else
-                                <span class="px-3 py-1 rounded-full bg-[#775533] text-white text-[10px] font-bold shadow-sm">Berakhir</span>
+                                <span class="px-3 py-1 rounded-full bg-[#775533] text-beige text-[10px] font-bold shadow-sm">Berakhir</span>
                             @endif
                         </div>
 
@@ -66,7 +65,7 @@
                         </div>
 
                         <!-- Periode Tanggal -->
-                        <div class="absolute bottom-3 left-3 right-3 text-white text-xs flex items-center gap-1.5 drop-shadow">
+                        <div class="absolute bottom-3 left-3 right-3 text-beige text-xs flex items-center gap-1.5 drop-shadow">
                             <i data-lucide="calendar" class="w-3.5 h-3.5 text-cafe-gold"></i>
                             <span>{{ $promo->start_date->format('d M') }} - {{ $promo->end_date->format('d M Y') }}</span>
                         </div>
@@ -93,7 +92,7 @@
                         @csrf
                         <button type="submit" class="flex items-center gap-2 cursor-pointer select-none">
                             <div class="w-8 h-4.5 rounded-full p-0.5 transition-colors {{ $promo->is_active ? 'bg-cafe-success' : 'bg-cafe-muted/40' }}">
-                                <div class="w-3.5 h-3.5 rounded-full bg-white transition-transform {{ $promo->is_active ? 'translate-x-3.5' : 'translate-x-0' }}"></div>
+                                <div class="w-3.5 h-3.5 rounded-full bg-beige transition-transform {{ $promo->is_active ? 'translate-x-3.5' : 'translate-x-0' }}"></div>
                             </div>
                             <span class="text-[11px] font-medium text-cafe-text">{{ $promo->is_active ? 'Aktif' : 'Nonaktif' }}</span>
                         </button>

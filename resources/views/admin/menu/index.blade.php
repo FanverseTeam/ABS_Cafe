@@ -6,24 +6,23 @@
 @section('content')
 <div class="space-y-6">
     <!-- Breadcrumb -->
-    <nav class="flex items-center gap-1.5 text-xs text-cafe-muted mb-3">
-        <a href="{{ route('admin.dashboard') }}" class="hover:text-cafe-dark flex items-center gap-1">
-            <i data-lucide="home" class="w-3.5 h-3.5"></i>
-            <span>Admin</span>
-        </a>
-        <i data-lucide="chevron-right" class="w-3 h-3 text-cafe-muted/60"></i>
-        <span class="font-semibold text-cafe-dark">Menu &amp; Produk</span>
-    </nav>
+    <x-breadcrumb
+        :items="[
+            ['label' => 'Admin', 'url' => route('admin.dashboard'), 'icon' => 'home'],
+            ['label' => 'Menu & Produk'],
+        ]"
+        class="mb-3"
+    />
 
     <!-- Sub-Navigation Pills (Menu | Kategori | Stok) -->
     <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-        <a href="{{ route('admin.menu.index') }}" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-[#290024] text-[#FAFCF3] shadow-sm">
+        <a href="{{ route('admin.menu.index') }}" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-[#290024] text-[#F2F5E2] shadow-sm">
             Katalog Menu
         </a>
-        <a href="{{ route('admin.category.index') }}" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-[#FAFCF3] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]">
+        <a href="{{ route('admin.category.index') }}" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-[#F2F5E2] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]">
             Kategori
         </a>
-        <a href="{{ route('admin.stock.index') }}" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-[#FAFCF3] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]">
+        <a href="{{ route('admin.stock.index') }}" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-[#F2F5E2] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]">
             Stok &amp; Opname
         </a>
     </div>
@@ -55,7 +54,7 @@
             <input type="hidden" name="category_id" value="{{ request('category_id') }}">
             <input type="hidden" name="sort" value="{{ request('sort') }}">
             <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu atau deskripsi..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu atau deskripsi..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
         </form>
 
         <!-- Category Tabs -->
@@ -122,7 +121,7 @@
 
                             <!-- Stock Pill -->
                             <div class="absolute bottom-3 right-3">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-md shadow-xs {{ $menu->stock <= 0 ? 'bg-cafe-danger text-white' : ($menu->stock <= $menu->min_stock ? 'bg-cafe-warning text-white' : 'bg-black/60 text-white') }}">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-md shadow-xs {{ $menu->stock <= 0 ? 'bg-cafe-danger text-beige' : ($menu->stock <= $menu->min_stock ? 'bg-cafe-warning text-beige' : 'bg-midnight/60 text-beige') }}">
                                     Stok: {{ $menu->stock }} {{ $menu->unit }}
                                 </span>
                             </div>
@@ -154,7 +153,7 @@
                             @csrf
                             <button type="submit" class="flex items-center gap-2 cursor-pointer select-none">
                                 <div class="w-8 h-4.5 rounded-full p-0.5 transition-colors {{ $menu->is_available ? 'bg-cafe-success' : 'bg-cafe-muted/40' }}">
-                                    <div class="w-3.5 h-3.5 rounded-full bg-white transition-transform {{ $menu->is_available ? 'translate-x-3.5' : 'translate-x-0' }}"></div>
+                                    <div class="w-3.5 h-3.5 rounded-full bg-beige transition-transform {{ $menu->is_available ? 'translate-x-3.5' : 'translate-x-0' }}"></div>
                                 </div>
                                 <span class="text-[11px] font-medium text-cafe-text">{{ $menu->is_available ? 'Tersedia' : 'Habis' }}</span>
                             </button>
@@ -216,7 +215,7 @@
                     </thead>
                     <tbody class="divide-y divide-cafe-beige/30">
                         @foreach($menus as $idx => $menu)
-                            <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#FAFCF3]/40' : '' }}">
+                            <tr class="hover:bg-cafe-cream/80 transition-colors {{ $idx % 2 === 1 ? 'bg-[#F2F5E2]/40' : '' }}">
                                 <td class="py-3 pl-6">
                                     <div class="flex items-center gap-3">
                                         <img src="{{ $menu->image }}" alt="{{ $menu->name }}" class="w-11 h-11 rounded-xl object-cover bg-cafe-beige shrink-0 shadow-xs">
@@ -308,12 +307,12 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Nama Menu / Produk *</label>
-                    <input type="text" name="name" id="menu-input-name" required placeholder="mis. Caramel Macchiato" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="name" id="menu-input-name" required placeholder="mis. Caramel Macchiato" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
 
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Kategori *</label>
-                    <select name="category_id" id="menu-input-category" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none cursor-pointer">
+                    <select name="category_id" id="menu-input-category" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none cursor-pointer">
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                         @endforeach
@@ -324,23 +323,23 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Harga Jual (Rp) *</label>
-                    <input type="number" name="price" id="menu-input-price" required min="0" step="500" placeholder="20000" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="number" name="price" id="menu-input-price" required min="0" step="500" placeholder="20000" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
 
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Satuan Produk</label>
-                    <input type="text" name="unit" id="menu-input-unit" value="porsi" placeholder="porsi, pcs, cup, pack" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="unit" id="menu-input-unit" value="porsi" placeholder="porsi, pcs, cup, pack" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Deskripsi Menu</label>
-                <textarea name="description" id="menu-input-desc" rows="2" placeholder="Deskripsikan cita rasa, bahan baku, atau porsi menu..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
+                <textarea name="description" id="menu-input-desc" rows="2" placeholder="Deskripsikan cita rasa, bahan baku, atau porsi menu..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">URL Foto Menu</label>
-                <input type="url" name="image" id="menu-input-image" placeholder="https://images.unsplash.com/..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <input type="url" name="image" id="menu-input-image" placeholder="https://images.unsplash.com/..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
             </div>
 
             @include('admin.catalog.partials.variant-form')
@@ -348,12 +347,12 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Stok Awal</label>
-                    <input type="number" name="stock" id="menu-input-stock" value="30" min="0" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="number" name="stock" id="menu-input-stock" value="30" min="0" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
 
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Batas Minimum Peringatan</label>
-                    <input type="number" name="min_stock" id="menu-input-min-stock" value="10" min="1" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="number" name="min_stock" id="menu-input-min-stock" value="10" min="1" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
@@ -400,7 +399,7 @@
             @method('DELETE')
             <div class="flex items-center justify-end gap-3 pt-3 border-t border-cafe-beige/60">
                 <button type="button" onclick="closeDeleteMenuModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-cafe-dark hover:bg-cafe-beige/60">Batal</button>
-                <button type="submit" class="px-5 py-2 rounded-full bg-cafe-danger hover:bg-cafe-danger/90 text-white font-semibold text-xs shadow-sm">Hapus Permanen</button>
+                <button type="submit" class="px-5 py-2 rounded-full bg-cafe-danger hover:bg-cafe-danger/90 text-beige font-semibold text-xs shadow-sm">Hapus Permanen</button>
             </div>
         </form>
     </div>

@@ -52,11 +52,11 @@
 
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                <input type="text" name="payment_search" value="{{ request('payment_search') }}" placeholder="Cari nama, kode, atau deskripsi metode..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                <input type="text" name="payment_search" value="{{ request('payment_search') }}" placeholder="Cari nama, kode, atau deskripsi metode..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
             </div>
 
             <div>
-                <select name="payment_status" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="payment_status" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Status</option>
                     <option value="aktif" {{ request('payment_status') === 'aktif' ? 'selected' : '' }}>Aktif</option>
                     <option value="nonaktif" {{ request('payment_status') === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
@@ -202,18 +202,18 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Nama Metode *</label>
-                    <input type="text" name="name" id="payment-input-name" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="name" id="payment-input-name" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Kode Unik *</label>
-                    <input type="text" name="code" id="payment-input-code" required placeholder="mis. qris" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="text" name="code" id="payment-input-code" required placeholder="mis. qris" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Tipe *</label>
-                    <select name="type" id="payment-input-type" required class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none cursor-pointer">
+                    <select name="type" id="payment-input-type" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none cursor-pointer">
                         <option value="cash">Tunai</option>
                         <option value="debit">Kartu Debit / Kredit</option>
                         <option value="e_wallet">E-Wallet</option>
@@ -224,18 +224,18 @@
                 </div>
                 <div class="space-y-1">
                     <label class="font-semibold text-cafe-dark">Urutan Tampil</label>
-                    <input type="number" name="sort_order" id="payment-input-sort" min="0" value="0" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    <input type="number" name="sort_order" id="payment-input-sort" min="0" value="0" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 </div>
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Deskripsi</label>
-                <textarea name="description" id="payment-input-description" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
+                <textarea name="description" id="payment-input-description" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Instruksi untuk Kasir</label>
-                <textarea name="instructions" id="payment-input-instructions" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
+                <textarea name="instructions" id="payment-input-instructions" rows="2" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
             </div>
 
             <label class="flex items-center gap-2 cursor-pointer select-none pt-1">

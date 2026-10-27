@@ -22,7 +22,7 @@
     $menuJson  = Illuminate\Support\Js::from($menu->load('variants'));
 @endphp
 
-<div {{ $attributes->merge(['class' => 'flex items-center gap-3 p-3 bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4]/60 shadow-sm transition-all hover:border-[#290024]/20 min-h-[88px]']) }}>
+<div {{ $attributes->merge(['class' => 'flex items-center gap-3 p-3 bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/60 shadow-sm transition-all hover:border-[#290024]/20 min-h-[88px]']) }}>
     {{-- Thumbnail with Best Seller ribbon in the corner --}}
     <button
         type="button"
@@ -65,7 +65,7 @@
 
     {{-- Right: status badge on top + toggle on bottom (touch target >= 44px) --}}
     <div class="flex flex-col items-end justify-center gap-1.5 shrink-0" onclick="event.stopPropagation()">
-        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full leading-tight {{ $isAvail ? 'bg-[#4F7A4A]/10 text-[#4F7A4A]' : 'bg-[#B03A2E]/10 text-[#B03A2E]' }}">
+        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full leading-tight {{ $isAvail ? 'bg-[#775533]/10 text-[#775533]' : 'bg-[#775533]/10 text-[#775533]' }}">
             {{ $isAvail ? 'Tersedia' : 'Habis' }}
         </span>
 
@@ -77,8 +77,8 @@
                 title="{{ $isAvail ? 'Tandai Habis' : 'Tandai Tersedia' }}"
                 aria-label="{{ $isAvail ? 'Tandai Habis' : 'Tandai Tersedia' }} {{ $menu->name }}"
             >
-                <div class="w-9 h-5 rounded-full p-0.5 transition-colors {{ $isAvail ? 'bg-[#4F7A4A]' : 'bg-[#775533]/30' }}">
-                    <div class="w-4 h-4 rounded-full bg-white shadow-sm transition-transform {{ $isAvail ? 'translate-x-4' : 'translate-x-0' }}"></div>
+                <div class="w-9 h-5 rounded-full p-0.5 transition-colors {{ $isAvail ? 'bg-[#775533]' : 'bg-[#775533]/30' }}">
+                    <div class="w-4 h-4 rounded-full bg-beige shadow-sm transition-transform {{ $isAvail ? 'translate-x-4' : 'translate-x-0' }}"></div>
                 </div>
             </button>
         </form>
@@ -142,9 +142,9 @@
             <button
                 type="button"
                 onclick="closeBottomSheet('{{ $sheetId }}'); {{ $deleteCallback }}({{ $menu->id }}, '{{ addslashes($menu->name) }}');"
-                class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#B03A2E] hover:bg-[#B03A2E]/10 transition-colors text-left min-h-[48px]"
+                class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#775533] hover:bg-[#775533]/10 transition-colors text-left min-h-[48px]"
             >
-                <i data-lucide="trash-2" class="w-5 h-5 text-[#B03A2E] shrink-0"></i>
+                <i data-lucide="trash-2" class="w-5 h-5 text-[#775533] shrink-0"></i>
                 <span>Hapus Menu</span>
             </button>
         @endif

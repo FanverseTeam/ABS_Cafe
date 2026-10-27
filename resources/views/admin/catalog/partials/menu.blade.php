@@ -55,7 +55,7 @@
                     ] as $sortKey => $sortLabel)
                         <a
                             href="{{ route('admin.catalog.index', array_merge(request()->query(), ['sort' => $sortKey, 'page' => 1])) }}"
-                            class="flex items-center justify-between w-full py-2.5 px-4 rounded-2xl text-sm transition-colors {{ request('sort', 'terlaris') === $sortKey ? 'bg-[#290024] text-[#FAFCF3] font-semibold' : 'text-[#290024] hover:bg-[#E3DEA4]/50' }}"
+                            class="flex items-center justify-between w-full py-2.5 px-4 rounded-2xl text-sm transition-colors {{ request('sort', 'terlaris') === $sortKey ? 'bg-[#290024] text-[#F2F5E2] font-semibold' : 'text-[#290024] hover:bg-[#E3DEA4]/50' }}"
                             onclick="closeBottomSheet('catalog-filter-sheet')"
                         >
                             <span>{{ $sortLabel }}</span>
@@ -74,7 +74,7 @@
                     @foreach(['all' => 'Semua', 'available' => 'Tersedia', 'unavailable' => 'Habis'] as $statusKey => $statusLabel)
                         <a
                             href="{{ route('admin.catalog.index', array_merge(request()->query(), ['status' => $statusKey === 'all' ? null : $statusKey, 'page' => 1])) }}"
-                            class="flex items-center justify-between w-full py-2.5 px-4 rounded-2xl text-sm transition-colors {{ (request('status', 'all') === $statusKey || ($statusKey === 'all' && !request('status'))) ? 'bg-[#290024] text-[#FAFCF3] font-semibold' : 'text-[#290024] hover:bg-[#E3DEA4]/50' }}"
+                            class="flex items-center justify-between w-full py-2.5 px-4 rounded-2xl text-sm transition-colors {{ (request('status', 'all') === $statusKey || ($statusKey === 'all' && !request('status'))) ? 'bg-[#290024] text-[#F2F5E2] font-semibold' : 'text-[#290024] hover:bg-[#E3DEA4]/50' }}"
                             onclick="closeBottomSheet('catalog-filter-sheet')"
                         >
                             <span>{{ $statusLabel }}</span>
@@ -164,7 +164,7 @@
             {{-- Single card per menu --}}
             <div
                 data-menu-id="{{ $menu->id }}"
-                class="bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4]/60 shadow-sm overflow-hidden flex flex-col transition-all hover:border-[#290024]/20"
+                class="bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/60 shadow-sm overflow-hidden flex flex-col transition-all hover:border-[#290024]/20"
             >
                 {{-- Square photo area --}}
                 <div class="relative w-full aspect-square bg-[#E3DEA4]/40 overflow-hidden shrink-0">
@@ -183,7 +183,7 @@
                     @endif
                     {{-- Habis badge: top-right, only when unavailable --}}
                     @if(!$isAvail)
-                        <span class="absolute top-1.5 right-1.5 bg-[#B03A2E] text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow-xs leading-none">
+                        <span class="absolute top-1.5 right-1.5 bg-[#775533] text-beige text-[8px] font-bold px-1.5 py-0.5 rounded shadow-xs leading-none">
                             Habis
                         </span>
                     @endif
@@ -192,7 +192,7 @@
                     <button
                         type="button"
                         onclick="openBottomSheet('{{ $sheetId }}')"
-                        class="absolute bottom-1.5 right-1.5 w-6 h-6 rounded-full bg-[#290024]/70 hover:bg-[#290024] text-[#FAFCF3] flex items-center justify-center backdrop-blur-xs transition-colors shadow-xs"
+                        class="absolute bottom-1.5 right-1.5 w-6 h-6 rounded-full bg-[#290024]/70 hover:bg-[#290024] text-[#F2F5E2] flex items-center justify-center backdrop-blur-xs transition-colors shadow-xs"
                         aria-label="Aksi untuk {{ $menu->name }}"
                     >
                         <i data-lucide="more-horizontal" class="w-3.5 h-3.5"></i>
@@ -227,7 +227,7 @@
                     class="px-2.5 py-1.5 border-t border-[#E3DEA4]/40 flex items-center justify-between"
                     onclick="event.stopPropagation()"
                 >
-                    <span class="text-[9px] sm:text-[10px] font-semibold {{ $isAvail ? 'text-[#4F7A4A]' : 'text-[#B03A2E]' }}">
+                    <span class="text-[9px] sm:text-[10px] font-semibold {{ $isAvail ? 'text-[#775533]' : 'text-[#775533]' }}">
                         {{ $isAvail ? 'Tersedia' : 'Habis' }}
                     </span>
                     <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
@@ -238,8 +238,8 @@
                             title="{{ $isAvail ? 'Tandai Habis' : 'Tandai Tersedia' }}"
                             aria-label="{{ $isAvail ? 'Tandai Habis' : 'Tandai Tersedia' }} {{ $menu->name }}"
                         >
-                            <div class="w-9 h-5 rounded-full p-0.5 transition-colors {{ $isAvail ? 'bg-[#4F7A4A]' : 'bg-[#775533]/30' }}">
-                                <div class="w-4 h-4 rounded-full bg-white shadow-sm transition-transform {{ $isAvail ? 'translate-x-4' : 'translate-x-0' }}"></div>
+                            <div class="w-9 h-5 rounded-full p-0.5 transition-colors {{ $isAvail ? 'bg-[#775533]' : 'bg-[#775533]/30' }}">
+                                <div class="w-4 h-4 rounded-full bg-beige shadow-sm transition-transform {{ $isAvail ? 'translate-x-4' : 'translate-x-0' }}"></div>
                             </div>
                         </button>
                     </form>
@@ -292,9 +292,9 @@
                     <button
                         type="button"
                         onclick="closeBottomSheet('{{ $sheetId }}'); openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}');"
-                        class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#B03A2E] hover:bg-[#B03A2E]/10 transition-colors text-left min-h-[48px]"
+                        class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#775533] hover:bg-[#775533]/10 transition-colors text-left min-h-[48px]"
                     >
-                        <i data-lucide="trash-2" class="w-5 h-5 text-[#B03A2E] shrink-0"></i>
+                        <i data-lucide="trash-2" class="w-5 h-5 text-[#775533] shrink-0"></i>
                         <span>Hapus Menu</span>
                     </button>
                 </div>
@@ -365,7 +365,7 @@
             <input type="hidden" name="category_id" value="{{ request('category_id') }}">
             <input type="hidden" name="sort" value="{{ request('sort') }}">
             <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu atau deskripsi..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu atau deskripsi..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
         </form>
 
         {{-- Category Tabs --}}
@@ -428,7 +428,7 @@
                             @endif
 
                             <div class="absolute bottom-3 right-3">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-md shadow-xs {{ $menu->stock <= 0 ? 'bg-cafe-danger text-white' : ($menu->stock <= $menu->min_stock ? 'bg-cafe-warning text-white' : 'bg-black/60 text-white') }}">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-md shadow-xs {{ $menu->stock <= 0 ? 'bg-cafe-danger text-beige' : ($menu->stock <= $menu->min_stock ? 'bg-cafe-warning text-beige' : 'bg-midnight/60 text-beige') }}">
                                     Stok: {{ $menu->stock }} {{ $menu->unit }}
                                 </span>
                             </div>
@@ -457,7 +457,7 @@
                             @csrf
                             <button type="submit" class="flex items-center gap-2 cursor-pointer select-none">
                                 <div class="w-8 h-4.5 rounded-full p-0.5 transition-colors {{ $menu->is_available ? 'bg-cafe-success' : 'bg-cafe-muted/40' }}">
-                                    <div class="w-3.5 h-3.5 rounded-full bg-white transition-transform {{ $menu->is_available ? 'translate-x-3.5' : 'translate-x-0' }}"></div>
+                                    <div class="w-3.5 h-3.5 rounded-full bg-beige transition-transform {{ $menu->is_available ? 'translate-x-3.5' : 'translate-x-0' }}"></div>
                                 </div>
                                 <span class="text-[11px] font-medium text-cafe-text">{{ $menu->is_available ? 'Tersedia' : 'Habis' }}</span>
                             </button>
@@ -673,7 +673,7 @@
             @method('DELETE')
             <div class="flex items-center justify-end gap-3 pt-3 border-t border-cafe-beige/60">
                 <button type="button" onclick="closeDeleteMenuModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-cafe-dark hover:bg-cafe-beige/60">Batal</button>
-                <button type="submit" class="px-5 py-2 rounded-full bg-cafe-danger hover:bg-cafe-danger/90 text-white font-semibold text-xs shadow-sm">Hapus Permanen</button>
+                <button type="submit" class="px-5 py-2 rounded-full bg-cafe-danger hover:bg-cafe-danger/90 text-beige font-semibold text-xs shadow-sm">Hapus Permanen</button>
             </div>
         </form>
     </div>

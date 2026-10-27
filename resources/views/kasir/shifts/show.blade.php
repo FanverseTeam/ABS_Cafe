@@ -11,7 +11,7 @@
         <div class="relative z-10 flex flex-col gap-6">
             <div class="flex flex-col sm:flex-row items-start justify-between gap-4">
                 <div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-[#D4954D] text-xs font-medium border border-[#D4954D]/20">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-beige/10 text-[#D4954D] text-xs font-medium border border-[#D4954D]/20">
                         <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
                         Shift #{{ $shift->id }} &bull; {{ $shift->status === 'tutup' ? 'Selesai' : 'Berlangsung' }}
                     </div>
@@ -20,32 +20,32 @@
                         {{ $shift->opened_at->format('H:i') }} sampai {{ $shift->closed_at?->format('H:i') }} &bull; Kasir {{ $shift->user->name ?? '-' }}
                     </p>
                 </div>
-                <a href="{{ route('kasir.shift.receipt', $shift) }}" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white/10 text-[#F2F5E2] text-xs font-semibold border border-white/20 hover:bg-white/20 transition-colors shrink-0">
+                <a href="{{ route('kasir.shift.receipt', $shift) }}" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-beige/10 text-[#F2F5E2] text-xs font-semibold border border-beige/20 hover:bg-beige/20 transition-colors shrink-0">
                     <i data-lucide="printer" class="w-4 h-4"></i>
                     Lihat / Cetak Rekap
                 </a>
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 md:landscape:grid-cols-5 lg:grid-cols-5 gap-3">
-                <div class="p-4 rounded-2xl bg-white/10 border border-white/10 text-center">
+                <div class="p-4 rounded-2xl bg-beige/10 border border-beige/10 text-center">
                     <p class="text-[10px] text-[#F2F5E2]/70 uppercase tracking-wide">Transaksi</p>
                     <p class="font-serif text-xl font-bold text-[#D4954D] mt-1">{{ $summary['orders_count'] }}</p>
                 </div>
-                <div class="p-4 rounded-2xl bg-white/10 border border-white/10 text-center">
+                <div class="p-4 rounded-2xl bg-beige/10 border border-beige/10 text-center">
                     <p class="text-[10px] text-[#F2F5E2]/70 uppercase tracking-wide">Penjualan</p>
                     <p class="font-serif text-xl font-bold text-[#D4954D] mt-1">Rp {{ number_format($summary['sales'], 0, ',', '.') }}</p>
                 </div>
-                <div class="p-4 rounded-2xl bg-white/10 border border-white/10 text-center">
+                <div class="p-4 rounded-2xl bg-beige/10 border border-beige/10 text-center">
                     <p class="text-[10px] text-[#F2F5E2]/70 uppercase tracking-wide">Kas Diharapkan</p>
                     <p class="font-serif text-xl font-bold text-[#D4954D] mt-1">Rp {{ number_format($shift->expected_cash, 0, ',', '.') }}</p>
                 </div>
-                <div class="p-4 rounded-2xl bg-white/10 border border-white/10 text-center">
+                <div class="p-4 rounded-2xl bg-beige/10 border border-beige/10 text-center">
                     <p class="text-[10px] text-[#F2F5E2]/70 uppercase tracking-wide">Kas Fisik</p>
                     <p class="font-serif text-xl font-bold text-[#D4954D] mt-1">Rp {{ number_format($shift->closing_cash, 0, ',', '.') }}</p>
                 </div>
-                <div class="p-4 rounded-2xl bg-white/10 border border-white/10 text-center">
+                <div class="p-4 rounded-2xl bg-beige/10 border border-beige/10 text-center">
                     <p class="text-[10px] text-[#F2F5E2]/70 uppercase tracking-wide">Selisih</p>
-                    <p class="font-serif text-xl font-bold mt-1 {{ $shift->cash_difference < 0 ? 'text-[#E58B80]' : 'text-[#A8C39B]' }}">
+                    <p class="font-serif text-xl font-bold mt-1 {{ $shift->cash_difference < 0 ? 'text-[#D4954D]' : 'text-[#E3DEA4]' }}">
                         {{ $shift->cash_difference > 0 ? '+' : '' }}{{ number_format($shift->cash_difference, 0, ',', '.') }}
                     </p>
                 </div>

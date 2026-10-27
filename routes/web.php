@@ -62,6 +62,7 @@ Route::middleware('noindex.staf')->group(function () {
 // Halaman Publik Customer
 Route::get('/', [PelangganController::class, 'index'])->name('pelanggan.beranda');
 Route::get('/menu', [PelangganController::class, 'menu'])->name('pelanggan.menu');
+Route::get('/keranjang', [PelangganController::class, 'keranjang'])->name('pelanggan.keranjang');
 Route::get('/reservasi', [PelangganController::class, 'reservasi'])->name('pelanggan.reservasi');
 
 // robots.txt dilayani via route agar dapat diuji dan di-override per environment

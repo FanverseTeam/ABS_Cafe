@@ -8,7 +8,7 @@
     'onAdd' => null,
 ])
 
-<div {{ $attributes->merge(['class' => 'bg-[#FAFCF3] rounded-2xl border border-[#E3DEA4]/70 p-3 shadow-sm flex flex-col justify-between transition-all hover:shadow-md ' . (!$isAvailable ? 'opacity-50 pointer-events-none' : '')]) }}>
+<div {{ $attributes->merge(['class' => 'bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/70 p-3 shadow-sm flex flex-col justify-between transition-all hover:shadow-md ' . (!$isAvailable ? 'opacity-50 pointer-events-none' : '')]) }}>
     <div>
         <!-- Image Box -->
         <div class="relative w-full aspect-square rounded-xl bg-[#F2F5E2] overflow-hidden mb-2.5 flex items-center justify-center">

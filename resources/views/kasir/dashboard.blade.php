@@ -7,22 +7,22 @@
 <div class="space-y-6">
     <!-- Banner Shift -->
     @if(! $shift)
-        <div class="w-full max-w-[900px] mx-auto lg:max-w-none bg-gradient-to-r from-[#290024] via-[#3D1236] to-[#775533] text-cafe-cream rounded-2xl lg:rounded-3xl p-5 md:p-6 lg:p-8 relative shadow-soft-lg">
+        <div class="w-full max-w-[900px] mx-auto lg:max-w-none bg-gradient-to-r from-[#290024] via-[#290024] to-[#775533] text-cafe-cream rounded-2xl lg:rounded-3xl p-5 md:p-6 lg:p-8 relative shadow-soft-lg">
             <!-- Background & line art decoration isolated with overflow-hidden -->
             <div class="absolute inset-0 rounded-2xl lg:rounded-3xl overflow-hidden pointer-events-none z-0" aria-hidden="true">
                 <div class="absolute inset-0 opacity-15 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=900&auto=format&fit=crop&q=80')"></div>
-                <div class="absolute inset-0 bg-gradient-to-r from-[#290024] via-[#3D1236]/90 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-[#290024] via-[#290024]/90 to-transparent"></div>
                 <div class="absolute -top-10 -right-10 w-44 h-44 rounded-full border border-cafe-gold/20 opacity-40"></div>
             </div>
 
             <div class="relative z-10 max-w-2xl">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-cafe-gold text-xs font-medium border border-cafe-gold/30 mb-2">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-beige/10 text-cafe-gold text-xs font-medium border border-cafe-gold/30 mb-2">
                     <i data-lucide="wallet" class="w-3.5 h-3.5"></i>
                     <span>Shift Belum Dibuka</span>
                 </div>
-                <h2 class="font-serif leading-[1.25] break-words text-[#FAFCF3]">
-                    <span class="block lg:inline text-xs sm:text-sm lg:text-3xl font-normal lg:font-bold text-cafe-cream/85 lg:text-[#FAFCF3] mb-0.5 lg:mb-0">Mulai hari kerja Anda, </span>
-                    <span class="block lg:inline text-[22px] sm:text-[24px] md:text-[28px] lg:text-3xl font-bold tracking-tight text-cafe-gold lg:text-[#FAFCF3]">
+                <h2 class="font-serif leading-[1.25] break-words text-[#F2F5E2]">
+                    <span class="block lg:inline text-xs sm:text-sm lg:text-3xl font-normal lg:font-bold text-cafe-cream/85 lg:text-[#F2F5E2] mb-0.5 lg:mb-0">Mulai hari kerja Anda, </span>
+                    <span class="block lg:inline text-[22px] sm:text-[24px] md:text-[28px] lg:text-3xl font-bold tracking-tight text-cafe-gold lg:text-[#F2F5E2]">
                         {{ Auth::user()->name }}
                     </span>
                 </h2>
@@ -30,7 +30,7 @@
                     Transaksi kasir hanya bisa diproses setelah shift dibuka. Siapkan kas awal, lalu mulai menerima pesanan & pembayaran.
                 </p>
                 <div class="mt-4 flex flex-wrap items-center gap-3">
-                    <a href="{{ route('kasir.shift.open') }}" class="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-full bg-cafe-gold text-cafe-dark hover:bg-[#c4853d] font-semibold text-xs sm:text-sm shadow-md transition-all">
+                    <a href="{{ route('kasir.shift.open') }}" class="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-full bg-cafe-gold text-cafe-dark hover:bg-[#D4954D] font-semibold text-xs sm:text-sm shadow-md transition-all">
                         <i data-lucide="play" class="w-4 h-4 shrink-0"></i>
                         <span>Buka Shift Sekarang</span>
                     </a>
@@ -40,20 +40,20 @@
     @endif
 
     <!-- Quick Action: Pesan Manual untuk Customer -->
-    <div class="bg-gradient-to-r from-[#290024] via-[#3D1236] to-[#775533] text-[#FAFCF3] rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-soft-lg flex flex-col sm:flex-row items-center justify-between gap-3 border border-[#D4954D]/30">
+    <div class="bg-gradient-to-r from-[#290024] via-[#290024] to-[#775533] text-[#F2F5E2] rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-soft-lg flex flex-col sm:flex-row items-center justify-between gap-3 border border-[#D4954D]/30">
         <div class="flex items-center gap-3 w-full sm:w-auto">
             <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#D4954D] text-[#290024] flex items-center justify-center shrink-0 shadow">
                 <i data-lucide="plus-circle" class="w-5 h-5 sm:w-6 sm:h-6"></i>
             </div>
             <div class="min-w-0">
                 <div class="flex items-center gap-2">
-                    <h3 class="font-serif font-bold text-sm sm:text-base text-[#FAFCF3] truncate">Pesan Manual untuk Customer</h3>
+                    <h3 class="font-serif font-bold text-sm sm:text-base text-[#F2F5E2] truncate">Pesan Manual untuk Customer</h3>
                     <span class="text-[9px] bg-[#D4954D] text-[#290024] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Kasir Mobile</span>
                 </div>
                 <p class="text-[11px] text-[#E3DEA4] truncate">Catat pesanan pelanggan langsung di kasir atau pesan antar meja (Dine In & Take Away)</p>
             </div>
         </div>
-        <a href="{{ route('kasir.pos.index') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#D4954D] hover:bg-[#c4853d] text-[#290024] text-xs font-bold shadow-md transition-all active:scale-95 shrink-0">
+        <a href="{{ route('kasir.pos.index') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#D4954D] hover:bg-[#D4954D] text-[#290024] text-xs font-bold shadow-md transition-all active:scale-95 shrink-0">
             <i data-lucide="plus" class="w-4 h-4"></i>
             <span>Buat Pesanan Sekarang</span>
         </a>
@@ -122,7 +122,7 @@
                     @forelse($newWebOrders as $order)
                         <div class="flex items-center justify-between gap-3 p-3 rounded-2xl bg-cafe-cream/70 border border-cafe-beige/50 mb-2.5 last:mb-0">
                             <div class="flex items-center gap-3 min-w-0">
-                                <div class="w-10 h-10 rounded-2xl bg-white border border-cafe-beige flex items-center justify-center text-cafe-gold shrink-0">
+                                <div class="w-10 h-10 rounded-2xl bg-beige border border-cafe-beige flex items-center justify-center text-cafe-gold shrink-0">
                                     <i data-lucide="shopping-bag" class="w-4 h-4"></i>
                                 </div>
                                 <div class="min-w-0">
@@ -135,7 +135,7 @@
                                 <p class="text-sm font-serif font-bold text-cafe-dark">Rp {{ number_format($order->total, 0, ',', '.') }}</p>
                                 <form action="{{ route('kasir.orders.accept', $order) }}" method="POST">
                                     @csrf
-                                    <button class="mt-1 px-3.5 py-1.5 rounded-full bg-cafe-success text-white text-[11px] font-semibold hover:bg-cafe-success/90 transition-colors">
+                                    <button class="mt-1 px-3.5 py-1.5 rounded-full bg-cafe-success text-beige text-[11px] font-semibold hover:bg-cafe-success/90 transition-colors">
                                         <i data-lucide="check" class="w-3 h-3 inline-block -mt-0.5"></i> Terima
                                     </button>
                                 </form>
@@ -170,7 +170,7 @@
                 <div class="p-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                     @forelse($occupiedTables as $table)
                         <div class="p-3 rounded-2xl border {{ $table->status === 'terpakai' ? 'bg-cafe-danger/10 border-cafe-danger/30' : 'bg-cafe-warning/10 border-cafe-warning/30' }}">
-                            <div class="h-10 rounded-xl {{ $table->status === 'terpakai' ? 'bg-cafe-danger text-white' : 'bg-cafe-warning text-white' }} flex items-center justify-center font-serif font-bold">
+                            <div class="h-10 rounded-xl {{ $table->status === 'terpakai' ? 'bg-cafe-danger text-beige' : 'bg-cafe-warning text-beige' }} flex items-center justify-center font-serif font-bold">
                                 {{ $table->number }}
                             </div>
                             <p class="text-[11px] font-semibold text-cafe-dark mt-2">{{ $table->statusBadge()['label'] }}</p>

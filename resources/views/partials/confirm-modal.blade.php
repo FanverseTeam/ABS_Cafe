@@ -23,7 +23,7 @@
                 Batal
             </button>
             <button type="button" id="cafe-confirm-accept" onclick="acceptCafeConfirm()"
-                    class="px-5 py-2 rounded-full bg-cafe-danger hover:bg-cafe-danger/90 text-white font-semibold text-xs shadow-sm inline-flex items-center gap-1.5 transition-colors">
+                    class="px-5 py-2 rounded-full bg-cafe-danger hover:bg-cafe-danger/90 text-beige font-semibold text-xs shadow-sm inline-flex items-center gap-1.5 transition-colors">
                 <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
                 <span>Ya, Keluar</span>
             </button>

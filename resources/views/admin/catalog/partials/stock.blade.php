@@ -95,11 +95,11 @@
 
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                <input type="text" name="stock_search" value="{{ request('stock_search') }}" placeholder="Cari nama menu/bahan..." class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+                <input type="text" name="stock_search" value="{{ request('stock_search') }}" placeholder="Cari nama menu/bahan..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
             </div>
 
             <div>
-                <select name="stock_category_id" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="stock_category_id" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Kategori</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}" {{ request('stock_category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
@@ -108,7 +108,7 @@
             </div>
 
             <div>
-                <select name="stock_status" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
+                <select name="stock_status" onchange="this.form.submit()" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text py-2.5 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
                     <option value="all">Semua Status Stok</option>
                     <option value="aman" {{ request('stock_status') === 'aman' ? 'selected' : '' }}>Aman</option>
                     <option value="menipis" {{ request('stock_status') === 'menipis' ? 'selected' : '' }}>Menipis</option>
@@ -149,11 +149,11 @@
 
                 <x-slot:badge>
                     @if($m->stock_status === 'aman')
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#4F7A4A]/15 text-[#4F7A4A] border border-[#4F7A4A]/30">Aman</span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#775533]/15 text-[#775533] border border-[#775533]/30">Aman</span>
                     @elseif($m->stock_status === 'menipis')
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#C98A2B]/15 text-[#C98A2B] border border-[#C98A2B]/30">Menipis</span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#D4954D]/15 text-[#D4954D] border border-[#D4954D]/30">Menipis</span>
                     @else
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#B03A2E]/15 text-[#B03A2E] border border-[#B03A2E]/30">Habis</span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#775533]/15 text-[#775533] border border-[#775533]/30">Habis</span>
                     @endif
                 </x-slot:badge>
 
@@ -198,11 +198,11 @@
                     <td class="hidden md:table-cell py-4 px-3 text-cafe-muted">{{ $m->unit }}</td>
                     <td class="hidden md:table-cell py-4 px-3">
                         @if($m->stock_status === 'aman')
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#4F7A4A]/15 text-[#4F7A4A] border border-[#4F7A4A]/30">Aman</span>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#775533]/15 text-[#775533] border border-[#775533]/30">Aman</span>
                         @elseif($m->stock_status === 'menipis')
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#C98A2B]/15 text-[#C98A2B] border border-[#C98A2B]/30">Menipis</span>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#D4954D]/15 text-[#D4954D] border border-[#D4954D]/30">Menipis</span>
                         @else
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#B03A2E]/15 text-[#B03A2E] border border-[#B03A2E]/30">Habis</span>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#775533]/15 text-[#775533] border border-[#775533]/30">Habis</span>
                         @endif
                     </td>
                     <td class="hidden md:table-cell py-4 px-3 text-cafe-muted">{{ $m->updated_at->format('d M, H:i') }}</td>
@@ -243,7 +243,7 @@
             @csrf
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Jenis Penyesuaian *</label>
-                <select name="type" id="adjust-type" required class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <select name="type" id="adjust-type" required class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                     <option value="masuk">Barang Masuk (Restock / Pembelian)</option>
                     <option value="keluar">Barang Keluar (Dipakai / Terjual)</option>
                     <option value="koreksi">Koreksi Fisik (Opname / Cacat)</option>
@@ -252,12 +252,12 @@
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Jumlah (<span id="adjust-unit-label">porsi</span>) *</label>
-                <input type="number" name="quantity" required min="1" placeholder="misal: 20" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <input type="number" name="quantity" required min="1" placeholder="misal: 20" class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
             </div>
 
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Catatan Alasan</label>
-                <textarea name="notes" rows="2" placeholder="Restock bahan supplier, barang cacat, dll..." class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
+                <textarea name="notes" rows="2" placeholder="Restock bahan supplier, barang cacat, dll..." class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none"></textarea>
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-3 border-t border-cafe-beige/60">
@@ -282,7 +282,7 @@
             @csrf
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Batas Minimum Peringatan</label>
-                <input type="number" name="min_stock" id="min-stock-input" required min="1" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <input type="number" name="min_stock" id="min-stock-input" required min="1" class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                 <p class="text-[10px] text-cafe-muted">Jika stok berada di bawah angka ini, sistem otomatis menampilkan peringatan.</p>
             </div>
 

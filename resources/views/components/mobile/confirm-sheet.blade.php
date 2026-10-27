@@ -13,11 +13,11 @@
          onclick="closeConfirmSheet('{{ $id }}')"></div>
 
     <!-- Sheet Panel -->
-    <div class="fixed inset-x-0 bottom-0 bg-[#FAFCF3] rounded-t-[2rem] border-t border-[#E3DEA4] p-6 z-10 transform translate-y-full transition-transform duration-300 ease-out shadow-2xl max-w-lg mx-auto pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+    <div class="fixed inset-x-0 bottom-0 bg-[#F2F5E2] rounded-t-[2rem] border-t border-[#E3DEA4] p-6 z-10 transform translate-y-full transition-transform duration-300 ease-out shadow-2xl max-w-lg mx-auto pb-[max(1.5rem,env(safe-area-inset-bottom))]">
         <div class="w-12 h-1 bg-[#775533]/30 rounded-full mx-auto mb-4"></div>
 
         <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl {{ $isDanger ? 'bg-[#B03A2E]/15 text-[#B03A2E]' : 'bg-[#D4954D]/15 text-[#D4954D]' }} flex items-center justify-center shrink-0">
+            <div class="w-12 h-12 rounded-2xl {{ $isDanger ? 'bg-custard/60 text-olive' : 'bg-apricot/20 text-midnight' }} flex items-center justify-center shrink-0">
                 <i data-lucide="{{ $isDanger ? 'alert-triangle' : 'help-circle' }}" class="w-6 h-6"></i>
             </div>
             <div class="min-w-0 flex-1">
@@ -34,7 +34,7 @@
             </button>
             <button type="button" 
                     id="{{ $id }}-confirm-btn"
-                    class="w-full py-3 px-4 rounded-full {{ $isDanger ? 'bg-[#B03A2E] text-white hover:bg-[#8e2e24]' : 'bg-[#290024] text-[#FAFCF3] hover:bg-[#775533]' }} text-xs font-semibold shadow-sm transition-colors">
+                    class="w-full py-3 px-4 rounded-full {{ $isDanger ? 'bg-olive text-beige hover:bg-midnight' : 'bg-[#290024] text-[#F2F5E2] hover:bg-[#775533]' }} text-xs font-semibold shadow-sm transition-colors">
                 {{ $confirmText }}
             </button>
         </div>

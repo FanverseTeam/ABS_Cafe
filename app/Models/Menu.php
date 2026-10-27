@@ -112,6 +112,52 @@ class Menu extends Model
         return $this->image ?: null;
     }
 
+    public function getGambarAttribute(): ?string
+    {
+        return $this->imageUrl();
+    }
+
+    public function isHabis(): bool
+    {
+        if (! $this->is_available) {
+            return true;
+        }
+
+        if ($this->relationLoaded('variants') ? $this->variants->isNotEmpty() : $this->variants()->exists()) {
+            $variants = $this->relationLoaded('variants') ? $this->variants : $this->variants()->get();
+            $availableVariants = $variants->where('is_available', true);
+            if ($availableVariants->isEmpty()) {
+                return true;
+            }
+        }
+
+        return $this->stock_status === 'habis';
+    }
+
+    public function getIsHabisAttribute(): bool
+    {
+        return $this->isHabis();
+    }
+
+    public function customerPriceLabel(): string
+    {
+        $variants = $this->relationLoaded('variants') ? $this->variants : $this->variants()->get();
+        $availableVariants = $variants->where('is_available', true);
+        $activeVariants = $availableVariants->isNotEmpty() ? $availableVariants : $variants;
+
+        if ($activeVariants->isEmpty()) {
+            return 'Rp '.number_format((float) $this->price, 0, ',', '.');
+        }
+
+        $minPrice = (float) $activeVariants->min('price');
+
+        if ($variants->count() > 1) {
+            return 'Mulai Rp '.number_format($minPrice, 0, ',', '.');
+        }
+
+        return 'Rp '.number_format($minPrice, 0, ',', '.');
+    }
+
     public function hasMultipleVariants(): bool
     {
         return $this->variants()->count() > 1;

@@ -6,24 +6,24 @@
     <title>Cetak Laporan {{ ucfirst($tab) }} - {{ $cafe['name'] }}</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Helvetica', 'Arial', sans-serif; color: #222; font-size: 12px; margin: 0; padding: 24px; }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; color: #290024; font-size: 12px; margin: 0; padding: 24px; }
         .header { text-align: center; border-bottom: 2px solid #290024; padding-bottom: 12px; margin-bottom: 16px; }
         .header h1 { margin: 0; font-size: 20px; color: #290024; }
-        .header p { margin: 2px 0; color: #555; font-size: 11px; }
-        .meta { display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 11px; color: #333; }
+        .header p { margin: 2px 0; color: #775533; font-size: 11px; }
+        .meta { display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 11px; color: #290024; }
         .cards { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
-        .card { flex: 1 1 150px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; }
-        .card .label { font-size: 10px; text-transform: uppercase; color: #777; letter-spacing: .5px; }
+        .card { flex: 1 1 150px; border: 1px solid #E3DEA4; border-radius: 8px; padding: 10px; }
+        .card .label { font-size: 10px; text-transform: uppercase; color: #775533; letter-spacing: .5px; }
         .card .value { font-size: 15px; font-weight: bold; color: #290024; margin-top: 4px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
-        th, td { border: 1px solid #e0e0e0; padding: 6px 8px; text-align: left; }
-        th { background: #f3f3ef; font-size: 11px; text-transform: uppercase; color: #444; }
+        th, td { border: 1px solid #E3DEA4; padding: 6px 8px; text-align: left; }
+        th { background: #F2F5E2; font-size: 11px; text-transform: uppercase; color: #775533; }
         td.num, th.num { text-align: right; }
         h2 { font-size: 14px; color: #290024; margin: 18px 0 8px; border-left: 4px solid #D4954D; padding-left: 8px; }
         .footer { margin-top: 30px; text-align: center; font-size: 10px; color: #888; border-top: 1px solid #ddd; padding-top: 10px; }
         @media print { .no-print { display: none; } body { padding: 0; } }
         .no-print { text-align: right; margin-bottom: 12px; }
-        .no-print button { background: #290024; color: #fff; border: 0; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; }
+        .no-print button { background: #290024; color: #F2F5E2; border: 0; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body onload="window.print()">

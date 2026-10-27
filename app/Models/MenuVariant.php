@@ -41,4 +41,14 @@ class MenuVariant extends Model
     {
         return $this->hasMany(Recipe::class, 'menu_variant_id');
     }
+
+    public function isHabis(): bool
+    {
+        return ! $this->is_available;
+    }
+
+    public function getIsHabisAttribute(): bool
+    {
+        return $this->isHabis();
+    }
 }

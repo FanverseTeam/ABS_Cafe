@@ -10,7 +10,7 @@
     $totalNotif = $lowStockItems->count() + $endingPromos->count();
 @endphp
 
-<header class="sticky top-0 z-30 min-h-[4rem] sm:min-h-[5rem] bg-[#FAFCF3]/95 backdrop-blur-md border-b border-cafe-beige/60 px-4 sm:px-8 shadow-sm transition-all @if(View::hasSection('has_form_header') || request()->routeIs('*.create', '*.edit')) hidden lg:block @endif" style="padding-top: env(safe-area-inset-top, 0px);">
+<header class="sticky top-0 z-30 min-h-[4rem] sm:min-h-[5rem] bg-[#F2F5E2]/95 backdrop-blur-md border-b border-cafe-beige/60 px-4 sm:px-8 shadow-sm transition-all @if(View::hasSection('has_form_header') || request()->routeIs('*.create', '*.edit')) hidden lg:block @endif" style="padding-top: env(safe-area-inset-top, 0px);">
     <div class="h-16 sm:h-20 flex items-center justify-between gap-3 sm:gap-4 w-full">
         <!-- Left: Mobile Logo & Title -->
         <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
@@ -35,7 +35,7 @@
     <div class="flex-1 max-w-md hidden lg:block">
         <form action="{{ route('owner.reports.index') }}" method="GET" class="relative">
             <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-            <input type="text" name="cari" placeholder="Cari di laporan... (tekan Enter)" class="w-full bg-[#E3DEA4]/50 focus:bg-white text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-10 pr-4 py-2.5 rounded-full border border-cafe-beige/80 focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">
+            <input type="text" name="cari" placeholder="Cari di laporan... (tekan Enter)" class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-10 pr-4 py-2.5 rounded-full border border-cafe-beige/80 focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all">
         </form>
     </div>
 
@@ -46,7 +46,7 @@
             <button onclick="toggleNotifDropdown()" class="relative p-2.5 rounded-full bg-cafe-beige/50 hover:bg-cafe-beige text-cafe-dark transition-colors" title="Notifikasi">
                 <i data-lucide="bell" class="w-4 h-4"></i>
                 @if($totalNotif > 0)
-                    <span class="absolute top-1 right-1 w-4 h-4 rounded-full bg-cafe-danger text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
+                    <span class="absolute top-1 right-1 w-4 h-4 rounded-full bg-cafe-danger text-beige text-[10px] font-bold flex items-center justify-center animate-pulse">
                         {{ $totalNotif }}
                     </span>
                 @endif
@@ -63,7 +63,7 @@
                 <div class="divide-y divide-cafe-beige/30 max-h-72 overflow-y-auto my-1">
                     @foreach($endingPromos as $promo)
                         <a href="{{ route('owner.promos.index') }}" class="p-3 hover:bg-cafe-cream/80 rounded-xl transition-colors flex items-start gap-3 block">
-                            <div class="w-8 h-8 rounded-full bg-[#D4954D]/15 text-[#B87C3C] flex items-center justify-center shrink-0">
+                            <div class="w-8 h-8 rounded-full bg-[#D4954D]/15 text-[#D4954D] flex items-center justify-center shrink-0">
                                 <i data-lucide="percent" class="w-4 h-4"></i>
                             </div>
                             <div class="min-w-0 flex-1">

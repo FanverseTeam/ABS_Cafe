@@ -69,7 +69,7 @@
                 <a
                     href="{{ $chip['href'] }}"
                     data-chip-active="{{ $isActive ? 'true' : 'false' }}"
-                    class="flex-shrink-0 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]/70 {{ $isActive ? 'bg-[#290024] text-[#FAFCF3] shadow-sm' : 'bg-[#FAFCF3] border border-[#E3DEA4] text-[#290024] hover:bg-[#E3DEA4]/60' }}"
+                    class="flex-shrink-0 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]/70 {{ $isActive ? 'bg-[#290024] text-[#F2F5E2] shadow-sm' : 'bg-[#F2F5E2] border border-[#E3DEA4] text-[#290024] hover:bg-[#E3DEA4]/60' }}"
                 >
                     {{ $chip['label'] }}@if(isset($chip['count']))<span class="ml-1 opacity-70">{{ $chip['count'] }}</span>@endif
                 </a>

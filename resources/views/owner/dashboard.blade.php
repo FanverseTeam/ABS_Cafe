@@ -387,8 +387,9 @@
             labels: paymentData.map(p => p.method.charAt(0).toUpperCase() + p.method.slice(1)),
             datasets: [{
                 data: paymentData.map(p => p.total),
-                backgroundColor: ['#D4954D', '#290024', '#775533', '#B87C3C', '#5B7C99'],
-                borderWidth: 0,
+                backgroundColor: ['#D4954D', '#290024', '#775533', '#E3DEA4', '#F2F5E2'],
+                borderColor: '#F2F5E2',
+                borderWidth: 2,
             }],
         },
         options: {

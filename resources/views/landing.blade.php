@@ -38,7 +38,7 @@
                         olive: '#775533',
                         midnight: {
                             DEFAULT: '#290024',
-                            400: '#1c0019',
+                            400: '#290024',
                         }
                     },
                     fontFamily: {
@@ -205,7 +205,7 @@
             border-radius: 29px;
             padding: 1px;
             background: linear-gradient(135deg, rgba(212, 149, 77, 0.55) 0%, rgba(227, 222, 164, 0.15) 35%, rgba(212, 149, 77, 0.08) 70%, rgba(212, 149, 77, 0.45) 100%);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#F2F5E2 0 0) content-box, linear-gradient(#F2F5E2 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
             pointer-events: none;
@@ -245,8 +245,8 @@
             min-height: 3.25rem;
             padding: 0.875rem 1.75rem;
             border-radius: 9999px;
-            background: linear-gradient(135deg, #e8bd85 0%, #d4954d 55%, #b87c37 100%);
-            color: #240020;
+            background: linear-gradient(135deg, #E3DEA4 0%, #d4954d 55%, #D4954D 100%);
+            color: #290024;
             font-weight: 700;
             font-size: 1.0625rem;
             letter-spacing: 0.02em;
@@ -274,7 +274,7 @@
                 0 18px 36px -6px rgba(212, 149, 77, 0.75),
                 0 6px 16px -2px rgba(41, 0, 36, 0.6),
                 inset 0 1px 0 rgba(255, 255, 255, 0.65);
-            background: linear-gradient(135deg, #f6e3c9 0%, #e8bd85 50%, #d4954d 100%);
+            background: linear-gradient(135deg, #E3DEA4 0%, #E3DEA4 50%, #d4954d 100%);
         }
 
         .landing-cta:hover::before {
@@ -439,7 +439,7 @@
         <!-- Subtle Top Brand Bar -->
         <header class="relative z-10 flex w-full items-center justify-between px-5 pt-4 sm:px-8 sm:pt-6">
             <div class="inline-flex items-center gap-2 rounded-full border border-custard/20 bg-midnight-400/60 px-3.5 py-1.5 text-[11px] font-semibold tracking-wider text-beige/85 backdrop-blur-md">
-                <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-olive"></span>
                 <span>ABS CAFE</span>
             </div>
 

@@ -29,7 +29,7 @@
 
     <!-- Details Card -->
     @if($orderCode || $paymentMethod || $total !== null)
-        <div class="w-full mt-6 p-4 rounded-2xl bg-[#FAFCF3] border border-[#E3DEA4] text-xs space-y-2.5 text-left shadow-sm">
+        <div class="w-full mt-6 p-4 rounded-2xl bg-[#F2F5E2] border border-[#E3DEA4] text-xs space-y-2.5 text-left shadow-sm">
             @if($orderCode)
                 <div class="flex items-center justify-between text-[#775533]">
                     <span>No. Pesanan</span>
@@ -55,12 +55,12 @@
     <!-- Actions -->
     <div class="w-full mt-6 space-y-2.5">
         @if($primaryBtnHref)
-            <a href="{{ $primaryBtnHref }}" class="w-full py-3.5 px-4 rounded-full bg-[#290024] text-[#FAFCF3] hover:bg-[#775533] font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+            <a href="{{ $primaryBtnHref }}" class="w-full py-3.5 px-4 rounded-full bg-[#290024] text-[#F2F5E2] hover:bg-[#775533] font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
                 <i data-lucide="receipt" class="w-4 h-4 text-[#D4954D]"></i>
                 {{ $primaryBtnText }}
             </a>
         @elseif($primaryBtnAction)
-            <button type="button" onclick="{{ $primaryBtnAction }}" class="w-full py-3.5 px-4 rounded-full bg-[#290024] text-[#FAFCF3] hover:bg-[#775533] font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
+            <button type="button" onclick="{{ $primaryBtnAction }}" class="w-full py-3.5 px-4 rounded-full bg-[#290024] text-[#F2F5E2] hover:bg-[#775533] font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.98]">
                 <i data-lucide="receipt" class="w-4 h-4 text-[#D4954D]"></i>
                 {{ $primaryBtnText }}
             </button>

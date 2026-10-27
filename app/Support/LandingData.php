@@ -22,7 +22,7 @@ class LandingData
         'cafe_address' => 'Jl. Letjend Suprapto No.44, Kepatihan, Kec. Tulungagung, Kabupaten Tulungagung, Jawa Timur 66219',
         'cafe_hours' => 'Buka Setiap Hari 09.00 - 23.00 WIB',
         'cafe_phone' => '0896-2010-2010',
-        'cafe_maps_url' => 'https://maps.app.goo.gl/pPSXXjtJptYwrDB37',
+        'cafe_maps_url' => 'https://maps.app.goo.gl/mvEr6sWCacKH5j677',
         'peta_lat' => '-8.0646338',
         'peta_lng' => '111.9111798',
         'last_order' => '22.00 WIB',
@@ -30,6 +30,8 @@ class LandingData
         'postal_code' => '66219',
         'cafe_instagram' => 'abs_tulungagung_24',
         'cafe_tiktok' => 'abs_tulungagung_24',
+        'whatsapp_nomor' => '6289620102010',
+        'whatsapp_pesan' => 'Halo ABS Cafe, saya ingin bertanya.',
 
         'hero_badge' => 'SELAMAT DATANG DI ABS CAFE',
         'hero_title_prefix' => 'Temukan Momen Terbaik di',
@@ -113,6 +115,33 @@ class LandingData
             ? '+62'.substr($digitsOnly, 1)
             : (str_starts_with($digitsOnly, '62') ? '+'.$digitsOnly : '+6289620102010');
 
+        // Normalisasi nomor WhatsApp: simpan sebagai 628... (tanpa + dan tanda lain)
+        $hasWaSetting = array_key_exists('whatsapp_nomor', $settings);
+        $waRaw = $hasWaSetting
+            ? (string) ($settings['whatsapp_nomor'] ?? '')
+            : (self::DEFAULTS['whatsapp_nomor'] ?? '6289620102010');
+        $waRaw = trim($waRaw);
+
+        $waDigits = preg_replace('/[^\d]/', '', $waRaw);
+        if (str_starts_with($waDigits, '0')) {
+            $waDigits = '62'.substr($waDigits, 1);
+        } elseif (str_starts_with($waDigits, '+62')) {
+            $waDigits = ltrim($waDigits, '+');
+        }
+
+        $waValid = preg_match('/^628\d{8,12}$/', $waDigits) === 1;
+
+        $waDisplay = '';
+        if ($waValid) {
+            $local = '08'.substr($waDigits, 3);
+            $waDisplay = preg_replace('/^(\d{4})(\d{4})(\d+)$/', '$1-$2-$3', $local) ?? $local;
+        }
+
+        $waPesan = $resolve(['whatsapp_pesan'], self::DEFAULTS['whatsapp_pesan'] ?? 'Halo ABS Cafe, saya ingin bertanya.');
+        $waUrl = $waValid
+            ? 'https://wa.me/'.$waDigits.'?text='.rawurlencode($waPesan)
+            : null;
+
         $address = $resolve(['cafe_address', 'alamat']);
         $streetAddress = 'Jl. Letjend Suprapto No.44';
         if (str_contains($address, 'Jl. Letjend Suprapto No.44')) {
@@ -141,6 +170,9 @@ class LandingData
                 'instagram_url' => $instagram !== '' ? 'https://instagram.com/'.ltrim($instagram, '@') : null,
                 'tiktok' => $tiktok,
                 'tiktok_url' => $tiktok !== '' ? 'https://tiktok.com/@'.ltrim($tiktok, '@') : null,
+                'whatsapp_nomor' => $waDigits,
+                'whatsapp_display' => $waDisplay,
+                'whatsapp_url' => $waUrl,
             ],
 
             'hero' => [

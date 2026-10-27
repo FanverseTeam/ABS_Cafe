@@ -2,41 +2,104 @@
 export default {
   darkMode: ["class"],
   content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+    "./resources/views/**/*.blade.php",
+    "./resources/js/**/*.js",
+    "./resources/css/**/*.css",
+    "./app/**/*.php",
   ],
   theme: {
-    extend: {
-      colors: {
-        cafe: {
-          dark: "#4A1F14",        // Coklat tua (primer, tombol utama, sidebar aktif, judul)
-          brown: "#7A4A2B",       // Coklat sedang (hover, aksen)
-          gold: "#D4A76A",        // Emas / karamel (tombol sekunder, badge, highlight)
-          cream: "#F6EDE0",       // Krem terang (background halaman)
-          beige: "#EFE0CC",       // Beige (kartu, panel, input)
-          card: "#FBF6EE",        // Putih krem (kartu utama)
-          text: "#3B1E14",        // Teks utama
-          muted: "#8A6A55",       // Teks sekunder
-          success: "#4F7A4A",     // Sukses
-          warning: "#C98A2B",     // Peringatan
-          danger: "#B03A2E",      // Bahaya / batal
-          info: "#5B7C99",        // Info
-        },
+    colors: {
+      transparent: 'transparent',
+      current: 'currentColor',
+      inherit: 'inherit',
+      beige: {
+        DEFAULT: '#F2F5E2',
+        50: '#F2F5E2',
+        100: '#F2F5E2',
+        200: '#E3DEA4',
       },
-      fontFamily: {
-        serif: ["Noto Serif", "Georgia", "serif"],
-        sans: ["var(--font-poppins)", "Poppins", "DM Sans", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+      vanilla: {
+        DEFAULT: '#E3DEA4',
+        100: '#E3DEA4',
+        200: '#E3DEA4',
       },
-      borderRadius: {
-        "2xl": "1rem",
-        "3xl": "1.5rem",
+      custard: {
+        DEFAULT: '#E3DEA4',
+        100: 'rgb(227 222 164 / 0.5)',
+        200: '#E3DEA4',
+        300: 'rgb(227 222 164 / 0.8)',
       },
-      boxShadow: {
-        soft: "0 4px 20px -2px rgba(74, 31, 20, 0.06), 0 2px 6px -1px rgba(74, 31, 20, 0.04)",
-        "soft-lg": "0 10px 25px -3px rgba(74, 31, 20, 0.08), 0 4px 12px -2px rgba(74, 31, 20, 0.04)",
+      apricot: {
+        DEFAULT: '#D4954D',
+        100: 'rgb(212 149 77 / 0.2)',
+        200: 'rgb(212 149 77 / 0.35)',
+        300: '#D4954D',
+        400: '#D4954D',
+        500: '#D4954D',
       },
+      olive: {
+        DEFAULT: '#775533',
+        100: 'rgb(119 85 51 / 0.45)',
+        200: 'rgb(119 85 51 / 0.7)',
+        300: '#775533',
+        400: '#775533',
+        500: '#775533',
+      },
+      midnight: {
+        DEFAULT: '#290024',
+        100: 'rgb(41 0 36 / 0.55)',
+        200: 'rgb(41 0 36 / 0.75)',
+        300: '#290024',
+        400: 'rgb(41 0 36 / 0.9)',
+        500: '#290024',
+      },
+      success: {
+        DEFAULT: '#775533',
+        100: 'rgb(227 222 164 / 0.55)',
+        700: '#775533',
+      },
+      warning: {
+        DEFAULT: '#D4954D',
+        100: 'rgb(212 149 77 / 0.18)',
+        700: '#290024',
+      },
+      danger: {
+        DEFAULT: '#775533',
+        100: 'rgb(227 222 164 / 0.45)',
+        700: '#775533',
+      },
+      info: {
+        DEFAULT: '#D4954D',
+        100: 'rgb(212 149 77 / 0.18)',
+        700: '#290024',
+      },
+      cafe: {
+        dark: '#290024',
+        brown: '#775533',
+        gold: '#D4954D',
+        cream: '#F2F5E2',
+        beige: '#E3DEA4',
+        card: 'rgb(227 222 164 / 0.35)',
+        text: '#290024',
+        muted: '#775533',
+        bronze: '#D4954D',
+        success: '#775533',
+        warning: '#D4954D',
+        danger: '#775533',
+        info: '#D4954D',
+      },
+    },
+    fontFamily: {
+      serif: ["Noto Serif", "Georgia", "serif"],
+      sans: ["Poppins", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+    },
+    borderRadius: {
+      "2xl": "1rem",
+      "3xl": "1.5rem",
+    },
+    boxShadow: {
+      soft: "0 4px 20px -2px rgba(41, 0, 36, 0.06), 0 2px 6px -1px rgba(41, 0, 36, 0.04)",
+      "soft-lg": "0 10px 25px -3px rgba(41, 0, 36, 0.08), 0 4px 12px -2px rgba(41, 0, 36, 0.04)",
     },
   },
   plugins: [],

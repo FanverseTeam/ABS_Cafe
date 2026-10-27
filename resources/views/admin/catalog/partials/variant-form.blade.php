@@ -16,19 +16,19 @@
 </div>
 
 <template id="menu-variant-template">
-    <div class="variant-row grid grid-cols-1 sm:grid-cols-12 gap-2 items-end rounded-xl border border-cafe-beige/70 bg-white/70 p-2.5">
+    <div class="variant-row grid grid-cols-1 sm:grid-cols-12 gap-2 items-end rounded-xl border border-cafe-beige/70 bg-beige/70 p-2.5">
         <input type="hidden" data-variant-field="id" value="">
         <div class="sm:col-span-3">
             <label class="block text-[10px] font-semibold text-cafe-muted mb-1">Nama Varian</label>
-            <input type="text" data-variant-field="name" placeholder="Hot / Ice" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2 rounded-lg border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+            <input type="text" data-variant-field="name" placeholder="Hot / Ice" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2 rounded-lg border border-cafe-beige focus:border-cafe-gold focus:outline-none">
         </div>
         <div class="sm:col-span-3">
             <label class="block text-[10px] font-semibold text-cafe-muted mb-1">Ukuran</label>
-            <input type="text" data-variant-field="size" placeholder="Large (opsional)" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2 rounded-lg border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+            <input type="text" data-variant-field="size" placeholder="Large (opsional)" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2 rounded-lg border border-cafe-beige focus:border-cafe-gold focus:outline-none">
         </div>
         <div class="sm:col-span-3">
             <label class="block text-[10px] font-semibold text-cafe-muted mb-1">Harga (Rp)</label>
-            <input type="number" data-variant-field="price" min="0" step="500" placeholder="15000" class="w-full bg-[#E3DEA4]/40 focus:bg-white text-xs p-2 rounded-lg border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+            <input type="number" data-variant-field="price" min="0" step="500" placeholder="15000" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2 rounded-lg border border-cafe-beige focus:border-cafe-gold focus:outline-none">
         </div>
         <div class="sm:col-span-2">
             <label class="flex items-center gap-2 px-2 py-2 cursor-pointer select-none">
