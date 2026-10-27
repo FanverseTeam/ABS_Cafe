@@ -49,7 +49,7 @@
     </div>
 
     <!-- ACTIVE ADMIN DASHBOARD: stats from Dashboard + six active modules only. -->
-    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-5">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">
         <a href="{{ route('admin.catalog.index') }}" class="bg-cafe-card rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between group">
             <div class="flex items-center justify-between gap-2">
                 <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-cafe-muted">Total Menu</p>
@@ -59,17 +59,6 @@
             </div>
             <h3 class="mt-3 text-2xl sm:text-3xl font-serif font-bold text-cafe-text">{{ $totalMenus }}</h3>
             <p class="text-[10px] text-cafe-muted mt-0.5 group-hover:text-cafe-brown">Lihat katalog &rarr;</p>
-        </a>
-
-        <a href="{{ route('admin.catalog.index') }}" class="bg-cafe-card rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between group">
-            <div class="flex items-center justify-between gap-2">
-                <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-cafe-muted">Menu Stok Menipis/Habis</p>
-                <div class="w-9 h-9 rounded-xl bg-cafe-warning/15 flex items-center justify-center text-cafe-warning">
-                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-                </div>
-            </div>
-            <h3 class="mt-3 text-2xl sm:text-3xl font-serif font-bold text-cafe-text">{{ $lowStockCount }}</h3>
-            <p class="text-[10px] text-cafe-muted mt-0.5 group-hover:text-cafe-brown">Perlu restock &rarr;</p>
         </a>
 
         <a href="{{ route('admin.vouchers.index') }}" class="bg-cafe-card rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between group">
@@ -94,7 +83,7 @@
             <p class="text-[10px] text-cafe-muted mt-0.5 group-hover:text-cafe-brown">Kelola staf &rarr;</p>
         </a>
 
-        <a href="{{ route('admin.operations.index') }}" class="bg-cafe-card rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between group col-span-2 md:col-span-1">
+        <a href="{{ route('admin.operations.index') }}" class="bg-cafe-card rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between group">
             <div class="flex items-center justify-between gap-2">
                 <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-cafe-muted">Jumlah Meja</p>
                 <div class="w-9 h-9 rounded-xl bg-cafe-info/15 flex items-center justify-center text-cafe-info">

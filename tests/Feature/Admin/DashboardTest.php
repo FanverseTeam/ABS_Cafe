@@ -37,7 +37,6 @@ class DashboardTest extends TestCase
         $this->actingAsAdmin()->get('/admin')
             ->assertOk()
             ->assertSee('Total Menu')
-            ->assertSee('Menu Stok Menipis/Habis')
             ->assertSee('Promo Aktif')
             ->assertSee('Staf Aktif')
             ->assertSee('Jumlah Meja')
