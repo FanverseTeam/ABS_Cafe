@@ -148,7 +148,11 @@ class CustomerMenuPageTest extends TestCase
         // Cari 'cendol'
         $responseFound = $this->get(route('pelanggan.menu', ['q' => 'cendol']))->assertOk();
         $responseFound->assertSee('Es Cendol Durian');
-        $responseFound->assertDontSee('Nasi Goreng Spesial');
+
+        // Nasi Goreng Spesial muncul di JSON payload (allMenusPayload) untuk pencarian client-side,
+        // tapi TIDAK muncul di kartu menu SSR (title="..."). Verifikasi SSR tidak me-render kartunya.
+        $content = $responseFound->getContent();
+        $this->assertStringNotContainsString('title="Nasi Goreng Spesial"', $content);
 
         // Cari yang tidak ada
         $responseEmpty = $this->get(route('pelanggan.menu', ['q' => 'menu_pasti_tidak_ada_xyz']))->assertOk();
@@ -174,7 +178,11 @@ class CustomerMenuPageTest extends TestCase
 
         $response = $this->get(route('pelanggan.menu', ['kategori' => $cat1->slug]))->assertOk();
         $response->assertSee('Kopi Tubruk Manis');
-        $response->assertDontSee('Tahu Walik Crispy');
+
+        // Tahu Walik Crispy ada di JSON payload untuk pencarian client-side real-time,
+        // tapi TIDAK di-render sebagai kartu menu SSR (title="...").
+        $content = $response->getContent();
+        $this->assertStringNotContainsString('title="Tahu Walik Crispy"', $content);
     }
 
     public function test_empty_categories_do_not_appear(): void
@@ -233,7 +241,7 @@ class CustomerMenuPageTest extends TestCase
         $response->assertSee('Tambah ke Keranjang');
     }
 
-    public function test_menu_page_with_meja_query_parameter_displays_table_banner(): void
+    public function test_menu_page_with_meja_query_parameter_preserves_table_number(): void
     {
         Table::factory()->create([
             'number' => 5,
@@ -244,26 +252,27 @@ class CustomerMenuPageTest extends TestCase
 
         $response = $this->get(route('pelanggan.menu', ['meja' => 5]))->assertOk();
 
-        $response->assertSee('Meja #5');
-        $response->assertSee('Outdoor Balkon');
-        $response->assertSee('Pesan Dari Meja');
-        $response->assertSee('Ganti Meja');
         $response->assertSee('meja=5');
+        $response->assertSee(route('pelanggan.keranjang', ['meja' => 5]));
     }
 
-    public function test_menu_page_without_meja_displays_method_selection_banner(): void
+    public function test_menu_page_is_clean_and_focuses_on_menu(): void
     {
         $response = $this->get(route('pelanggan.menu'))->assertOk();
 
-        $response->assertSee('Pilih Nomor Meja');
-        $response->assertSee('Bawa Pulang');
+        $response->assertSee('Menu');
+        $response->assertSee('Rasa Yang Selalu Bikin Rindu');
+        $response->assertSee('Semua');
+        $response->assertSee('Lihat Keranjang');
     }
 
-    public function test_keranjang_page_returns_ok_for_guest(): void
+    public function test_keranjang_page_contains_table_and_order_type_selection(): void
     {
         $response = $this->get(route('pelanggan.keranjang'))->assertOk();
 
         $response->assertSee('Keranjang Belanja');
+        $response->assertSee('Makan di Tempat (Dine-in)');
+        $response->assertSee('Bawa Pulang (Takeaway)');
         $response->assertSee('Pesan Sekarang');
     }
 }

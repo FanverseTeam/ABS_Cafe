@@ -70,6 +70,39 @@ class PelangganController extends Controller
                 'category',
             ]);
 
+        // Muat seluruh menu untuk payload Alpine.js (pencarian & filter instan client-side)
+        $allMenus = (clone $baseMenuQuery)
+            ->orderByDesc('is_best_seller')
+            ->orderBy('name')
+            ->get();
+
+        $allMenusPayload = $allMenus->map(function ($menu) {
+            return [
+                'id' => $menu->id,
+                'category_id' => $menu->category_id,
+                'category_slug' => $menu->category?->slug ?? '',
+                'category_name' => $menu->category?->name ?? '',
+                'name' => $menu->name,
+                'description' => $menu->description ?: '',
+                'price' => (float) $menu->price,
+                'image' => $menu->imageUrl(),
+                'is_habis' => $menu->isHabis(),
+                'is_best_seller' => (bool) $menu->is_best_seller,
+                'price_label' => $menu->customerPriceLabel(),
+                'variants' => $menu->variants->map(fn ($v) => [
+                    'id' => $v->id,
+                    'name' => $v->name,
+                    'size' => $v->size,
+                    'display_name' => $v->displayName(),
+                    'price' => (float) $v->price,
+                    'price_label' => 'Rp '.number_format((float) $v->price, 0, ',', '.'),
+                    'is_available' => (bool) $v->is_available,
+                    'is_default' => (bool) $v->is_default,
+                    'is_habis' => $v->isHabis(),
+                ])->values()->all(),
+            ];
+        })->values()->all();
+
         $selectedCategory = null;
         $isSearching = $searchQuery !== '';
         $isCategoryFilter = $categorySlug !== '' && $categorySlug !== 'semua';
@@ -97,6 +130,7 @@ class PelangganController extends Controller
                 'tableNumber' => $tableNumber,
                 'activeTable' => $activeTable,
                 'allTables' => $allTables,
+                'allMenusPayload' => $allMenusPayload,
             ]);
         }
 
@@ -129,6 +163,7 @@ class PelangganController extends Controller
                     'tableNumber' => $tableNumber,
                     'activeTable' => $activeTable,
                     'allTables' => $allTables,
+                    'allMenusPayload' => $allMenusPayload,
                 ]);
             }
 
@@ -156,17 +191,13 @@ class PelangganController extends Controller
                     'tableNumber' => $tableNumber,
                     'activeTable' => $activeTable,
                     'allTables' => $allTables,
+                    'allMenusPayload' => $allMenusPayload,
                 ]);
             }
         }
 
         // 3. Mode Tampilan Utama Semua Kategori
-        // Ambil semua menu aktif sekali query, lalu kelompokkan berdasarkan kategori (tanpa N+1)
-        $allMenus = (clone $baseMenuQuery)
-            ->orderByDesc('is_best_seller')
-            ->orderBy('name')
-            ->get();
-
+        // Kelompokkan berdasarkan kategori (tanpa query ulang)
         $menusGroupedByCategory = $allMenus->groupBy('category_id');
 
         // Rekomendasi: Menu best seller; jika kosong, 4-6 menu terlaris dari pesanan; jika masih kosong disembunyikan
@@ -199,6 +230,7 @@ class PelangganController extends Controller
             'tableNumber' => $tableNumber,
             'activeTable' => $activeTable,
             'allTables' => $allTables,
+            'allMenusPayload' => $allMenusPayload,
         ]);
     }
 
