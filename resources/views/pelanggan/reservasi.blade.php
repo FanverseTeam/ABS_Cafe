@@ -3,17 +3,17 @@
 @section('title', 'Reservasi Meja - ' . ($landing['cafe']['name'] ?? 'ABS Cafe'))
 @section('meta_description', 'Reservasi meja di ' . ($landing['cafe']['name'] ?? 'ABS Cafe') . ' secara real-time. Pantau meja yang sedang dipakai atau masih kosong langsung dari ponsel Anda.')
 
-@section('body_class', 'bg-white text-[#290024]')
-@section('body_style', 'background-color: #ffffff !important; color: #290024 !important;')
-@section('main_class', 'bg-white')
+@section('body_class', 'bg-[#F2F5E2] text-[#290024]')
+@section('body_style', 'background-color: #F2F5E2 !important; color: #290024 !important;')
+@section('main_class', 'bg-[#F2F5E2]')
 
 {{-- Header Khusus Halaman Reservasi Sesuai Desain Figma: Tombol Kembali + Judul di Tengah --}}
 @section('header')
-<header class="sticky top-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#EDE8E0] transition-all" style="background-color: #ffffff !important;">
+<header class="sticky top-0 inset-x-0 z-30 bg-[#F2F5E2]/95 backdrop-blur-md border-b border-[#E3DEA4]/80 transition-all" style="background-color: rgba(242, 245, 226, 0.95) !important;">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
         <!-- Tombol Kembali ke Beranda -->
         <a href="{{ route('pelanggan.beranda') }}"
-           class="w-10 h-10 rounded-full flex items-center justify-center text-[#290024] hover:bg-[#F5F2EB] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#290024]"
+           class="w-10 h-10 rounded-full flex items-center justify-center text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#290024]"
            aria-label="Kembali ke Beranda">
             <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M15 18l-6-6 6-6" />
@@ -36,14 +36,14 @@
 @endsection
 
 @section('content')
-<div class="min-h-screen bg-white text-[#290024] pb-36 pt-4 sm:pt-6" style="background-color: #ffffff !important;">
+<div class="min-h-screen bg-[#F2F5E2] text-[#290024] pb-36 pt-4 sm:pt-6" style="background-color: #F2F5E2 !important;">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-6">
 
         <!-- ============================================================== -->
         <!-- 1. HERO BANNER FOTO KAFE & SUBTITLE (SESUAI FIGMA SCREEN 5)     -->
         <!-- ============================================================== -->
         <div class="space-y-3">
-            <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-[#EDE8E0] bg-[#EAE4D9]">
+            <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl sm:rounded-3xl overflow-hidden shadow-soft border border-[#E3DEA4]/80 bg-[#EAE4D9]">
                 <img src="{{ asset('images/landing-bg-768.webp') }}"
                      alt="Suasana ABS Cafe"
                      class="w-full h-full object-cover">
@@ -134,9 +134,9 @@
         <!-- ============================================================== -->
         <!-- 3. PANEL STATUS MEJA REAL-TIME (KONDISI LANGSUNG KAFE)          -->
         <!-- ============================================================== -->
-        <div class="bg-white border border-[#EDE8E0] rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xs space-y-4">
+        <div class="bg-[#F2F5E2] border border-[#E3DEA4]/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-soft space-y-4">
             <!-- Header Bar Status Meja -->
-            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#F0ECE4]">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#E3DEA4]/60">
                 <div>
                     <h2 class="font-serif font-bold text-sm sm:text-base text-[#290024]">
                         Kondisi Meja Real-Time
@@ -157,7 +157,7 @@
                     </span>
                     <button type="button" id="btn-manual-sync" onclick="fetchTableStatus(true)"
                             title="Segarkan status meja"
-                            class="p-1.5 rounded-lg bg-stone-100 hover:bg-[#EDE8E0] text-[#775533] hover:text-[#290024] transition-colors">
+                            class="p-1.5 rounded-lg bg-[#E3DEA4]/40 hover:bg-[#E3DEA4] text-[#775533] hover:text-[#290024] transition-colors">
                         <svg id="sync-icon" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
@@ -189,9 +189,9 @@
             <div class="flex items-center gap-2 pt-1 text-xs text-[#775533]">
                 <span class="text-[11px]">Area:</span>
                 <div class="flex items-center gap-1.5" id="area-filter-container">
-                    <button type="button" onclick="filterByArea('all')" class="area-filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-[#290024] text-white transition-all shadow-xs">Semua</button>
-                    <button type="button" onclick="filterByArea('indoor')" class="area-filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 text-[#5C4033] hover:bg-[#EDE8E0] transition-all">Indoor</button>
-                    <button type="button" onclick="filterByArea('outdoor')" class="area-filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 text-[#5C4033] hover:bg-[#EDE8E0] transition-all">Outdoor</button>
+                    <button type="button" onclick="filterByArea('all')" class="area-filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-[#290024] text-[#F2F5E2] transition-all shadow-xs">Semua</button>
+                    <button type="button" onclick="filterByArea('indoor')" class="area-filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-[#E3DEA4]/40 text-[#775533] hover:bg-[#E3DEA4] transition-all">Indoor</button>
+                    <button type="button" onclick="filterByArea('outdoor')" class="area-filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-[#E3DEA4]/40 text-[#775533] hover:bg-[#E3DEA4] transition-all">Outdoor</button>
                 </div>
             </div>
 
@@ -285,8 +285,8 @@
         <!-- ============================================================== -->
         <!-- 4. FORMULIR PEMESANAN (SESUAI TATA LETAK MOBILE FIGMA FRAME 5)  -->
         <!-- ============================================================== -->
-        <div class="bg-white border border-[#EDE8E0] rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-xs space-y-4" id="form-reservasi-container">
-            <div class="pb-3 border-b border-[#F0ECE4]">
+        <div class="bg-[#F2F5E2] border border-[#E3DEA4]/80 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-soft space-y-4" id="form-reservasi-container">
+            <div class="pb-3 border-b border-[#E3DEA4]/60">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-[#775533]">Formulir Pelanggan</span>
                 <h2 class="font-serif font-bold text-lg text-[#290024]">
                     Lengkapi Detail Reservasi
@@ -318,7 +318,7 @@
                                value="{{ old('reservation_date', $selectedDate) }}"
                                min="{{ today()->toDateString() }}" required
                                onchange="onDateTimeChanged()"
-                               class="w-full px-4 py-3 rounded-xl bg-white border border-[#EDE8E0] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
+                               class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
                     </div>
                 </div>
 
@@ -330,7 +330,7 @@
                     <div class="relative">
                         <select id="reservation_time" name="reservation_time" required
                                 onchange="onDateTimeChanged()"
-                                class="w-full px-4 py-3 rounded-xl bg-white border border-[#EDE8E0] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
+                                class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
                             @foreach($timeSlots as $slot)
                                 <option value="{{ $slot }}" {{ old('reservation_time', substr($selectedTime, 0, 5)) === $slot ? 'selected' : '' }}>
                                     {{ $slot }} WIB
@@ -348,7 +348,7 @@
                     <div class="relative">
                         <select id="party_size" name="party_size" required
                                 onchange="onPartySizeChanged()"
-                                class="w-full px-4 py-3 rounded-xl bg-white border border-[#EDE8E0] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
+                                class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
                             @for($i = 1; $i <= 20; $i++)
                                 <option value="{{ $i }}" {{ old('party_size', 2) == $i ? 'selected' : '' }}>
                                     {{ $i }} Orang
@@ -366,7 +366,7 @@
                     <div class="relative">
                         <select id="table_id" name="table_id"
                                 onchange="onTableSelectDropdownChanged()"
-                                class="w-full px-4 py-3 rounded-xl bg-white border border-[#EDE8E0] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
+                                class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
                             <option value="">Pilih Otomatis Meja Kosong</option>
                             @foreach($tables as $tbl)
                                 <option value="{{ $tbl->id }}" data-capacity="{{ $tbl->capacity }}" {{ old('table_id') == $tbl->id ? 'selected' : '' }}>
@@ -395,7 +395,7 @@
                     <input type="text" id="customer_name" name="customer_name"
                            value="{{ old('customer_name') }}" required maxlength="100"
                            placeholder="Nama pemesan..."
-                           class="w-full px-4 py-3 rounded-xl bg-white border border-[#EDE8E0] text-xs text-[#290024] placeholder-stone-400 focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
+                           class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
                 </div>
 
                 <!-- Nomor WhatsApp -->
@@ -406,17 +406,17 @@
                     <input type="tel" id="phone" name="phone"
                            value="{{ old('phone') }}" required maxlength="20"
                            placeholder="Contoh: 081234567890"
-                           class="w-full px-4 py-3 rounded-xl bg-white border border-[#EDE8E0] text-xs text-[#290024] placeholder-stone-400 focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
+                           class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
                 </div>
 
                 <!-- Catatan Tambahan -->
                 <div>
                     <label for="notes" class="block text-xs font-semibold text-[#290024] mb-1.5">
-                        Catatan Khusus <span class="text-stone-400 font-normal">(Opsional)</span>
+                        Catatan Khusus <span class="text-[#775533]/70 font-normal">(Opsional)</span>
                     </label>
                     <textarea id="notes" name="notes" rows="2" maxlength="500"
                               placeholder="Contoh: Acara ulang tahun, dekat colokan listrik..."
-                              class="w-full px-4 py-3 rounded-xl bg-white border border-[#EDE8E0] text-xs text-[#290024] placeholder-stone-400 focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors resize-none">{{ old('notes') }}</textarea>
+                              class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors resize-none">{{ old('notes') }}</textarea>
                 </div>
 
                 <!-- Tombol Desktop (Di mobile akan ada sticky bottom bar sesuai Figma) -->
@@ -436,7 +436,7 @@
         <!-- ============================================================== -->
         <!-- 5. CEK STATUS RESERVASI SEBELUMNYA                             -->
         <!-- ============================================================== -->
-        <div class="bg-white border border-[#EDE8E0] rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xs">
+        <div class="bg-[#F2F5E2] border border-[#E3DEA4]/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-soft">
             <h3 class="font-serif font-bold text-xs sm:text-sm text-[#290024] mb-1">
                 Cek Status Reservasi Anda
             </h3>
@@ -445,14 +445,14 @@
             </p>
             <form action="{{ route('pelanggan.reservasi.check') }}" method="GET" class="flex gap-2">
                 <input type="text" name="q" value="{{ $searchCode }}" placeholder="Kode RSV-... atau No. WA"
-                       class="flex-1 px-3.5 py-2 rounded-xl bg-stone-50 border border-[#EDE8E0] text-xs text-[#290024] placeholder-stone-400 focus:border-[#290024] focus:outline-none">
-                <button type="submit" class="px-4 py-2 rounded-xl bg-[#290024] text-white text-xs font-semibold hover:bg-[#3D0B36] transition-colors shrink-0">
+                       class="flex-1 px-3.5 py-2 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:outline-none">
+                <button type="submit" class="px-4 py-2 rounded-xl bg-[#290024] text-[#F2F5E2] text-xs font-semibold hover:bg-[#3D0B36] transition-colors shrink-0">
                     Cek
                 </button>
             </form>
 
             @if($searchCode !== '')
-                <div class="mt-3 pt-3 border-t border-[#F0ECE4]">
+                <div class="mt-3 pt-3 border-t border-[#E3DEA4]/60">
                     @if($foundReservation)
                         <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs">
                             <div class="flex items-center justify-between gap-2 mb-1">
@@ -476,10 +476,10 @@
     <!-- ============================================================== -->
     <!-- 6. STICKY BOTTOM BAR KHUSUS MOBILE (SESUAI FIGMA FRAME 5)      -->
     <!-- ============================================================== -->
-    <div class="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#EDE8E0] p-4 shadow-[0_-4px_15px_rgba(0,0,0,0.06)]" style="background-color: rgba(255, 255, 255, 0.95) !important;">
+    <div class="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-[#F2F5E2]/95 backdrop-blur-md border-t border-[#E3DEA4] p-4 shadow-[0_-4px_15px_rgba(41,0,36,0.08)]" style="background-color: rgba(242, 245, 226, 0.95) !important;">
         <button type="button"
                 onclick="const f = document.getElementById('form-reservasi'); if (f.checkValidity()) { f.submit(); } else { f.reportValidity(); }"
-                class="w-full py-3.5 px-6 rounded-full bg-[#290024] active:bg-[#3D0B36] text-white font-bold text-sm tracking-wide shadow-md flex items-center justify-center gap-2">
+                class="w-full py-3.5 px-6 rounded-full bg-[#290024] active:bg-[#3D0B36] text-[#F2F5E2] font-bold text-sm tracking-wide shadow-md flex items-center justify-center gap-2">
             <span>Pesan Sekarang</span>
             <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -491,11 +491,11 @@
 @endsection
 
 @section('footer')
-<footer class="bg-white border-t border-[#EDE8E0] py-6 sm:py-8 text-center text-xs text-[#775533]" style="background-color: #ffffff !important;">
+<footer class="bg-[#F2F5E2] border-t border-[#E3DEA4]/80 py-6 sm:py-8 text-center text-xs text-[#775533]" style="background-color: #F2F5E2 !important;">
     <div class="max-w-4xl mx-auto px-4 space-y-1.5">
         <p class="font-serif font-bold text-[#290024]">{{ $landing['cafe']['name'] ?? 'ABS Cafe' }}</p>
         <p class="text-[11px] text-[#775533]/80">{{ $landing['cafe']['tagline'] ?? 'Good Coffee, Better Moments.' }}</p>
-        <p class="text-[10px] text-stone-400">&copy; {{ date('Y') }} Hak cipta dilindungi.</p>
+        <p class="text-[10px] text-[#775533]/60">&copy; {{ date('Y') }} Hak cipta dilindungi.</p>
     </div>
 </footer>
 @endsection
@@ -748,12 +748,12 @@
 
     function filterByArea(area) {
         document.querySelectorAll('.area-filter-btn').forEach(b => {
-            b.className = 'area-filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 text-[#5C4033] hover:bg-[#EDE8E0] transition-all';
+            b.className = 'area-filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-[#E3DEA4]/40 text-[#775533] hover:bg-[#E3DEA4] transition-all';
         });
 
         const targetBtn = event ? event.target : null;
         if (targetBtn) {
-            targetBtn.className = 'area-filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-[#290024] text-white transition-all shadow-xs';
+            targetBtn.className = 'area-filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-[#290024] text-[#F2F5E2] transition-all shadow-xs';
         }
 
         const cards = document.querySelectorAll('.table-card');

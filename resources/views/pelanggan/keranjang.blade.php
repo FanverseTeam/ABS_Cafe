@@ -3,9 +3,9 @@
 @section('title', 'Detail Pesanan - ' . ($landing['cafe']['name'] ?? 'ABS Cafe'))
 @section('meta_description', 'Periksa pesanan makanan dan minuman pilihan Anda di ' . ($landing['cafe']['name'] ?? 'ABS Cafe') . '.')
 
-@section('body_class', 'bg-white text-[#290024]')
-@section('body_style', 'background-color: #ffffff !important; color: #290024 !important;')
-@section('main_class', 'bg-white')
+@section('body_class', 'bg-[#F2F5E2] text-[#290024]')
+@section('body_style', 'background-color: #F2F5E2 !important; color: #290024 !important;')
+@section('main_class', 'bg-[#F2F5E2]')
 
 @section('header')
 <script>
@@ -23,15 +23,15 @@
 
 <!-- TOPBAR HEADER (RAPI, BERSIH, & DINAMIS SESUAI TAHAP) -->
 <header x-data
-        class="sticky top-0 inset-x-0 z-30 bg-white border-b border-[#F0ECE4] shadow-xs"
-        style="background-color: #ffffff !important;">
+        class="sticky top-0 inset-x-0 z-30 bg-[#F2F5E2]/95 backdrop-blur-md border-b border-[#E3DEA4]/80 shadow-xs"
+        style="background-color: #F2F5E2 !important;">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 h-14 flex items-center justify-between gap-2">
         <!-- Sisi Kiri: Tombol Kembali Sesuai Step -->
         <div class="w-24 flex items-center justify-start">
             <!-- Saat di Step 1: Kembali ke Menu -->
             <a x-show="!$store.checkout || $store.checkout.step === 1"
                href="{{ route('pelanggan.menu', array_filter(['meja' => $tableNumber])) }}"
-               class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#290024] hover:text-[#775533] py-1.5 px-2 -ml-2 rounded-xl hover:bg-[#FAF7F2] transition-colors"
+               class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#290024] hover:text-[#775533] py-1.5 px-2 -ml-2 rounded-xl hover:bg-[#E3DEA4]/40 transition-colors"
                aria-label="Kembali ke Menu">
                 <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -45,7 +45,7 @@
                     x-cloak
                     type="button"
                     @click="$store.checkout.step = 1; window.scrollTo({ top: 0, behavior: 'smooth' })"
-                    class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#290024] hover:text-[#775533] py-1.5 px-2 -ml-2 rounded-xl hover:bg-[#FAF7F2] transition-colors"
+                    class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#290024] hover:text-[#775533] py-1.5 px-2 -ml-2 rounded-xl hover:bg-[#E3DEA4]/40 transition-colors"
                     aria-label="Kembali ke Detail Pesanan">
                 <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -74,16 +74,16 @@
 @section('content')
 <div x-data="cartPage()"
      x-init="initCart()"
-     style="background-color: #ffffff !important;"
-     class="min-h-screen bg-white pb-32">
+     style="background-color: #F2F5E2 !important;"
+     class="min-h-screen bg-[#F2F5E2] pb-32">
 
     <div class="mx-auto max-w-3xl px-4 sm:px-6 space-y-6 pt-4 sm:pt-6">
 
         {{-- ============================================================= --}}
         {{-- STATE KETIKA KERANJANG KOSONG                                 --}}
         {{-- ============================================================= --}}
-        <div x-show="cart.length === 0" x-cloak class="bg-white border border-[#EDE8E0] rounded-3xl p-8 sm:p-12 text-center space-y-4 my-8 shadow-xs">
-            <div class="w-16 h-16 rounded-full bg-[#FAF7F2] text-[#775533] flex items-center justify-center mx-auto">
+        <div x-show="cart.length === 0" x-cloak class="bg-[#F2F5E2] border border-[#E3DEA4] rounded-3xl p-8 sm:p-12 text-center space-y-4 my-8 shadow-soft">
+            <div class="w-16 h-16 rounded-full bg-[#E3DEA4]/40 text-[#775533] flex items-center justify-center mx-auto">
                 <svg class="w-8 h-8 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.8">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -96,7 +96,7 @@
             </div>
             <div>
                 <a href="{{ route('pelanggan.menu', array_filter(['meja' => $tableNumber])) }}"
-                   class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-white text-xs sm:text-sm font-semibold transition-all shadow-md">
+                   class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] text-xs sm:text-sm font-semibold transition-all shadow-md">
                     <span>Lihat Daftar Menu</span>
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -130,9 +130,9 @@
             <!-- List Item Keranjang -->
             <div class="space-y-3">
                 <template x-for="(item, index) in cart" :key="index">
-                    <div class="p-3.5 sm:p-4 rounded-2xl bg-white border border-[#EDE8E0] shadow-2xs flex items-start gap-3 sm:gap-4 transition-all hover:border-[#D4954D]/40">
+                    <div class="p-3.5 sm:p-4 rounded-2xl bg-[#F2F5E2] border border-[#E3DEA4]/80 shadow-soft flex items-start gap-3 sm:gap-4 transition-all hover:border-[#D4954D]/50">
                         <!-- Foto Menu -->
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-stone-100 overflow-hidden shrink-0 border border-stone-200/60">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-[#E3DEA4]/25 overflow-hidden shrink-0 border border-[#E3DEA4]/60">
                             <template x-if="item.foto">
                                 <img :src="item.foto" :alt="item.nama" class="w-full h-full object-cover">
                             </template>
@@ -177,17 +177,17 @@
                                 </div>
 
                                 <!-- Kontrol Edit Qty (+ / -) yang Jelas -->
-                                <div class="flex items-center gap-2 bg-[#FAF7F2] p-1 rounded-full border border-[#EDE8E0]">
+                                <div class="flex items-center gap-2 bg-[#E3DEA4]/30 p-1 rounded-full border border-[#E3DEA4]">
                                     <button type="button"
                                             @click="updateQty(index, -1)"
-                                            class="w-7 h-7 rounded-full bg-white text-[#290024] hover:bg-stone-100 active:scale-95 flex items-center justify-center font-bold text-sm shadow-2xs transition-all"
+                                            class="w-7 h-7 rounded-full bg-[#F2F5E2] text-[#290024] hover:bg-[#E3DEA4]/50 active:scale-95 flex items-center justify-center font-bold text-sm shadow-2xs transition-all"
                                             aria-label="Kurangi 1">
                                         -
                                     </button>
                                     <span class="text-xs font-bold text-[#290024] w-6 text-center" x-text="item.jumlah"></span>
                                     <button type="button"
                                             @click="updateQty(index, 1)"
-                                            class="w-7 h-7 rounded-full bg-white text-[#290024] hover:bg-stone-100 active:scale-95 flex items-center justify-center font-bold text-sm shadow-2xs transition-all"
+                                            class="w-7 h-7 rounded-full bg-[#F2F5E2] text-[#290024] hover:bg-[#E3DEA4]/50 active:scale-95 flex items-center justify-center font-bold text-sm shadow-2xs transition-all"
                                             aria-label="Tambah 1">
                                         +
                                     </button>
@@ -211,7 +211,7 @@
             </div>
 
             <!-- Ringkasan Subtotal Tahap 1 -->
-            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-[#EDE8E0] shadow-2xs space-y-2 text-xs">
+            <div class="bg-[#F2F5E2] p-4 sm:p-5 rounded-2xl border border-[#E3DEA4]/80 shadow-soft space-y-2 text-xs">
                 <div class="flex items-center justify-between text-[#775533]">
                     <span>Total Item</span>
                     <span class="font-bold text-[#290024]"><span x-text="cartTotalItems"></span> porsi</span>
@@ -220,7 +220,7 @@
                     <span>Subtotal Menu</span>
                     <span class="font-bold text-[#290024]" x-text="formatRupiah(subtotal)"></span>
                 </div>
-                <div class="pt-2 border-t border-[#EDE8E0] text-[11px] text-stone-500">
+                <div class="pt-2 border-t border-[#E3DEA4]/60 text-[11px] text-[#775533]/70">
                     * Pengisian data pemesan dan pilihan metode pesanan akan diatur pada halaman selanjutnya.
                 </div>
             </div>
@@ -232,8 +232,8 @@
         <div x-show="cart.length > 0 && step === 2" x-cloak class="space-y-5">
 
             <!-- 1. DATA PELANGGAN (PALING ATAS) -->
-            <div class="bg-white p-4 sm:p-5 rounded-2xl border border-[#EDE8E0] shadow-2xs space-y-3.5">
-                <div class="pb-2 border-b border-[#EDE8E0] flex items-center justify-between">
+            <div class="bg-[#F2F5E2] p-4 sm:p-5 rounded-2xl border border-[#E3DEA4]/80 shadow-soft space-y-3.5">
+                <div class="pb-2 border-b border-[#E3DEA4]/60 flex items-center justify-between">
                     <h2 class="font-serif text-sm sm:text-base font-bold text-[#290024] flex items-center gap-2">
                         <svg class="w-4 h-4 stroke-[#775533]" fill="none" viewBox="0 0 24 24" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -253,27 +253,27 @@
                                x-model="customerName"
                                placeholder="Masukkan nama lengkap atau panggilan..."
                                required
-                               class="w-full bg-[#FAF7F2] text-xs p-3 rounded-xl border border-[#EDE8E0] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]">
+                               class="w-full bg-white/80 text-xs p-3 rounded-xl border border-[#E3DEA4] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]">
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-[#290024] mb-1">
-                            Nomor WhatsApp / HP <span class="text-stone-400 font-normal">(Opsional)</span>
+                            Nomor WhatsApp / HP <span class="text-[#775533]/70 font-normal">(Opsional)</span>
                         </label>
                         <input type="tel"
                                x-model="customerPhone"
                                placeholder="Contoh: 081234567890"
-                               class="w-full bg-[#FAF7F2] text-xs p-3 rounded-xl border border-[#EDE8E0] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]">
+                               class="w-full bg-white/80 text-xs p-3 rounded-xl border border-[#E3DEA4] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]">
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-[#290024] mb-1">
-                            Catatan Pesanan <span class="text-stone-400 font-normal">(Opsional)</span>
+                            Catatan Pesanan <span class="text-[#775533]/70 font-normal">(Opsional)</span>
                         </label>
                         <textarea x-model="orderNotes"
                                   rows="2"
                                   placeholder="Contoh: Tolong sendok garpu disiapkan, disajikan bersamaan..."
-                                  class="w-full bg-[#FAF7F2] text-xs p-3 rounded-xl border border-[#EDE8E0] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]"></textarea>
+                                  class="w-full bg-white/80 text-xs p-3 rounded-xl border border-[#E3DEA4] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]"></textarea>
                     </div>
                 </div>
             </div>
@@ -290,18 +290,18 @@
                             @click="setOrderType('dine_in')"
                             class="p-3 sm:p-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center text-center cursor-pointer min-h-[96px] focus:outline-none"
                             :class="orderType === 'dine_in'
-                                ? 'border-[#290024] bg-[#290024] text-white shadow-sm ring-1 ring-[#D4954D]/50'
-                                : 'border-[#EDE8E0] bg-white text-[#290024] hover:bg-[#FAF7F2]'">
+                                ? 'border-[#290024] bg-[#290024] text-[#F2F5E2] shadow-sm ring-1 ring-[#D4954D]/50'
+                                : 'border-[#E3DEA4] bg-[#F2F5E2] text-[#290024] hover:bg-[#E3DEA4]/30'">
 
                         <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-colors shrink-0"
-                             :class="orderType === 'dine_in' ? 'bg-[#D4954D] text-[#290024]' : 'bg-[#FAF7F2] text-[#290024] border border-[#EDE8E0]'">
+                             :class="orderType === 'dine_in' ? 'bg-[#D4954D] text-[#290024]' : 'bg-[#E3DEA4]/40 text-[#290024] border border-[#E3DEA4]'">
                             <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                             </svg>
                         </div>
 
                         <span class="font-bold text-xs sm:text-sm leading-tight"
-                              :class="orderType === 'dine_in' ? 'text-white' : 'text-[#290024]'">
+                              :class="orderType === 'dine_in' ? 'text-[#F2F5E2]' : 'text-[#290024]'">
                             Dine In
                         </span>
                         <span class="text-[10px] mt-0.5 leading-tight"
@@ -315,18 +315,18 @@
                             @click="setOrderType('take_away')"
                             class="p-3 sm:p-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center text-center cursor-pointer min-h-[96px] focus:outline-none"
                             :class="orderType === 'take_away'
-                                ? 'border-[#290024] bg-[#290024] text-white shadow-sm ring-1 ring-[#D4954D]/50'
-                                : 'border-[#EDE8E0] bg-white text-[#290024] hover:bg-[#FAF7F2]'">
+                                ? 'border-[#290024] bg-[#290024] text-[#F2F5E2] shadow-sm ring-1 ring-[#D4954D]/50'
+                                : 'border-[#E3DEA4] bg-[#F2F5E2] text-[#290024] hover:bg-[#E3DEA4]/30'">
 
                         <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-colors shrink-0"
-                             :class="orderType === 'take_away' ? 'bg-[#D4954D] text-[#290024]' : 'bg-[#FAF7F2] text-[#290024] border border-[#EDE8E0]'">
+                             :class="orderType === 'take_away' ? 'bg-[#D4954D] text-[#290024]' : 'bg-[#E3DEA4]/40 text-[#290024] border border-[#E3DEA4]'">
                             <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
                         </div>
 
                         <span class="font-bold text-xs sm:text-sm leading-tight"
-                              :class="orderType === 'take_away' ? 'text-white' : 'text-[#290024]'">
+                              :class="orderType === 'take_away' ? 'text-[#F2F5E2]' : 'text-[#290024]'">
                             Take Away
                         </span>
                         <span class="text-[10px] mt-0.5 leading-tight"
@@ -338,7 +338,7 @@
             </div>
 
             <!-- Catatan Informasi Pembayaran Ringkas -->
-            <div class="px-3 py-2 rounded-xl bg-stone-50 border border-stone-200/70 text-[11px] text-stone-500 text-center">
+            <div class="px-3 py-2 rounded-xl bg-[#E3DEA4]/30 border border-[#E3DEA4] text-[11px] text-[#775533] text-center">
                 * Pembayaran dilakukan di kasir saat mengambil atau setelah selesai santap (Tunai, QRIS, Kartu Debit).
             </div>
         </div>
@@ -350,7 +350,7 @@
     {{-- ============================================================= --}}
     <div x-show="cart.length > 0"
          x-cloak
-         class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#EDE8E0] px-4 py-3 sm:py-3.5 shadow-[0_-8px_30px_rgba(0,0,0,0.06)]">
+         class="fixed bottom-0 inset-x-0 z-40 bg-[#F2F5E2]/95 backdrop-blur-md border-t border-[#E3DEA4] px-4 py-3 sm:py-3.5 shadow-[0_-8px_30px_rgba(41,0,36,0.08)]">
         <div class="max-w-3xl mx-auto flex items-center justify-between gap-3">
 
             <!-- Kiri: Total Pesanan + Tombol Panah Kecil untuk Perlebar Halaman / Rincian -->
@@ -362,7 +362,7 @@
                         <!-- Tombol panah kecil untuk perlebar / lihat rincian pesanan -->
                         <button type="button"
                                 @click="showDetails = !showDetails"
-                                class="w-4 h-4 rounded-full bg-[#FAF7F2] hover:bg-[#EDE8E0] text-[#290024] inline-flex items-center justify-center transition-transform duration-200"
+                                class="w-4 h-4 rounded-full bg-[#E3DEA4]/40 hover:bg-[#E3DEA4] text-[#290024] inline-flex items-center justify-center transition-transform duration-200"
                                 :class="showDetails ? 'rotate-180' : ''"
                                 aria-label="Lihat rincian pesanan">
                             <svg class="w-2.5 h-2.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="3">
@@ -448,10 +448,10 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="translate-y-0"
          x-transition:leave-end="translate-y-full"
-         class="fixed inset-x-0 bottom-0 z-50 bg-white rounded-t-3xl border-t border-[#EDE8E0] shadow-2xl max-h-[82vh] flex flex-col">
+         class="fixed inset-x-0 bottom-0 z-50 bg-[#F2F5E2] rounded-t-3xl border-t border-[#E3DEA4] shadow-2xl max-h-[82vh] flex flex-col">
 
         <!-- Header Drawer dengan Tombol Panah Kecil untuk Tutup -->
-        <div class="px-5 py-3.5 border-b border-[#EDE8E0] flex items-center justify-between bg-white rounded-t-3xl sticky top-0 z-10">
+        <div class="px-5 py-3.5 border-b border-[#E3DEA4] flex items-center justify-between bg-[#F2F5E2] rounded-t-3xl sticky top-0 z-10">
             <div>
                 <h3 class="font-serif text-sm sm:text-base font-bold text-[#290024]">Rincian Pesanan</h3>
                 <p class="text-[11px] text-[#775533]">
@@ -462,7 +462,7 @@
             <!-- Tombol panah kecil untuk tutup rincian (kecil aa) -->
             <button type="button"
                     @click="showDetails = false"
-                    class="w-6 h-6 rounded-full bg-[#FAF7F2] hover:bg-stone-200 text-[#290024] flex items-center justify-center transition-colors shadow-2xs"
+                    class="w-6 h-6 rounded-full bg-[#E3DEA4]/40 hover:bg-[#E3DEA4] text-[#290024] flex items-center justify-center transition-colors shadow-2xs"
                     aria-label="Tutup rincian">
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -475,11 +475,11 @@
             <!-- List Items -->
             <div class="space-y-2">
                 <template x-for="(item, idx) in cart" :key="idx">
-                    <div class="flex items-start justify-between py-1.5 border-b border-[#EDE8E0]/60 last:border-0">
+                    <div class="flex items-start justify-between py-1.5 border-b border-[#E3DEA4]/60 last:border-0">
                         <div class="min-w-0 pr-3">
                             <div class="font-bold text-[#290024] text-xs truncate" x-text="item.nama"></div>
                             <div x-show="item.varian_nama" class="text-[10px] text-[#775533]" x-text="'Varian: ' + item.varian_nama"></div>
-                            <div class="text-[11px] text-stone-500" x-text="item.jumlah + 'x @ ' + formatRupiah(item.harga)"></div>
+                            <div class="text-[11px] text-[#775533]/70" x-text="item.jumlah + 'x @ ' + formatRupiah(item.harga)"></div>
                         </div>
                         <div class="font-serif font-bold text-[#290024] shrink-0 text-xs" x-text="formatRupiah(item.harga * item.jumlah)"></div>
                     </div>
@@ -487,7 +487,7 @@
             </div>
 
             <!-- Rincian Perhitungan Subtotal, Pajak, Total -->
-            <div class="bg-[#FAF7F2] p-3 rounded-xl border border-[#EDE8E0] space-y-1.5">
+            <div class="bg-[#E3DEA4]/30 p-3 rounded-xl border border-[#E3DEA4] space-y-1.5">
                 <div class="flex items-center justify-between text-[#775533]">
                     <span>Subtotal Menu</span>
                     <span class="font-bold text-[#290024]" x-text="formatRupiah(subtotal)"></span>
@@ -496,7 +496,7 @@
                     <span>Pajak (PB1 10%)</span>
                     <span class="font-bold text-[#290024]" x-text="formatRupiah(tax)"></span>
                 </div>
-                <div class="pt-2 border-t border-[#EDE8E0] flex items-center justify-between font-bold text-sm text-[#290024]">
+                <div class="pt-2 border-t border-[#E3DEA4] flex items-center justify-between font-bold text-sm text-[#290024]">
                     <span>Total Pesanan</span>
                     <span class="font-serif font-black text-base text-[#290024]" x-text="formatRupiah(total)"></span>
                 </div>
@@ -504,7 +504,7 @@
         </div>
 
         <!-- Bagian Bawah Drawer: Total & Tombol Lanjut / Pesan Sekarang -->
-        <div class="p-4 border-t border-[#EDE8E0] bg-white flex items-center justify-between gap-3">
+        <div class="p-4 border-t border-[#E3DEA4] bg-[#F2F5E2] flex items-center justify-between gap-3">
             <div>
                 <span class="text-[10px] text-[#775533] block leading-none">Total:</span>
                 <span class="font-serif font-bold text-base text-[#290024]" x-text="formatRupiah(total)"></span>
@@ -514,7 +514,7 @@
                 <template x-if="step === 1">
                     <button type="button"
                             @click="showDetails = false; goToStep(2)"
-                            class="px-6 py-2 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-white text-xs font-bold tracking-wide transition-all shadow-md flex items-center gap-1.5">
+                            class="px-6 py-2 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] text-xs font-bold tracking-wide transition-all shadow-md flex items-center gap-1.5">
                         <span>Lanjut</span>
                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <line x1="5" y1="12" x2="19" y2="12"></line>

@@ -2,19 +2,19 @@
 
 @section('title', 'Nota Pesanan ' . $order->order_code . ' - ' . ($landing['cafe']['name'] ?? 'ABS Cafe'))
 
-@section('body_class', 'bg-white text-[#290024]')
-@section('body_style', 'background-color: #ffffff !important; color: #290024 !important;')
-@section('main_class', 'bg-white')
+@section('body_class', 'bg-[#F2F5E2] text-[#290024]')
+@section('body_style', 'background-color: #F2F5E2 !important; color: #290024 !important;')
+@section('main_class', 'bg-[#F2F5E2]')
 
 @section('header')
-<header class="sticky top-0 inset-x-0 z-30 bg-white border-b border-[#F0ECE4]" style="background-color: #ffffff !important;">
+<header class="sticky top-0 inset-x-0 z-30 bg-[#F2F5E2] border-b border-[#E3DEA4]/80" style="background-color: #F2F5E2 !important;">
     <div class="mx-auto max-w-2xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         <a href="{{ route('pelanggan.beranda') }}" class="flex items-center gap-2">
             <x-logo :show-text="false" size="sm" />
             <span class="font-serif font-bold text-base text-[#290024]">{{ $landing['cafe']['name'] ?? 'ABS Cafe' }}</span>
         </a>
 
-        <a href="{{ route('pelanggan.menu') }}" class="text-xs font-semibold text-[#775533] hover:text-[#290024] px-3 py-1.5 rounded-full hover:bg-stone-100 transition-colors">
+        <a href="{{ route('pelanggan.menu') }}" class="text-xs font-semibold text-[#775533] hover:text-[#290024] px-3 py-1.5 rounded-full hover:bg-[#E3DEA4]/40 transition-colors">
             Pesan Menu Lain
         </a>
     </div>
@@ -22,7 +22,8 @@
 @endsection
 
 @section('content')
-<section class="min-h-screen bg-[#FAF7F2]/50 pt-6 pb-24 px-4 sm:px-6"
+<section class="min-h-screen bg-[#F2F5E2] pt-6 pb-24 px-4 sm:px-6"
+         style="background-color: #F2F5E2 !important;"
          x-data="customerOrderWatcher('{{ $order->order_code }}', '{{ $order->payment_status }}', '{{ $order->order_status }}')"
          x-init="startPolling()">
     <div class="max-w-md mx-auto space-y-5">
@@ -31,7 +32,7 @@
         {{-- BANNER STATUS 1: JIKA BELUM LUNAS (SILAKAN BAYAR DI KASIR)                 --}}
         {{-- ========================================================================= --}}
         <div x-show="paymentStatus !== 'lunas'"
-             class="text-center p-6 rounded-3xl bg-white border-2 border-amber-300 shadow-md space-y-3">
+             class="text-center p-6 rounded-3xl bg-[#F2F5E2] border-2 border-amber-400/80 shadow-soft space-y-3">
             <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mx-auto shadow-inner animate-pulse">
                 <svg class="w-8 h-8 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="5" width="20" height="14" rx="2"></rect>
@@ -53,7 +54,7 @@
             </div>
 
             <!-- Kode Pesanan Box -->
-            <div class="p-3.5 rounded-2xl bg-[#FAF7F2] border border-[#EDE8E0] space-y-1">
+            <div class="p-3.5 rounded-2xl bg-[#E3DEA4]/30 border border-[#E3DEA4] space-y-1">
                 <div class="text-[10px] font-bold uppercase tracking-wider text-[#775533]">Kode Pesanan Anda</div>
                 <div class="font-mono text-3xl font-black text-[#290024] tracking-widest select-all">
                     {{ $order->order_code }}
@@ -69,7 +70,7 @@
         {{-- ========================================================================= --}}
         <div x-show="paymentStatus === 'lunas'"
              x-cloak
-             class="text-center p-6 rounded-3xl bg-emerald-50/80 border-2 border-emerald-400 shadow-md space-y-3">
+             class="text-center p-6 rounded-3xl bg-emerald-50/80 border-2 border-emerald-400 shadow-soft space-y-3">
             <div class="w-16 h-16 rounded-full bg-emerald-500 text-white flex items-center justify-center mx-auto shadow-md">
                 <svg class="w-9 h-9 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"></polyline>
@@ -114,9 +115,9 @@
         {{-- ========================================================================= --}}
         {{-- KARTU NOTA / STRUK RINCIAN PESANAN CUSTOMER                              --}}
         {{-- ========================================================================= --}}
-        <div class="bg-white rounded-3xl border border-[#EDE8E0] shadow-sm overflow-hidden">
+        <div class="bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
             <!-- Header Nota -->
-            <div class="px-5 py-4 border-b border-dashed border-[#D4954D]/40 bg-[#FAF7F2] text-center space-y-1">
+            <div class="px-5 py-4 border-b border-dashed border-[#D4954D]/40 bg-[#E3DEA4]/30 text-center space-y-1">
                 <h2 class="font-serif font-black text-base text-[#290024] tracking-wide uppercase">
                     Nota Pesanan Pelanggan
                 </h2>
@@ -126,7 +127,7 @@
             </div>
 
             <!-- Identitas Pesanan -->
-            <div class="px-5 py-3.5 bg-stone-50/50 border-b border-[#EDE8E0] text-xs space-y-1.5 text-[#775533]">
+            <div class="px-5 py-3.5 bg-[#E3DEA4]/20 border-b border-[#E3DEA4]/60 text-xs space-y-1.5 text-[#775533]">
                 <div class="flex justify-between items-center">
                     <span>Nama Pelanggan:</span>
                     <span class="font-bold text-[#290024]">{{ $order->customer_name }}</span>
@@ -192,7 +193,7 @@
             </div>
 
             <!-- Total Perhitungan Biaya -->
-            <div class="px-5 py-4 bg-[#FAF7F2] border-t border-[#EDE8E0] space-y-1.5 text-xs text-[#775533]">
+            <div class="px-5 py-4 bg-[#E3DEA4]/25 border-t border-[#E3DEA4] space-y-1.5 text-xs text-[#775533]">
                 <div class="flex items-center justify-between">
                     <span>Subtotal Menu</span>
                     <span class="font-semibold text-[#290024]">Rp {{ number_format($order->subtotal, 0, ',', '.') }}</span>
@@ -207,14 +208,14 @@
                         <span class="font-semibold">- Rp {{ number_format($order->discount, 0, ',', '.') }}</span>
                     </div>
                 @endif
-                <div class="flex items-center justify-between pt-2.5 border-t border-[#EDE8E0] text-sm">
+                <div class="flex items-center justify-between pt-2.5 border-t border-[#E3DEA4] text-sm">
                     <span class="font-bold text-[#290024]">Total Tagihan</span>
                     <span class="font-serif font-black text-lg text-[#290024]">Rp {{ number_format($order->total, 0, ',', '.') }}</span>
                 </div>
             </div>
 
             <!-- Footer Nota -->
-            <div class="p-4 bg-white border-t border-[#EDE8E0] text-center text-[11px] text-[#775533] space-y-1">
+            <div class="p-4 bg-[#F2F5E2] border-t border-[#E3DEA4]/60 text-center text-[11px] text-[#775533] space-y-1">
                 <template x-if="paymentStatus !== 'lunas'">
                     <p class="font-semibold text-amber-800">
                         Silakan lakukan pembayaran ke kasir. Halaman ini akan otomatis terbarui begitu pembayaran dikonfirmasi kasir.
@@ -231,7 +232,7 @@
         <!-- Tombol Aksi Bawah -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <a href="{{ route('pelanggan.menu', array_filter(['meja' => $order->table_number])) }}"
-               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-white text-xs sm:text-sm font-semibold transition-all shadow-md">
+               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] text-xs sm:text-sm font-semibold transition-all shadow-md">
                 <span>Pesan Menu Lainnya</span>
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -240,7 +241,7 @@
             </a>
 
             <a href="{{ route('pelanggan.beranda') }}"
-               class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-full bg-white hover:bg-stone-100 text-[#290024] border border-[#EDE8E0] text-xs sm:text-sm font-semibold transition-colors">
+               class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#F2F5E2] hover:bg-[#E3DEA4]/40 text-[#290024] border border-[#E3DEA4] text-xs sm:text-sm font-semibold transition-colors">
                 Kembali ke Beranda
             </a>
         </div>

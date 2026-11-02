@@ -24,11 +24,11 @@
     ];
 @endphp
 
-<!-- Kartu Menu Pelanggan ABS Cafe (Light / White Background Theme) -->
-<div class="bg-white rounded-2xl border border-[#EDE8E0] p-2.5 sm:p-3 shadow-xs hover:shadow-md hover:border-[#D4954D]/50 transition-all duration-200 flex flex-col justify-between group">
+<!-- Kartu Menu Pelanggan ABS Cafe (Theme #F2F5E2) -->
+<div class="bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/80 p-2.5 sm:p-3 shadow-soft hover:shadow-md hover:border-[#D4954D]/70 transition-all duration-200 flex flex-col justify-between group">
     <div>
         <!-- Thumbnail Foto Persegi (Square) -->
-        <div class="relative w-full aspect-square rounded-xl overflow-hidden bg-[#F5F2EB] border border-[#EDE8E0]/70 mb-2 sm:mb-2.5 flex items-center justify-center">
+        <div class="relative w-full aspect-square rounded-xl overflow-hidden bg-[#E3DEA4]/25 border border-[#E3DEA4]/60 mb-2 sm:mb-2.5 flex items-center justify-center">
             @if($imageUrl)
                 <img src="{{ $imageUrl }}"
                      alt="{{ $menu->name }}"

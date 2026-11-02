@@ -115,7 +115,7 @@
     @endif
 
     <!-- Konten Utama -->
-    <main id="main-content" class="flex-1 w-full" tabindex="-1">
+    <main id="main-content" class="flex-1 w-full @yield('main_class', '')" tabindex="-1">
         @yield('content')
     </main>
 

@@ -3,17 +3,17 @@
 @section('title', 'Menu - ' . ($landing['cafe']['name'] ?? 'ABS Cafe'))
 @section('meta_description', 'Jelajahi menu kopi pilihan, minuman segar, dan makanan lezat di ' . ($landing['cafe']['name'] ?? 'ABS Cafe') . ' Tulungagung.')
 
-@section('body_class', 'bg-white text-[#290024]')
-@section('body_style', 'background-color: #ffffff !important; color: #290024 !important;')
-@section('main_class', 'bg-white')
+@section('body_class', 'bg-[#F2F5E2] text-[#290024]')
+@section('body_style', 'background-color: #F2F5E2 !important; color: #290024 !important;')
+@section('main_class', 'bg-[#F2F5E2]')
 
 {{-- Header Khusus Halaman Menu: Logo + "ABS Cafe" di Kiri --}}
 @section('header')
 <header x-data="{ isScrolled: false }"
         x-init="isScrolled = (window.pageYOffset > 10)"
         @scroll.window="isScrolled = (window.pageYOffset > 10)"
-        :class="isScrolled ? 'bg-white/95 backdrop-blur-md border-b border-[#EDE8E0] shadow-xs' : 'bg-white border-b border-[#F0ECE4]'"
-        style="background-color: #ffffff !important;"
+        :class="isScrolled ? 'bg-[#F2F5E2]/95 backdrop-blur-md border-b border-[#E3DEA4]/80 shadow-xs' : 'bg-[#F2F5E2] border-b border-[#E3DEA4]/60'"
+        style="background-color: #F2F5E2 !important;"
         class="sticky top-0 inset-x-0 z-30 transition-all duration-200">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center gap-4">
         <!-- Logo & Branding di Kiri -->
@@ -32,24 +32,32 @@
 @section('content')
 <div x-data="menuPage()"
      x-init="initPage()"
-     style="background-color: #ffffff !important;"
-     class="min-h-screen bg-white pb-28 pt-2 sm:pt-4">
+     style="background-color: #F2F5E2 !important;"
+     class="min-h-screen bg-[#F2F5E2] pb-28 pt-2 sm:pt-4">
 
     <!-- Kontainer Utama -->
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
 
         <!-- Judul Besar & Subjudul -->
         <div class="space-y-1">
-            <h1 class="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-[#290024] tracking-tight">
-                Menu
-            </h1>
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+                <h1 class="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-[#290024] tracking-tight">
+                    Menu
+                </h1>
+                @if($tableNumber)
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E3DEA4]/50 border border-[#E3DEA4] text-[#290024] text-xs font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-[#D4954D]"></span>
+                        <span>Pesan di <strong>Meja #{{ $tableNumber }}</strong></span>
+                    </div>
+                @endif
+            </div>
             <p class="font-sans text-xs sm:text-sm text-[#775533] font-medium tracking-wide">
                 Rasa Yang Selalu Bikin Rindu
             </p>
         </div>
 
         <!-- Bar Pencarian Real-Time (Client-Side Instan) -->
-        <div class="relative bg-white border border-[#EDE8E0] rounded-2xl sm:rounded-full p-2 sm:p-2.5 shadow-xs">
+        <div class="relative bg-[#F2F5E2] border border-[#E3DEA4] rounded-2xl sm:rounded-full p-2 sm:p-2.5 shadow-soft">
             <div class="flex items-center gap-2">
                 <div class="pl-2.5 text-[#775533]">
                     <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -67,7 +75,7 @@
                         x-show="searchQuery.length > 0"
                         x-cloak
                         @click="searchQuery = ''; $refs.searchInput.focus()"
-                        class="flex items-center justify-center w-7 h-7 rounded-full text-[#775533] hover:text-[#290024] hover:bg-stone-100 transition-colors shrink-0"
+                        class="flex items-center justify-center w-7 h-7 rounded-full text-[#775533] hover:text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors shrink-0"
                         aria-label="Hapus pencarian">
                     <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -87,7 +95,7 @@
                 <button type="button"
                         @click="setCategory('semua')"
                         class="category-pill shrink-0 inline-flex items-center justify-center px-5 sm:px-6 py-2 rounded-full text-xs sm:text-sm transition-all shadow-xs"
-                        :class="activeCategory === 'semua' ? 'category-pill-active bg-[#290024] text-white font-semibold border border-[#290024]' : 'bg-white hover:bg-[#F5F2EB] text-[#5C4033] font-medium border border-[#EDE8E0]'"
+                        :class="activeCategory === 'semua' ? 'category-pill-active bg-[#290024] text-[#F2F5E2] font-semibold border border-[#290024]' : 'bg-[#F2F5E2] hover:bg-[#E3DEA4]/50 text-[#775533] font-medium border border-[#E3DEA4]'"
                         role="tab"
                         :aria-selected="activeCategory === 'semua' ? 'true' : 'false'">
                     Semua
@@ -98,7 +106,7 @@
                     <button type="button"
                             @click="setCategory('{{ $category->slug }}')"
                             class="category-pill shrink-0 inline-flex items-center justify-center px-5 sm:px-6 py-2 rounded-full text-xs sm:text-sm transition-all shadow-xs"
-                            :class="activeCategory === '{{ $category->slug }}' ? 'category-pill-active bg-[#290024] text-white font-semibold border border-[#290024]' : 'bg-white hover:bg-[#F5F2EB] text-[#5C4033] font-medium border border-[#EDE8E0]'"
+                            :class="activeCategory === '{{ $category->slug }}' ? 'category-pill-active bg-[#290024] text-[#F2F5E2] font-semibold border border-[#290024]' : 'bg-[#F2F5E2] hover:bg-[#E3DEA4]/50 text-[#775533] font-medium border border-[#E3DEA4]'"
                             role="tab"
                             :aria-selected="activeCategory === '{{ $category->slug }}' ? 'true' : 'false'">
                         {{ $category->name }}
@@ -132,10 +140,10 @@
             <template x-if="filteredMenus.length > 0">
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
                     <template x-for="menu in filteredMenus" :key="menu.id">
-                        <div class="bg-white rounded-2xl border border-[#EDE8E0] p-2.5 sm:p-3 shadow-xs hover:shadow-md hover:border-[#D4954D]/50 transition-all duration-200 flex flex-col justify-between group">
+                        <div class="bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/80 p-2.5 sm:p-3 shadow-soft hover:shadow-md hover:border-[#D4954D]/70 transition-all duration-200 flex flex-col justify-between group">
                             <div>
                                 <!-- Thumbnail Foto Persegi -->
-                                <div class="relative w-full aspect-square rounded-xl overflow-hidden bg-[#F5F2EB] border border-[#EDE8E0]/70 mb-2 sm:mb-2.5 flex items-center justify-center">
+                                <div class="relative w-full aspect-square rounded-xl overflow-hidden bg-[#E3DEA4]/25 border border-[#E3DEA4]/60 mb-2 sm:mb-2.5 flex items-center justify-center">
                                     <template x-if="menu.image">
                                         <img :src="menu.image"
                                              :alt="menu.name"
@@ -178,7 +186,7 @@
                                 <template x-if="menu.is_habis">
                                     <button type="button"
                                             disabled
-                                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-stone-100 text-stone-400 flex items-center justify-center cursor-not-allowed opacity-50 shrink-0">
+                                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#E3DEA4]/30 text-[#775533]/50 flex items-center justify-center cursor-not-allowed opacity-50 shrink-0">
                                         <svg class="w-3.5 h-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                             <line x1="12" y1="5" x2="12" y2="19"></line>
                                             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -189,7 +197,7 @@
                                     <button type="button"
                                             @click="openBottomSheet(menu)"
                                             :aria-label="'Pilih varian dan tambah ' + menu.name + ' ke keranjang'"
-                                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#290024] text-white hover:bg-[#D4954D] hover:text-[#290024] active:scale-90 flex items-center justify-center shrink-0 transition-all shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#290024]">
+                                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#290024] text-[#F2F5E2] hover:bg-[#D4954D] hover:text-[#290024] active:scale-90 flex items-center justify-center shrink-0 transition-all shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#290024]">
                                         <svg class="w-3.5 h-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                             <line x1="12" y1="5" x2="12" y2="19"></line>
                                             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -204,8 +212,8 @@
 
             <!-- State Kosong / Tidak Ditemukan -->
             <template x-if="filteredMenus.length === 0">
-                <div class="bg-white border border-[#EDE8E0] rounded-3xl p-8 sm:p-12 text-center max-w-md mx-auto my-8 shadow-xs">
-                    <div class="w-12 h-12 rounded-full bg-[#F5F2EB] flex items-center justify-center text-[#775533] mx-auto mb-4">
+                <div class="bg-[#F2F5E2] border border-[#E3DEA4] rounded-3xl p-8 sm:p-12 text-center max-w-md mx-auto my-8 shadow-soft">
+                    <div class="w-12 h-12 rounded-full bg-[#E3DEA4]/40 flex items-center justify-center text-[#775533] mx-auto mb-4">
                         <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -314,16 +322,16 @@
                  x-transition:leave="transition ease-in duration-200 transform"
                  x-transition:leave-start="translate-y-0 sm:translate-y-0 sm:opacity-100 sm:scale-100"
                  x-transition:leave-end="translate-y-full sm:translate-y-4 sm:opacity-0 sm:scale-95"
-                 class="pointer-events-auto w-full sm:max-w-[560px] max-h-[90vh] bg-white rounded-t-3xl sm:rounded-3xl border border-[#EDE8E0] shadow-2xl flex flex-col overflow-hidden">
+                 class="pointer-events-auto w-full sm:max-w-[560px] max-h-[90vh] bg-[#F2F5E2] rounded-t-3xl sm:rounded-3xl border border-[#E3DEA4] shadow-2xl flex flex-col overflow-hidden">
 
                 <!-- Header Modal: Tombol Tutup -->
-                <div class="p-4 sm:p-5 pb-2 flex items-center justify-between border-b border-[#F0ECE4]">
+                <div class="p-4 sm:p-5 pb-2 flex items-center justify-between border-b border-[#E3DEA4]/60">
                     <span class="text-xs font-semibold text-[#775533] tracking-wide uppercase">
                         Detail Pesanan
                     </span>
                     <button type="button"
                             @click="closeBottomSheet()"
-                            class="w-8 h-8 rounded-full flex items-center justify-center text-[#290024] hover:bg-stone-100 transition-colors"
+                            class="w-8 h-8 rounded-full flex items-center justify-center text-[#290024] hover:bg-[#E3DEA4]/40 transition-colors"
                             aria-label="Tutup jendela">
                         <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -337,14 +345,14 @@
                     <template x-if="activeMenu">
                         <div class="space-y-4">
                             <!-- Foto Menu -->
-                            <div class="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-2xl overflow-hidden bg-[#F5F2EB] border border-[#EDE8E0] flex items-center justify-center">
+                            <div class="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-2xl overflow-hidden bg-[#E3DEA4]/25 border border-[#E3DEA4] flex items-center justify-center">
                                 <template x-if="activeMenu.image">
                                     <img :src="activeMenu.image"
                                          :alt="activeMenu.name"
                                          class="w-full h-full object-cover">
                                 </template>
                                 <template x-if="!activeMenu.image">
-                                    <div class="w-12 h-12 rounded-full bg-[#EAE4D9]/60 flex items-center justify-center text-[#775533]">
+                                    <div class="w-12 h-12 rounded-full bg-[#E3DEA4]/40 flex items-center justify-center text-[#775533]">
                                         <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                             <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
                                             <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
@@ -375,9 +383,9 @@
                                         <template x-for="variant in activeMenu.variants" :key="variant.id">
                                             <label class="relative flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer"
                                                    :class="{
-                                                       'border-[#290024] bg-[#F5F2EB] ring-2 ring-[#290024]/10 shadow-xs': selectedVariantId === variant.id && !variant.is_habis,
-                                                       'border-[#EDE8E0] bg-white hover:bg-[#FAF8F5]': selectedVariantId !== variant.id && !variant.is_habis,
-                                                       'opacity-50 cursor-not-allowed border-[#EDE8E0] bg-stone-50': variant.is_habis
+                                                       'border-[#290024] bg-[#E3DEA4]/40 ring-2 ring-[#290024]/10 shadow-xs': selectedVariantId === variant.id && !variant.is_habis,
+                                                       'border-[#E3DEA4] bg-[#F2F5E2] hover:bg-[#E3DEA4]/25': selectedVariantId !== variant.id && !variant.is_habis,
+                                                       'opacity-50 cursor-not-allowed border-[#E3DEA4]/50 bg-[#E3DEA4]/20': variant.is_habis
                                                    }">
                                                 <div class="flex items-center gap-3">
                                                     <input type="radio"
@@ -411,11 +419,11 @@
                                     <label class="text-xs font-bold text-[#290024] uppercase tracking-wide">
                                         Jumlah
                                     </label>
-                                    <div class="flex items-center gap-3 bg-[#F5F2EB] border border-[#EDE8E0] rounded-full p-1 shadow-xs">
+                                    <div class="flex items-center gap-3 bg-[#E3DEA4]/30 border border-[#E3DEA4] rounded-full p-1 shadow-xs">
                                         <button type="button"
                                                 @click="quantity > 1 ? quantity-- : null"
                                                 :disabled="quantity <= 1"
-                                                class="w-8 h-8 rounded-full flex items-center justify-center text-[#290024] hover:bg-white disabled:opacity-40 transition-colors"
+                                                class="w-8 h-8 rounded-full flex items-center justify-center text-[#290024] hover:bg-[#F2F5E2] disabled:opacity-40 transition-colors"
                                                 aria-label="Kurangi jumlah">
                                             <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                                 <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -425,7 +433,7 @@
                                               x-text="quantity"></span>
                                         <button type="button"
                                                 @click="quantity++"
-                                                class="w-8 h-8 rounded-full flex items-center justify-center text-[#290024] hover:bg-white transition-colors"
+                                                class="w-8 h-8 rounded-full flex items-center justify-center text-[#290024] hover:bg-[#F2F5E2] transition-colors"
                                                 aria-label="Tambah jumlah">
                                             <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                                 <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -444,7 +452,7 @@
                                               maxlength="150"
                                               rows="2"
                                               placeholder="Contoh: es sedikit, pisahkan sambal..."
-                                              class="w-full text-xs sm:text-sm p-3 rounded-xl bg-[#FAF8F5] border border-[#EDE8E0] focus:border-[#290024] focus:outline-none placeholder-[#775533]/50 text-[#290024] resize-none"></textarea>
+                                              class="w-full text-xs sm:text-sm p-3 rounded-xl bg-white/80 border border-[#E3DEA4] focus:border-[#290024] focus:outline-none placeholder-[#775533]/50 text-[#290024] resize-none"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -452,7 +460,7 @@
                 </div>
 
                 <!-- Bagian Bawah Modal: Total Harga & Tombol Tambah ke Keranjang -->
-                <div class="p-4 sm:p-5 pt-3 bg-[#FAF8F5] border-t border-[#EDE8E0] flex items-center justify-between gap-4">
+                <div class="p-4 sm:p-5 pt-3 bg-[#E3DEA4]/25 border-t border-[#E3DEA4] flex items-center justify-between gap-4">
                     <div>
                         <span class="block text-[11px] text-[#775533]">Total Harga</span>
                         <span class="font-serif font-bold text-base sm:text-lg text-[#290024]"
@@ -461,7 +469,7 @@
 
                     <button type="button"
                             @click="addToCart()"
-                            class="flex-1 max-w-[240px] inline-flex items-center justify-center gap-2 min-h-[44px] px-6 py-2.5 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-white font-semibold text-xs sm:text-sm tracking-wide transition-all shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#290024]">
+                            class="flex-1 max-w-[240px] inline-flex items-center justify-center gap-2 min-h-[44px] px-6 py-2.5 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] font-semibold text-xs sm:text-sm tracking-wide transition-all shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#290024]">
                         <span>Tambah ke Keranjang</span>
                     </button>
                 </div>
@@ -534,11 +542,11 @@
 @endsection
 
 @section('footer')
-<footer class="bg-white border-t border-[#EDE8E0] py-6 sm:py-8 text-center text-xs text-[#775533]" style="background-color: #ffffff !important;">
+<footer class="bg-[#F2F5E2] border-t border-[#E3DEA4]/80 py-6 sm:py-8 text-center text-xs text-[#775533]" style="background-color: #F2F5E2 !important;">
     <div class="max-w-4xl mx-auto px-4 space-y-1.5">
         <p class="font-serif font-bold text-[#290024]">{{ $landing['cafe']['name'] ?? 'ABS Cafe' }}</p>
         <p class="text-[11px] text-[#775533]/80">{{ $landing['cafe']['tagline'] ?? 'Good Coffee, Better Moments.' }}</p>
-        <p class="text-[10px] text-stone-400">&copy; {{ date('Y') }} Hak cipta dilindungi.</p>
+        <p class="text-[10px] text-[#775533]/60">&copy; {{ date('Y') }} Hak cipta dilindungi.</p>
     </div>
 </footer>
 @endsection
