@@ -53,7 +53,7 @@ class LandingPageCustomerTest extends TestCase
         $this->actingAs($kasir)->get('/')->assertOk()->assertSee('ABS Cafe');
     }
 
-    public function test_menu_and_reservasi_placeholder_pages_return_ok(): void
+    public function test_menu_and_reservasi_pages_return_ok(): void
     {
         $menuResponse = $this->get(route('pelanggan.menu'));
         $menuResponse->assertOk();
@@ -63,8 +63,8 @@ class LandingPageCustomerTest extends TestCase
 
         $reservasiResponse = $this->get(route('pelanggan.reservasi'));
         $reservasiResponse->assertOk();
-        $reservasiResponse->assertSee('Segera Hadir');
         $reservasiResponse->assertSee('Reservasi Meja');
+        $reservasiResponse->assertSee('Kondisi Meja Real-Time');
         $reservasiResponse->assertSee(route('pelanggan.beranda'));
     }
 

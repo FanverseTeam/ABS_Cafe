@@ -63,7 +63,12 @@ Route::middleware('noindex.staf')->group(function () {
 Route::get('/', [PelangganController::class, 'index'])->name('pelanggan.beranda');
 Route::get('/menu', [PelangganController::class, 'menu'])->name('pelanggan.menu');
 Route::get('/keranjang', [PelangganController::class, 'keranjang'])->name('pelanggan.keranjang');
+Route::post('/pesanan', [PelangganController::class, 'storePesanan'])->name('pelanggan.pesanan.store');
+Route::get('/pesanan/sukses/{code}', [PelangganController::class, 'orderSukses'])->name('pelanggan.pesanan.sukses');
 Route::get('/reservasi', [PelangganController::class, 'reservasi'])->name('pelanggan.reservasi');
+Route::post('/reservasi', [PelangganController::class, 'storeReservasi'])->name('pelanggan.reservasi.store');
+Route::get('/reservasi/meja-status', [PelangganController::class, 'tableStatusJson'])->name('pelanggan.reservasi.tables');
+Route::get('/reservasi/cek', [PelangganController::class, 'checkReservasi'])->name('pelanggan.reservasi.check');
 
 // robots.txt dilayani via route agar dapat diuji dan di-override per environment
 Route::get('/robots.txt', function () {
@@ -134,6 +139,9 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
     // 3. Meja
     Route::prefix('operasional')->name('operations.')->group(function () {
         Route::get('/', [OperationsController::class, 'index'])->name('index');
+        Route::post('/qr-setting', [OperationsController::class, 'updateQrSetting'])->name('qr_setting.update');
+        Route::get('/meja/cetak-semua-qr', [OperationsController::class, 'printAllQr'])->name('tables.print_all');
+        Route::get('/meja/{id}/cetak-qr', [OperationsController::class, 'printSingleQr'])->name('tables.print_single');
 
         Route::prefix('meja')->name('tables.')->group(function () {
             Route::post('/store', [OperationsController::class, 'storeTable'])->name('store');

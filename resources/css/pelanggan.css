@@ -3,11 +3,13 @@
 @source '../views/pelanggan/**/*.blade.php';
 
 @theme {
-    --color-*: initial;
-
     /* Tipografi */
     --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-serif: 'Noto Serif', Georgia, serif;
+
+    /* Warna Standar */
+    --color-white: #ffffff;
+    --color-black: #000000;
 
     /* Palet ABS Cafe */
     --color-beige: #F2F5E2;
@@ -57,7 +59,7 @@
     }
 
     body {
-        @apply antialiased bg-beige text-midnight;
+        @apply antialiased;
     }
 
     ::selection {

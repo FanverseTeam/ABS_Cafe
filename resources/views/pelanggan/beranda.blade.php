@@ -2,6 +2,9 @@
 
 @section('title', ($landing['cafe']['name'] ?? 'ABS Cafe') . ' - ' . ($landing['cafe']['tagline'] ?? 'Good Coffee, Better Moments.'))
 
+@section('body_class', 'bg-[#290024] text-[#F2F5E2]')
+@section('body_style', 'background-color: #290024 !important; color: #F2F5E2 !important;')
+
 @section('content')
 <!-- ======================================================================= -->
 <!-- 1. HERO SECTION                                                         -->
@@ -447,6 +450,44 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======================================================================= -->
+<!-- 5b. RESERVASI MEJA REAL-TIME BANNER                                    -->
+<!-- ======================================================================= -->
+<section class="relative py-16 sm:py-20 bg-gradient-to-b from-[#290024] via-[#33002D] to-[#290024] border-t border-[#D4954D]/20 overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#D4954D]/10 via-transparent to-transparent pointer-events-none"></div>
+    <div class="relative mx-auto max-w-5xl px-4 sm:px-6 text-center reveal-on-scroll">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold tracking-wider uppercase mb-4">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            Ketersediaan Meja Real-Time
+        </div>
+        <h2 class="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#F2F5E2] mb-4">
+            Ingin Bersantai Tanpa Khawatir Kehabisan Tempat?
+        </h2>
+        <p class="text-xs sm:text-sm md:text-base text-[#E3DEA4] leading-relaxed max-w-2xl mx-auto mb-8">
+            Pantau denah meja kafe secara langsung. Ketahui meja yang sedang terisi atau masih kosong secara real-time, lalu amankan reservasi Anda hanya dalam beberapa klik.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-4">
+            <a href="{{ route('pelanggan.reservasi') }}"
+               class="inline-flex items-center justify-center gap-2.5 min-h-[48px] px-8 py-3.5 rounded-full bg-[#D4954D] hover:bg-[#D4954D]/90 text-[#290024] font-bold text-sm tracking-wide transition-all duration-200 shadow-[0_6px_20px_rgba(212,149,77,0.35)] hover:shadow-[0_8px_25px_rgba(212,149,77,0.45)] hover:-translate-y-0.5">
+                <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>Lihat Meja & Reservasi Sekarang</span>
+                <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </a>
         </div>
     </div>
 </section>

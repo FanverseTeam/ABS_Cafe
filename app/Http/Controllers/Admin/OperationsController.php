@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use App\Models\CafeSetting;
 use App\Models\PaymentMethod;
 use App\Models\Table;
 use Illuminate\Http\Request;
@@ -32,8 +33,59 @@ class OperationsController extends Controller
         }
 
         $paymentMethods = $paymentQuery->orderBy('sort_order')->orderBy('name')->get();
+        $orderBaseUrl = CafeSetting::get('order_base_url', url('/menu'));
 
-        return view('admin.operations.index', compact('tables', 'paymentMethods'));
+        return view('admin.operations.index', compact('tables', 'paymentMethods', 'orderBaseUrl'));
+    }
+
+    /**
+     * Update Pengaturan Base URL QR Pemesanan Meja.
+     */
+    public function updateQrSetting(Request $request)
+    {
+        $request->validate([
+            'order_base_url' => 'nullable|string|max:255',
+        ]);
+
+        $url = trim((string) $request->input('order_base_url'));
+        if (empty($url)) {
+            $url = url('/menu');
+        }
+
+        CafeSetting::set('order_base_url', $url);
+
+        ActivityLog::create([
+            'user_name' => Auth::user()->name,
+            'role' => Auth::user()->role,
+            'activity' => "Memperbarui Base URL QR Pemesanan Meja menjadi {$url}",
+            'activity_type' => 'meja',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return back()->with('success', 'Pengaturan Base URL QR Pemesanan berhasil disimpan!');
+    }
+
+    /**
+     * Tampilkan Halaman Cetak Stand / Tent Card QR untuk Semua Meja.
+     */
+    public function printAllQr(Request $request)
+    {
+        $tables = Table::orderBy('number', 'asc')->get();
+        $orderBaseUrl = CafeSetting::get('order_base_url', url('/menu'));
+
+        return view('admin.operations.print-qr', compact('tables', 'orderBaseUrl'));
+    }
+
+    /**
+     * Tampilkan Halaman Cetak Stand / Tent Card QR untuk Satu Meja Tertentu.
+     */
+    public function printSingleQr(Request $request, $id)
+    {
+        $table = Table::findOrFail($id);
+        $tables = collect([$table]);
+        $orderBaseUrl = CafeSetting::get('order_base_url', url('/menu'));
+
+        return view('admin.operations.print-qr', compact('tables', 'orderBaseUrl'));
     }
 
     public function storeTable(Request $request)

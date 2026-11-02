@@ -5,6 +5,7 @@ namespace Tests\Feature\Pelanggan;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\MenuVariant;
+use App\Models\Table;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
@@ -230,5 +231,39 @@ class CustomerMenuPageTest extends TestCase
         $response->assertSee(route('pelanggan.keranjang'));
         $response->assertSee('openBottomSheet', false);
         $response->assertSee('Tambah ke Keranjang');
+    }
+
+    public function test_menu_page_with_meja_query_parameter_displays_table_banner(): void
+    {
+        Table::factory()->create([
+            'number' => 5,
+            'capacity' => 4,
+            'status' => 'tersedia',
+            'location_notes' => 'Outdoor Balkon',
+        ]);
+
+        $response = $this->get(route('pelanggan.menu', ['meja' => 5]))->assertOk();
+
+        $response->assertSee('Meja #5');
+        $response->assertSee('Outdoor Balkon');
+        $response->assertSee('Pesan Dari Meja');
+        $response->assertSee('Ganti Meja');
+        $response->assertSee('meja=5');
+    }
+
+    public function test_menu_page_without_meja_displays_method_selection_banner(): void
+    {
+        $response = $this->get(route('pelanggan.menu'))->assertOk();
+
+        $response->assertSee('Pilih Nomor Meja');
+        $response->assertSee('Bawa Pulang');
+    }
+
+    public function test_keranjang_page_returns_ok_for_guest(): void
+    {
+        $response = $this->get(route('pelanggan.keranjang'))->assertOk();
+
+        $response->assertSee('Keranjang Belanja');
+        $response->assertSee('Pesan Sekarang');
     }
 }

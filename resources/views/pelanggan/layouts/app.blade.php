@@ -74,8 +74,6 @@
 
         body {
             font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
-            background-color: var(--color-bg-primary);
-            color: var(--color-text-main);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -102,7 +100,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col @yield('body_class', 'bg-[#290024] text-[#F2F5E2]') selection:bg-[#D4954D]/30 selection:text-[#F2F5E2]">
+<body class="min-h-screen flex flex-col @yield('body_class', 'bg-[#290024] text-[#F2F5E2]') selection:bg-[#D4954D]/30 selection:text-[#F2F5E2]" style="@yield('body_style', 'background-color: #290024; color: #F2F5E2;')">
     <!-- Aksesibilitas: Lewati ke konten utama -->
     <a href="#main-content"
        class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2.5 focus:rounded-full focus:bg-[#D4954D] focus:text-[#290024] focus:font-semibold focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#F2F5E2]">
