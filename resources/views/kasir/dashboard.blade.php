@@ -59,6 +59,55 @@
         </a>
     </div>
 
+    <!-- Mobile & Tablet Menu Shortcuts Grid (Layar Operasional Lengkap) -->
+    <div class="lg:hidden space-y-2">
+        <div class="flex items-center justify-between px-1">
+            <h3 class="font-serif font-bold text-xs sm:text-sm text-cafe-dark flex items-center gap-1.5">
+                <i data-lucide="grid" class="w-4 h-4 text-cafe-gold"></i>
+                Menu Operasional Kasir
+            </h3>
+            <span class="text-[10px] text-cafe-muted">Akses Cepat</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+            <a href="{{ route('kasir.pos.index') }}" class="bg-cafe-card rounded-2xl border border-cafe-beige/70 p-3 sm:p-3.5 flex items-center gap-2.5 hover:bg-cafe-beige/40 active:scale-[0.98] transition-all shadow-soft">
+                <div class="w-9 h-9 rounded-xl bg-cafe-dark text-cafe-gold flex items-center justify-center shrink-0">
+                    <i data-lucide="calculator" class="w-4 h-4"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-xs font-bold text-cafe-dark truncate">POS / Pesan</p>
+                    <p class="text-[10px] text-cafe-muted truncate">Input order kasir</p>
+                </div>
+            </a>
+            <a href="{{ route('kasir.orders.index') }}" class="bg-cafe-card rounded-2xl border border-cafe-beige/70 p-3 sm:p-3.5 flex items-center gap-2.5 hover:bg-cafe-beige/40 active:scale-[0.98] transition-all shadow-soft">
+                <div class="w-9 h-9 rounded-xl bg-cafe-gold/20 text-[#290024] flex items-center justify-center shrink-0">
+                    <i data-lucide="inbox" class="w-4 h-4 text-cafe-gold"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-xs font-bold text-cafe-dark truncate">Pesanan Masuk</p>
+                    <p class="text-[10px] text-cafe-muted truncate">Dapur & Web</p>
+                </div>
+            </a>
+            <a href="{{ route('kasir.payments.index') }}" class="bg-cafe-card rounded-2xl border border-cafe-beige/70 p-3 sm:p-3.5 flex items-center gap-2.5 hover:bg-cafe-beige/40 active:scale-[0.98] transition-all shadow-soft">
+                <div class="w-9 h-9 rounded-xl bg-cafe-warning/15 text-cafe-warning flex items-center justify-center shrink-0">
+                    <i data-lucide="receipt" class="w-4 h-4"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-xs font-bold text-cafe-dark truncate">Pembayaran</p>
+                    <p class="text-[10px] text-cafe-muted truncate">Tagihan & Struk</p>
+                </div>
+            </a>
+            <a href="{{ route('kasir.reservations.index') }}" class="bg-cafe-card rounded-2xl border border-cafe-beige/70 p-3 sm:p-3.5 flex items-center gap-2.5 hover:bg-cafe-beige/40 active:scale-[0.98] transition-all shadow-soft">
+                <div class="w-9 h-9 rounded-xl bg-cafe-info/15 text-cafe-info flex items-center justify-center shrink-0">
+                    <i data-lucide="calendar-days" class="w-4 h-4"></i>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-xs font-bold text-cafe-dark truncate">Reservasi & Meja</p>
+                    <p class="text-[10px] text-cafe-muted truncate">Denah & Tamu</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
     <!-- Stat Cards -->
     @if($shift && $summary)
         <div class="grid grid-cols-2 md:grid-cols-4 landscape:grid-cols-4 gap-3 sm:gap-4">

@@ -11,8 +11,15 @@
 <header class="sticky top-0 z-30 bg-[#F2F5E2]/95 backdrop-blur-md border-b border-cafe-beige/60 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">
     <div class="h-14 sm:h-16 landscape:h-12 sm:landscape:h-14 flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 lg:px-8 w-full">
 
-        {{-- ═══ LEFT: Logo / Back + Page Title ═══ --}}
-        <div class="flex items-center gap-2.5 min-w-0 flex-1">
+        {{-- ═══ LEFT: Drawer Button / Back / Logo + Page Title ═══ --}}
+        <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
+            <button type="button"
+                    onclick="toggleKasirDrawer()"
+                    aria-label="Buka Menu Kasir"
+                    class="lg:hidden flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl bg-cafe-beige/40 text-cafe-dark hover:bg-cafe-beige/70 active:scale-95 transition-all">
+                <i data-lucide="menu" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+            </button>
+
             @if($backUrl)
                 <a href="{{ $backUrl }}"
                    class="lg:hidden flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl text-cafe-dark transition-colors hover:bg-cafe-beige/60 active:scale-95"

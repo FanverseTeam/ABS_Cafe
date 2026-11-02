@@ -225,6 +225,12 @@ return [
                     'badge_key' => 'kasir_unpaid_orders',
                     'children' => [
                         [
+                            'label' => 'Reservasi & Meja',
+                            'route' => 'kasir.reservations.index',
+                            'icon' => 'calendar-days',
+                            'active' => [],
+                        ],
+                        [
                             'label' => 'Pembayaran & Struk',
                             'route' => 'kasir.payments.index',
                             'icon' => 'receipt',

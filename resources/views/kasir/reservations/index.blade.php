@@ -5,13 +5,19 @@
 
 @section('content')
 <div class="space-y-6">
+    @php
+        $activeTab = request('view', request('status') ? 'list' : 'tables');
+    @endphp
+
     <!-- Mobile Pill Switcher: Denah Meja | Reservasi (Sesuai Referensi Layar 9) -->
     <div class="lg:hidden flex items-center p-1 bg-[#E3DEA4]/50 rounded-full border border-[#E3DEA4]">
-        <button type="button" onclick="switchReservationView('tables')" id="tab-btn-tables" class="flex-1 py-2 rounded-full text-xs font-bold transition-all bg-[#290024] text-[#F2F5E2] shadow-sm">
-            Denah Meja
+        <button type="button" onclick="switchReservationView('tables')" id="tab-btn-tables"
+                class="flex-1 py-2 rounded-full text-xs font-bold transition-all {{ $activeTab === 'tables' ? 'bg-[#290024] text-[#F2F5E2] shadow-sm' : 'text-[#775533] hover:text-[#290024]' }}">
+            <i data-lucide="grid-3x3" class="w-3.5 h-3.5 inline-block mr-1"></i> Denah Meja
         </button>
-        <button type="button" onclick="switchReservationView('list')" id="tab-btn-list" class="flex-1 py-2 rounded-full text-xs font-bold transition-all text-[#775533] hover:text-[#290024]">
-            Reservasi ({{ $reservations->count() }})
+        <button type="button" onclick="switchReservationView('list')" id="tab-btn-list"
+                class="flex-1 py-2 rounded-full text-xs font-bold transition-all {{ $activeTab === 'list' ? 'bg-[#290024] text-[#F2F5E2] shadow-sm' : 'text-[#775533] hover:text-[#290024]' }}">
+            <i data-lucide="calendar-days" class="w-3.5 h-3.5 inline-block mr-1"></i> Reservasi ({{ $reservations->count() }})
         </button>
     </div>
 
@@ -21,14 +27,14 @@
             <input type="date" name="date" value="{{ $date->format('Y-m-d') }}" class="bg-[#F2F5E2] border border-[#E3DEA4] text-xs text-[#290024] px-3.5 py-2 rounded-2xl focus:border-[#D4954D] focus:outline-none">
             <button class="px-4 py-2 rounded-2xl bg-[#290024] text-[#F2F5E2] text-xs font-semibold hover:bg-[#775533] transition-colors">Tampilkan</button>
         </form>
-        <button onclick="openCreateModal()" class="hidden lg:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#D4954D] text-[#290024] text-xs font-bold hover:brightness-105 transition-all shadow-md active:scale-95">
+        <button onclick="openCreateModal()" class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#D4954D] text-[#290024] text-xs font-bold hover:brightness-105 transition-all shadow-md active:scale-95">
             <i data-lucide="plus" class="w-4 h-4"></i>
             Buat Reservasi
         </button>
     </div>
 
     {{-- Mobile FAB for Buat Reservasi --}}
-    <div class="lg:hidden fixed z-30 right-4 sm:right-6 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] landscape:bottom-[calc(3.75rem+env(safe-area-inset-bottom))]">
+    <div class="sm:hidden fixed z-30 right-4 sm:right-6 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] landscape:bottom-[calc(3.75rem+env(safe-area-inset-bottom))]">
         <button type="button" onclick="openCreateModal()"
            class="flex items-center gap-2 px-4 py-3 rounded-full bg-[#290024] hover:bg-[#775533] text-[#F2F5E2] border border-[#D4954D]/60 shadow-xl active:scale-95 transition-transform"
            aria-label="Buat Reservasi">
@@ -38,7 +44,7 @@
     </div>
 
     <!-- Peta Meja -->
-    <div id="section-tables" class="bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
+    <div id="section-tables" class="{{ $activeTab === 'tables' ? '' : 'hidden lg:block' }} bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
         <div class="px-6 py-4 border-b border-cafe-beige/50 flex items-center gap-2.5">
             <div class="w-9 h-9 rounded-2xl bg-cafe-gold/15 text-cafe-gold flex items-center justify-center"><i data-lucide="grid-3x3" class="w-4 h-4"></i></div>
             <div>
@@ -73,7 +79,7 @@
     </div>
 
     <!-- Daftar Reservasi -->
-    <div id="section-list" class="bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
+    <div id="section-list" class="{{ $activeTab === 'list' ? '' : 'hidden lg:block' }} bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
         <div class="px-6 py-4 border-b border-[#E3DEA4]/50 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-2.5">
                 <div class="w-9 h-9 rounded-2xl bg-[#D4954D]/15 text-[#D4954D] flex items-center justify-center"><i data-lucide="calendar-days" class="w-4 h-4"></i></div>
@@ -244,10 +250,12 @@ function switchReservationView(view) {
     if (view === 'tables') {
         secTables.classList.remove('hidden');
         secList.classList.add('hidden');
+        secList.classList.add('lg:block');
         btnTables.className = 'flex-1 py-2 rounded-full text-xs font-bold transition-all bg-[#290024] text-[#F2F5E2] shadow-sm';
         btnList.className = 'flex-1 py-2 rounded-full text-xs font-bold transition-all text-[#775533] hover:text-[#290024]';
     } else {
         secTables.classList.add('hidden');
+        secTables.classList.add('lg:block');
         secList.classList.remove('hidden');
         btnList.className = 'flex-1 py-2 rounded-full text-xs font-bold transition-all bg-[#290024] text-[#F2F5E2] shadow-sm';
         btnTables.className = 'flex-1 py-2 rounded-full text-xs font-bold transition-all text-[#775533] hover:text-[#290024]';

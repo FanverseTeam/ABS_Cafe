@@ -131,6 +131,7 @@
 <body class="antialiased min-h-screen bg-cafe-cream text-cafe-text">
 
     @include('kasir.layouts.sidebar')
+    @include('kasir.layouts.drawer')
 
     <div class="flex-1 flex flex-col min-w-0 lg:pl-72 transition-all min-h-screen">
         @include('kasir.layouts.topbar')
