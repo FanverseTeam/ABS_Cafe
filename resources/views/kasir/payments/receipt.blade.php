@@ -118,4 +118,14 @@
         </div>
     </div>
 </div>
+
+@if(session('success'))
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            window.print();
+        }, 400);
+    });
+</script>
+@endif
 @endsection

@@ -1,6 +1,6 @@
 @extends('pelanggan.layouts.app')
 
-@section('title', 'Keranjang Belanja - ' . ($landing['cafe']['name'] ?? 'ABS Cafe'))
+@section('title', 'Detail Pesanan - ' . ($landing['cafe']['name'] ?? 'ABS Cafe'))
 @section('meta_description', 'Periksa pesanan makanan dan minuman pilihan Anda di ' . ($landing['cafe']['name'] ?? 'ABS Cafe') . '.')
 
 @section('body_class', 'bg-white text-[#290024]')
@@ -8,43 +8,65 @@
 @section('main_class', 'bg-white')
 
 @section('header')
-<header class="sticky top-0 inset-x-0 z-30 bg-white border-b border-[#F0ECE4]" style="background-color: #ffffff !important;">
-    <div class="mx-auto max-w-3xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        <!-- Tombol Kembali: Berdasarkan Step Aktif -->
-        <template x-if="step === 1">
-            <a href="{{ route('pelanggan.menu', array_filter(['meja' => $tableNumber])) }}"
-               class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#290024] hover:text-[#775533] p-2 -ml-2 rounded-xl hover:bg-[#FAF7F2] transition-colors"
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('checkout', {
+            step: 1
+        });
+    });
+    if (window.Alpine && !window.Alpine.store('checkout')) {
+        window.Alpine.store('checkout', {
+            step: 1
+        });
+    }
+</script>
+
+<!-- TOPBAR HEADER (RAPI, BERSIH, & DINAMIS SESUAI TAHAP) -->
+<header x-data
+        class="sticky top-0 inset-x-0 z-30 bg-white border-b border-[#F0ECE4] shadow-xs"
+        style="background-color: #ffffff !important;">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 h-14 flex items-center justify-between gap-2">
+        <!-- Sisi Kiri: Tombol Kembali Sesuai Step -->
+        <div class="w-24 flex items-center justify-start">
+            <!-- Saat di Step 1: Kembali ke Menu -->
+            <a x-show="!$store.checkout || $store.checkout.step === 1"
+               href="{{ route('pelanggan.menu', array_filter(['meja' => $tableNumber])) }}"
+               class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#290024] hover:text-[#775533] py-1.5 px-2 -ml-2 rounded-xl hover:bg-[#FAF7F2] transition-colors"
                aria-label="Kembali ke Menu">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
                     <polyline points="12 19 5 12 12 5"></polyline>
                 </svg>
-                <span>Tambah Menu</span>
+                <span>Menu</span>
             </a>
-        </template>
 
-        <template x-if="step === 2">
-            <button type="button"
-                    @click="step = 1; window.scrollTo({ top: 0, behavior: 'smooth' })"
-                    class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#290024] hover:text-[#775533] p-2 -ml-2 rounded-xl hover:bg-[#FAF7F2] transition-colors">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <!-- Saat di Step 2: Kembali ke Detail Pesanan (Step 1) -->
+            <button x-show="$store.checkout && $store.checkout.step === 2"
+                    x-cloak
+                    type="button"
+                    @click="$store.checkout.step = 1; window.scrollTo({ top: 0, behavior: 'smooth' })"
+                    class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#290024] hover:text-[#775533] py-1.5 px-2 -ml-2 rounded-xl hover:bg-[#FAF7F2] transition-colors"
+                    aria-label="Kembali ke Detail Pesanan">
+                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
                     <polyline points="12 19 5 12 12 5"></polyline>
                 </svg>
-                <span>Ubah Menu</span>
+                <span>Kembali</span>
             </button>
-        </template>
+        </div>
 
-        <!-- Judul Header Dinamis -->
-        <h1 class="font-serif text-base sm:text-lg font-bold text-[#290024] tracking-tight">
-            <span x-show="step === 1">Keranjang Belanja</span>
-            <span x-show="step === 2">Pilih Meja &amp; Pemesan</span>
+        <!-- Judul Header di Tengah (Tepat di Tengah & Tidak Berantakan) -->
+        <h1 class="flex-1 text-center font-serif text-sm sm:text-base font-bold text-[#290024] tracking-tight">
+            <span x-show="!$store.checkout || $store.checkout.step === 1">Detail Pesanan</span>
+            <span x-show="$store.checkout && $store.checkout.step === 2" x-cloak>Isi Data Pelanggan</span>
         </h1>
 
-        <!-- Logo Cafe Ringkas -->
-        <a href="{{ route('pelanggan.beranda') }}" class="shrink-0" aria-label="Beranda">
-            <x-logo :show-text="false" size="sm" />
-        </a>
+        <!-- Sisi Kanan: Logo Cafe -->
+        <div class="w-24 flex items-center justify-end">
+            <a href="{{ route('pelanggan.beranda') }}" class="shrink-0" aria-label="Beranda">
+                <x-logo :show-text="false" size="sm" />
+            </a>
+        </div>
     </div>
 </header>
 @endsection
@@ -53,49 +75,9 @@
 <div x-data="cartPage()"
      x-init="initCart()"
      style="background-color: #ffffff !important;"
-     class="min-h-screen bg-white pb-32 pt-4 sm:pt-6">
+     class="min-h-screen bg-white pb-32">
 
-    <div class="mx-auto max-w-3xl px-4 sm:px-6 space-y-6">
-
-        <!-- STEP WIZARD BAR (Jika Keranjang Memiliki Item) -->
-        <div x-show="cart.length > 0" class="bg-[#FAF7F2] p-3 sm:p-4 rounded-2xl border border-[#EDE8E0] flex items-center justify-between gap-2 shadow-2xs">
-            <!-- Step 1 Indicator -->
-            <button type="button"
-                    @click="step = 1"
-                    class="flex items-center gap-2 text-left focus:outline-none transition-colors"
-                    :class="step === 1 ? 'text-[#290024] font-bold' : 'text-[#775533] hover:text-[#290024] font-medium'">
-                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-all"
-                     :class="step === 1 ? 'bg-[#290024] text-white' : 'bg-emerald-600 text-white'">
-                    <template x-if="step === 1"><span>1</span></template>
-                    <template x-if="step > 1">
-                        <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                    </template>
-                </div>
-                <div class="hidden xs:block text-xs">
-                    <div>1. Tinjau Menu</div>
-                </div>
-            </button>
-
-            <!-- Line Separator -->
-            <div class="flex-1 h-0.5 mx-2 bg-[#EDE8E0] transition-colors"
-                 :class="step > 1 ? 'bg-[#290024]' : 'bg-[#EDE8E0]'"></div>
-
-            <!-- Step 2 Indicator -->
-            <button type="button"
-                    @click="if (cart.length > 0) step = 2"
-                    class="flex items-center gap-2 text-left focus:outline-none transition-colors"
-                    :class="step === 2 ? 'text-[#290024] font-bold' : 'text-[#775533]/70 font-medium'">
-                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-all"
-                     :class="step === 2 ? 'bg-[#290024] text-white' : 'bg-stone-200 text-stone-600'">
-                    <span>2</span>
-                </div>
-                <div class="hidden xs:block text-xs">
-                    <div>2. Pilih Meja &amp; Pemesan</div>
-                </div>
-            </button>
-        </div>
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 space-y-6 pt-4 sm:pt-6">
 
         {{-- ============================================================= --}}
         {{-- STATE KETIKA KERANJANG KOSONG                                 --}}
@@ -239,223 +221,169 @@
                     <span class="font-bold text-[#290024]" x-text="formatRupiah(subtotal)"></span>
                 </div>
                 <div class="pt-2 border-t border-[#EDE8E0] text-[11px] text-stone-500">
-                    * Pemilihan nomor meja (santap di tempat) atau bawa pulang (takeaway) akan diatur di langkah selanjutnya.
+                    * Pengisian data pemesan dan pilihan metode pesanan akan diatur pada halaman selanjutnya.
                 </div>
             </div>
         </div>
 
         {{-- ============================================================= --}}
-        {{-- STEP 2: PILIH MEJA / TAKEAWAY & DATA PEMESAN (SETELAH KERANJANG)--}}
+        {{-- STEP 2: DATA PELANGGAN & METODE PESANAN                       --}}
         {{-- ============================================================= --}}
-        <div x-show="cart.length > 0 && step === 2" x-cloak class="space-y-6">
+        <div x-show="cart.length > 0 && step === 2" x-cloak class="space-y-5">
 
-            <!-- Banner Kembali ke Keranjang -->
-            <div class="flex items-center justify-between pb-2 border-b border-[#EDE8E0]">
-                <div>
-                    <h2 class="font-serif text-base sm:text-lg font-bold text-[#290024]">
-                        Metode Pemesanan &amp; Data Pelanggan
-                    </h2>
-                    <p class="text-xs text-[#775533] mt-0.5">
-                        Tentukan cara santap dan lengkapi nama Anda untuk konfirmasi pesanan.
-                    </p>
-                </div>
-                <button type="button"
-                        @click="step = 1; window.scrollTo({ top: 0, behavior: 'smooth' })"
-                        class="text-xs font-semibold text-[#775533] hover:text-[#290024] underline">
-                    Ubah Isi Menu
-                </button>
-            </div>
-
-            <!-- 1. PILIH METODE PEMESANAN (DINE-IN VS TAKEAWAY) -->
-            <div class="space-y-3">
-                <label class="block text-xs font-bold uppercase tracking-wider text-[#775533]">
-                    Pilih Metode Pemesanan *
-                </label>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <!-- Opsi 1: Makan di Tempat (Dine In) -->
-                    <div @click="setOrderType('dine_in')"
-                         class="cursor-pointer p-4 rounded-2xl border-2 transition-all space-y-2"
-                         :class="orderType === 'dine_in' ? 'border-[#290024] bg-[#290024] text-[#E3DEA4] shadow-sm' : 'border-[#EDE8E0] bg-white text-[#290024] hover:bg-[#FAF7F2]'">
-                        <div class="flex items-center justify-between">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shrink-0"
-                                 :class="orderType === 'dine_in' ? 'bg-[#D4954D] text-[#290024]' : 'bg-[#FAF7F2] text-[#290024] border border-[#EDE8E0]'">
-                                <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                            </div>
-
-                            <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
-                                 :class="orderType === 'dine_in' ? 'border-[#D4954D] bg-[#D4954D]' : 'border-stone-300'">
-                                <span class="w-2 h-2 rounded-full" :class="orderType === 'dine_in' ? 'bg-[#290024]' : 'bg-transparent'"></span>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="font-bold text-xs sm:text-sm" :class="orderType === 'dine_in' ? 'text-white' : 'text-[#290024]'">
-                                Makan di Tempat (Dine-in)
-                            </div>
-                            <p class="text-[11px] mt-0.5 leading-snug" :class="orderType === 'dine_in' ? 'text-[#E3DEA4]/80' : 'text-[#775533]'">
-                                Duduk santai di kafe, pesanan diantar langsung ke meja Anda.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Opsi 2: Bawa Pulang (Takeaway) -->
-                    <div @click="setOrderType('take_away')"
-                         class="cursor-pointer p-4 rounded-2xl border-2 transition-all space-y-2"
-                         :class="orderType === 'take_away' ? 'border-[#290024] bg-[#290024] text-[#E3DEA4] shadow-sm' : 'border-[#EDE8E0] bg-white text-[#290024] hover:bg-[#FAF7F2]'">
-                        <div class="flex items-center justify-between">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shrink-0"
-                                 :class="orderType === 'take_away' ? 'bg-[#D4954D] text-[#290024]' : 'bg-[#FAF7F2] text-[#290024] border border-[#EDE8E0]'">
-                                <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                                </svg>
-                            </div>
-
-                            <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
-                                 :class="orderType === 'take_away' ? 'border-[#D4954D] bg-[#D4954D]' : 'border-stone-300'">
-                                <span class="w-2 h-2 rounded-full" :class="orderType === 'take_away' ? 'bg-[#290024]' : 'bg-transparent'"></span>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="font-bold text-xs sm:text-sm" :class="orderType === 'take_away' ? 'text-white' : 'text-[#290024]'">
-                                Bawa Pulang (Takeaway)
-                            </div>
-                            <p class="text-[11px] mt-0.5 leading-snug" :class="orderType === 'take_away' ? 'text-[#E3DEA4]/80' : 'text-[#775533]'">
-                                Pesanan dikemas rapi untuk dinikmati di rumah atau kantor.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pemilihan Nomor Meja Khusus Jika Memilih Makan di Tempat -->
-                <div x-show="orderType === 'dine_in'"
-                     x-transition
-                     class="p-4 sm:p-5 rounded-2xl bg-[#FAF7F2] border border-[#EDE8E0] space-y-3">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <label class="block text-xs font-bold text-[#290024]">Pilih Nomor Meja Anda *</label>
-                            <p class="text-[11px] text-[#775533]">Silakan ketuk nomor meja tempat Anda duduk</p>
-                        </div>
-
-                        <template x-if="tableNumber">
-                            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#290024] text-[#E3DEA4]">
-                                Terpilih: Meja #<span x-text="tableNumber"></span>
-                            </span>
-                        </template>
-                    </div>
-
-                    <!-- Grid Meja Kafe -->
-                    <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 max-h-56 overflow-y-auto py-1">
-                        @foreach($allTables as $t)
-                            <button type="button"
-                                    @click="tableNumber = '{{ $t->number }}'"
-                                    :class="tableNumber == '{{ $t->number }}' ? 'bg-[#290024] text-[#E3DEA4] border-[#290024] ring-2 ring-[#D4954D]' : 'bg-white hover:bg-[#F5F0E6] text-[#290024] border-[#EDE8E0]'"
-                                    class="p-2.5 rounded-xl border text-center transition-all flex flex-col items-center justify-center">
-                                <span class="text-[9px] uppercase tracking-wider font-bold"
-                                      :class="tableNumber == '{{ $t->number }}' ? 'text-[#E3DEA4]/80' : 'text-[#775533]'">Meja</span>
-                                <span class="font-serif font-black text-lg leading-tight">{{ $t->number }}</span>
-                                <span class="text-[9px]"
-                                      :class="tableNumber == '{{ $t->number }}' ? 'text-[#E3DEA4]/70' : 'text-stone-400'">{{ $t->capacity }} Kursi</span>
-                            </button>
-                        @endforeach
-                    </div>
-
-                    <div x-show="!tableNumber" class="text-[11px] text-amber-700 font-medium">
-                        * Wajib memilih salah satu nomor meja sebelum menyelesaikan pesanan.
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2. FORM DATA PEMESAN -->
+            <!-- 1. DATA PELANGGAN (PALING ATAS) -->
             <div class="bg-white p-4 sm:p-5 rounded-2xl border border-[#EDE8E0] shadow-2xs space-y-3.5">
-                <h3 class="font-serif text-sm font-bold text-[#290024] flex items-center gap-2 pb-2 border-b border-[#EDE8E0]">
-                    <svg class="w-4 h-4 stroke-[#775533]" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    <span>Informasi Pemesan</span>
-                </h3>
+                <div class="pb-2 border-b border-[#EDE8E0] flex items-center justify-between">
+                    <h2 class="font-serif text-sm sm:text-base font-bold text-[#290024] flex items-center gap-2">
+                        <svg class="w-4 h-4 stroke-[#775533]" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>Data Pelanggan</span>
+                    </h2>
+                    <span class="text-[10px] text-amber-700 font-medium">* Wajib diisi</span>
+                </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div class="space-y-3">
                     <div>
-                        <label class="block text-xs font-semibold text-[#290024] mb-1">Nama Pemesan *</label>
+                        <label class="block text-xs font-semibold text-[#290024] mb-1">
+                            Nama Pemesan <span class="text-rose-500">*</span>
+                        </label>
                         <input type="text"
                                x-model="customerName"
-                               placeholder="Nama lengkap atau panggilan..."
+                               placeholder="Masukkan nama lengkap atau panggilan..."
                                required
-                               class="w-full bg-[#FAF7F2] text-xs p-2.5 rounded-xl border border-[#EDE8E0] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]">
+                               class="w-full bg-[#FAF7F2] text-xs p-3 rounded-xl border border-[#EDE8E0] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-[#290024] mb-1">Nomor WhatsApp / HP (Opsional)</label>
+                        <label class="block text-xs font-semibold text-[#290024] mb-1">
+                            Nomor WhatsApp / HP <span class="text-stone-400 font-normal">(Opsional)</span>
+                        </label>
                         <input type="tel"
                                x-model="customerPhone"
-                               placeholder="0812xxxxxx (opsional)"
-                               class="w-full bg-[#FAF7F2] text-xs p-2.5 rounded-xl border border-[#EDE8E0] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]">
+                               placeholder="Contoh: 081234567890"
+                               class="w-full bg-[#FAF7F2] text-xs p-3 rounded-xl border border-[#EDE8E0] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]">
                     </div>
-                </div>
 
-                <div>
-                    <label class="block text-xs font-semibold text-[#290024] mb-1">Catatan Tambahan untuk Kasir / Barista</label>
-                    <textarea x-model="orderNotes"
-                              rows="2"
-                              placeholder="Misal: Tolong sendok garpu disiapkan, disajikan bersamaan..."
-                              class="w-full bg-[#FAF7F2] text-xs p-2.5 rounded-xl border border-[#EDE8E0] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]"></textarea>
+                    <div>
+                        <label class="block text-xs font-semibold text-[#290024] mb-1">
+                            Catatan Pesanan <span class="text-stone-400 font-normal">(Opsional)</span>
+                        </label>
+                        <textarea x-model="orderNotes"
+                                  rows="2"
+                                  placeholder="Contoh: Tolong sendok garpu disiapkan, disajikan bersamaan..."
+                                  class="w-full bg-[#FAF7F2] text-xs p-3 rounded-xl border border-[#EDE8E0] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]"></textarea>
+                    </div>
                 </div>
             </div>
 
-            <!-- 3. RINGKASAN PESANAN & PEMBAYARAN AKHIR -->
-            <div class="bg-[#FAF7F2] p-4 sm:p-5 rounded-2xl border border-[#EDE8E0] space-y-2.5 text-xs text-[#775533]">
-                <h3 class="font-serif text-sm font-bold text-[#290024] mb-2">Ringkasan Pembayaran</h3>
+            <!-- 2. PILIHAN DINE IN / TAKE AWAY (KOTAK PERSEGI JEJER 2 HORIZONTAL) -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold uppercase tracking-wider text-[#775533]">
+                    Pilihan Pesanan <span class="text-rose-500">*</span>
+                </label>
 
-                <div class="flex items-center justify-between">
-                    <span>Subtotal (<span x-text="cartTotalItems"></span> item)</span>
-                    <span class="font-semibold text-[#290024]" x-text="formatRupiah(subtotal)"></span>
+                <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
+                    <!-- Kotak 1: Makan di Tempat (Dine In) -->
+                    <button type="button"
+                            @click="setOrderType('dine_in')"
+                            class="p-3 sm:p-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center text-center cursor-pointer min-h-[96px] focus:outline-none"
+                            :class="orderType === 'dine_in'
+                                ? 'border-[#290024] bg-[#290024] text-white shadow-sm ring-1 ring-[#D4954D]/50'
+                                : 'border-[#EDE8E0] bg-white text-[#290024] hover:bg-[#FAF7F2]'">
+
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-colors shrink-0"
+                             :class="orderType === 'dine_in' ? 'bg-[#D4954D] text-[#290024]' : 'bg-[#FAF7F2] text-[#290024] border border-[#EDE8E0]'">
+                            <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                        </div>
+
+                        <span class="font-bold text-xs sm:text-sm leading-tight"
+                              :class="orderType === 'dine_in' ? 'text-white' : 'text-[#290024]'">
+                            Dine In
+                        </span>
+                        <span class="text-[10px] mt-0.5 leading-tight"
+                              :class="orderType === 'dine_in' ? 'text-[#E3DEA4]' : 'text-[#775533]'">
+                            Santap di Tempat
+                        </span>
+                    </button>
+
+                    <!-- Kotak 2: Bawa Pulang (Take Away) -->
+                    <button type="button"
+                            @click="setOrderType('take_away')"
+                            class="p-3 sm:p-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center text-center cursor-pointer min-h-[96px] focus:outline-none"
+                            :class="orderType === 'take_away'
+                                ? 'border-[#290024] bg-[#290024] text-white shadow-sm ring-1 ring-[#D4954D]/50'
+                                : 'border-[#EDE8E0] bg-white text-[#290024] hover:bg-[#FAF7F2]'">
+
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-colors shrink-0"
+                             :class="orderType === 'take_away' ? 'bg-[#D4954D] text-[#290024]' : 'bg-[#FAF7F2] text-[#290024] border border-[#EDE8E0]'">
+                            <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                        </div>
+
+                        <span class="font-bold text-xs sm:text-sm leading-tight"
+                              :class="orderType === 'take_away' ? 'text-white' : 'text-[#290024]'">
+                            Take Away
+                        </span>
+                        <span class="text-[10px] mt-0.5 leading-tight"
+                              :class="orderType === 'take_away' ? 'text-[#E3DEA4]' : 'text-[#775533]'">
+                            Bawa Pulang
+                        </span>
+                    </button>
                 </div>
+            </div>
 
-                <div class="flex items-center justify-between">
-                    <span>Pajak (PB1 10%)</span>
-                    <span class="font-semibold text-[#290024]" x-text="formatRupiah(tax)"></span>
-                </div>
-
-                <div class="flex items-center justify-between pt-2 border-t border-[#EDE8E0] text-sm">
-                    <span class="font-bold text-[#290024]">Total Pembayaran</span>
-                    <span class="font-serif font-black text-base text-[#290024]" x-text="formatRupiah(total)"></span>
-                </div>
-
-                <p class="text-[11px] text-stone-500 pt-1 leading-relaxed">
-                    * Pembayaran dilakukan di kasir saat mengambil atau setelah selesai santap (tersedia pembayaran Tunai, QRIS, dan Kartu Debit).
-                </p>
+            <!-- Catatan Informasi Pembayaran Ringkas -->
+            <div class="px-3 py-2 rounded-xl bg-stone-50 border border-stone-200/70 text-[11px] text-stone-500 text-center">
+                * Pembayaran dilakukan di kasir saat mengambil atau setelah selesai santap (Tunai, QRIS, Kartu Debit).
             </div>
         </div>
 
     </div>
 
     {{-- ============================================================= --}}
-    {{-- FLOATING BOTTOM BAR (STEP 1 VS STEP 2)                        --}}
+    {{-- FLOATING BOTTOM BAR (DENGAN TOMBOL PANAH KECIL UNTUK RINCIAN)  --}}
     {{-- ============================================================= --}}
     <div x-show="cart.length > 0"
          x-cloak
-         class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#EDE8E0] p-4 shadow-[0_-8px_30px_rgba(0,0,0,0.06)]">
-        <div class="max-w-3xl mx-auto flex items-center justify-between gap-4">
+         class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#EDE8E0] px-4 py-3 sm:py-3.5 shadow-[0_-8px_30px_rgba(0,0,0,0.06)]">
+        <div class="max-w-3xl mx-auto flex items-center justify-between gap-3">
 
-            <!-- Kiri: Subtotal / Total -->
-            <div>
-                <span class="block text-[11px] text-[#775533]" x-text="step === 1 ? 'Estimasi Total:' : 'Total Pembayaran:'"></span>
-                <span class="font-serif font-bold text-base sm:text-lg text-[#290024]" x-text="formatRupiah(total)"></span>
+            <!-- Kiri: Total Pesanan + Tombol Panah Kecil untuk Perlebar Halaman / Rincian -->
+            <div class="flex items-center gap-1.5 min-w-0">
+                <div>
+                    <div class="flex items-center gap-1">
+                        <span class="text-[11px] text-[#775533] leading-none"
+                              x-text="step === 1 ? 'Estimasi Total' : 'Total Pesanan'"></span>
+                        <!-- Tombol panah kecil untuk perlebar / lihat rincian pesanan -->
+                        <button type="button"
+                                @click="showDetails = !showDetails"
+                                class="w-4 h-4 rounded-full bg-[#FAF7F2] hover:bg-[#EDE8E0] text-[#290024] inline-flex items-center justify-center transition-transform duration-200"
+                                :class="showDetails ? 'rotate-180' : ''"
+                                aria-label="Lihat rincian pesanan">
+                            <svg class="w-2.5 h-2.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="3">
+                                <polyline points="18 15 12 9 6 15"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="font-serif font-bold text-base sm:text-lg text-[#290024] leading-tight cursor-pointer"
+                         @click="showDetails = !showDetails"
+                         x-text="formatRupiah(total)"></div>
+                </div>
             </div>
 
-            <!-- Kanan: Tombol Berdasarkan Step -->
-            <div>
-                <!-- Tombol Step 1: Lanjut ke Pemilihan Meja -->
+            <!-- Kanan: Tombol Aksi Berdasarkan Step -->
+            <div class="shrink-0">
+                <!-- Step 1: Lanjut -->
                 <template x-if="step === 1">
                     <button type="button"
                             @click="goToStep(2)"
-                            class="px-6 sm:px-8 py-3 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-white text-xs sm:text-sm font-bold tracking-wide transition-all shadow-md flex items-center gap-2">
-                        <span>Lanjut ke Pemilihan Meja</span>
+                            class="px-6 sm:px-7 py-2.5 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-white text-xs sm:text-sm font-bold tracking-wide transition-all shadow-md flex items-center gap-1.5">
+                        <span>Lanjut</span>
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
@@ -463,15 +391,17 @@
                     </button>
                 </template>
 
-                <!-- Tombol Step 2: Konfirmasi & Pesan Sekarang -->
+                <!-- Step 2: Pesan Sekarang -->
                 <template x-if="step === 2">
                     <button type="button"
                             @click="submitOrder()"
-                            :disabled="isSubmitting || !customerName.trim() || (orderType === 'dine_in' && !tableNumber)"
-                            :class="(!customerName.trim() || (orderType === 'dine_in' && !tableNumber)) ? 'opacity-50 cursor-not-allowed bg-stone-300 text-stone-600' : 'bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-white shadow-md'"
-                            class="px-6 sm:px-8 py-3 rounded-full text-xs sm:text-sm font-bold tracking-wide transition-all flex items-center justify-center gap-2">
+                            :disabled="isSubmitting || !customerName.trim()"
+                            :class="(!customerName.trim())
+                                ? 'opacity-50 cursor-not-allowed bg-stone-300 text-stone-600'
+                                : 'bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-white shadow-md'"
+                            class="px-5 sm:px-7 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition-all flex items-center justify-center gap-1.5">
                         <template x-if="isSubmitting">
-                            <span class="flex items-center gap-2">
+                            <span class="flex items-center gap-1.5">
                                 <svg class="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
@@ -480,7 +410,7 @@
                             </span>
                         </template>
                         <template x-if="!isSubmitting">
-                            <span class="flex items-center gap-2">
+                            <span class="flex items-center gap-1.5">
                                 <span>Pesan Sekarang</span>
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -491,7 +421,124 @@
                     </button>
                 </template>
             </div>
+        </div>
+    </div>
 
+    {{-- ============================================================= --}}
+    {{-- MODAL / DRAWER RINCIAN PESANAN (MUNCUL KETIKA PANAH DITEKAN) --}}
+    {{-- ============================================================= --}}
+    <!-- Backdrop Gelap -->
+    <div x-show="showDetails"
+         x-cloak
+         x-transition:enter="transition-opacity ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="showDetails = false"
+         class="fixed inset-0 bg-black/50 z-40 backdrop-blur-2xs"></div>
+
+    <!-- Panel Drawer Slide Up -->
+    <div x-show="showDetails"
+         x-cloak
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="translate-y-full"
+         x-transition:enter-end="translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="translate-y-0"
+         x-transition:leave-end="translate-y-full"
+         class="fixed inset-x-0 bottom-0 z-50 bg-white rounded-t-3xl border-t border-[#EDE8E0] shadow-2xl max-h-[82vh] flex flex-col">
+
+        <!-- Header Drawer dengan Tombol Panah Kecil untuk Tutup -->
+        <div class="px-5 py-3.5 border-b border-[#EDE8E0] flex items-center justify-between bg-white rounded-t-3xl sticky top-0 z-10">
+            <div>
+                <h3 class="font-serif text-sm sm:text-base font-bold text-[#290024]">Rincian Pesanan</h3>
+                <p class="text-[11px] text-[#775533]">
+                    Total <span x-text="cartTotalItems"></span> menu dipesan
+                </p>
+            </div>
+
+            <!-- Tombol panah kecil untuk tutup rincian (kecil aa) -->
+            <button type="button"
+                    @click="showDetails = false"
+                    class="w-6 h-6 rounded-full bg-[#FAF7F2] hover:bg-stone-200 text-[#290024] flex items-center justify-center transition-colors shadow-2xs"
+                    aria-label="Tutup rincian">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Daftar Menu & Breakdown Harga -->
+        <div class="px-5 py-3.5 overflow-y-auto space-y-3.5 flex-1 text-xs">
+            <!-- List Items -->
+            <div class="space-y-2">
+                <template x-for="(item, idx) in cart" :key="idx">
+                    <div class="flex items-start justify-between py-1.5 border-b border-[#EDE8E0]/60 last:border-0">
+                        <div class="min-w-0 pr-3">
+                            <div class="font-bold text-[#290024] text-xs truncate" x-text="item.nama"></div>
+                            <div x-show="item.varian_nama" class="text-[10px] text-[#775533]" x-text="'Varian: ' + item.varian_nama"></div>
+                            <div class="text-[11px] text-stone-500" x-text="item.jumlah + 'x @ ' + formatRupiah(item.harga)"></div>
+                        </div>
+                        <div class="font-serif font-bold text-[#290024] shrink-0 text-xs" x-text="formatRupiah(item.harga * item.jumlah)"></div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Rincian Perhitungan Subtotal, Pajak, Total -->
+            <div class="bg-[#FAF7F2] p-3 rounded-xl border border-[#EDE8E0] space-y-1.5">
+                <div class="flex items-center justify-between text-[#775533]">
+                    <span>Subtotal Menu</span>
+                    <span class="font-bold text-[#290024]" x-text="formatRupiah(subtotal)"></span>
+                </div>
+                <div class="flex items-center justify-between text-[#775533]">
+                    <span>Pajak (PB1 10%)</span>
+                    <span class="font-bold text-[#290024]" x-text="formatRupiah(tax)"></span>
+                </div>
+                <div class="pt-2 border-t border-[#EDE8E0] flex items-center justify-between font-bold text-sm text-[#290024]">
+                    <span>Total Pesanan</span>
+                    <span class="font-serif font-black text-base text-[#290024]" x-text="formatRupiah(total)"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bagian Bawah Drawer: Total & Tombol Lanjut / Pesan Sekarang -->
+        <div class="p-4 border-t border-[#EDE8E0] bg-white flex items-center justify-between gap-3">
+            <div>
+                <span class="text-[10px] text-[#775533] block leading-none">Total:</span>
+                <span class="font-serif font-bold text-base text-[#290024]" x-text="formatRupiah(total)"></span>
+            </div>
+
+            <div>
+                <template x-if="step === 1">
+                    <button type="button"
+                            @click="showDetails = false; goToStep(2)"
+                            class="px-6 py-2 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-white text-xs font-bold tracking-wide transition-all shadow-md flex items-center gap-1.5">
+                        <span>Lanjut</span>
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </template>
+
+                <template x-if="step === 2">
+                    <button type="button"
+                            @click="showDetails = false; submitOrder()"
+                            :disabled="isSubmitting || !customerName.trim()"
+                            :class="(!customerName.trim())
+                                ? 'opacity-50 cursor-not-allowed bg-stone-300 text-stone-600'
+                                : 'bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-white shadow-md'"
+                            class="px-5 py-2 rounded-full text-xs font-bold tracking-wide transition-all flex items-center justify-center gap-1.5">
+                        <span>Pesan Sekarang</span>
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </template>
+            </div>
         </div>
     </div>
 
@@ -502,7 +549,14 @@
 <script>
 function cartPage() {
     return {
-        step: 1, // 1: Tinjau Keranjang, 2: Pilih Meja & Data Pemesan
+        get step() {
+            return (window.Alpine && Alpine.store('checkout')) ? Alpine.store('checkout').step : 1;
+        },
+        set step(val) {
+            if (window.Alpine && Alpine.store('checkout')) {
+                Alpine.store('checkout').step = val;
+            }
+        },
         cart: [],
         tableNumber: '{{ $tableNumber ? $tableNumber : '' }}',
         orderType: '{{ $tableNumber ? 'dine_in' : 'take_away' }}',
@@ -510,6 +564,7 @@ function cartPage() {
         customerPhone: '',
         orderNotes: '',
         isSubmitting: false,
+        showDetails: false, // State buka/tutup rincian harga
 
         initCart() {
             this.loadCart();
@@ -549,6 +604,7 @@ function cartPage() {
                 }
             }
             this.step = targetStep;
+            this.showDetails = false;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         },
 
@@ -569,20 +625,22 @@ function cartPage() {
         },
 
         removeItem(index) {
-            if (confirm('Hapus menu ini dari keranjang belanja?')) {
+            if (confirm('Hapus menu ini dari pesanan?')) {
                 this.cart.splice(index, 1);
                 this.saveCart();
                 if (this.cart.length === 0) {
                     this.step = 1;
+                    this.showDetails = false;
                 }
             }
         },
 
         clearCart() {
-            if (confirm('Kosongkan semua menu di keranjang belanja?')) {
+            if (confirm('Kosongkan semua menu pesanan?')) {
                 this.cart = [];
                 this.saveCart();
                 this.step = 1;
+                this.showDetails = false;
             }
         },
 
@@ -616,11 +674,6 @@ function cartPage() {
                 return;
             }
 
-            if (this.orderType === 'dine_in' && !this.tableNumber) {
-                alert('Silakan pilih salah satu nomor meja untuk santap di tempat.');
-                return;
-            }
-
             if (this.cart.length === 0) {
                 alert('Keranjang belanja Anda masih kosong.');
                 this.step = 1;
@@ -634,7 +687,7 @@ function cartPage() {
                     customer_name: this.customerName.trim(),
                     customer_phone: this.customerPhone ? this.customerPhone.trim() : null,
                     order_type: this.orderType,
-                    table_number: this.orderType === 'dine_in' ? this.tableNumber : null,
+                    table_number: null,
                     notes: this.orderNotes ? this.orderNotes.trim() : null,
                     items: this.cart
                 };

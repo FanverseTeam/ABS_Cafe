@@ -275,20 +275,9 @@ class PelangganController extends Controller
             'items.*.catatan' => 'nullable|string|max:255',
         ]);
 
-        if ($validated['order_type'] === 'dine_in' && empty($validated['table_number'])) {
-            if ($request->wantsJson() || $request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Silakan pilih atau masukkan nomor meja Anda untuk santap di tempat.',
-                ], 422);
-            }
-
-            return back()->with('error', 'Silakan pilih nomor meja Anda.');
-        }
-
         try {
             $order = DB::transaction(function () use ($validated) {
-                $tableNumber = $validated['order_type'] === 'dine_in' ? (int) $validated['table_number'] : null;
+                $tableNumber = ! empty($validated['table_number']) ? (int) $validated['table_number'] : null;
 
                 $subtotal = 0;
                 $builtItems = [];
@@ -411,6 +400,41 @@ class PelangganController extends Controller
         return view('pelanggan.pesanan-sukses', [
             'landing' => LandingData::get(),
             'order' => $order,
+        ]);
+    }
+
+    /**
+     * Polling Status Pembayaran & Pesanan Pelanggan (JSON).
+     */
+    public function orderStatus(string $code): JsonResponse
+    {
+        $order = Order::where('order_code', $code)->first();
+
+        if (! $order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pesanan tidak ditemukan.',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'order_code' => $order->order_code,
+            'payment_status' => $order->payment_status,
+            'payment_status_label' => $order->payment_status === 'lunas' ? 'Lunas' : 'Menunggu Pembayaran',
+            'order_status' => $order->order_status,
+            'order_status_label' => match ($order->order_status) {
+                'baru' => 'Pesanan Diterima Sistem',
+                'diterima' => 'Pesanan Diterima Kasir',
+                'diproses' => 'Pesanan Sedang Diproses',
+                'siap' => 'Pesanan Siap',
+                'selesai' => 'Pesanan Selesai',
+                'dibatalkan' => 'Pesanan Dibatalkan',
+                default => ucfirst($order->order_status),
+            },
+            'payment_method' => $order->paymentMethodLabel(),
+            'paid_at' => $order->paid_at?->format('d/m/Y H:i'),
+            'cashier_name' => $order->cashierLabel(),
         ]);
     }
 

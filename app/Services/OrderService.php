@@ -352,6 +352,10 @@ class OrderService
         $order->update(['order_status' => $target]);
         $this->addTimeline($order, $target, $actor->name, $description);
 
+        if ($target === 'selesai') {
+            $this->releaseTable($order);
+        }
+
         return $order->fresh();
     }
 

@@ -65,6 +65,7 @@ Route::get('/menu', [PelangganController::class, 'menu'])->name('pelanggan.menu'
 Route::get('/keranjang', [PelangganController::class, 'keranjang'])->name('pelanggan.keranjang');
 Route::post('/pesanan', [PelangganController::class, 'storePesanan'])->name('pelanggan.pesanan.store');
 Route::get('/pesanan/sukses/{code}', [PelangganController::class, 'orderSukses'])->name('pelanggan.pesanan.sukses');
+Route::get('/pesanan/status/{code}', [PelangganController::class, 'orderStatus'])->name('pelanggan.pesanan.status');
 Route::get('/reservasi', [PelangganController::class, 'reservasi'])->name('pelanggan.reservasi');
 Route::post('/reservasi', [PelangganController::class, 'storeReservasi'])->name('pelanggan.reservasi.store');
 Route::get('/reservasi/meja-status', [PelangganController::class, 'tableStatusJson'])->name('pelanggan.reservasi.tables');

@@ -54,9 +54,14 @@ class PaymentService
                 'paid_at' => now(),
             ]);
 
+            $targetOrderStatus = in_array($lockedOrder->order_status, ['baru', 'diterima'], true)
+                ? 'diproses'
+                : $lockedOrder->order_status;
+
             $lockedOrder->update([
                 'payment_status' => 'lunas',
                 'payment_method' => $method,
+                'order_status' => $targetOrderStatus,
                 'paid_at' => now(),
                 'cashier_id' => $lockedOrder->cashier_id ?: $cashier->id,
                 'cashier_name' => $lockedOrder->cashier_name ?: $cashier->name,
@@ -65,7 +70,15 @@ class PaymentService
             $this->orders->decrementStock($lockedOrder->fresh('items'), $cashier);
             $this->orders->addTimeline($lockedOrder, 'LUNAS', $cashier->name,
                 'Pembayaran '.strtoupper($method).' lunas diverifikasi kasir');
-            $this->orders->releaseTable($lockedOrder);
+
+            if ($targetOrderStatus === 'diproses' && $lockedOrder->order_status !== 'diproses') {
+                $this->orders->addTimeline($lockedOrder, 'DIPROSES', $cashier->name,
+                    'Pesanan mulai diproses oleh tim bar / dapur');
+            }
+
+            if (in_array($targetOrderStatus, ['selesai', 'dibatalkan'], true)) {
+                $this->orders->releaseTable($lockedOrder);
+            }
 
             ActivityLog::create([
                 'user_name' => $cashier->name,
