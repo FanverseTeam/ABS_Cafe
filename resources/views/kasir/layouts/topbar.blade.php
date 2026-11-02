@@ -6,11 +6,10 @@
     $totalNotif = $newWebOrdersCount + $unpaidOrdersCount;
     $newWebOrders = \App\Models\Order::where('source', 'web')->where('order_status', 'baru')->take(5)->get();
     $unpaidOrders = \App\Models\Order::unpaid()->where('order_status', '!=', 'selesai')->take(5)->get();
-
 @endphp
 
 <header class="sticky top-0 z-30 bg-[#F2F5E2]/95 backdrop-blur-md border-b border-cafe-beige/60 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">
-    <div class="h-14 sm:h-16 landscape:h-12 sm:landscape:h-14 flex items-center justify-between gap-3 px-3 sm:px-6 lg:px-8 w-full">
+    <div class="h-14 sm:h-16 landscape:h-12 sm:landscape:h-14 flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 lg:px-8 w-full">
 
         {{-- ═══ LEFT: Logo / Back + Page Title ═══ --}}
         <div class="flex items-center gap-2.5 min-w-0 flex-1">
@@ -34,7 +33,19 @@
         </div>
 
         {{-- ═══ RIGHT: Action Pills & Icons ═══ --}}
-        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+
+            {{-- Shift Status Pill --}}
+            <a href="{{ $hasActiveShift ? route('kasir.shift.close') : route('kasir.shift.open') }}"
+               title="{{ $hasActiveShift ? 'Shift sedang berjalan — buka rekap tutup shift' : 'Shift belum dibuka — klik untuk membuka' }}"
+               class="{{ $hasActiveShift ? 'bg-cafe-success/15 text-cafe-success border-cafe-success/30' : 'bg-cafe-warning/15 text-cafe-warning border-cafe-warning/30' }} px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 sm:gap-2 shrink-0 transition-all hover:scale-105 active:scale-95">
+                <span class="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60 {{ $hasActiveShift ? 'bg-cafe-success' : 'bg-cafe-warning' }}"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 {{ $hasActiveShift ? 'bg-cafe-success' : 'bg-cafe-warning' }}"></span>
+                </span>
+                <span class="hidden sm:inline">{{ $hasActiveShift ? 'Shift Berjalan' : 'Shift Belum Dibuka' }}</span>
+                <span class="text-[10px] sm:hidden">{{ $hasActiveShift ? 'Shift' : 'Buka' }}</span>
+            </a>
 
             {{-- Notification Bell --}}
             <div class="relative" id="notif-dropdown-wrapper">
@@ -50,7 +61,7 @@
                 </button>
 
                 {{-- Notification Dropdown --}}
-                <div id="notif-dropdown" class="hidden absolute right-0 mt-2.5 w-80 sm:w-96 bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 z-50 overflow-hidden">
+                <div id="notif-dropdown" class="hidden absolute right-0 mt-2.5 w-80 sm:w-96 max-w-[calc(100vw-2rem)] bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 z-50 overflow-hidden">
                     <div class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-cafe-dark/[0.03] to-transparent border-b border-cafe-beige/40">
                         <h4 class="font-serif font-bold text-sm text-cafe-dark flex items-center gap-2">
                             <i data-lucide="bell-ring" class="w-4 h-4 text-cafe-gold"></i>
@@ -105,42 +116,45 @@
                 </div>
             </div>
 
-            {{-- Profile Avatar & Dropdown --}}
+            <!-- Profile Dropdown -->
             <div class="relative" id="profile-dropdown-wrapper">
-                <button onclick="toggleProfileDropdown()"
-                        class="flex items-center gap-2 h-8 sm:h-9 pl-1 pr-1 sm:pr-2.5 rounded-xl bg-cafe-beige/40 hover:bg-cafe-beige/70 transition-all border border-cafe-beige/50 active:scale-95">
-                    <div class="w-7 h-7 sm:w-7 sm:h-7 rounded-lg bg-cafe-dark text-cafe-gold font-serif font-bold text-[11px] flex items-center justify-center">
+                <button type="button"
+                        id="profile-dropdown-button"
+                        onclick="toggleProfileDropdown()"
+                        aria-expanded="false"
+                        aria-haspopup="true"
+                        aria-controls="profile-dropdown"
+                        aria-label="Menu profil {{ Auth::user()->name ?? 'Kasir' }}"
+                        class="flex min-h-[44px] min-w-[44px] items-center gap-2 p-1.5 sm:pr-3 rounded-full bg-cafe-beige/40 hover:bg-cafe-beige/70 transition-all border border-cafe-beige/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
+                    <div class="w-8 h-8 rounded-full bg-[#290024] text-[#D4954D] font-serif font-bold text-xs flex items-center justify-center shadow-sm shrink-0">
                         {{ substr(Auth::user()->name ?? 'K', 0, 1) }}
                     </div>
                     <div class="text-left hidden sm:block">
-                        <span class="text-[11px] font-semibold text-cafe-dark block leading-tight truncate max-w-[7rem]">{{ Auth::user()->name ?? 'Kasir ABS' }}</span>
+                        <span class="text-xs font-bold text-cafe-dark block leading-tight">{{ Auth::user()->name ?? 'Kasir ABS' }}</span>
+                        <span class="text-[10px] text-cafe-muted block">Kasir</span>
                     </div>
-                    <i data-lucide="chevron-down" class="w-3 h-3 text-cafe-muted hidden sm:block"></i>
+                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-cafe-muted ml-0.5"></i>
                 </button>
 
-                {{-- Profile Dropdown --}}
-                <div id="profile-dropdown" class="hidden absolute right-0 mt-2.5 w-56 bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 z-50 overflow-hidden">
-                    <div class="px-4 py-3 bg-gradient-to-r from-cafe-dark/[0.03] to-transparent border-b border-cafe-beige/40">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-9 h-9 rounded-xl bg-cafe-dark text-cafe-gold font-serif font-bold text-sm flex items-center justify-center">
-                                {{ substr(Auth::user()->name ?? 'K', 0, 1) }}
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="text-xs font-bold text-cafe-dark truncate">{{ Auth::user()->name ?? 'Kasir' }}</p>
-                                <p class="text-[10px] text-cafe-muted truncate">{{ Auth::user()->email }}</p>
-                            </div>
-                        </div>
+                <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 p-2 z-50 animate-in fade-in" role="menu" aria-labelledby="profile-dropdown-button">
+                    <div class="px-3 py-2 border-b border-cafe-beige/50">
+                        <p class="text-xs font-bold text-cafe-dark truncate">{{ Auth::user()->name ?? 'Kasir' }}</p>
+                        <p class="text-[10px] text-cafe-muted truncate">{{ '@' . strtolower(Auth::user()->username ?? 'kasir') }}</p>
                     </div>
 
-                    <div class="p-1.5">
-                        <a href="{{ route('kasir.shift.index') }}" class="flex items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-dark hover:bg-cafe-beige/40 rounded-xl transition-colors">
-                            <i data-lucide="wallet" class="w-4 h-4 text-cafe-muted"></i>
+                    <div class="py-1 space-y-0.5">
+                        <a href="{{ route('kasir.shift.index') }}" role="menuitem" class="w-full flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
+                            <i data-lucide="wallet" class="w-4 h-4 text-cafe-muted shrink-0"></i>
                             <span>Riwayat Shift</span>
                         </a>
-                        <form action="{{ route('kasir.logout') }}" method="POST" data-cafe-confirm>
+                        <button type="button" onclick="alert('Penggantian kata sandi kasir dikelola oleh Administrator melalui menu Manajemen Staf.')" role="menuitem" class="w-full flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70 text-left">
+                            <i data-lucide="key-round" class="w-4 h-4 text-cafe-muted shrink-0"></i>
+                            <span>Ganti Password</span>
+                        </button>
+                        <form action="{{ route('kasir.logout') }}" method="POST" data-cafe-confirm class="pt-1 border-t border-cafe-beige/40">
                             @csrf
-                            <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-danger hover:bg-cafe-danger/8 rounded-xl transition-colors text-left">
-                                <i data-lucide="log-out" class="w-4 h-4"></i>
+                            <button type="submit" role="menuitem" class="w-full flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-cafe-danger hover:bg-cafe-danger/10 rounded-xl transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-danger/40">
+                                <i data-lucide="log-out" class="w-4 h-4 shrink-0"></i>
                                 <span>Keluar</span>
                             </button>
                         </form>
@@ -148,52 +162,6 @@
                 </div>
             </div>
         </div>
-
-<<<<<<< HEAD
-=======
-        <!-- Profile Dropdown -->
-        <div class="relative" id="profile-dropdown-wrapper">
-            <button type="button"
-                    id="profile-dropdown-button"
-                    onclick="toggleProfileDropdown()"
-                    aria-expanded="false"
-                    aria-haspopup="true"
-                    aria-controls="profile-dropdown"
-                    aria-label="Menu profil {{ Auth::user()->name ?? 'Kasir' }}"
-                    class="flex min-h-[44px] min-w-[44px] items-center gap-2 p-1.5 sm:pr-3 rounded-full bg-cafe-beige/40 hover:bg-cafe-beige/70 transition-all border border-cafe-beige/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
-                <div class="w-8 h-8 rounded-full bg-[#290024] text-[#D4954D] font-serif font-bold text-xs flex items-center justify-center shadow-sm shrink-0">
-                    {{ substr(Auth::user()->name ?? 'K', 0, 1) }}
-                </div>
-                <div class="text-left hidden sm:block">
-                    <span class="text-xs font-bold text-cafe-dark block leading-tight">{{ Auth::user()->name ?? 'Kasir ABS' }}</span>
-                    <span class="text-[10px] text-cafe-muted block">Kasir</span>
-                </div>
-                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-cafe-muted ml-0.5"></i>
-            </button>
-
-            <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 p-2 z-50 animate-in fade-in" role="menu" aria-labelledby="profile-dropdown-button">
-                <div class="px-3 py-2 border-b border-cafe-beige/50">
-                    <p class="text-xs font-bold text-cafe-dark truncate">{{ Auth::user()->name ?? 'Kasir' }}</p>
-                    <p class="text-[10px] text-cafe-muted truncate">{{ '@' . strtolower(Auth::user()->username ?? 'kasir') }}</p>
-                </div>
-
-                <div class="py-1 space-y-0.5">
-                    <button type="button" onclick="alert('Penggantian kata sandi kasir dikelola oleh Administrator melalui menu Manajemen Staf.')" role="menuitem" class="w-full flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70 text-left">
-                        <i data-lucide="key-round" class="w-4 h-4 text-cafe-muted shrink-0"></i>
-                        <span>Ganti Password</span>
-                    </button>
-                    <form action="{{ route('kasir.logout') }}" method="POST" data-cafe-confirm class="pt-1 border-t border-cafe-beige/40">
-                        @csrf
-                        <button type="submit" role="menuitem" class="w-full flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-cafe-danger hover:bg-cafe-danger/10 rounded-xl transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-danger/40">
-                            <i data-lucide="log-out" class="w-4 h-4 shrink-0"></i>
-                            <span>Keluar</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
->>>>>>> dde82cf80c041ceea01f83c29305fd707bcc70c2
     </div>
 </header>
 

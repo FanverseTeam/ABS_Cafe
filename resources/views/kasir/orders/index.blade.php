@@ -223,10 +223,17 @@
                         </div>
 
                         @if(! $isCancelled && $status !== 'selesai')
-                            <form action="{{ route('kasir.orders.cancel', $order) }}" method="POST" onsubmit="return confirmCancel(event)">
-                                @csrf
-                                <input type="text" name="cancel_reason" placeholder="Alasan pembatalan (wajib)" required class="mt-2 w-full text-[10px] bg-[#E3DEA4]/40 border border-cafe-danger/30 text-cafe-text placeholder:text-cafe-muted/50 px-3 py-2 rounded-xl focus:border-cafe-danger focus:outline-none">
-                            </form>
+                            <details class="mt-2 text-[10px] group">
+                                <summary class="cursor-pointer text-cafe-muted hover:text-cafe-danger transition-colors list-none flex items-center justify-between py-1 px-1">
+                                    <span class="font-medium text-cafe-muted group-open:text-cafe-danger">Batalkan Pesanan...</span>
+                                    <i data-lucide="chevron-down" class="w-3 h-3 text-cafe-muted transition-transform group-open:rotate-180"></i>
+                                </summary>
+                                <form action="{{ route('kasir.orders.cancel', $order) }}" method="POST" onsubmit="return confirmCancel(event)" class="mt-1 flex items-center gap-1.5">
+                                    @csrf
+                                    <input type="text" name="cancel_reason" placeholder="Alasan pembatalan (wajib)" required class="flex-1 text-[10px] bg-[#E3DEA4]/40 border border-cafe-danger/30 text-cafe-text placeholder:text-cafe-muted/50 px-2.5 py-1.5 rounded-xl focus:border-cafe-danger focus:outline-none">
+                                    <button type="submit" class="px-2.5 py-1.5 bg-cafe-danger text-white rounded-xl font-bold text-[10px] hover:bg-red-700 transition-colors shrink-0">Batal</button>
+                                </form>
+                            </details>
                         @endif
                     </div>
                 </div>
