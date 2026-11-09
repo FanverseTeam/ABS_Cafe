@@ -11,6 +11,7 @@ use App\Models\MenuVariant;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderTimeline;
+use App\Models\Promo;
 use App\Models\Reservation;
 use App\Models\Table;
 use App\Services\OrderService;
@@ -103,6 +104,33 @@ class PelangganController extends Controller
             ];
         })->values()->all();
 
+        try {
+            $promos = Promo::where('is_active', true)->orderByDesc('id')->get();
+        } catch (\Throwable $e) {
+            $promos = collect();
+        }
+
+        $events = [
+            [
+                'id' => 1,
+                'title' => 'Live Music Night',
+                'subtitle' => 'Start 20.00 WIB',
+                'schedule' => 'Setiap Jumat Malam',
+                'description' => 'Nikmati suasana malam dengan live music dan menu spesial kami!!',
+                'image' => asset('images/events/friday-night-party.jpg'),
+                'badge' => 'Setiap Jumat',
+            ],
+            [
+                'id' => 2,
+                'title' => 'Acoustic Weekend Vibes',
+                'subtitle' => 'Start 19.30 WIB',
+                'schedule' => 'Sabtu & Minggu',
+                'description' => 'Habiskan akhir pekan santai dengan lantunan melodi akustik syahdu ditemani racikan kopi favorit.',
+                'image' => null,
+                'badge' => 'Weekend',
+            ],
+        ];
+
         $selectedCategory = null;
         $isSearching = $searchQuery !== '';
         $isCategoryFilter = $categorySlug !== '' && $categorySlug !== 'semua';
@@ -131,6 +159,8 @@ class PelangganController extends Controller
                 'activeTable' => $activeTable,
                 'allTables' => $allTables,
                 'allMenusPayload' => $allMenusPayload,
+                'promos' => $promos,
+                'events' => $events,
             ]);
         }
 
@@ -164,6 +194,8 @@ class PelangganController extends Controller
                     'activeTable' => $activeTable,
                     'allTables' => $allTables,
                     'allMenusPayload' => $allMenusPayload,
+                    'promos' => $promos,
+                    'events' => $events,
                 ]);
             }
 
@@ -192,6 +224,8 @@ class PelangganController extends Controller
                     'activeTable' => $activeTable,
                     'allTables' => $allTables,
                     'allMenusPayload' => $allMenusPayload,
+                    'promos' => $promos,
+                    'events' => $events,
                 ]);
             }
         }
@@ -231,6 +265,8 @@ class PelangganController extends Controller
             'activeTable' => $activeTable,
             'allTables' => $allTables,
             'allMenusPayload' => $allMenusPayload,
+            'promos' => $promos,
+            'events' => $events,
         ]);
     }
 
@@ -264,7 +300,7 @@ class PelangganController extends Controller
     {
         $validated = $request->validate([
             'customer_name' => 'required|string|max:100',
-            'customer_phone' => 'nullable|string|max:20',
+            'customer_phone' => 'required|string|max:20',
             'order_type' => 'required|in:dine_in,take_away',
             'table_number' => 'nullable|integer',
             'notes' => 'nullable|string|max:500',

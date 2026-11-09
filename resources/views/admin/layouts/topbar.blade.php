@@ -11,7 +11,7 @@
     }
 @endphp
 
-<header class="sticky top-0 z-30 min-h-[4rem] sm:min-h-[5rem] bg-[#F2F5E2]/95 backdrop-blur-md border-b border-cafe-beige/60 px-4 sm:px-8 shadow-sm transition-all @if(View::hasSection('has_form_header') || request()->routeIs('*.create', '*.edit')) hidden lg:block @endif" style="padding-top: env(safe-area-inset-top, 0px);">
+<header class="sticky top-0 z-30 min-h-[4rem] sm:min-h-[5rem] bg-[#F2F5E2] border-b border-[#E3DEA4] px-4 sm:px-8 shadow-sm transition-all @if(View::hasSection('has_form_header') || request()->routeIs('*.create', '*.edit')) hidden lg:block @endif" style="padding-top: env(safe-area-inset-top, 0px);">
     <div class="h-16 sm:h-20 flex items-center justify-between gap-3 sm:gap-4 w-full">
         <!-- Left: Mobile Logo & Title -->
         <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
@@ -55,7 +55,7 @@
                 </button>
 
                 <!-- Notif Dropdown Menu -->
-                <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 p-4 z-50 animate-in fade-in">
+                <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-[#F2F5E2] rounded-2xl shadow-soft-lg border border-[#E3DEA4] p-4 z-50 animate-in fade-in">
                     <div class="flex items-center justify-between pb-3 border-b border-cafe-beige/50">
                         <h4 class="font-serif font-bold text-sm text-cafe-dark">Pemberitahuan Sistem</h4>
                         <span class="text-[10px] bg-cafe-gold/20 text-cafe-dark font-semibold px-2 py-0.5 rounded-full">
@@ -115,7 +115,7 @@
                         aria-haspopup="true"
                         aria-controls="profile-dropdown"
                         aria-label="Menu profil {{ Auth::user()->name ?? 'Admin' }}"
-                        class="flex min-h-[44px] min-w-[44px] items-center gap-2 p-1.5 sm:pr-3 rounded-full bg-cafe-beige/40 hover:bg-cafe-beige/70 transition-all border border-cafe-beige/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
+                        class="flex min-h-[44px] min-w-[44px] items-center gap-2 p-1.5 sm:pr-3 rounded-full bg-[#E3DEA4] hover:bg-[#E3DEA4]/80 transition-all border border-[#E3DEA4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
                     <div class="w-8 h-8 rounded-full bg-[#290024] text-[#D4954D] font-serif font-bold text-xs flex items-center justify-center shadow-sm shrink-0">
                         {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
                     </div>
@@ -127,22 +127,22 @@
                 </button>
 
                 <!-- Profile Menu -->
-                <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 p-2 z-50 animate-in fade-in" role="menu" aria-labelledby="profile-dropdown-button-legacy">
-                    <div class="px-3 py-2 border-b border-cafe-beige/50">
+                <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-[#F2F5E2] rounded-2xl shadow-soft-lg border border-[#E3DEA4] p-2 z-50 animate-in fade-in" role="menu" aria-labelledby="profile-dropdown-button-legacy">
+                    <div class="px-3 py-2 border-b border-[#E3DEA4]">
                         <p class="text-xs font-bold text-cafe-dark truncate">{{ Auth::user()->name ?? 'Admin' }}</p>
                         <p class="text-[10px] text-cafe-muted truncate">{{ '@' . strtolower(Auth::user()->username ?? 'admin') }}</p>
                     </div>
 
                     <div class="py-1 space-y-0.5">
-                        <a href="{{ route($settingsRoute, ['tab' => 'akun']) }}" role="menuitem" class="flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
+                        <a href="{{ route($settingsRoute, ['tab' => 'akun']) }}" role="menuitem" class="flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-[#E3DEA4] rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
                             <i data-lucide="key-round" class="w-4 h-4 text-cafe-muted shrink-0"></i>
                             <span>Ganti Password</span>
                         </a>
-                        <a href="{{ route('admin.logs.index') }}" role="menuitem" class="flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
+                        <a href="{{ route('admin.logs.index') }}" role="menuitem" class="flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-[#E3DEA4] rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
                             <i data-lucide="history" class="w-4 h-4 text-cafe-muted shrink-0"></i>
                             <span>Log Aktivitas</span>
                         </a>
-                        <form action="{{ route('admin.logout') }}" method="POST" data-cafe-confirm class="pt-1 border-t border-cafe-beige/40">
+                        <form action="{{ route('admin.logout') }}" method="POST" data-cafe-confirm class="pt-1 border-t border-[#E3DEA4]">
                             @csrf
                             <button type="submit" role="menuitem" class="w-full flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-cafe-danger hover:bg-cafe-danger/10 rounded-xl transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-danger/40">
                                 <i data-lucide="log-out" class="w-4 h-4 shrink-0"></i>
@@ -156,7 +156,7 @@
     @else
         <!-- Active admin mode: no order/stock widgets from the legacy dashboard. -->
         <div class="flex items-center gap-2 sm:gap-4 shrink-0">
-            <a href="{{ route('admin.activity.index') }}" class="relative p-2.5 rounded-full bg-cafe-beige/50 hover:bg-cafe-beige text-cafe-dark transition-colors" title="Notifikasi Aktivitas" aria-label="Notifikasi Aktivitas">
+            <a href="{{ route('admin.activity.index') }}" class="relative p-2.5 rounded-full bg-[#E3DEA4] hover:bg-[#E3DEA4]/80 text-cafe-dark transition-colors" title="Notifikasi Aktivitas" aria-label="Notifikasi Aktivitas">
                 <i data-lucide="bell" class="w-4 h-4"></i>
             </a>
 
@@ -168,7 +168,7 @@
                         aria-haspopup="true"
                         aria-controls="profile-dropdown"
                         aria-label="Menu profil {{ Auth::user()->name ?? 'Admin' }}"
-                        class="flex min-h-[44px] min-w-[44px] items-center gap-2 p-1.5 sm:pr-3 rounded-full bg-cafe-beige/40 hover:bg-cafe-beige/70 transition-all border border-cafe-beige/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
+                        class="flex min-h-[44px] min-w-[44px] items-center gap-2 p-1.5 sm:pr-3 rounded-full bg-[#E3DEA4] hover:bg-[#E3DEA4]/80 transition-all border border-[#E3DEA4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
                     <div class="w-8 h-8 rounded-full bg-[#290024] text-[#D4954D] font-serif font-bold text-xs flex items-center justify-center shadow-sm shrink-0">
                         {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
                     </div>
@@ -179,22 +179,22 @@
                     <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-cafe-muted ml-0.5"></i>
                 </button>
 
-                <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 p-2 z-50 animate-in fade-in" role="menu" aria-labelledby="profile-dropdown-button">
-                    <div class="px-3 py-2 border-b border-cafe-beige/50">
+                <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-[#F2F5E2] rounded-2xl shadow-soft-lg border border-[#E3DEA4] p-2 z-50 animate-in fade-in" role="menu" aria-labelledby="profile-dropdown-button">
+                    <div class="px-3 py-2 border-b border-[#E3DEA4]">
                         <p class="text-xs font-bold text-cafe-dark truncate">{{ Auth::user()->name ?? 'Admin' }}</p>
                         <p class="text-[10px] text-cafe-muted truncate">{{ '@' . strtolower(Auth::user()->username ?? 'admin') }}</p>
                     </div>
 
                     <div class="py-1 space-y-0.5">
-                        <a href="{{ route($settingsRoute, ['tab' => 'akun']) }}" role="menuitem" class="flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
+                        <a href="{{ route($settingsRoute, ['tab' => 'akun']) }}" role="menuitem" class="flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-[#E3DEA4] rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
                             <i data-lucide="key-round" class="w-4 h-4 text-cafe-muted shrink-0"></i>
                             <span>Ganti Password</span>
                         </a>
-                        <a href="{{ route('admin.activity.index') }}" role="menuitem" class="flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
+                        <a href="{{ route('admin.activity.index') }}" role="menuitem" class="flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-[#E3DEA4] rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
                             <i data-lucide="history" class="w-4 h-4 text-cafe-muted shrink-0"></i>
                             <span>Log Aktivitas</span>
                         </a>
-                        <form action="{{ route('admin.logout') }}" method="POST" data-cafe-confirm class="pt-1 border-t border-cafe-beige/40">
+                        <form action="{{ route('admin.logout') }}" method="POST" data-cafe-confirm class="pt-1 border-t border-[#E3DEA4]">
                             @csrf
                             <button type="submit" role="menuitem" class="w-full flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-cafe-danger hover:bg-cafe-danger/10 rounded-xl transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-danger/40">
                                 <i data-lucide="log-out" class="w-4 h-4 shrink-0"></i>

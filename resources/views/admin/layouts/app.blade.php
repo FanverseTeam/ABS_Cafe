@@ -38,7 +38,7 @@
                         gold: '#D4954D',
                         cream: '#F2F5E2',
                         beige: '#E3DEA4',
-                        card: 'rgb(227 222 164 / 0.35)',
+                        card: '#F2F5E2',
                         text: '#290024',
                         muted: '#775533',
                         bronze: '#D4954D',
@@ -161,7 +161,7 @@
     <!-- Toast Notifications (elevated above bottom nav on mobile) -->
     <div id="toast-container" class="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] lg:bottom-5 right-3 sm:right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none">
         @if(session('success'))
-            <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#F2F5E2]/95 border-[#775533]/30 text-cafe-text backdrop-blur-md animate-in slide-in-from-bottom-5 transition-all">
+            <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#F2F5E2] border-[#775533]/30 text-cafe-text animate-in slide-in-from-bottom-5 transition-all">
                 <i data-lucide="check-circle-2" class="w-5 h-5 text-cafe-success shrink-0 mt-0.5"></i>
                 <div class="flex-1 min-w-0">
                     <h5 class="font-semibold text-xs text-cafe-dark">Berhasil</h5>
@@ -174,7 +174,7 @@
         @endif
 
         @if(session('error'))
-            <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#F2F5E2]/95 border-[#775533]/30 text-cafe-text backdrop-blur-md animate-in slide-in-from-bottom-5 transition-all">
+            <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#F2F5E2] border-[#775533]/30 text-cafe-text animate-in slide-in-from-bottom-5 transition-all">
                 <i data-lucide="alert-circle" class="w-5 h-5 text-cafe-danger shrink-0 mt-0.5"></i>
                 <div class="flex-1 min-w-0">
                     <h5 class="font-semibold text-xs text-cafe-dark">Peringatan</h5>
@@ -200,7 +200,7 @@
             const iconColor = type === 'success' ? 'text-cafe-success' : (type === 'error' ? 'text-cafe-danger' : 'text-cafe-gold');
             const iconName = type === 'success' ? 'check-circle-2' : (type === 'error' ? 'alert-circle' : 'info');
 
-            item.className = `toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#F2F5E2]/95 ${borderColor} text-cafe-text backdrop-blur-md transition-all duration-300`;
+            item.className = `toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-[#F2F5E2] ${borderColor} text-cafe-text transition-all duration-300`;
             item.innerHTML = `
                 <i data-lucide="${iconName}" class="w-5 h-5 ${iconColor} shrink-0 mt-0.5"></i>
                 <div class="flex-1 min-w-0">

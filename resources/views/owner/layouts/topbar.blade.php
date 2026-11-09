@@ -52,7 +52,7 @@
                 @endif
             </button>
 
-            <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 p-4 z-50">
+            <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-[#F2F5E2] rounded-2xl shadow-soft-lg border border-[#E3DEA4] p-4 z-50">
                 <div class="flex items-center justify-between pb-3 border-b border-cafe-beige/50">
                     <h4 class="font-serif font-bold text-sm text-cafe-dark">Pemberitahuan</h4>
                     <span class="text-[10px] bg-cafe-gold/20 text-cafe-dark font-semibold px-2 py-0.5 rounded-full">
@@ -120,7 +120,7 @@
                 <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-cafe-muted ml-0.5"></i>
             </button>
 
-            <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 p-2 z-50 animate-in fade-in" role="menu" aria-labelledby="profile-dropdown-button">
+            <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-[#F2F5E2] rounded-2xl shadow-soft-lg border border-[#E3DEA4] p-2 z-50 animate-in fade-in" role="menu" aria-labelledby="profile-dropdown-button">
                 <div class="px-3 py-2 border-b border-cafe-beige/50">
                     <p class="text-xs font-bold text-cafe-dark truncate">{{ Auth::user()->name ?? 'Owner' }}</p>
                     <p class="text-[10px] text-cafe-muted truncate">{{ '@' . strtolower(Auth::user()->username ?? 'owner') }}</p>

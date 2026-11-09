@@ -457,13 +457,13 @@
 <!-- ======================================================================= -->
 <!-- 5b. RESERVASI MEJA REAL-TIME BANNER                                    -->
 <!-- ======================================================================= -->
-<section class="relative py-16 sm:py-20 bg-gradient-to-b from-[#290024] via-[#33002D] to-[#290024] border-t border-[#D4954D]/20 overflow-hidden">
+<section class="relative py-16 sm:py-20 bg-[#290024] border-t border-[#D4954D]/20 overflow-hidden">
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#D4954D]/10 via-transparent to-transparent pointer-events-none"></div>
     <div class="relative mx-auto max-w-5xl px-4 sm:px-6 text-center reveal-on-scroll">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold tracking-wider uppercase mb-4">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4954D]/15 border border-[#D4954D]/30 text-[#F2F5E2] text-xs font-semibold tracking-wider uppercase mb-4">
             <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4954D] opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-[#D4954D]"></span>
             </span>
             Ketersediaan Meja Real-Time
         </div>

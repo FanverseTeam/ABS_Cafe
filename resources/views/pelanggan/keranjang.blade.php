@@ -110,7 +110,7 @@
         {{-- STEP 1: TINJAU & EDIT ISI KERANJANG                           --}}
         {{-- ============================================================= --}}
         <div x-show="cart.length > 0 && step === 1" class="space-y-4">
-            <div class="flex items-center justify-between pb-2 border-b border-[#EDE8E0]">
+            <div class="flex items-center justify-between pb-2 border-b border-[#E3DEA4]">
                 <div>
                     <h2 class="font-serif text-base sm:text-lg font-bold text-[#290024]">
                         Daftar Pesanan Anda (<span x-text="cartTotalItems"></span>)
@@ -122,7 +122,7 @@
 
                 <button type="button"
                         @click="clearCart()"
-                        class="text-xs text-[#775533] hover:text-rose-600 transition-colors shrink-0">
+                        class="text-xs text-[#775533] hover:text-[#D4954D] transition-colors shrink-0">
                     Kosongkan
                 </button>
             </div>
@@ -137,7 +137,7 @@
                                 <img :src="item.foto" :alt="item.nama" class="w-full h-full object-cover">
                             </template>
                             <template x-if="!item.foto">
-                                <div class="w-full h-full flex items-center justify-center text-stone-400">
+                                <div class="w-full h-full flex items-center justify-center text-[#775533]/60">
                                     <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
                                         <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
                                         <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
@@ -157,7 +157,7 @@
                                     <!-- Tombol Hapus -->
                                     <button type="button"
                                             @click="removeItem(index)"
-                                            class="text-stone-400 hover:text-rose-500 p-1 -mr-1 transition-colors"
+                                            class="text-[#775533]/60 hover:text-[#D4954D] p-1 -mr-1 transition-colors"
                                             title="Hapus menu ini">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -167,13 +167,13 @@
                                 </div>
 
                                 <div x-show="item.varian_nama" class="text-[11px] font-medium text-[#775533]" x-text="'Varian: ' + item.varian_nama"></div>
-                                <div x-show="item.catatan" class="text-[11px] text-stone-500 italic" x-text="'Catatan: ' + item.catatan"></div>
+                                <div x-show="item.catatan" class="text-[11px] text-[#775533] italic" x-text="'Catatan: ' + item.catatan"></div>
                             </div>
 
                             <div class="flex items-center justify-between pt-1">
                                 <div>
                                     <span class="font-serif font-bold text-xs sm:text-sm text-[#290024]" x-text="formatRupiah(item.harga * item.jumlah)"></span>
-                                    <span class="text-[10px] text-stone-400 block" x-show="item.jumlah > 1" x-text="'(' + formatRupiah(item.harga) + ' / porsi)'"></span>
+                                    <span class="text-[10px] text-[#775533]/60 block" x-show="item.jumlah > 1" x-text="'(' + formatRupiah(item.harga) + ' / porsi)'"></span>
                                 </div>
 
                                 <!-- Kontrol Edit Qty (+ / -) yang Jelas -->
@@ -241,29 +241,30 @@
                         </svg>
                         <span>Data Pelanggan</span>
                     </h2>
-                    <span class="text-[10px] text-amber-700 font-medium">* Wajib diisi</span>
+                    <span class="text-[10px] text-[#775533] font-medium">* Wajib diisi</span>
                 </div>
 
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs font-semibold text-[#290024] mb-1">
-                            Nama Pemesan <span class="text-rose-500">*</span>
+                            Nama Pemesan <span class="text-[#D4954D]">*</span>
                         </label>
                         <input type="text"
                                x-model="customerName"
                                placeholder="Masukkan nama lengkap atau panggilan..."
                                required
-                               class="w-full bg-white/80 text-xs p-3 rounded-xl border border-[#E3DEA4] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]">
+                               class="w-full bg-[#F2F5E2]/80 text-xs p-3 rounded-xl border border-[#E3DEA4] focus:bg-[#F2F5E2] focus:border-[#290024] focus:outline-none text-[#290024]">
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-[#290024] mb-1">
-                            Nomor WhatsApp / HP <span class="text-[#775533]/70 font-normal">(Opsional)</span>
+                            Nomor WhatsApp / HP <span class="text-[#D4954D]">*</span>
                         </label>
                         <input type="tel"
                                x-model="customerPhone"
                                placeholder="Contoh: 081234567890"
-                               class="w-full bg-white/80 text-xs p-3 rounded-xl border border-[#E3DEA4] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]">
+                               required
+                               class="w-full bg-[#F2F5E2]/80 text-xs p-3 rounded-xl border border-[#E3DEA4] focus:bg-[#F2F5E2] focus:border-[#290024] focus:outline-none text-[#290024]">
                     </div>
 
                     <div>
@@ -273,7 +274,7 @@
                         <textarea x-model="orderNotes"
                                   rows="2"
                                   placeholder="Contoh: Tolong sendok garpu disiapkan, disajikan bersamaan..."
-                                  class="w-full bg-white/80 text-xs p-3 rounded-xl border border-[#E3DEA4] focus:bg-white focus:border-[#290024] focus:outline-none text-[#290024]"></textarea>
+                                  class="w-full bg-[#F2F5E2]/80 text-xs p-3 rounded-xl border border-[#E3DEA4] focus:bg-[#F2F5E2] focus:border-[#290024] focus:outline-none text-[#290024]"></textarea>
                     </div>
                 </div>
             </div>
@@ -281,7 +282,7 @@
             <!-- 2. PILIHAN DINE IN / TAKE AWAY (KOTAK PERSEGI JEJER 2 HORIZONTAL) -->
             <div class="space-y-2">
                 <label class="block text-xs font-bold uppercase tracking-wider text-[#775533]">
-                    Pilihan Pesanan <span class="text-rose-500">*</span>
+                    Pilihan Pesanan <span class="text-[#D4954D]">*</span>
                 </label>
 
                 <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
@@ -382,7 +383,7 @@
                 <template x-if="step === 1">
                     <button type="button"
                             @click="goToStep(2)"
-                            class="px-6 sm:px-7 py-2.5 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-white text-xs sm:text-sm font-bold tracking-wide transition-all shadow-md flex items-center gap-1.5">
+                            class="px-6 sm:px-7 py-2.5 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] text-xs sm:text-sm font-bold tracking-wide transition-all shadow-md flex items-center gap-1.5">
                         <span>Lanjut</span>
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -397,8 +398,8 @@
                             @click="submitOrder()"
                             :disabled="isSubmitting || !customerName.trim()"
                             :class="(!customerName.trim())
-                                ? 'opacity-50 cursor-not-allowed bg-stone-300 text-stone-600'
-                                : 'bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-white shadow-md'"
+                                ? 'opacity-50 cursor-not-allowed bg-[#E3DEA4] text-[#775533]'
+                                : 'bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] shadow-md'"
                             class="px-5 sm:px-7 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition-all flex items-center justify-center gap-1.5">
                         <template x-if="isSubmitting">
                             <span class="flex items-center gap-1.5">
@@ -437,7 +438,7 @@
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
          @click="showDetails = false"
-         class="fixed inset-0 bg-black/50 z-40 backdrop-blur-2xs"></div>
+         class="fixed inset-0 bg-[#290024]/60 z-40 backdrop-blur-2xs"></div>
 
     <!-- Panel Drawer Slide Up -->
     <div x-show="showDetails"
@@ -528,8 +529,8 @@
                             @click="showDetails = false; submitOrder()"
                             :disabled="isSubmitting || !customerName.trim()"
                             :class="(!customerName.trim())
-                                ? 'opacity-50 cursor-not-allowed bg-stone-300 text-stone-600'
-                                : 'bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-white shadow-md'"
+                                ? 'opacity-50 cursor-not-allowed bg-[#E3DEA4] text-[#775533]'
+                                : 'bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] shadow-md'"
                             class="px-5 py-2 rounded-full text-xs font-bold tracking-wide transition-all flex items-center justify-center gap-1.5">
                         <span>Pesan Sekarang</span>
                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -674,6 +675,11 @@ function cartPage() {
                 return;
             }
 
+            if (!this.customerPhone || !this.customerPhone.trim()) {
+                alert('Silakan masukkan nomor WhatsApp / HP Anda.');
+                return;
+            }
+
             if (this.cart.length === 0) {
                 alert('Keranjang belanja Anda masih kosong.');
                 this.step = 1;
@@ -685,7 +691,7 @@ function cartPage() {
             try {
                 const payload = {
                     customer_name: this.customerName.trim(),
-                    customer_phone: this.customerPhone ? this.customerPhone.trim() : null,
+                    customer_phone: this.customerPhone.trim(),
                     order_type: this.orderType,
                     table_number: null,
                     notes: this.orderNotes ? this.orderNotes.trim() : null,

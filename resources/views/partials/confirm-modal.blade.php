@@ -4,7 +4,7 @@
      role="dialog" aria-modal="true" aria-labelledby="cafe-confirm-title">
     <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeCafeConfirm()"></div>
 
-    <div class="relative w-full max-w-md bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 p-6 space-y-4">
+    <div class="relative w-full max-w-md bg-[#F2F5E2] rounded-2xl shadow-soft-lg border border-[#E3DEA4] overflow-hidden z-10 p-6 space-y-4">
         <div class="flex items-start gap-3">
             <div class="w-10 h-10 rounded-2xl bg-cafe-danger/10 text-cafe-danger flex items-center justify-center shrink-0">
                 <i data-lucide="log-out" class="w-5 h-5"></i>
