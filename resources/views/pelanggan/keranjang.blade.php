@@ -61,8 +61,14 @@
             <span x-show="$store.checkout && $store.checkout.step === 2" x-cloak>Isi Data Pelanggan</span>
         </h1>
 
-        <!-- Sisi Kanan: Logo Cafe -->
-        <div class="w-24 flex items-center justify-end">
+        <!-- Sisi Kanan: Nomor Meja & Logo Cafe -->
+        <div class="w-32 flex items-center justify-end gap-2">
+            <template x-if="tableNumber && orderType === 'dine_in'">
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#290024] text-[#E3DEA4] text-[11px] font-bold shadow-xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#D4954D] animate-pulse"></span>
+                    <span x-text="'Meja #' + tableNumber"></span>
+                </div>
+            </template>
             <a href="{{ route('pelanggan.beranda') }}" class="shrink-0" aria-label="Beranda">
                 <x-logo :show-text="false" size="sm" />
             </a>
@@ -335,6 +341,35 @@
                         </span>
                     </button>
                 </div>
+
+                <!-- Indikator / Pilihan Meja Otomatis saat Dine In -->
+                <div x-show="orderType === 'dine_in'" x-transition class="mt-2.5 p-3 rounded-2xl bg-white/90 border border-[#E3DEA4] space-y-2 shadow-2xs">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#D4954D] animate-pulse"></span>
+                            <span class="text-xs font-semibold text-[#290024]">
+                                Nomor Meja: <strong class="font-bold text-[#290024]" x-text="tableNumber ? 'Meja #' + tableNumber : 'Belum Memilih Meja'"></strong>
+                            </span>
+                        </div>
+                        <template x-if="tableNumber">
+                            <span class="px-2.5 py-0.5 rounded-full bg-[#290024] text-[#E3DEA4] text-[10px] font-bold">
+                                Otomatis Terpilih
+                            </span>
+                        </template>
+                    </div>
+                    <!-- Jika belum ada meja yang terpilih (misal masuk dari landing page), sediakan pilihan meja -->
+                    <template x-if="!tableNumber">
+                        <div class="pt-1">
+                            <label class="block text-[11px] text-[#775533] mb-1">Silakan pilih meja yang Anda tempati:</label>
+                            <select x-model="tableNumber" class="w-full bg-[#F2F5E2] text-xs p-2.5 rounded-xl border border-[#E3DEA4] focus:border-[#290024] focus:outline-none text-[#290024] font-semibold">
+                                <option value="">-- Pilih Nomor Meja --</option>
+                                @foreach($allTables as $tbl)
+                                    <option value="{{ $tbl->number }}">Meja #{{ $tbl->number }} (Kapasitas {{ $tbl->capacity }} orang)</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </template>
+                </div>
             </div>
 
             <!-- Catatan Informasi Pembayaran Ringkas -->
@@ -573,8 +608,11 @@ function cartPage() {
                 const storedTable = localStorage.getItem('abscafe_table_number');
                 if (storedTable) {
                     this.tableNumber = storedTable;
-                    this.orderType = 'dine_in';
                 }
+            }
+
+            if (this.tableNumber) {
+                this.orderType = 'dine_in';
             }
         },
 
@@ -610,6 +648,12 @@ function cartPage() {
 
         setOrderType(type) {
             this.orderType = type;
+            if (type === 'dine_in' && !this.tableNumber) {
+                const stored = localStorage.getItem('abscafe_table_number');
+                if (stored) {
+                    this.tableNumber = stored;
+                }
+            }
         },
 
         updateQty(index, change) {
@@ -674,6 +718,11 @@ function cartPage() {
                 return;
             }
 
+            if (this.orderType === 'dine_in' && !this.tableNumber) {
+                alert('Silakan pilih nomor meja untuk pesanan santap di tempat (Dine In).');
+                return;
+            }
+
             if (this.cart.length === 0) {
                 alert('Keranjang belanja Anda masih kosong.');
                 this.step = 1;
@@ -687,7 +736,7 @@ function cartPage() {
                     customer_name: this.customerName.trim(),
                     customer_phone: this.customerPhone ? this.customerPhone.trim() : null,
                     order_type: this.orderType,
-                    table_number: null,
+                    table_number: this.orderType === 'dine_in' ? (this.tableNumber ? parseInt(this.tableNumber) : null) : null,
                     notes: this.orderNotes ? this.orderNotes.trim() : null,
                     items: this.cart
                 };

@@ -176,8 +176,10 @@
 </div>
 
 <script>
+    const orderBaseUrlConfig = "{{ $orderBaseUrl ?? url('/menu') }}";
+
     function openQrModal(number) {
-        const orderUrl = `https://abscafe.com/order?table=${number}`;
+        const orderUrl = `${orderBaseUrlConfig}?meja=${number}`;
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(orderUrl)}`;
 
         document.getElementById('qr-modal-title').innerText = `QR Code Meja #${number}`;

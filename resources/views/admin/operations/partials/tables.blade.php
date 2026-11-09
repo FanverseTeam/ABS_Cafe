@@ -68,27 +68,27 @@
                     @csrf
                     <div>
                         <label for="order_base_url" class="block font-semibold text-cafe-dark text-xs mb-1">
-                            Base URL Menu / Pemesanan
+                            Link Hostingan / Tunnel (Cloudflare, Ngrok, dll.)
                         </label>
                         <div class="relative">
                             <input type="text"
                                    name="order_base_url"
                                    id="order_base_url"
-                                   value="{{ $orderBaseUrl }}"
-                                   placeholder="{{ url('/menu') }}"
+                                   value="{{ $hostingUrl ?? preg_replace('~/menu$~i', '', rtrim($orderBaseUrl, '/')) }}"
+                                   placeholder="{{ url('/') }}"
                                    class="w-full bg-[#E3DEA4]/30 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none font-mono text-cafe-dark">
                         </div>
                         <p class="text-[11px] text-cafe-muted mt-1 leading-relaxed">
-                            Tips: Saat menguji di HP menggunakan WiFi lokal yang sama, masukkan IP komputer Anda (misal: <code class="bg-beige px-1 rounded text-cafe-dark">http://192.168.1.10:8000/menu</code>).
+                            Cukup masukkan link hostingan saja (tanpa <code class="bg-beige px-1 rounded text-cafe-dark">/...</code> di belakang). Contoh: <code class="bg-beige px-1 rounded text-cafe-dark">https://xxxx.trycloudflare.com</code> atau <code class="bg-beige px-1 rounded text-cafe-dark">https://xxxx.ngrok-free.app</code>. Sistem akan otomatis menambahkan rute menu dan parameter per meja.
                         </p>
                     </div>
 
                     <div class="flex items-center gap-2 pt-1">
                         <button type="submit" class="px-4 py-2 rounded-xl bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-sm transition-all flex items-center gap-1.5">
                             <i data-lucide="save" class="w-3.5 h-3.5"></i>
-                            <span>Simpan URL</span>
+                            <span>Simpan Link Hostingan</span>
                         </button>
-                        <button type="button" onclick="document.getElementById('order_base_url').value = '{{ url('/menu') }}'" class="px-3 py-2 rounded-xl text-xs font-semibold text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/40">
+                        <button type="button" onclick="document.getElementById('order_base_url').value = '{{ url('/') }}'" class="px-3 py-2 rounded-xl text-xs font-semibold text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/40">
                             Reset Default
                         </button>
                     </div>
@@ -109,7 +109,7 @@
                 @php
                     $testTableNumber = $tables->first()?->number ?? 1;
                     $testUrlScan = rtrim($orderBaseUrl, '/') . '?meja=' . $testTableNumber;
-                    $testUrlLanding = rtrim($orderBaseUrl, '/');
+                    $testUrlLanding = $hostingUrl ?? preg_replace('~/menu$~i', '', rtrim($orderBaseUrl, '/'));
                 @endphp
                 <div class="bg-white p-3 rounded-xl border border-cafe-beige/60 space-y-1.5 shadow-2xs">
                     <div class="flex items-center justify-between gap-2">

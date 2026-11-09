@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use App\Models\CafeSetting;
 use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,8 +14,14 @@ class TableController extends Controller
     public function index()
     {
         $tables = Table::orderBy('number', 'asc')->get();
+        $rawHost = trim((string) CafeSetting::get('order_base_url'));
+        if (empty($rawHost)) {
+            $rawHost = url('/');
+        }
+        $rawHost = rtrim(preg_replace('~/menu$~i', '', rtrim($rawHost, '/')), '/');
+        $orderBaseUrl = $rawHost.'/menu';
 
-        return view('admin.tables.index', compact('tables'));
+        return view('admin.tables.index', compact('tables', 'orderBaseUrl'));
     }
 
     public function store(Request $request)

@@ -43,8 +43,8 @@ class PelangganController extends Controller
         $searchQuery = trim((string) $request->query('q', ''));
         $categorySlug = trim((string) $request->query('kategori', ''));
 
-        // Deteksi parameter nomor meja dari scan QR (?meja=1 atau ?table=1)
-        $tableParam = $request->query('meja') ?: $request->query('table');
+        // Deteksi parameter nomor meja dari scan QR (?meja=1 atau ?table=1) atau sesi aktif
+        $tableParam = $request->query('meja') ?: $request->query('table') ?: session('customer_table_number');
         $tableNumber = is_numeric($tableParam) ? (int) $tableParam : null;
 
         $activeTable = null;

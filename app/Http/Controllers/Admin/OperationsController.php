@@ -33,9 +33,42 @@ class OperationsController extends Controller
         }
 
         $paymentMethods = $paymentQuery->orderBy('sort_order')->orderBy('name')->get();
-        $orderBaseUrl = CafeSetting::get('order_base_url', url('/menu'));
+        $hostingUrl = $this->normalizeHostUrl(CafeSetting::get('order_base_url'));
+        $orderBaseUrl = $hostingUrl.'/menu';
 
-        return view('admin.operations.index', compact('tables', 'paymentMethods', 'orderBaseUrl'));
+        return view('admin.operations.index', compact('tables', 'paymentMethods', 'orderBaseUrl', 'hostingUrl'));
+    }
+
+    /**
+     * Normalisasi link hostingan (Cloudflare, Ngrok, domain custom, IP, dll.).
+     * Menghapus slash dan rute /menu di belakang secara otomatis.
+     */
+    private function normalizeHostUrl(?string $input): string
+    {
+        $url = trim((string) $input);
+        if (empty($url)) {
+            return rtrim(url('/'), '/');
+        }
+
+        // Tambahkan skema jika belum ada
+        if (! preg_match('~^https?://~i', $url)) {
+            if (preg_match('/^(localhost|127\.0\.0\.1|192\.168\.|10\.)/i', $url)) {
+                $url = 'http://'.$url;
+            } else {
+                $url = 'https://'.$url;
+            }
+        }
+
+        // Hapus trailing slash
+        $url = rtrim($url, '/');
+
+        // Hapus suffix /menu jika user terlanjur memasukkannya
+        if (preg_match('~/menu$~i', $url)) {
+            $url = preg_replace('~/menu$~i', '', $url);
+            $url = rtrim($url, '/');
+        }
+
+        return $url;
     }
 
     /**
@@ -47,22 +80,19 @@ class OperationsController extends Controller
             'order_base_url' => 'nullable|string|max:255',
         ]);
 
-        $url = trim((string) $request->input('order_base_url'));
-        if (empty($url)) {
-            $url = url('/menu');
-        }
+        $hostingUrl = $this->normalizeHostUrl($request->input('order_base_url'));
 
-        CafeSetting::set('order_base_url', $url);
+        CafeSetting::set('order_base_url', $hostingUrl);
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Memperbarui Base URL QR Pemesanan Meja menjadi {$url}",
+            'activity' => "Memperbarui Link Hostingan QR Pemesanan Meja menjadi {$hostingUrl} (Menu: {$hostingUrl}/menu)",
             'activity_type' => 'meja',
             'ip_address' => $request->ip(),
         ]);
 
-        return back()->with('success', 'Pengaturan Base URL QR Pemesanan berhasil disimpan!');
+        return back()->with('success', 'Link hostingan QR meja berhasil disimpan! Rute /menu otomatis diterapkan.');
     }
 
     /**
@@ -71,7 +101,8 @@ class OperationsController extends Controller
     public function printAllQr(Request $request)
     {
         $tables = Table::orderBy('number', 'asc')->get();
-        $orderBaseUrl = CafeSetting::get('order_base_url', url('/menu'));
+        $hostingUrl = $this->normalizeHostUrl(CafeSetting::get('order_base_url'));
+        $orderBaseUrl = $hostingUrl.'/menu';
 
         return view('admin.operations.print-qr', compact('tables', 'orderBaseUrl'));
     }
@@ -83,7 +114,8 @@ class OperationsController extends Controller
     {
         $table = Table::findOrFail($id);
         $tables = collect([$table]);
-        $orderBaseUrl = CafeSetting::get('order_base_url', url('/menu'));
+        $hostingUrl = $this->normalizeHostUrl(CafeSetting::get('order_base_url'));
+        $orderBaseUrl = $hostingUrl.'/menu';
 
         return view('admin.operations.print-qr', compact('tables', 'orderBaseUrl'));
     }

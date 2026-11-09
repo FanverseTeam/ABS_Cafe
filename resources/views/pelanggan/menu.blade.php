@@ -15,7 +15,7 @@
         :class="isScrolled ? 'bg-[#F2F5E2]/95 backdrop-blur-md border-b border-[#E3DEA4]/80 shadow-xs' : 'bg-[#F2F5E2] border-b border-[#E3DEA4]/60'"
         style="background-color: #F2F5E2 !important;"
         class="sticky top-0 inset-x-0 z-30 transition-all duration-200">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center gap-4">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
         <!-- Logo & Branding di Kiri -->
         <a href="{{ route('pelanggan.beranda') }}"
            class="group flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#290024] rounded-xl pr-2"
@@ -25,6 +25,22 @@
                 {{ $landing['cafe']['name'] ?? 'ABS Cafe' }}
             </span>
         </a>
+
+        <!-- Nomor Meja di Top Bar (Muncul otomatis saat scan QR / ada nomor meja aktif) -->
+        @if($tableNumber)
+            <div class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#290024] text-[#F2F5E2] text-xs font-semibold shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-pulse"></span>
+                <span>Meja <strong class="text-[#E3DEA4]">#{{ $tableNumber }}</strong></span>
+            </div>
+        @else
+            <div x-data="{ tableNum: localStorage.getItem('abscafe_table_number') }"
+                 x-show="tableNum"
+                 x-cloak
+                 class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#290024] text-[#F2F5E2] text-xs font-semibold shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-pulse"></span>
+                <span>Meja <strong class="text-[#E3DEA4]" x-text="'#' + tableNum"></strong></span>
+            </div>
+        @endif
     </div>
 </header>
 @endsection
