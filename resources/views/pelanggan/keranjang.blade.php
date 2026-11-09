@@ -719,13 +719,13 @@ function cartPage() {
                 return;
             }
 
-<<<<<<< HEAD
-            if (this.orderType === 'dine_in' && !this.tableNumber) {
-                alert('Silakan pilih nomor meja untuk pesanan santap di tempat (Dine In).');
-=======
             if (!this.customerPhone || !this.customerPhone.trim()) {
                 alert('Silakan masukkan nomor WhatsApp / HP Anda.');
->>>>>>> 0278214556b1421f30dc81ab267322eb7d330bcf
+                return;
+            }
+
+            if (this.orderType === 'dine_in' && !this.tableNumber) {
+                alert('Silakan pilih nomor meja untuk pesanan santap di tempat (Dine In).');
                 return;
             }
 
