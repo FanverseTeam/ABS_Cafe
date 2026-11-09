@@ -32,8 +32,8 @@
         {{-- BANNER STATUS 1: JIKA BELUM LUNAS (SILAKAN BAYAR DI KASIR)                 --}}
         {{-- ========================================================================= --}}
         <div x-show="paymentStatus !== 'lunas'"
-             class="text-center p-6 rounded-3xl bg-[#F2F5E2] border-2 border-amber-400/80 shadow-soft space-y-3">
-            <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mx-auto shadow-inner animate-pulse">
+             class="text-center p-6 rounded-3xl bg-[#F2F5E2] border-2 border-[#D4954D]/60 shadow-soft space-y-3">
+            <div class="w-16 h-16 rounded-full bg-[#D4954D]/20 text-[#D4954D] flex items-center justify-center mx-auto shadow-inner animate-pulse">
                 <svg class="w-8 h-8 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="5" width="20" height="14" rx="2"></rect>
                     <line x1="2" y1="10" x2="22" y2="10"></line>
@@ -41,8 +41,8 @@
             </div>
 
             <div class="space-y-1">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-amber-100 text-amber-900 border border-amber-300">
-                    <span class="w-2 h-2 rounded-full bg-amber-600 animate-ping"></span>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-[#D4954D]/15 text-[#290024] border border-[#D4954D]/40">
+                    <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-ping"></span>
                     Menunggu Pembayaran
                 </span>
                 <h1 class="font-serif text-2xl sm:text-3xl font-black text-[#290024] pt-1">
@@ -59,7 +59,7 @@
                 <div class="font-mono text-3xl font-black text-[#290024] tracking-widest select-all">
                     {{ $order->order_code }}
                 </div>
-                <p class="text-[10px] text-amber-800 font-medium">
+                <p class="text-[10px] text-[#775533] font-medium">
                     (Sebutkan kode ini di meja kasir)
                 </p>
             </div>
@@ -70,42 +70,42 @@
         {{-- ========================================================================= --}}
         <div x-show="paymentStatus === 'lunas'"
              x-cloak
-             class="text-center p-6 rounded-3xl bg-emerald-50/80 border-2 border-emerald-400 shadow-soft space-y-3">
-            <div class="w-16 h-16 rounded-full bg-emerald-500 text-white flex items-center justify-center mx-auto shadow-md">
+             class="text-center p-6 rounded-3xl bg-[#290024] border-2 border-[#D4954D] shadow-soft space-y-3">
+            <div class="w-16 h-16 rounded-full bg-[#D4954D] text-[#290024] flex items-center justify-center mx-auto shadow-md">
                 <svg class="w-9 h-9 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
             </div>
 
             <div class="space-y-1">
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-emerald-600 text-white shadow-xs">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-[#D4954D] text-[#290024] shadow-xs">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
                     <span>Lunas</span>
                 </div>
-                <h1 class="font-serif text-2xl sm:text-3xl font-black text-emerald-950 pt-1">
+                <h1 class="font-serif text-2xl sm:text-3xl font-black text-[#F2F5E2] pt-1">
                     Pesanan Sedang Diproses
                 </h1>
-                <p class="text-xs sm:text-sm text-emerald-800 leading-relaxed max-w-sm mx-auto">
+                <p class="text-xs sm:text-sm text-[#E3DEA4] leading-relaxed max-w-sm mx-auto">
                     Terima kasih! Pembayaran Anda telah dikonfirmasi oleh kasir. Nota fisik telah dicetak dan pesanan Anda sedang disiapkan oleh tim dapur / barista.
                 </p>
             </div>
 
-            <div class="p-3 rounded-2xl bg-white border border-emerald-200 text-xs text-emerald-900 space-y-1">
+            <div class="p-3 rounded-2xl bg-[#F2F5E2]/10 border border-[#E3DEA4]/30 text-xs text-[#E3DEA4] space-y-1">
                 <div class="flex items-center justify-between">
-                    <span class="text-emerald-700">Kode Pesanan:</span>
-                    <span class="font-mono font-bold">{{ $order->order_code }}</span>
+                    <span class="text-[#E3DEA4]/70">Kode Pesanan:</span>
+                    <span class="font-mono font-bold text-[#F2F5E2]">{{ $order->order_code }}</span>
                 </div>
                 <template x-if="paidAt">
                     <div class="flex items-center justify-between">
-                        <span class="text-emerald-700">Waktu Bayar:</span>
+                        <span class="text-[#E3DEA4]/70">Waktu Bayar:</span>
                         <span class="font-medium" x-text="paidAt"></span>
                     </div>
                 </template>
                 <template x-if="cashierName">
                     <div class="flex items-center justify-between">
-                        <span class="text-emerald-700">Kasir:</span>
+                        <span class="text-[#E3DEA4]/70">Kasir:</span>
                         <span class="font-medium" x-text="cashierName"></span>
                     </div>
                 </template>
@@ -141,33 +141,33 @@
                 <div class="flex justify-between items-center">
                     <span>Tipe Pemesanan:</span>
                     @if($order->order_type === 'dine_in')
-                        <span class="font-bold text-[#290024] px-2 py-0.5 rounded-md bg-amber-100 border border-amber-200">
+                        <span class="font-bold text-[#290024] px-2 py-0.5 rounded-md bg-[#D4954D]/15 border border-[#D4954D]/30">
                             Santap di Tempat (Dine In){{ $order->table_number ? ' &bull; Meja #' . $order->table_number : '' }}
                         </span>
                     @else
-                        <span class="font-bold text-[#290024] px-2 py-0.5 rounded-md bg-stone-200 border border-stone-300">
+                        <span class="font-bold text-[#290024] px-2 py-0.5 rounded-md bg-[#E3DEA4] border border-[#E3DEA4]">
                             Bawa Pulang (Takeaway)
                         </span>
                     @endif
                 </div>
-                <div class="flex justify-between items-center pt-1 border-t border-[#EDE8E0]/70">
+                <div class="flex justify-between items-center pt-1 border-t border-[#E3DEA4]/70">
                     <span>Status Pembayaran:</span>
                     <template x-if="paymentStatus === 'lunas'">
-                        <span class="font-bold text-emerald-700 uppercase bg-emerald-100 px-2 py-0.5 rounded">Lunas</span>
+                        <span class="font-bold text-[#F2F5E2] uppercase bg-[#290024] px-2 py-0.5 rounded">Lunas</span>
                     </template>
                     <template x-if="paymentStatus !== 'lunas'">
-                        <span class="font-bold text-amber-800 uppercase bg-amber-100 px-2 py-0.5 rounded">Belum Bayar</span>
+                        <span class="font-bold text-[#290024] uppercase bg-[#D4954D]/20 border border-[#D4954D]/40 px-2 py-0.5 rounded">Belum Bayar</span>
                     </template>
                 </div>
             </div>
 
             <!-- Daftar Menu yang Dipesan -->
             <div class="px-5 py-4 space-y-3">
-                <div class="text-[11px] font-bold uppercase tracking-wider text-[#775533] pb-1 border-b border-[#EDE8E0]">
+                <div class="text-[11px] font-bold uppercase tracking-wider text-[#775533] pb-1 border-b border-[#E3DEA4]">
                     Daftar Item
                 </div>
 
-                <div class="divide-y divide-[#EDE8E0]/70">
+                <div class="divide-y divide-[#E3DEA4]/70">
                     @foreach($order->items as $item)
                         <div class="py-2.5 flex items-start justify-between gap-3 text-xs">
                             <div class="space-y-0.5 min-w-0">
@@ -180,7 +180,7 @@
                                         Catatan: {{ $item->notes }}
                                     </div>
                                 @endif
-                                <div class="text-[10px] text-stone-400 pl-4">
+                                <div class="text-[10px] text-[#775533]/60 pl-4">
                                     @ Rp {{ number_format($item->price, 0, ',', '.') }}
                                 </div>
                             </div>
@@ -203,7 +203,7 @@
                     <span class="font-semibold text-[#290024]">Rp {{ number_format($order->tax, 0, ',', '.') }}</span>
                 </div>
                 @if($order->discount > 0)
-                    <div class="flex items-center justify-between text-emerald-700">
+                    <div class="flex items-center justify-between text-[#D4954D]">
                         <span>Diskon</span>
                         <span class="font-semibold">- Rp {{ number_format($order->discount, 0, ',', '.') }}</span>
                     </div>
@@ -217,12 +217,12 @@
             <!-- Footer Nota -->
             <div class="p-4 bg-[#F2F5E2] border-t border-[#E3DEA4]/60 text-center text-[11px] text-[#775533] space-y-1">
                 <template x-if="paymentStatus !== 'lunas'">
-                    <p class="font-semibold text-amber-800">
+                    <p class="font-semibold text-[#775533]">
                         Silakan lakukan pembayaran ke kasir. Halaman ini akan otomatis terbarui begitu pembayaran dikonfirmasi kasir.
                     </p>
                 </template>
                 <template x-if="paymentStatus === 'lunas'">
-                    <p class="font-bold text-emerald-800">
+                    <p class="font-bold text-[#290024]">
                         Pembayaran Lunas &bull; Terima kasih atas kunjungan Anda di {{ $landing['cafe']['name'] ?? 'ABS Cafe' }}!
                     </p>
                 </template>

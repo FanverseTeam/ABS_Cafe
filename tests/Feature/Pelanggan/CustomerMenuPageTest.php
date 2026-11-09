@@ -185,6 +185,30 @@ class CustomerMenuPageTest extends TestCase
         $this->assertStringNotContainsString('title="Tahu Walik Crispy"', $content);
     }
 
+    public function test_specific_category_view_has_back_button_and_list_design(): void
+    {
+        $category = Category::factory()->create([
+            'name' => 'Coffee Base',
+            'order' => 1,
+            'is_active' => true,
+        ]);
+
+        Menu::factory()->create([
+            'category_id' => $category->id,
+            'name' => 'Chocolate de calena',
+            'price' => 22000,
+            'is_available' => true,
+        ]);
+
+        $response = $this->get(route('pelanggan.menu', ['kategori' => $category->slug]))->assertOk();
+
+        // Memastikan tombol back, nama kategori, dan fungsi kembali ada di view
+        $response->assertSee('Coffee Base');
+        $response->assertSee('Chocolate de calena');
+        $response->assertSee('backToAll()', false);
+        $response->assertSee('openBottomSheet', false);
+    }
+
     public function test_empty_categories_do_not_appear(): void
     {
         $emptyCat = Category::factory()->create([
@@ -270,9 +294,23 @@ class CustomerMenuPageTest extends TestCase
     {
         $response = $this->get(route('pelanggan.keranjang'))->assertOk();
 
-        $response->assertSee('Keranjang Belanja');
-        $response->assertSee('Makan di Tempat (Dine-in)');
-        $response->assertSee('Bawa Pulang (Takeaway)');
+        $response->assertSee('Detail Pesanan');
+        $response->assertSee('Dine In');
+        $response->assertSee('Take Away');
         $response->assertSee('Pesan Sekarang');
+    }
+
+    public function test_menu_page_contains_bottom_nav_and_tabs(): void
+    {
+        $response = $this->get(route('pelanggan.menu'))->assertOk();
+
+        // Customer bottom navigation bar
+        $response->assertSee('id="customer-bottom-nav"', false);
+        $response->assertSee('Navigasi Bawah Pelanggan');
+        $response->assertSee('Promo');
+        $response->assertSee('Event');
+        $response->assertSee('Live Music Night');
+        $response->assertSee('Friday Night Party');
+        $response->assertSee('Save Event');
     }
 }

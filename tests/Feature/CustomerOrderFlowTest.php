@@ -69,6 +69,26 @@ class CustomerOrderFlowTest extends TestCase
             ]);
     }
 
+    public function test_order_requires_customer_phone(): void
+    {
+        $menu = Menu::factory()->create(['name' => 'Espresso', 'price' => 15000, 'is_available' => true]);
+
+        $payload = [
+            'customer_name' => 'Tanpa Telepon',
+            'order_type' => 'take_away',
+            'items' => [
+                [
+                    'menu_id' => $menu->id,
+                    'jumlah' => 1,
+                ],
+            ],
+        ];
+
+        $response = $this->postJson(route('pelanggan.pesanan.store'), $payload);
+        $response->assertUnprocessable()
+            ->assertJsonValidationErrors(['customer_phone']);
+    }
+
     public function test_customer_take_away_order(): void
     {
         $menu = Menu::factory()->create(['name' => 'Croissant', 'price' => 20000, 'is_available' => true]);

@@ -68,7 +68,7 @@
                 </button>
 
                 {{-- Notification Dropdown --}}
-                <div id="notif-dropdown" class="hidden absolute right-0 mt-2.5 w-80 sm:w-96 max-w-[calc(100vw-2rem)] bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 z-50 overflow-hidden">
+                <div id="notif-dropdown" class="hidden absolute right-0 mt-2.5 w-80 sm:w-96 max-w-[calc(100vw-2rem)] bg-[#F2F5E2] rounded-2xl shadow-soft-lg border border-[#E3DEA4] z-50 overflow-hidden">
                     <div class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-cafe-dark/[0.03] to-transparent border-b border-cafe-beige/40">
                         <h4 class="font-serif font-bold text-sm text-cafe-dark flex items-center gap-2">
                             <i data-lucide="bell-ring" class="w-4 h-4 text-cafe-gold"></i>
@@ -143,7 +143,7 @@
                     <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-cafe-muted ml-0.5"></i>
                 </button>
 
-                <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 p-2 z-50 animate-in fade-in" role="menu" aria-labelledby="profile-dropdown-button">
+                <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-[#F2F5E2] rounded-2xl shadow-soft-lg border border-[#E3DEA4] p-2 z-50 animate-in fade-in" role="menu" aria-labelledby="profile-dropdown-button">
                     <div class="px-3 py-2 border-b border-cafe-beige/50">
                         <p class="text-xs font-bold text-cafe-dark truncate">{{ Auth::user()->name ?? 'Kasir' }}</p>
                         <p class="text-[10px] text-cafe-muted truncate">{{ '@' . strtolower(Auth::user()->username ?? 'kasir') }}</p>

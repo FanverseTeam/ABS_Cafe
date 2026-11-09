@@ -43,13 +43,13 @@
         <!-- 1. HERO BANNER FOTO KAFE & SUBTITLE (SESUAI FIGMA SCREEN 5)     -->
         <!-- ============================================================== -->
         <div class="space-y-3">
-            <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl sm:rounded-3xl overflow-hidden shadow-soft border border-[#E3DEA4]/80 bg-[#EAE4D9]">
+            <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl sm:rounded-3xl overflow-hidden shadow-soft border border-[#E3DEA4]/80 bg-[#F2F5E2]">
                 <img src="{{ asset('images/landing-bg-768.webp') }}"
                      alt="Suasana ABS Cafe"
                      class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent sm:hidden"></div>
-                <div class="absolute bottom-3 left-4 right-4 sm:hidden text-white">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/20 backdrop-blur-md border border-white/30 uppercase tracking-wider">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#290024]/60 via-transparent to-transparent sm:hidden"></div>
+                <div class="absolute bottom-3 left-4 right-4 sm:hidden text-[#F2F5E2]">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#F2F5E2]/20 backdrop-blur-md border border-[#F2F5E2]/30 uppercase tracking-wider">
                         {{ $landing['cafe']['name'] ?? 'ABS Cafe' }}
                     </span>
                 </div>
@@ -68,26 +68,26 @@
         <!-- ============================================================== -->
         @if(session('reservation_success'))
             @php $resItem = session('reservation_item'); @endphp
-            <div id="sukses-reservasi-card" class="rounded-3xl border-2 border-emerald-500/40 bg-emerald-50/70 p-5 sm:p-7 shadow-md relative overflow-hidden animate-fade-in text-[#290024]">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-emerald-200">
+            <div id="sukses-reservasi-card" class="rounded-3xl border-2 border-[#D4954D]/40 bg-[#D4954D]/10 p-5 sm:p-7 shadow-md relative overflow-hidden animate-fade-in text-[#290024]">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-[#E3DEA4]/60">
                     <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                        <div class="w-11 h-11 rounded-2xl bg-[#D4954D] text-[#290024] flex items-center justify-center shrink-0 shadow-sm">
                             <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
                         <div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Permohonan Reservasi Diterima!</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#775533]">Permohonan Reservasi Diterima!</span>
                             <h3 class="text-lg sm:text-xl font-bold text-[#290024]">Kode: <span class="font-mono text-[#775533]">{{ session('reservation_code') }}</span></h3>
                         </div>
                     </div>
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#D4954D]/15 text-[#290024] border border-[#D4954D]/30">
                         Menunggu Konfirmasi Kasir
                     </span>
                 </div>
 
                 @if($resItem)
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 py-4 text-xs text-[#5C4033]">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 py-4 text-xs text-[#775533]">
                         <div>
                             <span class="block text-[#775533]/70 text-[10px] uppercase font-bold tracking-wider mb-0.5">Nama Pemesan</span>
                             <strong class="text-[#290024] text-xs sm:text-sm">{{ $resItem['name'] }}</strong>
@@ -107,7 +107,7 @@
                     </div>
                 @endif
 
-                <div class="pt-3.5 border-t border-emerald-200 flex flex-wrap items-center justify-between gap-3">
+                <div class="pt-3.5 border-t border-[#E3DEA4]/60 flex flex-wrap items-center justify-between gap-3">
                     <p class="text-xs text-[#775533]">
                         Simpan kode reservasi ini. Anda dapat langsung mengonfirmasi kedatangan ke kasir via WhatsApp.
                     </p>
@@ -117,7 +117,7 @@
                             $waText = urlencode("Halo ABS Cafe, saya ingin konfirmasi reservasi dengan kode " . session('reservation_code') . " atas nama " . ($resItem['name'] ?? '') . " untuk tanggal " . ($resItem['date'] ?? '') . " jam " . ($resItem['time'] ?? ''));
                         @endphp
                         <a href="https://wa.me/{{ $waNumber }}?text={{ $waText }}" target="_blank" rel="noopener noreferrer"
-                           class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-all shadow-sm">
+                           class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#290024] hover:bg-[#775533] text-[#F2F5E2] text-xs font-semibold transition-all shadow-sm">
                             <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                                 <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.771.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.587-5.766-5.768-5.766m9.969 5.766c0 5.514-4.486 10-10 10-1.823 0-3.535-.494-5.011-1.354l-7.02 1.838 1.87-6.837c-.961-1.536-1.52-3.344-1.52-5.284 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
                             </svg>
@@ -148,10 +148,10 @@
 
                 <!-- Indikator Live & Tombol Refresh -->
                 <div class="flex items-center gap-2">
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-[#D4954D]/10 text-[#775533] border border-[#D4954D]/30">
                         <span class="relative flex h-1.5 w-1.5">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4954D] opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#D4954D]"></span>
                         </span>
                         <span id="sync-status-text">Live Sync</span>
                     </span>
@@ -167,19 +167,19 @@
 
             <!-- Rekapitulasi Jumlah Meja -->
             <div class="grid grid-cols-4 gap-2">
-                <div class="px-2.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
-                    <span class="block text-[10px] text-emerald-800 font-semibold uppercase">Kosong</span>
-                    <span id="count-tersedia" class="text-base sm:text-lg font-bold text-emerald-700">{{ $summary['tersedia'] }}</span>
+                <div class="px-2.5 py-2 rounded-xl bg-[#D4954D]/10 border border-[#D4954D]/30 text-center">
+                    <span class="block text-[10px] text-[#775533] font-semibold uppercase">Kosong</span>
+                    <span id="count-tersedia" class="text-base sm:text-lg font-bold text-[#D4954D]">{{ $summary['tersedia'] }}</span>
                 </div>
-                <div class="px-2.5 py-2 rounded-xl bg-rose-50 border border-rose-200 text-center">
-                    <span class="block text-[10px] text-rose-800 font-semibold uppercase">Terisi</span>
-                    <span id="count-terpakai" class="text-base sm:text-lg font-bold text-rose-700">{{ $summary['terpakai'] }}</span>
+                <div class="px-2.5 py-2 rounded-xl bg-[#290024]/10 border border-[#290024]/30 text-center">
+                    <span class="block text-[10px] text-[#290024] font-semibold uppercase">Terisi</span>
+                    <span id="count-terpakai" class="text-base sm:text-lg font-bold text-[#290024]">{{ $summary['terpakai'] }}</span>
                 </div>
-                <div class="px-2.5 py-2 rounded-xl bg-amber-50 border border-amber-200 text-center">
-                    <span class="block text-[10px] text-amber-800 font-semibold uppercase">Dipesan</span>
-                    <span id="count-dipesan" class="text-base sm:text-lg font-bold text-amber-700">{{ $summary['dipesan'] }}</span>
+                <div class="px-2.5 py-2 rounded-xl bg-[#775533]/10 border border-[#775533]/30 text-center">
+                    <span class="block text-[10px] text-[#775533] font-semibold uppercase">Dipesan</span>
+                    <span id="count-dipesan" class="text-base sm:text-lg font-bold text-[#775533]">{{ $summary['dipesan'] }}</span>
                 </div>
-                <div class="px-2.5 py-2 rounded-xl bg-stone-50 border border-stone-200 text-center">
+                <div class="px-2.5 py-2 rounded-xl bg-[#E3DEA4]/20 border border-[#E3DEA4] text-center">
                     <span class="block text-[10px] text-[#775533] font-semibold uppercase">Total</span>
                     <span id="count-total" class="text-base sm:text-lg font-bold text-[#290024]">{{ $summary['total'] }}</span>
                 </div>
@@ -202,16 +202,16 @@
                         $isAvailable = $t['is_available'];
                         $status = $t['status'];
                         $cardBg = match($status) {
-                            'terpakai' => 'border-rose-200 bg-rose-50/60 text-rose-900',
-                            'dipesan' => 'border-amber-200 bg-amber-50/60 text-amber-900',
-                            'nonaktif' => 'border-stone-200 bg-stone-100 text-stone-400 opacity-60 cursor-not-allowed',
-                            default => 'border-emerald-300 bg-emerald-50/30 text-emerald-900 hover:border-emerald-500 hover:shadow-xs cursor-pointer'
+                            'terpakai' => 'border-[#290024]/30 bg-[#290024]/10 text-[#290024]',
+                            'dipesan' => 'border-[#775533]/30 bg-[#775533]/10 text-[#775533]',
+                            'nonaktif' => 'border-[#E3DEA4] bg-[#E3DEA4]/30 text-[#775533]/50 opacity-60 cursor-not-allowed',
+                            default => 'border-[#D4954D]/30 bg-[#D4954D]/10 text-[#290024] hover:border-[#D4954D] hover:shadow-xs cursor-pointer'
                         };
                         $badgeStyle = match($status) {
-                            'terpakai' => 'bg-rose-100 text-rose-800 border-rose-300',
-                            'dipesan' => 'bg-amber-100 text-amber-800 border-amber-300',
-                            'nonaktif' => 'bg-stone-200 text-stone-600 border-stone-300',
-                            default => 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                            'terpakai' => 'bg-[#290024]/15 text-[#290024] border-[#290024]/30',
+                            'dipesan' => 'bg-[#775533]/15 text-[#775533] border-[#775533]/30',
+                            'nonaktif' => 'bg-[#E3DEA4]/50 text-[#775533]/60 border-[#E3DEA4]',
+                            default => 'bg-[#D4954D]/15 text-[#775533] border-[#D4954D]/30'
                         };
                     @endphp
                     <div class="table-card relative p-3 sm:p-3.5 rounded-2xl border transition-all duration-200 flex flex-col justify-between {{ $cardBg }}"
@@ -228,7 +228,7 @@
                                 <span class="text-[9px] uppercase font-bold tracking-wider text-[#775533]/80 block">{{ $t['area'] }}</span>
                                 <h3 class="font-serif font-bold text-sm sm:text-base text-[#290024]">Meja #{{ $t['number'] }}</h3>
                             </div>
-                            <div class="w-7 h-7 rounded-lg bg-white/80 border border-current/20 flex items-center justify-center shrink-0">
+                            <div class="w-7 h-7 rounded-lg bg-[#F2F5E2]/80 border border-current/20 flex items-center justify-center shrink-0">
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <rect x="5" y="4" width="14" height="10" rx="2" />
                                     <path d="M7 14v6M17 14v6" />
@@ -237,7 +237,7 @@
                         </div>
 
                         <div class="my-1.5 space-y-0.5">
-                            <div class="flex items-center gap-1 text-[11px] text-[#5C4033]">
+                            <div class="flex items-center gap-1 text-[11px] text-[#775533]">
                                 <svg class="w-3 h-3 text-[#775533]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
@@ -248,11 +248,11 @@
                         <div class="mt-2 pt-2 border-t border-current/15 flex items-center justify-between gap-1">
                             <span class="table-badge inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide border {{ $badgeStyle }}">
                                 @if($status === 'tersedia')
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#D4954D]"></span>
                                 @elseif($status === 'terpakai')
-                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#290024]"></span>
                                 @elseif($status === 'dipesan')
-                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#775533]"></span>
                                 @endif
                                 <span>{{ $t['status_label'] }}</span>
                             </span>
@@ -268,14 +268,14 @@
                         </div>
 
                         <!-- Indikator Centang Terpilih -->
-                        <div class="selected-checkmark hidden absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#290024] text-white items-center justify-center shadow-md border-2 border-white">
+                        <div class="selected-checkmark hidden absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#290024] text-[#F2F5E2] items-center justify-center shadow-md border-2 border-[#F2F5E2]">
                             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-full py-8 text-center text-xs text-stone-500">
+                    <div class="col-span-full py-8 text-center text-xs text-[#775533]">
                         Belum ada data meja.
                     </div>
                 @endforelse
@@ -295,9 +295,9 @@
 
             <!-- Pesan Error Validasi -->
             @if($errors->any())
-                <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800">
+                <div class="p-3.5 rounded-xl bg-[#290024]/10 border border-[#290024]/20 text-xs text-[#290024]">
                     <strong class="font-bold block mb-1">Periksa kembali data formulir:</strong>
-                    <ul class="list-disc list-inside space-y-0.5 text-rose-700">
+                    <ul class="list-disc list-inside space-y-0.5 text-[#290024]/80">
                         @foreach($errors->all() as $err)
                             <li>{{ $err }}</li>
                         @endforeach
@@ -318,7 +318,7 @@
                                value="{{ old('reservation_date', $selectedDate) }}"
                                min="{{ today()->toDateString() }}" required
                                onchange="onDateTimeChanged()"
-                               class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
+                               class="w-full px-4 py-3 rounded-xl bg-[#F2F5E2]/80 border border-[#E3DEA4] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
                     </div>
                 </div>
 
@@ -330,7 +330,7 @@
                     <div class="relative">
                         <select id="reservation_time" name="reservation_time" required
                                 onchange="onDateTimeChanged()"
-                                class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
+                                class="w-full px-4 py-3 rounded-xl bg-[#F2F5E2]/80 border border-[#E3DEA4] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
                             @foreach($timeSlots as $slot)
                                 <option value="{{ $slot }}" {{ old('reservation_time', substr($selectedTime, 0, 5)) === $slot ? 'selected' : '' }}>
                                     {{ $slot }} WIB
@@ -348,7 +348,7 @@
                     <div class="relative">
                         <select id="party_size" name="party_size" required
                                 onchange="onPartySizeChanged()"
-                                class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
+                                class="w-full px-4 py-3 rounded-xl bg-[#F2F5E2]/80 border border-[#E3DEA4] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
                             @for($i = 1; $i <= 20; $i++)
                                 <option value="{{ $i }}" {{ old('party_size', 2) == $i ? 'selected' : '' }}>
                                     {{ $i }} Orang
@@ -366,7 +366,7 @@
                     <div class="relative">
                         <select id="table_id" name="table_id"
                                 onchange="onTableSelectDropdownChanged()"
-                                class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
+                                class="w-full px-4 py-3 rounded-xl bg-[#F2F5E2]/80 border border-[#E3DEA4] text-xs text-[#290024] focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
                             <option value="">Pilih Otomatis Meja Kosong</option>
                             @foreach($tables as $tbl)
                                 <option value="{{ $tbl->id }}" data-capacity="{{ $tbl->capacity }}" {{ old('table_id') == $tbl->id ? 'selected' : '' }}>
@@ -376,12 +376,12 @@
                         </select>
                     </div>
                     <!-- Banner Info Meja Terpilih -->
-                    <div id="selected-table-banner" class="hidden mt-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-center justify-between">
+                    <div id="selected-table-banner" class="hidden mt-2 p-2.5 rounded-xl bg-[#D4954D]/10 border border-[#D4954D]/30 text-xs text-[#290024] flex items-center justify-between">
                         <div class="flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                            <span class="w-2 h-2 rounded-full bg-[#D4954D]"></span>
                             <span>Meja Terpilih: <strong id="selected-table-text" class="font-bold">Meja #1</strong></span>
                         </div>
-                        <button type="button" onclick="clearSelectedTable()" class="text-[10px] text-emerald-800 hover:text-rose-600 font-semibold underline">
+                        <button type="button" onclick="clearSelectedTable()" class="text-[10px] text-[#775533] hover:text-[#290024] font-semibold underline">
                             Ganti
                         </button>
                     </div>
@@ -395,7 +395,7 @@
                     <input type="text" id="customer_name" name="customer_name"
                            value="{{ old('customer_name') }}" required maxlength="100"
                            placeholder="Nama pemesan..."
-                           class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
+                           class="w-full px-4 py-3 rounded-xl bg-[#F2F5E2]/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
                 </div>
 
                 <!-- Nomor WhatsApp -->
@@ -406,7 +406,7 @@
                     <input type="tel" id="phone" name="phone"
                            value="{{ old('phone') }}" required maxlength="20"
                            placeholder="Contoh: 081234567890"
-                           class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
+                           class="w-full px-4 py-3 rounded-xl bg-[#F2F5E2]/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors">
                 </div>
 
                 <!-- Catatan Tambahan -->
@@ -416,13 +416,13 @@
                     </label>
                     <textarea id="notes" name="notes" rows="2" maxlength="500"
                               placeholder="Contoh: Acara ulang tahun, dekat colokan listrik..."
-                              class="w-full px-4 py-3 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors resize-none">{{ old('notes') }}</textarea>
+                              class="w-full px-4 py-3 rounded-xl bg-[#F2F5E2]/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:ring-1 focus:ring-[#290024] focus:outline-none transition-colors resize-none">{{ old('notes') }}</textarea>
                 </div>
 
                 <!-- Tombol Desktop (Di mobile akan ada sticky bottom bar sesuai Figma) -->
                 <div class="hidden sm:block pt-3">
                     <button type="submit"
-                            class="w-full py-3.5 px-6 rounded-full bg-[#290024] hover:bg-[#3D0B36] text-white font-bold text-sm tracking-wide transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                            class="w-full py-3.5 px-6 rounded-full bg-[#290024] hover:bg-[#290024]/90 text-[#F2F5E2] font-bold text-sm tracking-wide transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
                         <span>Pesan Sekarang</span>
                         <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -445,8 +445,8 @@
             </p>
             <form action="{{ route('pelanggan.reservasi.check') }}" method="GET" class="flex gap-2">
                 <input type="text" name="q" value="{{ $searchCode }}" placeholder="Kode RSV-... atau No. WA"
-                       class="flex-1 px-3.5 py-2 rounded-xl bg-white/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:outline-none">
-                <button type="submit" class="px-4 py-2 rounded-xl bg-[#290024] text-[#F2F5E2] text-xs font-semibold hover:bg-[#3D0B36] transition-colors shrink-0">
+                       class="flex-1 px-3.5 py-2 rounded-xl bg-[#F2F5E2]/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:outline-none">
+                <button type="submit" class="px-4 py-2 rounded-xl bg-[#290024] text-[#F2F5E2] text-xs font-semibold hover:bg-[#290024]/90 transition-colors shrink-0">
                     Cek
                 </button>
             </form>
@@ -454,10 +454,10 @@
             @if($searchCode !== '')
                 <div class="mt-3 pt-3 border-t border-[#E3DEA4]/60">
                     @if($foundReservation)
-                        <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs">
+                        <div class="p-3 rounded-xl bg-[#D4954D]/10 border border-[#D4954D]/30 text-xs">
                             <div class="flex items-center justify-between gap-2 mb-1">
                                 <span class="font-mono font-bold text-[#290024]">{{ $foundReservation->code }}</span>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-amber-100 text-amber-800 border border-amber-300">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-[#D4954D]/15 text-[#290024] border border-[#D4954D]/30">
                                     {{ $foundReservation->statusLabel() }}
                                 </span>
                             </div>
@@ -465,7 +465,7 @@
                             <p class="text-[#775533]">Jadwal: {{ $foundReservation->datetimeLabel() }} &bull; Meja #{{ $foundReservation->table?->number ?? '-' }}</p>
                         </div>
                     @else
-                        <p class="text-xs text-rose-600">Reservasi "{{ $searchCode }}" tidak ditemukan.</p>
+                        <p class="text-xs text-[#290024]/70">Reservasi "{{ $searchCode }}" tidak ditemukan.</p>
                     @endif
                 </div>
             @endif
@@ -479,7 +479,7 @@
     <div class="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-[#F2F5E2]/95 backdrop-blur-md border-t border-[#E3DEA4] p-4 shadow-[0_-4px_15px_rgba(41,0,36,0.08)]" style="background-color: rgba(242, 245, 226, 0.95) !important;">
         <button type="button"
                 onclick="const f = document.getElementById('form-reservasi'); if (f.checkValidity()) { f.submit(); } else { f.reportValidity(); }"
-                class="w-full py-3.5 px-6 rounded-full bg-[#290024] active:bg-[#3D0B36] text-[#F2F5E2] font-bold text-sm tracking-wide shadow-md flex items-center justify-center gap-2">
+                class="w-full py-3.5 px-6 rounded-full bg-[#290024] active:bg-[#290024]/90 text-[#F2F5E2] font-bold text-sm tracking-wide shadow-md flex items-center justify-center gap-2">
             <span>Pesan Sekarang</span>
             <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -587,21 +587,21 @@
             const selectIndicator = card.querySelector('.select-indicator');
 
             if (t.status === 'tersedia') {
-                card.classList.add('border-emerald-300', 'bg-emerald-50/30', 'text-emerald-900', 'hover:border-emerald-500', 'hover:shadow-xs', 'cursor-pointer');
+                card.classList.add('border-[#D4954D]/40', 'bg-[#D4954D]/10', 'text-[#775533]', 'hover:border-[#290024]', 'hover:shadow-xs', 'cursor-pointer');
                 card.onclick = () => selectTableCard(t.id, t.number, t.capacity);
 
                 if (badge) {
-                    badge.className = 'table-badge inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide border bg-emerald-100 text-emerald-800 border-emerald-300';
-                    badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span><span>${t.status_label}</span>`;
+                    badge.className = 'table-badge inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide border bg-[#D4954D]/15 text-[#775533] border-[#D4954D]/30';
+                    badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-[#D4954D]"></span><span>${t.status_label}</span>`;
                 }
                 if (selectIndicator) selectIndicator.style.display = 'flex';
             } else if (t.status === 'terpakai') {
-                card.classList.add('border-rose-200', 'bg-rose-50/60', 'text-rose-900');
+                card.classList.add('border-[#290024]/30', 'bg-[#290024]/10', 'text-[#290024]');
                 card.onclick = null;
 
                 if (badge) {
-                    badge.className = 'table-badge inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide border bg-rose-100 text-rose-800 border-rose-300';
-                    badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span><span>${t.status_label}</span>`;
+                    badge.className = 'table-badge inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide border bg-[#290024]/15 text-[#290024] border-[#290024]/30';
+                    badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-[#290024]"></span><span>${t.status_label}</span>`;
                 }
                 if (selectIndicator) selectIndicator.style.display = 'none';
 
@@ -610,12 +610,12 @@
                     alert(`Perhatian: Meja #${t.number} baru saja terisi oleh pesanan pelanggan.`);
                 }
             } else if (t.status === 'dipesan') {
-                card.classList.add('border-amber-200', 'bg-amber-50/60', 'text-amber-900');
+                card.classList.add('border-[#775533]/30', 'bg-[#775533]/10', 'text-[#775533]');
                 card.onclick = null;
 
                 if (badge) {
-                    badge.className = 'table-badge inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide border bg-amber-100 text-amber-800 border-amber-300';
-                    badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span><span>${t.status_label}</span>`;
+                    badge.className = 'table-badge inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide border bg-[#775533]/15 text-[#775533] border-[#775533]/30';
+                    badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-[#775533]"></span><span>${t.status_label}</span>`;
                 }
                 if (selectIndicator) selectIndicator.style.display = 'none';
 
@@ -624,7 +624,7 @@
                     alert(`Perhatian: Meja #${t.number} sudah dipesan untuk jam tersebut.`);
                 }
             } else {
-                card.classList.add('border-stone-200', 'bg-stone-100', 'text-stone-400', 'opacity-60', 'cursor-not-allowed');
+                card.classList.add('border-[#E3DEA4]', 'bg-[#E3DEA4]/30', 'text-[#775533]/50', 'opacity-60', 'cursor-not-allowed');
                 card.onclick = null;
                 if (selectIndicator) selectIndicator.style.display = 'none';
             }
