@@ -16,34 +16,8 @@
         style="background-color: #F2F5E2 !important;"
         class="sticky top-0 inset-x-0 z-30 transition-all duration-200">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
-<<<<<<< HEAD
-        <!-- Logo & Branding di Kiri -->
-        <a href="{{ route('pelanggan.beranda') }}"
-           class="group flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#290024] rounded-xl pr-2"
-           aria-label="Kembali ke Beranda ABS Cafe">
-            <x-logo :show-text="false" size="sm" class="shrink-0 group-hover:scale-105 transition-transform" />
-            <span class="font-serif text-lg sm:text-xl font-bold tracking-tight text-[#290024] leading-tight">
-                {{ $landing['cafe']['name'] ?? 'ABS Cafe' }}
-            </span>
-        </a>
-
-        <!-- Nomor Meja di Top Bar (Muncul otomatis saat scan QR / ada nomor meja aktif) -->
-        @if($tableNumber)
-            <div class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#290024] text-[#F2F5E2] text-xs font-semibold shadow-xs">
-                <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-pulse"></span>
-                <span>Meja <strong class="text-[#E3DEA4]">#{{ $tableNumber }}</strong></span>
-            </div>
-        @else
-            <div x-data="{ tableNum: localStorage.getItem('abscafe_table_number') }"
-                 x-show="tableNum"
-                 x-cloak
-                 class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#290024] text-[#F2F5E2] text-xs font-semibold shadow-xs">
-                <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-pulse"></span>
-                <span>Meja <strong class="text-[#E3DEA4]" x-text="'#' + tableNum"></strong></span>
-=======
-        <!-- Urutan: Panah Back - Logo Kafe - Nama Cafe (Warna Gelap #290024) -->
+        <!-- Sisi Kiri: Panah Kembali + Logo Kafe + Nama Cafe -->
         <div class="flex items-center gap-2 sm:gap-3">
-            <!-- Tombol Panah Kembali (Dark Color #290024) -->
             <button type="button"
                     onclick="window.dispatchEvent(new CustomEvent('menu-back-clicked'))"
                     class="p-2 -ml-2 text-[#290024] hover:text-[#D4954D] hover:bg-[#E3DEA4]/50 active:scale-95 transition-all rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#290024] shrink-0"
@@ -54,7 +28,6 @@
                 </svg>
             </button>
 
-            <!-- Logo Kafe + Nama Kafe -->
             <a href="{{ route('pelanggan.beranda') }}"
                class="group flex items-center gap-2.5 sm:gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#290024] rounded-xl pr-2"
                aria-label="Kembali ke Beranda ABS Cafe">
@@ -65,11 +38,19 @@
             </a>
         </div>
 
+        <!-- Sisi Kanan: Nomor Meja di Top Bar (Muncul otomatis saat scan QR / ada nomor meja aktif) -->
         @if($tableNumber)
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E3DEA4]/60 border border-[#E3DEA4] text-[#290024] text-xs font-semibold">
-                <span class="w-2 h-2 rounded-full bg-[#D4954D]"></span>
-                <span>Meja #{{ $tableNumber }}</span>
->>>>>>> 0278214556b1421f30dc81ab267322eb7d330bcf
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E3DEA4]/60 border border-[#E3DEA4] text-[#290024] text-xs font-semibold shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-pulse"></span>
+                <span>Meja <strong class="text-[#290024]">#{{ $tableNumber }}</strong></span>
+            </div>
+        @else
+            <div x-data="{ tableNum: localStorage.getItem('abscafe_table_number') }"
+                 x-show="tableNum"
+                 x-cloak
+                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E3DEA4]/60 border border-[#E3DEA4] text-[#290024] text-xs font-semibold shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-pulse"></span>
+                <span>Meja <strong class="text-[#290024]" x-text="'#' + tableNum"></strong></span>
             </div>
         @endif
     </div>
@@ -978,12 +959,15 @@
     {{-- ============================================================= --}}
     <nav id="customer-bottom-nav"
          aria-label="Navigasi Bawah Pelanggan"
+         style="position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 40 !important; background-color: rgba(242, 245, 226, 0.95) !important; backdrop-filter: blur(8px) !important; border-top: 1px solid #E3DEA4 !important;"
          class="fixed inset-x-0 bottom-0 z-40 bg-[#F2F5E2]/95 backdrop-blur-md border-t border-[#E3DEA4] shadow-[0_-4px_18px_rgba(41,0,36,0.08)]">
-        <div class="mx-auto grid max-w-md grid-cols-3 items-stretch gap-1 px-3 pt-1.5 pb-[max(0.45rem,env(safe-area-inset-bottom))]">
+        <div class="mx-auto grid max-w-md grid-cols-3 items-stretch gap-1 px-3 pt-1.5 pb-[max(0.45rem,env(safe-area-inset-bottom))]"
+             style="display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; max-width: 28rem !important; margin-left: auto !important; margin-right: auto !important; width: 100% !important;">
 
             <!-- Tab 1: Menu -->
             <button type="button"
                     @click="setTab('menu')"
+                    style="display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important;"
                     class="group relative flex min-h-[48px] sm:min-h-[52px] min-w-0 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-1 transition-colors duration-200 focus-visible:outline-none">
                 <span class="relative flex h-7 w-12 sm:h-8 sm:w-14 items-center justify-center rounded-full transition-colors duration-200"
                       :class="currentTab === 'menu' ? 'bg-[#D4954D] text-[#290024] shadow-xs' : 'text-[#775533] group-hover:bg-[#E3DEA4]/55'">
@@ -1004,6 +988,7 @@
             <!-- Tab 2: Promo -->
             <button type="button"
                     @click="setTab('promo')"
+                    style="display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important;"
                     class="group relative flex min-h-[48px] sm:min-h-[52px] min-w-0 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-1 transition-colors duration-200 focus-visible:outline-none">
                 <span class="relative flex h-7 w-12 sm:h-8 sm:w-14 items-center justify-center rounded-full transition-colors duration-200"
                       :class="currentTab === 'promo' ? 'bg-[#D4954D] text-[#290024] shadow-xs' : 'text-[#775533] group-hover:bg-[#E3DEA4]/55'">
@@ -1021,6 +1006,7 @@
             <!-- Tab 3: Event -->
             <button type="button"
                     @click="setTab('event')"
+                    style="display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important;"
                     class="group relative flex min-h-[48px] sm:min-h-[52px] min-w-0 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-1 transition-colors duration-200 focus-visible:outline-none">
                 <span class="relative flex h-7 w-12 sm:h-8 sm:w-14 items-center justify-center rounded-full transition-colors duration-200"
                       :class="currentTab === 'event' ? 'bg-[#D4954D] text-[#290024] shadow-xs' : 'text-[#775533] group-hover:bg-[#E3DEA4]/55'">
