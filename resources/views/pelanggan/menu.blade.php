@@ -16,7 +16,11 @@
         style="background-color: #F2F5E2 !important;"
         class="sticky top-0 inset-x-0 z-30 transition-all duration-200">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
+<<<<<<< HEAD
         <!-- Sisi Kiri: Panah Kembali + Logo Kafe + Nama Cafe -->
+=======
+        <!-- Urutan: Panah Back - Logo Kafe - Nama Cafe (Warna Gelap #290024) -->
+>>>>>>> 153c9dc6071a42e60ffa2ea1dc141fc4ad5f96be
         <div class="flex items-center gap-2 sm:gap-3">
             <button type="button"
                     onclick="window.dispatchEvent(new CustomEvent('menu-back-clicked'))"
@@ -38,19 +42,33 @@
             </a>
         </div>
 
+<<<<<<< HEAD
         <!-- Sisi Kanan: Nomor Meja di Top Bar (Muncul otomatis saat scan QR / ada nomor meja aktif) -->
         @if($tableNumber)
             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E3DEA4]/60 border border-[#E3DEA4] text-[#290024] text-xs font-semibold shadow-xs">
                 <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-pulse"></span>
                 <span>Meja <strong class="text-[#290024]">#{{ $tableNumber }}</strong></span>
+=======
+        <!-- Nomor Meja di Top Bar (Muncul otomatis saat scan QR / ada nomor meja aktif) -->
+        @if($tableNumber)
+            <div class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#290024] text-[#F2F5E2] text-xs font-semibold shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-pulse"></span>
+                <span>Meja <strong class="text-[#E3DEA4]">#{{ $tableNumber }}</strong></span>
+>>>>>>> 153c9dc6071a42e60ffa2ea1dc141fc4ad5f96be
             </div>
         @else
             <div x-data="{ tableNum: localStorage.getItem('abscafe_table_number') }"
                  x-show="tableNum"
                  x-cloak
+<<<<<<< HEAD
                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E3DEA4]/60 border border-[#E3DEA4] text-[#290024] text-xs font-semibold shadow-xs">
                 <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-pulse"></span>
                 <span>Meja <strong class="text-[#290024]" x-text="'#' + tableNum"></strong></span>
+=======
+                 class="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#290024] text-[#F2F5E2] text-xs font-semibold shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-pulse"></span>
+                <span>Meja <strong class="text-[#E3DEA4]" x-text="'#' + tableNum"></strong></span>
+>>>>>>> 153c9dc6071a42e60ffa2ea1dc141fc4ad5f96be
             </div>
         @endif
     </div>
