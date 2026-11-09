@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 02, 2026 at 08:08 AM
+-- Generation Time: Nov 09, 2026 at 07:14 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.5.9
 
@@ -248,7 +248,10 @@ INSERT INTO `log_aktivitas` (`id`, `user_name`, `role`, `activity`, `activity_ty
 (121, 'Budi Santoso', 'kasir', 'Menerima pembayaran #ORD-00004 sebesar Rp 33.000 via TRANSFER', 'transaksi', '127.0.0.1', '2026-11-02 07:43:15', '2026-11-02 07:43:15'),
 (122, 'Budi Santoso', 'kasir', 'Mencetak struk pembayaran #ORD-00004', 'transaksi', '127.0.0.1', '2026-11-02 07:43:15', '2026-11-02 07:43:15'),
 (123, 'Budi Santoso', 'kasir', 'Kasir Budi Santoso berhasil masuk ke dashboard', 'sistem', '192.168.1.3', '2026-11-02 07:59:29', '2026-11-02 07:59:29'),
-(124, 'Budi Santoso', 'kasir', 'Kasir Budi Santoso keluar dari sistem', 'sistem', '192.168.1.3', '2026-11-02 08:01:37', '2026-11-02 08:01:37');
+(124, 'Budi Santoso', 'kasir', 'Kasir Budi Santoso keluar dari sistem', 'sistem', '192.168.1.3', '2026-11-02 08:01:37', '2026-11-02 08:01:37'),
+(125, 'Ahmad zahril', 'pelanggan', 'Reservasi daring baru RSV-261109-001 oleh Ahmad zahril untuk Meja #3 pada 09 Nov 2026 09:00', 'reservasi', '172.27.27.103', '2026-11-09 04:30:39', '2026-11-09 04:30:39'),
+(126, 'Admin Utama ABS Cafe', 'admin', 'Admin Admin Utama ABS Cafe berhasil masuk ke dashboard', 'sistem', '192.168.137.1', '2026-11-09 04:39:23', '2026-11-09 04:39:23'),
+(127, 'Admin Utama ABS Cafe', 'admin', 'Memperbarui Link Hostingan QR Pemesanan Meja menjadi https://pieces-completed-cosmetics-poster.trycloudflare.com (Menu: https://pieces-completed-cosmetics-poster.trycloudflare.com/menu)', 'meja', '192.168.137.1', '2026-11-09 04:51:20', '2026-11-09 04:51:20');
 
 -- --------------------------------------------------------
 
@@ -1872,7 +1875,8 @@ INSERT INTO `pengaturan` (`id`, `key`, `value`, `group`, `created_at`, `updated_
 (52, 'peta_lng', '111.9111798', NULL, '2026-10-25 14:30:00', '2026-10-25 15:15:00'),
 (53, 'last_order', '22.00 WIB', NULL, '2026-10-25 14:30:00', '2026-10-25 14:30:00'),
 (54, 'whatsapp_nomor', '6289620102010', NULL, '2026-10-26 11:21:00', '2026-10-26 11:21:00'),
-(55, 'whatsapp_pesan', 'Halo ABS Cafe, saya ingin bertanya.', NULL, '2026-10-26 11:21:00', '2026-10-26 11:21:00');
+(55, 'whatsapp_pesan', 'Halo ABS Cafe, saya ingin bertanya.', NULL, '2026-10-26 11:21:00', '2026-10-26 11:21:00'),
+(56, 'order_base_url', 'https://pieces-completed-cosmetics-poster.trycloudflare.com', NULL, '2026-11-09 04:51:20', '2026-11-09 04:51:20');
 
 -- --------------------------------------------------------
 
@@ -1904,7 +1908,7 @@ CREATE TABLE `pengguna` (
 --
 
 INSERT INTO `pengguna` (`id`, `name`, `username`, `email`, `role`, `phone`, `photo_path`, `status`, `avatar`, `last_login_at`, `email_verified_at`, `password`, `remember_token`, `is_active`, `created_at`, `updated_at`) VALUES
-(1, 'Admin Utama ABS Cafe', 'admin', 'admin@abscafe.com', 'admin', '081234567890', NULL, 'aktif', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80', '2026-10-24 13:42:10', NULL, '$2y$12$UZBi.muML8SGayBP0E4v8OeyL4Hmp.mVTooJ9x85mMN8FfHAx3WXa', 'i30EFjZxwwEGgrkaVXggULo2iVCTU0AVAdslheBgXgZkVhMvHdAfBcLjVjLB', 1, '2026-10-11 23:40:51', '2026-10-24 13:42:10'),
+(1, 'Admin Utama ABS Cafe', 'admin', 'admin@abscafe.com', 'admin', '081234567890', NULL, 'aktif', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80', '2026-11-09 04:39:23', NULL, '$2y$12$UZBi.muML8SGayBP0E4v8OeyL4Hmp.mVTooJ9x85mMN8FfHAx3WXa', 'niNUg0sE7NfoAFcchTZcppcI98RAc74z1yMl9ybpqpFI4MMvmOWNLn2gJRCA', 1, '2026-10-11 23:40:51', '2026-11-09 04:39:23'),
 (2, 'Siti Rahma', 'siti_kasir', 'siti.kasir@abscafe.com', 'kasir', '082198765432', NULL, 'aktif', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80', '2026-10-12 08:28:55', NULL, '$2y$12$CoJbuFzwccyDME.KloAGmeVHq2KFDw7yVfiWUiq8HjGq9fqjTGu8G', NULL, 1, '2026-10-11 23:40:51', '2026-10-12 10:28:55'),
 (3, 'Budi Santoso', 'budi_kasir', 'budi.kasir@abscafe.com', 'kasir', '081377889900', NULL, 'aktif', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80', '2026-11-02 07:59:28', NULL, '$2y$12$9Du1IPOvJpdRAzFIbPMNwu6Tlv1PrL0GnPwP7XsONa20U1d6zD4TG', NULL, 1, '2026-10-11 23:40:52', '2026-11-02 07:59:28'),
 (4, 'Wahyu Hidayat', 'wahyu_barista', 'wahyu.barista@abscafe.com', 'staf', '085712345678', NULL, 'aktif', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80', '2026-10-12 04:28:55', NULL, '$2y$12$xH7Mp6MnNXB6n.HeBpvig.mM1EBsPyvl1HfU8b0cX.tC0BruCcwrS', NULL, 1, '2026-10-11 23:40:52', '2026-10-12 10:28:55'),
@@ -3065,7 +3069,8 @@ INSERT INTO `pesanan` (`id`, `order_code`, `customer_name`, `customer_phone`, `c
 (1057, '#ORD-00001', 'Intan Puspita', NULL, NULL, NULL, 'take_away', 'web', 62000.00, 6200.00, 0.00, 0.00, NULL, NULL, 68200.00, 'tunai', 'lunas', 0, 0, 'diterima', 'Kasir Demo ABS Cafe', 7, '2026-10-14 00:55:39', '2026-10-12 16:56:56', NULL, '2026-10-12 09:56:56', '2026-10-14 00:55:39'),
 (1058, '#ORD-00002', 'Galih Pratama', NULL, NULL, 5, 'dine_in', 'web', 74000.00, 7400.00, 0.00, 0.00, NULL, NULL, 81400.00, NULL, 'menunggu_pembayaran', 0, 0, 'diterima', NULL, NULL, NULL, '2026-10-12 17:10:56', NULL, '2026-10-12 10:10:56', '2026-10-14 00:54:17'),
 (1059, '#ORD-00003', 'Risma Aulia', NULL, NULL, NULL, 'take_away', 'web', 52000.00, 5200.00, 0.00, 0.00, NULL, NULL, 57200.00, NULL, 'menunggu_pembayaran', 0, 0, 'diterima', NULL, NULL, NULL, '2026-10-12 17:19:56', NULL, '2026-10-12 10:19:56', '2026-10-14 00:54:18'),
-(1060, '#ORD-00004', 'P', '08548', NULL, 1, 'dine_in', 'web', 30000.00, 3000.00, 0.00, 0.00, NULL, NULL, 33000.00, 'transfer', 'lunas', 1, 0, 'diproses', 'Budi Santoso', 3, '2026-11-02 07:43:15', '2026-11-02 14:06:53', NULL, '2026-11-02 07:06:53', '2026-11-02 07:43:15');
+(1060, '#ORD-00004', 'P', '08548', NULL, 1, 'dine_in', 'web', 30000.00, 3000.00, 0.00, 0.00, NULL, NULL, 33000.00, 'transfer', 'lunas', 1, 0, 'diproses', 'Budi Santoso', 3, '2026-11-02 07:43:15', '2026-11-02 14:06:53', NULL, '2026-11-02 07:06:53', '2026-11-02 07:43:15'),
+(1061, '#ORD-00005', 'Ahmad yazril', '08152484946', NULL, NULL, 'dine_in', 'web', 25000.00, 2500.00, 0.00, 0.00, NULL, NULL, 27500.00, 'kasir', 'menunggu_pembayaran', 0, 0, 'baru', NULL, NULL, NULL, '2026-11-09 11:29:10', NULL, '2026-11-09 04:29:10', '2026-11-09 04:29:10');
 
 -- --------------------------------------------------------
 
@@ -5684,7 +5689,9 @@ INSERT INTO `pesanan_item` (`id`, `order_id`, `menu_id`, `variant_id`, `name`, `
 (2780, 1059, 10, NULL, 'Nasi Goreng ABS Spesial', 28000.00, 1, 28000.00, NULL, '2026-10-12 10:28:56', '2026-10-12 10:28:56'),
 (2781, 1059, 1, NULL, 'Caramel Latte (Hot)', 24000.00, 1, 24000.00, NULL, '2026-10-12 10:28:56', '2026-10-12 10:28:56'),
 (2782, 1060, 20, 20, 'Choco Matcha (Ice) (Ice)', 16000.00, 1, 16000.00, NULL, '2026-11-02 07:06:53', '2026-11-02 07:06:53'),
-(2783, 1060, 17, 17, 'Sea Salt Spanish Latte (Ice) (Ice)', 14000.00, 1, 14000.00, NULL, '2026-11-02 07:06:53', '2026-11-02 07:06:53');
+(2783, 1060, 17, 17, 'Sea Salt Spanish Latte (Ice) (Ice)', 14000.00, 1, 14000.00, NULL, '2026-11-02 07:06:53', '2026-11-02 07:06:53'),
+(2784, 1061, 2, 2, 'Americano (Ice) (Ice)', 10000.00, 1, 10000.00, NULL, '2026-11-09 04:29:10', '2026-11-09 04:29:10'),
+(2785, 1061, 134, 135, 'Cappucino (Hot / Ice) (Ice)', 15000.00, 1, 15000.00, NULL, '2026-11-09 04:29:10', '2026-11-09 04:29:10');
 
 -- --------------------------------------------------------
 
@@ -8905,7 +8912,8 @@ INSERT INTO `pesanan_riwayat` (`id`, `order_id`, `status`, `actor`, `description
 (3567, 4, 'LUNAS', 'Kasir Demo ABS Cafe', 'Pembayaran TUNAI lunas diverifikasi kasir', '2026-10-14 00:54:59'),
 (3568, 1057, 'LUNAS', 'Kasir Demo ABS Cafe', 'Pembayaran TUNAI lunas diverifikasi kasir', '2026-10-14 00:55:39'),
 (3569, 1060, 'DIBUAT', 'Pelanggan (Web)', 'Pesanan dibuat oleh pelanggan melalui Web (Meja #1)', '2026-11-02 07:06:53'),
-(3570, 1060, 'LUNAS', 'Budi Santoso', 'Pembayaran TRANSFER lunas diverifikasi kasir', '2026-11-02 07:43:15');
+(3570, 1060, 'LUNAS', 'Budi Santoso', 'Pembayaran TRANSFER lunas diverifikasi kasir', '2026-11-02 07:43:15'),
+(3571, 1061, 'DIBUAT', 'Pelanggan (Web)', 'Pesanan dibuat oleh pelanggan melalui Web (Bawa Pulang)', '2026-11-09 04:29:10');
 
 -- --------------------------------------------------------
 
@@ -8989,7 +8997,8 @@ INSERT INTO `reservasi` (`id`, `code`, `customer_name`, `phone`, `party_size`, `
 (2, 'RSV-261012-002', 'Laras Sari', '085712233445', 2, '2026-10-12', '13:00:00', 2, 'dikonfirmasi', NULL, 7, '2026-10-12 10:28:56', '2026-10-12 10:28:56'),
 (3, 'RSV-261012-003', 'Firdaus', '081377112233', 6, '2026-10-12', '19:00:00', NULL, 'menunggu', 'Acara ulang tahun, minta dekorasi lilin kecil.', 7, '2026-10-12 10:28:56', '2026-10-12 10:28:56'),
 (4, 'RSV-261012-004', 'Mentari', '081122334455', 2, '2026-10-12', '20:30:00', 5, 'datang', NULL, 7, '2026-10-12 10:28:56', '2026-10-12 10:28:56'),
-(5, 'RSV-261102-001', 'Fachri', '09974865666', 2, '2026-11-02', '09:00:00', 6, 'menunggu', NULL, NULL, '2026-11-02 07:18:46', '2026-11-02 07:18:46');
+(5, 'RSV-261102-001', 'Fachri', '09974865666', 2, '2026-11-02', '09:00:00', 6, 'menunggu', NULL, NULL, '2026-11-02 07:18:46', '2026-11-02 07:18:46'),
+(6, 'RSV-261109-001', 'Ahmad zahril', '09974865666', 2, '2026-11-09', '09:00:00', 3, 'menunggu', NULL, NULL, '2026-11-09 04:30:39', '2026-11-09 04:30:39');
 
 -- --------------------------------------------------------
 
@@ -9508,7 +9517,7 @@ ALTER TABLE `kategori`
 -- AUTO_INCREMENT for table `log_aktivitas`
 --
 ALTER TABLE `log_aktivitas`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
 
 --
 -- AUTO_INCREMENT for table `meja`
@@ -9556,7 +9565,7 @@ ALTER TABLE `pembayaran`
 -- AUTO_INCREMENT for table `pengaturan`
 --
 ALTER TABLE `pengaturan`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `pengguna`
@@ -9574,19 +9583,19 @@ ALTER TABLE `peran`
 -- AUTO_INCREMENT for table `pesanan`
 --
 ALTER TABLE `pesanan`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1061;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1062;
 
 --
 -- AUTO_INCREMENT for table `pesanan_item`
 --
 ALTER TABLE `pesanan_item`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2784;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2786;
 
 --
 -- AUTO_INCREMENT for table `pesanan_riwayat`
 --
 ALTER TABLE `pesanan_riwayat`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3571;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3572;
 
 --
 -- AUTO_INCREMENT for table `promo`
@@ -9604,7 +9613,7 @@ ALTER TABLE `resep`
 -- AUTO_INCREMENT for table `reservasi`
 --
 ALTER TABLE `reservasi`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `shift`
