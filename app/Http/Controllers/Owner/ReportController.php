@@ -6,11 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CafeSetting;
 use App\Models\CashAdjustment;
 use App\Models\CashShift;
-use App\Models\Menu;
 use App\Models\Order;
-use App\Models\Stock;
-use App\Models\StockLog;
-use App\Models\StockMovement;
 use App\Support\MenuSalesReport;
 use App\Support\PeriodFilter;
 use Illuminate\Http\Request;
@@ -22,7 +18,6 @@ class ReportController extends Controller
     public const TABS = [
         'penjualan' => 'Laporan Penjualan',
         'keuangan' => 'Laporan Keuangan',
-        'stok' => 'Laporan Stok & Bahan',
     ];
 
     public function index(Request $request)
@@ -69,48 +64,12 @@ class ReportController extends Controller
             'margin' => (float) CafeSetting::get('profit_margin_percent', '40'),
         ];
 
-        $logs = StockLog::with('menu')
-            ->whereBetween('created_at', [$period->start, $period->end])
-            ->get()
-            ->map(fn ($l) => (object) [
-                'item_name' => $l->item_name,
-                'type' => $l->type,
-                'quantity' => (string) $l->quantity,
-                'created_at' => $l->created_at,
-            ]);
-
-        $rawMovements = StockMovement::with('stock')
-            ->whereBetween('created_at', [$period->start, $period->end])
-            ->get()
-            ->map(fn ($m) => (object) [
-                'item_name' => ($m->stock?->name ?? 'Bahan').' (Bahan)',
-                'type' => $m->type,
-                'quantity' => ((float) $m->quantity).' '.($m->stock?->unit ?? ''),
-                'created_at' => $m->created_at,
-            ]);
-
-        $movements = $logs->concat($rawMovements)->sortByDesc('created_at')->values();
-
-        $stock = [
-            'totalItems' => Menu::count(),
-            'stockValue' => (float) Menu::sum(DB::raw('stock * price')),
-            'lowStock' => Menu::with('category')->whereNotNull('min_stock')->whereColumn('stock', '<=', 'min_stock')->orderBy('stock')->get(),
-            'outOfStock' => Menu::with('category')->where('stock', '<=', 0)->get(),
-            'movements' => $movements,
-            'usage' => $this->stockUsage($period),
-            'ingredientUsage' => $this->ingredientUsage($period),
-        ];
-
-        return view('owner.reports.index', array_merge(compact('tab', 'period', 'sales'), [
-            'data' => $data,
-            'finance' => $finance,
-            'stock' => $stock,
-        ]));
+        return view('owner.reports.index', compact('tab', 'period', 'sales', 'data', 'finance'));
     }
 
     public function exportCsv(Request $request)
     {
-        $tab = $request->query('tab', 'penjualan');
+        $tab = array_key_exists($request->query('tab', 'penjualan'), self::TABS) ? $request->query('tab', 'penjualan') : 'penjualan';
         $period = PeriodFilter::fromRequest($request);
         $sales = $this->paidOrders($period);
 
@@ -126,7 +85,6 @@ class ReportController extends Controller
 
         $rows = match ($tab) {
             'keuangan' => $this->financeRows($sales),
-            'stok' => $this->stockRows($period),
             default => $this->salesRows($sales),
         };
 
@@ -142,7 +100,7 @@ class ReportController extends Controller
 
     public function print(Request $request)
     {
-        $tab = $request->query('tab', 'penjualan');
+        $tab = array_key_exists($request->query('tab', 'penjualan'), self::TABS) ? $request->query('tab', 'penjualan') : 'penjualan';
         $period = PeriodFilter::fromRequest($request);
         $sales = $this->paidOrders($period);
 
@@ -165,11 +123,6 @@ class ReportController extends Controller
                 'tax' => (float) $sales->sum('tax'),
                 'service' => (float) $sales->sum('service_charge'),
                 'net' => (float) $sales->sum('total'),
-            ],
-            'stock' => [
-                'stockValue' => (float) Menu::sum(DB::raw('stock * price')),
-                'lowStock' => Menu::with('category')->whereNotNull('min_stock')->whereColumn('stock', '<=', 'min_stock')->orderBy('stock')->get(),
-                'outOfStock' => Menu::with('category')->where('stock', '<=', 0)->get(),
             ],
         ];
 
@@ -234,7 +187,7 @@ class ReportController extends Controller
             ->where('pesanan.payment_status', 'lunas')
             ->whereBetween('pesanan.created_at', [$period->start, $period->end])
             ->select(DB::raw("COALESCE(kategori.name, 'Tanpa Kategori') as name"), DB::raw('SUM(pesanan_item.quantity) as quantity'), DB::raw('SUM(pesanan_item.subtotal) as revenue'))
-            ->groupBy('name')
+            ->groupBy(DB::raw("COALESCE(kategori.name, 'Tanpa Kategori')"))
             ->orderByDesc('revenue')
             ->get()
             ->map(fn ($r) => ['name' => $r->name, 'quantity' => (int) $r->quantity, 'revenue' => (float) $r->revenue]);
@@ -273,29 +226,6 @@ class ReportController extends Controller
         }
 
         return collect($slots)->values();
-    }
-
-    private function stockUsage(PeriodFilter $period)
-    {
-        return DB::table('pesanan_item')
-            ->join('pesanan', 'pesanan.id', '=', 'pesanan_item.order_id')
-            ->where('pesanan.payment_status', 'lunas')
-            ->whereBetween('pesanan.created_at', [$period->start, $period->end])
-            ->whereNotNull('pesanan_item.menu_id')
-            ->select('pesanan_item.menu_id', DB::raw('SUM(pesanan_item.quantity) as sold'))
-            ->groupBy('pesanan_item.menu_id')
-            ->orderByDesc('sold')
-            ->get()
-            ->map(function ($row) {
-                $menu = Menu::find($row->menu_id);
-
-                return [
-                    'name' => $menu?->name ?? 'Menu #'.$row->menu_id,
-                    'sold' => (int) $row->sold,
-                    'stock' => (int) ($menu?->stock ?? 0),
-                    'unit' => $menu?->unit ?? 'pcs',
-                ];
-            });
     }
 
     /**
@@ -351,63 +281,6 @@ class ReportController extends Controller
         ];
         foreach ($this->perMethod($sales) as $method) {
             $rows[] = [$method['method'], $method['count'], $method['total']];
-        }
-
-        return $rows;
-    }
-
-    private function ingredientUsage(PeriodFilter $period)
-    {
-        return StockMovement::with('stock')
-            ->where('type', 'keluar')
-            ->whereBetween('created_at', [$period->start, $period->end])
-            ->get()
-            ->groupBy('stock_id')
-            ->map(function ($rows) {
-                $stock = $rows->first()->stock;
-
-                return [
-                    'name' => $stock?->name ?? 'Bahan Baku',
-                    'used' => (float) $rows->sum('quantity'),
-                    'remaining' => (float) ($stock?->quantity ?? 0),
-                    'unit' => $stock?->unit ?? 'pcs',
-                ];
-            })
-            ->values();
-    }
-
-    /**
-     * @return array<int, array<int, string|int|float>>
-     */
-    private function stockRows(PeriodFilter $period): array
-    {
-        $rows = [
-            ['Laporan Stok & Bahan'],
-            ['Nilai Stok (harga jual)', (float) Menu::sum(DB::raw('stock * price'))],
-            [],
-            ['Menu / Produk', 'Stok', 'Min. Stok', 'Satuan', 'Status'],
-        ];
-        foreach (Menu::orderBy('stock')->get() as $menu) {
-            $rows[] = [
-                $menu->name,
-                (int) $menu->stock,
-                (int) $menu->min_stock,
-                $menu->unit ?? 'pcs',
-                $menu->stock_status === 'habis' ? 'Habis' : ($menu->stock_status === 'menipis' ? 'Menipis' : 'Aman'),
-            ];
-        }
-
-        $rows[] = [];
-        $rows[] = ['Bahan Baku (Resep)', 'Stok Tersisa', 'Min. Stok', 'Satuan', 'Status'];
-        foreach (Stock::where('is_active', true)->orderBy('name')->get() as $stk) {
-            $status = $stk->stockStatus();
-            $rows[] = [
-                $stk->name,
-                (float) $stk->quantity,
-                (float) $stk->min_quantity,
-                $stk->unit,
-                $status['label'],
-            ];
         }
 
         return $rows;

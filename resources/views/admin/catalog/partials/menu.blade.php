@@ -279,14 +279,6 @@
                         </button>
                     </form>
 
-                    <a
-                        href="{{ route('admin.catalog.menu.recipes', $menu->id) }}"
-                        class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
-                    >
-                        <i data-lucide="scale" class="w-5 h-5 text-[#775533] shrink-0"></i>
-                        <span>Resep &amp; HPP</span>
-                    </a>
-
                     <div class="h-px bg-[#E3DEA4]/60 my-2"></div>
 
                     <button
@@ -426,12 +418,6 @@
                                     </span>
                                 </div>
                             @endif
-
-                            <div class="absolute bottom-3 right-3">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-md shadow-xs {{ $menu->stock <= 0 ? 'bg-cafe-danger text-beige' : ($menu->stock <= $menu->min_stock ? 'bg-cafe-warning text-beige' : 'bg-midnight/60 text-beige') }}">
-                                    Stok: {{ $menu->stock }} {{ $menu->unit }}
-                                </span>
-                            </div>
                         </div>
 
                         <div class="p-4 space-y-2">
@@ -500,7 +486,6 @@
                 <th class="py-3.5 pl-6">Foto & Nama</th>
                 <th class="py-3.5 px-3">Kategori</th>
                 <th class="py-3.5 px-3">Harga</th>
-                <th class="py-3.5 px-3">Stok</th>
                 <th class="py-3.5 px-3">Terjual</th>
                 <th class="py-3.5 px-3">Best Seller</th>
                 <th class="py-3.5 px-3">Status</th>
@@ -535,11 +520,6 @@
 
                     <x-slot:fields>
                         <x-responsive-table.field label="Harga" :value="$menu->priceRangeLabel()" />
-                        <x-responsive-table.field label="Stok">
-                            <span class="{{ $menu->stock <= 0 ? 'text-cafe-danger font-bold' : ($menu->stock <= $menu->min_stock ? 'text-cafe-warning font-bold' : 'text-cafe-text') }}">
-                                {{ $menu->stock }} {{ $menu->unit }}
-                            </span>
-                        </x-responsive-table.field>
                         <x-responsive-table.field label="Terjual" :value="$menu->sold_count . ' porsi'" />
                         @if($menu->variants->isNotEmpty())
                             <x-responsive-table.field label="Varian">
@@ -595,11 +575,6 @@
                         </td>
                         <td class="hidden md:table-cell py-3 px-3 font-medium text-cafe-text">{{ $menu->category->name }}</td>
                         <td class="hidden md:table-cell py-3 px-3 font-bold text-cafe-dark">{{ $menu->priceRangeLabel() }}</td>
-                        <td class="hidden md:table-cell py-3 px-3 font-medium">
-                            <span class="{{ $menu->stock <= 0 ? 'text-cafe-danger font-bold' : ($menu->stock <= $menu->min_stock ? 'text-cafe-warning font-bold' : 'text-cafe-text') }}">
-                                {{ $menu->stock }} {{ $menu->unit }}
-                            </span>
-                        </td>
                         <td class="hidden md:table-cell py-3 px-3 text-cafe-muted">{{ $menu->sold_count }} porsi</td>
                         <td class="hidden md:table-cell py-3 px-3">
                             @if($menu->is_best_seller)

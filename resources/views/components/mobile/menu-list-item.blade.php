@@ -126,15 +126,6 @@
             </form>
         @endif
 
-        {{-- Resep & HPP --}}
-        <a
-            href="{{ route('admin.catalog.menu.recipes', $menu->id) }}"
-            class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
-        >
-            <i data-lucide="scale" class="w-5 h-5 text-[#775533] shrink-0"></i>
-            <span>Resep &amp; HPP</span>
-        </a>
-
         <div class="h-px bg-[#E3DEA4]/60 my-2"></div>
 
         {{-- Delete --}}

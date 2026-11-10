@@ -37,7 +37,6 @@ class AdminWorkspaceTest extends TestCase
             ->assertSee('Log Aktivitas')
             ->assertDontSee('/admin/pesanan', false)
             ->assertDontSee('/admin/kategori', false)
-            ->assertDontSee('/admin/stok', false)
             ->assertDontSee('/admin/pengguna', false)
             ->assertDontSee('/admin/meja', false)
             ->assertDontSee('/admin/pengaturan', false)
@@ -82,7 +81,6 @@ class AdminWorkspaceTest extends TestCase
             '/admin/pesanan',
             '/admin/menu',
             '/admin/kategori',
-            '/admin/stok',
             '/admin/promo',
             '/admin/pengguna',
             '/admin/meja',
@@ -135,7 +133,7 @@ class AdminWorkspaceTest extends TestCase
         $this->assertSame('nonaktif', $user->fresh()->status);
     }
 
-    public function test_catalog_menu_category_stock_and_supplier_work(): void
+    public function test_catalog_menu_and_category_work(): void
     {
         $this->actingAsAdmin();
 
@@ -155,9 +153,6 @@ class AdminWorkspaceTest extends TestCase
             'name' => 'Kopi Baru',
             'category_id' => $category->id,
             'price' => 25000,
-            'stock' => 10,
-            'min_stock' => 3,
-            'unit' => 'cup',
         ])->assertRedirect(route('admin.catalog.index'));
 
         $menu = Menu::where('name', 'Kopi Baru')->firstOrFail();
@@ -166,27 +161,9 @@ class AdminWorkspaceTest extends TestCase
             ->assertOk()
             ->assertSee('Edit Menu: Kopi Baru');
 
-        $this->post(route('admin.catalog.stock.adjust', $menu->id), [
-            'type' => 'masuk',
-            'quantity' => 5,
-        ])->assertRedirect();
-
-        $this->assertSame(15, $menu->fresh()->stock);
-
-        $this->post(route('admin.catalog.supplier.store'), [
-            'name' => 'Supplier Kopi',
-            'contact_person' => 'Andi',
-            'phone' => '08123456789',
-            'email' => 'supplier@example.com',
-            'is_active' => '1',
-        ])->assertRedirect();
-
-        $this->assertDatabaseHas('pemasok', ['name' => 'Supplier Kopi']);
-
         $this->get(route('admin.catalog.index'))
             ->assertOk()
-            ->assertSee('Kopi Baru')
-            ->assertDontSee('Stok & Supplier');
+            ->assertSee('Kopi Baru');
     }
 
     public function test_operations_tables_and_payment_methods_work(): void

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MenuVariant extends Model
 {
@@ -37,9 +37,9 @@ class MenuVariant extends Model
         return $this->belongsTo(Menu::class);
     }
 
-    public function recipes(): HasMany
+    public function scopeAktif(Builder $query): Builder
     {
-        return $this->hasMany(Recipe::class, 'menu_variant_id');
+        return $query->where('is_available', true);
     }
 
     public function isHabis(): bool

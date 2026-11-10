@@ -30,13 +30,8 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        $lowStockMenus = Menu::where(function ($q) {
-            $q->whereColumn('stock', '<=', 'min_stock')
-                ->orWhere('stock', '<=', 0)
-                ->orWhere('is_available', false);
-        })->orderBy('stock', 'asc')->get();
-
-        $lowStockCount = $lowStockMenus->count();
+        $menuHabis = Menu::where('is_available', false)->orderBy('name', 'asc')->get();
+        $menuHabisCount = $menuHabis->count();
         $activePromoCount = Promo::where('is_active', true)
             ->whereDate('start_date', '<=', $today)
             ->whereDate('end_date', '>=', $today)
@@ -118,8 +113,8 @@ class DashboardController extends Controller
             'totalMenus',
             'bestSellerCount',
             'bestSellerMenus',
-            'lowStockMenus',
-            'lowStockCount',
+            'menuHabis',
+            'menuHabisCount',
             'activePromoCount',
             'activeStaffCount',
             'totalTables',

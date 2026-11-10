@@ -21,13 +21,9 @@ abstract class TestCase extends BaseTestCase
         $connection = config('database.default');
         $database = (string) config("database.connections.{$connection}.database");
 
-        $isMemory = $connection === 'sqlite' && $database === ':memory:';
-        $isTestNamed = str_contains($database, 'test');
-
-        if (! $isMemory && ! $isTestNamed) {
+        if ($connection !== 'sqlite' || $database !== ':memory:') {
             throw new RuntimeException(
-                "Menolak menjalankan test pada database tidak aman: [{$connection}] {$database}. "
-                .'Gunakan sqlite :memory: atau database yang namanya mengandung "test".'
+                "Menolak menjalankan test: koneksi harus SQLite in-memory (:memory:), terdeteksi [{$connection}] {$database}."
             );
         }
     }

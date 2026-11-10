@@ -6,14 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
 use App\Models\Category;
 use App\Models\Menu;
-use App\Models\Stock;
-use App\Models\StockLog;
-use App\Models\Supplier;
 use App\Services\MenuMergeService;
 use App\Services\MenuVariantService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class CatalogController extends Controller
@@ -24,9 +20,8 @@ class CatalogController extends Controller
     {
         $activeCategories = Category::where('is_active', true)->orderBy('order', 'asc')->get();
         $categories = Category::withCount('menus')->orderBy('order', 'asc')->get();
-        $stocks = Stock::where('is_active', true)->orderBy('name')->get();
 
-        $menuQuery = Menu::with(['category', 'variants', 'recipes.stock', 'recipes.variant']);
+        $menuQuery = Menu::with(['category', 'variants']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -50,47 +45,11 @@ class CatalogController extends Controller
         $menus = $menuQuery->paginate(20)->withQueryString();
         $viewMode = $request->input('view', 'grid');
 
-        $stockQuery = Menu::with('category');
-
-        if ($request->filled('stock_search')) {
-            $stockQuery->where('name', 'like', '%'.$request->input('stock_search').'%');
-        }
-
-        if ($request->filled('stock_category_id') && $request->input('stock_category_id') !== 'all') {
-            $stockQuery->where('category_id', $request->input('stock_category_id'));
-        }
-
-        $stockMenus = $stockQuery->get();
-
-        if ($request->filled('stock_status') && $request->input('stock_status') !== 'all') {
-            $stockMenus = $stockMenus->filter(
-                fn (Menu $menu) => $menu->stock_status === $request->input('stock_status')
-            );
-        }
-
-        $stockLogs = StockLog::with('menu')->orderBy('created_at', 'desc')->take(30)->get();
-
-        $supplierQuery = Supplier::query();
-
-        if ($request->filled('supplier_search')) {
-            $supplierQuery->search($request->input('supplier_search'));
-        }
-
-        if ($request->filled('supplier_status') && $request->input('supplier_status') !== 'all') {
-            $supplierQuery->where('is_active', $request->input('supplier_status') === 'aktif');
-        }
-
-        $suppliers = $supplierQuery->orderBy('name')->get();
-
         return view('admin.catalog.index', compact(
             'menus',
             'categories',
             'activeCategories',
-            'stocks',
-            'viewMode',
-            'stockMenus',
-            'stockLogs',
-            'suppliers'
+            'viewMode'
         ));
     }
 
@@ -127,9 +86,6 @@ class CatalogController extends Controller
             'image' => $request->input('image') ?: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&auto=format&fit=crop&q=80',
             'is_available' => $request->boolean('is_available', true),
             'is_best_seller' => $request->boolean('is_best_seller', false),
-            'stock' => $request->input('stock', 30),
-            'min_stock' => $request->input('min_stock', 10),
-            'unit' => $request->input('unit', 'porsi'),
             'sold_count' => 0,
         ]);
 
@@ -160,9 +116,6 @@ class CatalogController extends Controller
             'image' => $request->input('image') ?: $menu->image,
             'is_available' => $request->boolean('is_available'),
             'is_best_seller' => $request->boolean('is_best_seller'),
-            'stock' => $request->input('stock', $menu->stock),
-            'min_stock' => $request->input('min_stock', $menu->min_stock),
-            'unit' => $request->input('unit', $menu->unit),
         ]);
 
         if ($request->has('variants') || $request->boolean('variants_present')) {
@@ -205,17 +158,17 @@ class CatalogController extends Controller
         $menu->is_available = ! $menu->is_available;
         $menu->save();
 
-        $status = $menu->is_available ? 'Tersedia' : 'Habis';
+        $status = $menu->is_available ? 'tersedia' : 'habis';
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Mengubah status menu {$menu->name} menjadi {$status}",
+            'activity' => "Mengubah status ketersediaan menu {$menu->name} menjadi {$status}",
             'activity_type' => 'menu',
             'ip_address' => request()->ip(),
         ]);
 
-        return back()->with('success', "Status {$menu->name} diubah menjadi {$status}.");
+        return back()->with('success', "Status menu {$menu->name} diubah menjadi {$status}.");
     }
 
     public function toggleMenuBestSeller($id)
@@ -224,29 +177,29 @@ class CatalogController extends Controller
         $menu->is_best_seller = ! $menu->is_best_seller;
         $menu->save();
 
-        $tag = $menu->is_best_seller ? 'ditandai sebagai' : 'dihapus dari';
+        $status = $menu->is_best_seller ? 'bestseller' : 'reguler';
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Menu {$menu->name} {$tag} Best Seller",
+            'activity' => "Mengubah status bestseller menu {$menu->name} menjadi {$status}",
             'activity_type' => 'menu',
             'ip_address' => request()->ip(),
         ]);
 
-        return back()->with('success', "Status Best Seller {$menu->name} diperbarui.");
+        return back()->with('success', "Status bestseller menu {$menu->name} berhasil diperbarui.");
     }
 
     public function destroyMenu($id)
     {
         $menu = Menu::findOrFail($id);
         $name = $menu->name;
-        $menu->forceDelete();
+        $menu->delete();
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Menghapus menu {$name}",
+            'activity' => "Menghapus menu: {$name}",
             'activity_type' => 'menu',
             'ip_address' => request()->ip(),
         ]);
@@ -272,59 +225,6 @@ class CatalogController extends Controller
         return back()->with('success', "Menu berhasil digabungkan menjadi {$parent->name}.");
     }
 
-    public function recipes($id)
-    {
-        $menu = Menu::with(['variants', 'recipes.stock', 'recipes.variant'])->findOrFail($id);
-        $stocks = Stock::where('is_active', true)->orderBy('name')->get();
-
-        return response()->json([
-            'menu' => $menu,
-            'variants' => $menu->variants,
-            'recipes' => $menu->recipes,
-            'stocks' => $stocks,
-        ]);
-    }
-
-    public function saveRecipes(Request $request, $id)
-    {
-        $menu = Menu::findOrFail($id);
-
-        $data = $request->validate([
-            'recipes' => 'nullable|array',
-            'recipes.*.stock_id' => 'required|exists:stok,id',
-            'recipes.*.menu_variant_id' => 'nullable|exists:menu_varian,id',
-            'recipes.*.amount' => 'required|numeric|min:0.01',
-        ]);
-
-        DB::transaction(function () use ($menu, $data) {
-            $menu->recipes()->delete();
-
-            if (! empty($data['recipes'])) {
-                foreach ($data['recipes'] as $item) {
-                    $menu->recipes()->create([
-                        'menu_variant_id' => ! empty($item['menu_variant_id']) ? $item['menu_variant_id'] : null,
-                        'stock_id' => $item['stock_id'],
-                        'amount' => $item['amount'],
-                    ]);
-                }
-            }
-        });
-
-        ActivityLog::create([
-            'user_name' => Auth::user()->name,
-            'role' => Auth::user()->primaryRole(),
-            'activity' => "Memperbarui resep bahan untuk menu {$menu->name}",
-            'activity_type' => 'menu',
-            'ip_address' => $request->ip(),
-        ]);
-
-        if ($request->wantsJson()) {
-            return response()->json(['success' => true, 'message' => "Resep untuk menu {$menu->name} berhasil disimpan."]);
-        }
-
-        return back()->with('success', "Resep untuk menu {$menu->name} berhasil diperbarui.");
-    }
-
     private function validateMenu(Request $request): void
     {
         $request->validate([
@@ -333,9 +233,6 @@ class CatalogController extends Controller
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|string',
-            'stock' => 'nullable|integer|min:0',
-            'min_stock' => 'nullable|integer|min:1',
-            'unit' => 'nullable|string',
             'variants' => 'nullable|array',
             'variants.*.id' => 'nullable|integer|exists:menu_varian,id',
             'variants.*.name' => 'nullable|string|max:100',
@@ -351,33 +248,28 @@ class CatalogController extends Controller
      */
     private function variantPayload(Request $request): array
     {
-        if (! $request->has('variants')) {
-            return [];
-        }
-
-        return collect($request->input('variants', []))
-            ->filter(fn ($variant) => filled($variant['name'] ?? null))
-            ->values()
-            ->all();
+        return array_values(array_filter(
+            (array) $request->input('variants', []),
+            fn ($item) => is_array($item) && (! empty($item['name']) || ! empty($item['price']))
+        ));
     }
 
     public function storeCategory(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:100',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
             'icon' => 'nullable|string|max:50',
-            'order' => 'nullable|integer',
             'description' => 'nullable|string',
+            'order' => 'nullable|integer',
+            'is_active' => 'nullable|boolean',
         ]);
 
-        $maxOrder = Category::max('order') ?? 0;
-
         $category = Category::create([
-            'name' => $request->input('name'),
-            'icon' => $request->input('icon', 'coffee'),
-            'order' => $request->input('order', $maxOrder + 1),
+            'name' => $validated['name'],
+            'icon' => $validated['icon'] ?: 'coffee',
+            'description' => $validated['description'] ?? null,
+            'order' => $validated['order'] ?? 0,
             'is_active' => $request->boolean('is_active', true),
-            'description' => $request->input('description'),
         ]);
 
         ActivityLog::create([
@@ -393,20 +285,21 @@ class CatalogController extends Controller
 
     public function updateCategory(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:100',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
             'icon' => 'nullable|string|max:50',
-            'order' => 'nullable|integer',
             'description' => 'nullable|string',
+            'order' => 'nullable|integer',
+            'is_active' => 'nullable|boolean',
         ]);
 
         $category = Category::findOrFail($id);
         $category->update([
-            'name' => $request->input('name'),
-            'icon' => $request->input('icon', $category->icon),
-            'order' => $request->input('order', $category->order),
+            'name' => $validated['name'],
+            'icon' => $validated['icon'] ?: $category->icon,
+            'description' => $validated['description'] ?? $category->description,
+            'order' => $validated['order'] ?? $category->order,
             'is_active' => $request->boolean('is_active'),
-            'description' => $request->input('description'),
         ]);
 
         ActivityLog::create([
@@ -425,7 +318,7 @@ class CatalogController extends Controller
         $category = Category::withCount('menus')->findOrFail($id);
 
         if ($category->menus_count > 0) {
-            return back()->with('error', "Gagal menghapus! Kategori \"{$category->name}\" masih memiliki {$category->menus_count} menu aktif di dalamnya. Pindahkan atau hapus menu tersebut terlebih dahulu.");
+            return back()->with('error', "Kategori {$category->name} tidak dapat dihapus karena masih memiliki {$category->menus_count} menu terkait.");
         }
 
         $name = $category->name;
@@ -440,167 +333,5 @@ class CatalogController extends Controller
         ]);
 
         return back()->with('success', "Kategori {$name} telah berhasil dihapus.");
-    }
-
-    public function adjustStock(Request $request, $id)
-    {
-        $request->validate([
-            'type' => 'required|in:masuk,keluar,koreksi',
-            'quantity' => 'required|integer',
-            'notes' => 'nullable|string',
-        ]);
-
-        $menu = Menu::findOrFail($id);
-        $type = $request->input('type');
-        $quantity = abs((int) $request->input('quantity'));
-        $notes = $request->input('notes') ?: 'Penyesuaian stok manual';
-        $oldStock = $menu->stock;
-
-        $newStock = match ($type) {
-            'masuk' => $oldStock + $quantity,
-            'keluar' => max(0, $oldStock - $quantity),
-            'koreksi' => max(0, (int) $request->input('quantity')),
-        };
-
-        $menu->update([
-            'stock' => $newStock,
-            'is_available' => $newStock > 0,
-        ]);
-
-        StockLog::create([
-            'menu_id' => $menu->id,
-            'item_name' => $menu->name,
-            'type' => $type,
-            'quantity' => $quantity,
-            'stock_before' => $oldStock,
-            'stock_after' => $newStock,
-            'notes' => $notes,
-            'actor' => Auth::user()->name,
-        ]);
-
-        ActivityLog::create([
-            'user_name' => Auth::user()->name,
-            'role' => Auth::user()->role,
-            'activity' => "Penyesuaian stok {$menu->name}: {$type} ({$oldStock} -> {$newStock} {$menu->unit})",
-            'activity_type' => 'stok',
-            'ip_address' => $request->ip(),
-        ]);
-
-        return back()->with('success', "Stok {$menu->name} berhasil diperbarui menjadi {$newStock} {$menu->unit}.");
-    }
-
-    public function setMinStock(Request $request, $id)
-    {
-        $request->validate([
-            'min_stock' => 'required|integer|min:1',
-        ]);
-
-        $menu = Menu::findOrFail($id);
-        $min = $request->input('min_stock');
-
-        $menu->update(['min_stock' => $min]);
-
-        ActivityLog::create([
-            'user_name' => Auth::user()->name,
-            'role' => Auth::user()->role,
-            'activity' => "Mengubah batas stok minimum {$menu->name} menjadi {$min}",
-            'activity_type' => 'stok',
-            'ip_address' => $request->ip(),
-        ]);
-
-        return back()->with('success', "Batas minimum stok {$menu->name} berhasil diatur ke {$min}.");
-    }
-
-    public function storeSupplier(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'contact_person' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:30',
-            'email' => 'nullable|email|max:255',
-            'address' => 'nullable|string',
-            'notes' => 'nullable|string',
-            'is_active' => 'nullable|boolean',
-        ]);
-
-        $supplier = Supplier::create([
-            ...$validated,
-            'is_active' => $request->boolean('is_active', true),
-        ]);
-
-        ActivityLog::create([
-            'user_name' => Auth::user()->name,
-            'role' => Auth::user()->role,
-            'activity' => "Menambahkan supplier baru: {$supplier->name}",
-            'activity_type' => 'stok',
-            'ip_address' => $request->ip(),
-        ]);
-
-        return back()->with('success', "Supplier {$supplier->name} berhasil ditambahkan!");
-    }
-
-    public function updateSupplier(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'contact_person' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:30',
-            'email' => 'nullable|email|max:255',
-            'address' => 'nullable|string',
-            'notes' => 'nullable|string',
-            'is_active' => 'nullable|boolean',
-        ]);
-
-        $supplier = Supplier::findOrFail($id);
-        $supplier->update([
-            ...$validated,
-            'is_active' => $request->boolean('is_active'),
-        ]);
-
-        ActivityLog::create([
-            'user_name' => Auth::user()->name,
-            'role' => Auth::user()->role,
-            'activity' => "Memperbarui supplier: {$supplier->name}",
-            'activity_type' => 'stok',
-            'ip_address' => $request->ip(),
-        ]);
-
-        return back()->with('success', "Supplier {$supplier->name} berhasil diperbarui.");
-    }
-
-    public function toggleSupplierStatus($id)
-    {
-        $supplier = Supplier::findOrFail($id);
-        $supplier->is_active = ! $supplier->is_active;
-        $supplier->save();
-
-        $status = $supplier->is_active ? 'aktif' : 'nonaktif';
-
-        ActivityLog::create([
-            'user_name' => Auth::user()->name,
-            'role' => Auth::user()->role,
-            'activity' => "Mengubah status supplier {$supplier->name} menjadi {$status}",
-            'activity_type' => 'stok',
-            'ip_address' => request()->ip(),
-        ]);
-
-        return back()->with('success', "Status supplier {$supplier->name} diubah menjadi {$status}.");
-    }
-
-    public function destroySupplier($id)
-    {
-        $supplier = Supplier::findOrFail($id);
-        $name = $supplier->name;
-        $supplier->delete();
-
-        ActivityLog::create([
-            'user_name' => Auth::user()->name,
-            'role' => Auth::user()->role,
-            'activity' => "Menghapus supplier: {$name}",
-            'activity_type' => 'stok',
-            'ip_address' => request()->ip(),
-        ]);
-
-        return back()->with('success', "Supplier {$name} telah berhasil dihapus.");
     }
 }

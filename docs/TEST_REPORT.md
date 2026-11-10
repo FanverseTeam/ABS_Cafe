@@ -54,13 +54,13 @@ tidak permanen.
 
 ---
 
-## 2. Inventaris & Cakupan Pengujian
+## 2. Rincian & Cakupan Pengujian
 
 | Suite | Berkas | Tes | Fokus |
 |---|---|---:|---|
 | Smoke | `tests/Feature/SmokeTest.php` | 1 | Aplikasi boot & halaman dasar |
 | Auth | `tests/Feature/Auth/LoginTest.php`, `AccessControlTest.php` | 27 | Login terpadu, guard per-peran, redirect, throttle |
-| Admin | `tests/Feature/Admin/*` (10 berkas) | 74 | Dashboard, pesanan, menu, kategori, stok, promo, pengguna, meja, pengaturan, log aktivitas |
+| Admin | `tests/Feature/Admin/*` (10 berkas) | 74 | Dashboard, pesanan, menu, kategori, promo, pengguna, meja, pengaturan, log aktivitas |
 | Owner | `tests/Feature/Owner/*` (6 berkas) | 29 | Dashboard, laporan, kinerja kasir, promo, pengaturan, profil |
 | Kasir | `tests/Feature/Kasir/*` (8 berkas) | 61 | Dashboard, shift, POS, pesanan, pembayaran, reservasi, meja, profil |
 | Database | `tests/Feature/Database/SqlSchemaParityTest.php` | 2 | Paritas skema `db_abscafe.sql` ↔ migrasi |
@@ -129,9 +129,7 @@ Seluruh bug di bawah ditemukan melalui pengujian dan telah diperbaiki.
 - Middleware `kasir.shift` keliru dipasang pada `POST /kasir/shift/buka`.
 - Kunci struk salah (`cafe_address`/`cafe_phone`) pada `PaymentController` dan
   view struk.
-- `Admin/OrderController::cancel` tidak memakai `OrderService::cancel` (stok/meja
-  tidak dirilis konsisten).
-- `Menu::getStockStatusAttribute()` (status stok salah).
+- `Admin/OrderController::cancel` tidak memakai `OrderService::cancel`.
 - Validasi status pada `Admin/TableController::updateStatus`.
 - Pencarian `ActivityLogController::index` (query tidak valid) dibungkus closure.
 - Normalisasi kode promo (`UPPER`, nullable) di `Admin/PromoController` &
@@ -146,7 +144,7 @@ Seluruh bug di bawah ditemukan melalui pengujian dan telah diperbaiki.
 - `UserFactory`: username default dibuat aman (`user_<5 digit>`) agar lolos
   aturan `alpha_dash`.
 - `OrderFactory`: kode unik berurutan `#TST-#####` + state `paid()/web()/cancelled()`.
-- Tes pembayaran stok (`PaymentTest`) dipatok total eksplisit untuk menghindari
+- Tes pembayaran (`PaymentTest`) dipatok total eksplisit untuk menghindari
   *flakiness* dari total acak factory.
 
 ---

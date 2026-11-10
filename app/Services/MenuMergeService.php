@@ -8,7 +8,6 @@ use App\Models\Menu;
 use App\Models\MenuVariant;
 use App\Models\OrderItem;
 use App\Models\Promo;
-use App\Models\Recipe;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -160,7 +159,7 @@ class MenuMergeService
         }
 
         return DB::transaction(function () use ($menuIds, $actor) {
-            $menus = Menu::with(['variants', 'recipes'])
+            $menus = Menu::with(['variants'])
                 ->whereIn('id', $menuIds)
                 ->get()
                 ->keyBy('id');
@@ -217,9 +216,6 @@ class MenuMergeService
                 'price' => (float) $ordered->min('price'),
                 'is_available' => $ordered->contains(fn (Menu $menu) => $menu->is_available),
                 'is_best_seller' => $ordered->contains(fn (Menu $menu) => $menu->is_best_seller),
-                'stock' => (int) $ordered->sum('stock'),
-                'min_stock' => (int) $ordered->sum('min_stock'),
-                'unit' => $first->unit ?: 'porsi',
                 'sold_count' => (int) $ordered->sum('sold_count'),
             ]);
 
@@ -281,8 +277,6 @@ class MenuMergeService
                     }
                 }
 
-                $this->moveRecipes($menu, $parent, $sourceRows);
-
                 $sourceMap[$menu->id] = [
                     'rows' => $sourceRows,
                     'variant_map' => $variantIdMap,
@@ -308,7 +302,7 @@ class MenuMergeService
 
             $this->log($actor, "Menggabungkan menu {$ordered->pluck('name')->implode(', ')} menjadi {$parent->name}");
 
-            return $parent->fresh(['variants', 'recipes']);
+            return $parent->fresh(['variants']);
         });
     }
 
@@ -349,15 +343,6 @@ class MenuMergeService
                         'variant_id' => $oldVariant?->id,
                         'name' => $oldMenu->name,
                     ]);
-
-                if ($newVariant) {
-                    Recipe::where('menu_id', $parent->id)
-                        ->where('menu_variant_id', $newVariant->id)
-                        ->update([
-                            'menu_id' => $oldMenu->id,
-                            'menu_variant_id' => $oldVariant?->id,
-                        ]);
-                }
 
                 $oldMenu->forceFill([
                     'merged_into_menu_id' => null,
@@ -505,30 +490,6 @@ class MenuMergeService
                 'is_available' => (bool) $menu->is_available,
             ]],
         ];
-    }
-
-    /**
-     * @param  array<int, array{source_variant_id: int|null, new_variant: MenuVariant}>  $sourceRows
-     */
-    private function moveRecipes(Menu $menu, Menu $parent, array $sourceRows): void
-    {
-        $recipes = $menu->recipes;
-
-        foreach ($sourceRows as $row) {
-            $specific = $recipes->where('menu_variant_id', $row['source_variant_id']);
-            $source = $specific->isNotEmpty() ? $specific : $recipes->whereNull('menu_variant_id');
-
-            foreach ($source as $recipe) {
-                Recipe::create([
-                    'menu_id' => $parent->id,
-                    'menu_variant_id' => $row['new_variant']->id,
-                    'stock_id' => $recipe->stock_id,
-                    'amount' => $recipe->amount,
-                ]);
-            }
-        }
-
-        Recipe::where('menu_id', $menu->id)->delete();
     }
 
     /**

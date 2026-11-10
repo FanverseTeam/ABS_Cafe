@@ -29,11 +29,9 @@ class SettingController extends Controller
             'service_charge_active' => '0',
             'service_charge_percent' => '5',
             'price_rounding' => 'none',
-            'default_min_stock' => '10',
             'hours_weekday' => '09:00 - 23:00',
             'hours_weekend' => '09:00 - 23:00',
             'last_order' => '22.00 WIB',
-            'notif_low_stock' => '1',
             'notif_daily_report' => '1',
             'notif_weekly_report' => '0',
             'receipt_header' => "ABS CAFE - ACCESSORIES & CAFE\nJl. Letjend Suprapto No.44, Kepatihan, Kec. Tulungagung, Kabupaten Tulungagung, Jawa Timur 66219\nTelp: 0896-2010-2010",
@@ -74,7 +72,6 @@ class SettingController extends Controller
             'tax_percent' => 'nullable|numeric|min:0|max:100',
             'service_charge_percent' => 'nullable|numeric|min:0|max:100',
             'price_rounding' => 'nullable|in:none,100,500,1000',
-            'default_min_stock' => 'nullable|integer|min:0',
             'hours_weekday' => 'nullable|string|max:100',
             'hours_weekend' => 'nullable|string|max:100',
             'last_order' => 'nullable|string|max:100',
@@ -90,7 +87,6 @@ class SettingController extends Controller
             'tax_percent',
             'service_charge_percent',
             'price_rounding',
-            'default_min_stock',
             'hours_weekday',
             'hours_weekend',
             'last_order',
@@ -105,7 +101,6 @@ class SettingController extends Controller
 
         CafeSetting::set('service_charge_active', $request->boolean('service_charge_active') ? '1' : '0');
         CafeSetting::set('receipt_show_logo', $request->boolean('receipt_show_logo') ? '1' : '0');
-        CafeSetting::set('notif_low_stock', $request->boolean('notif_low_stock') ? '1' : '0');
         CafeSetting::set('notif_daily_report', $request->boolean('notif_daily_report') ? '1' : '0');
         CafeSetting::set('notif_weekly_report', $request->boolean('notif_weekly_report') ? '1' : '0');
         CafeSetting::set('require_physical_cash_count', $request->boolean('require_physical_cash_count') ? '1' : '0');

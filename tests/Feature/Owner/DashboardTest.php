@@ -27,13 +27,13 @@ class DashboardTest extends TestCase
         $response->assertViewHas('summary', fn ($summary) => (float) $summary['sales']['value'] === 200000.0);
     }
 
-    public function test_low_stock_menu_is_surfaced(): void
+    public function test_unavailable_menu_is_surfaced(): void
     {
-        Menu::factory()->lowStock()->create(['name' => 'Kopi Menipis']);
+        Menu::factory()->unavailable()->create(['name' => 'Kopi Habis']);
 
         $this->actingAsOwner()->get('/owner')
             ->assertOk()
-            ->assertViewHas('lowStockMenus', fn ($menus) => $menus->pluck('name')->contains('Kopi Menipis'));
+            ->assertViewHas('unavailableMenus', fn ($menus) => $menus->pluck('name')->contains('Kopi Habis'));
     }
 
     public function test_active_promos_are_listed(): void

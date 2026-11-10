@@ -119,6 +119,10 @@ class VoucherController extends Controller
      */
     private function validateVoucher(Request $request, ?int $ignoreId = null): array
     {
+        if ($request->filled('code')) {
+            $request->merge(['code' => strtoupper(trim((string) $request->input('code')))]);
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'code' => 'nullable|string|max:50|unique:promo,code'.($ignoreId ? ','.$ignoreId : ''),

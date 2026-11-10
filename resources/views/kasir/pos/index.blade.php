@@ -21,7 +21,6 @@
             'name' => $menu->name,
             'base_name' => $menu->variantBaseName(),
             'price' => (float) $menu->price,
-            'stock' => $menu->stock,
             'description' => $menu->description,
             'image' => $menu->image,
             'is_available' => (bool) $menu->is_available,
@@ -947,7 +946,7 @@ function handleMenuClick(id) {
         const finalPrice = variant ? Number(variant.price) : Number(menu.price);
         const notes = document.getElementById('sheet-notes').value.trim();
 
-        addToCartWithOptions(menu.id, finalName, finalPrice, menu.stock, currentSheetQty, notes, variant?.id ?? null);
+        addToCartWithOptions(menu.id, finalName, finalPrice, currentSheetQty, notes, variant?.id ?? null);
         closeMenuDetailSheet();
         showToast('Ditambahkan', `${currentSheetQty}x ${finalName} masuk ke keranjang`);
 
@@ -992,11 +991,7 @@ function closeMenuDetailSheet() {
 }
 
 // ---------- Cart Operations ----------
-function addToCartWithOptions(menuId, name, price, stock, qty = 1, notes = '', variantId = null) {
-    if (stock !== null && cart.filter(i => i.menu_id === menuId).reduce((s, i) => s + i.qty, 0) + qty > stock) {
-        showToast('Stok Terbatas', `Stok "${name}" hanya tersisa ${stock}`, 'error');
-        return;
-    }
+function addToCartWithOptions(menuId, name, price, qty = 1, notes = '', variantId = null) {
     const existing = cart.find(i => i.menu_id === menuId && i.variant_id === variantId);
     if (existing) {
         existing.qty += qty;

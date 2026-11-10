@@ -20,8 +20,8 @@ class DatabaseSimplificationMigrationTest extends TestCase
     {
         $newTables = [
             'pengguna', 'kategori', 'menu', 'menu_varian', 'favorit', 'meja',
-            'metode_bayar', 'promo', 'pengaturan', 'stok', 'pemasok',
-            'stok_pemasok', 'resep', 'shift', 'kas', 'stok_riwayat',
+            'metode_bayar', 'promo', 'pengaturan',
+            'shift', 'kas',
             'pesanan', 'pesanan_item', 'pesanan_riwayat', 'pembayaran',
             'reservasi', 'log_aktivitas', 'peran', 'izin', 'peran_izin',
             'pengguna_peran', 'pengguna_izin',

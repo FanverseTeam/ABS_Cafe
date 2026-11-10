@@ -21,7 +21,6 @@ class LegacyAdminSwitchTest extends TestCase
             '/admin/pesanan',
             '/admin/menu',
             '/admin/kategori',
-            '/admin/stok',
             '/admin/promo',
             '/admin/pengguna',
             '/admin/meja',

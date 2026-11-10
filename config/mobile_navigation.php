@@ -94,13 +94,6 @@ return [
                     'legacy' => true,
                 ],
                 [
-                    'label' => 'Stok',
-                    'route' => 'admin.stock.index',
-                    'icon' => 'package',
-                    'active' => ['admin.stock.*'],
-                    'legacy' => true,
-                ],
-                [
                     'label' => 'Promo',
                     'route' => 'admin.promo.index',
                     'icon' => 'percent',

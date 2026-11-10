@@ -28,7 +28,7 @@ class HapusArsipDatabase extends Command
                 return self::FAILURE;
             }
 
-            if (! app()->environment('testing') && DB::table($table)->count() === 0 && ! in_array($table, ['kas', 'stok'])) {
+            if (! app()->environment('testing') && DB::table($table)->count() === 0 && ! in_array($table, ['kas'])) {
                 $this->error("Tabel '{$table}' kosong. Pembatalan dilakukan.");
 
                 return self::FAILURE;
@@ -36,15 +36,19 @@ class HapusArsipDatabase extends Command
         }
 
         // 2. Cari semua tabel dengan prefix arsip_
-        $allTables = DB::select('SHOW TABLES');
-        $databaseName = DB::getDatabaseName();
-        $key = 'Tables_in_'.$databaseName;
-
-        $archiveTables = [];
-        foreach ($allTables as $t) {
-            $tableName = $t->$key ?? null;
-            if ($tableName && str_starts_with($tableName, 'arsip_')) {
-                $archiveTables[] = $tableName;
+        if (DB::getDriverName() === 'sqlite') {
+            $archiveTables = DB::table('sqlite_master')
+                ->where('type', 'table')
+                ->where('name', 'like', 'arsip_%')
+                ->pluck('name')
+                ->all();
+        } else {
+            $allTables = Schema::getTableListing();
+            $archiveTables = [];
+            foreach ($allTables as $tableName) {
+                if (str_starts_with($tableName, 'arsip_')) {
+                    $archiveTables[] = $tableName;
+                }
             }
         }
 
@@ -70,12 +74,37 @@ class HapusArsipDatabase extends Command
         }
 
         // 4. Hapus tabel arsip
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        } elseif (DB::getDriverName() === 'sqlite') {
+            DB::statement('PRAGMA foreign_keys = OFF');
+        }
+
+        // Urutkan agar tabel induk (seperti arsip_users) dihapus paling akhir
+        usort($archiveTables, function ($a, $b) {
+            if ($a === 'arsip_users') {
+                return 1;
+            }
+            if ($b === 'arsip_users') {
+                return -1;
+            }
+
+            return strcmp($b, $a);
+        });
+
         foreach ($archiveTables as $tbl) {
-            Schema::dropIfExists($tbl);
+            try {
+                Schema::dropIfExists($tbl);
+            } catch (\Throwable $e) {
+                // Abaikan jika sudah terhapus atau FK cascade di SQLite
+            }
             $this->line("Tabel <info>{$tbl}</info> berhasil dihapus.");
         }
-        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+        } elseif (DB::getDriverName() === 'sqlite') {
+            DB::statement('PRAGMA foreign_keys = ON');
+        }
 
         $this->newLine();
         $this->info('Seluruh tabel arsip berhasil dibersihkan.');

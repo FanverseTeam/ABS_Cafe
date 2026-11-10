@@ -138,8 +138,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -150,8 +148,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1551030173-122aabc4489c?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -162,8 +158,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -174,8 +168,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -186,8 +178,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -198,8 +188,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -210,8 +198,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1534778101976-62847782c213?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -222,8 +208,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -234,8 +218,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -246,8 +228,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1599398054066-846f28917f38?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -258,8 +238,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -270,8 +248,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1529892485617-25f63cd7b1e9?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
 
@@ -284,8 +260,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -296,8 +270,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -308,8 +280,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1497636577773-f1231844b336?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -320,8 +290,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1518057111178-44a106bad636?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -332,8 +300,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -344,8 +310,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -356,8 +320,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -368,8 +330,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -380,8 +340,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -392,8 +350,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
 
@@ -406,8 +362,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -418,8 +372,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -430,8 +382,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -442,8 +392,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1518057111178-44a106bad636?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -454,8 +402,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -466,8 +412,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -478,8 +422,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -490,8 +432,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -502,8 +442,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -514,8 +452,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
 
@@ -528,8 +464,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -540,8 +474,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -552,8 +484,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -564,8 +494,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -576,8 +504,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -588,8 +514,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -600,8 +524,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -612,8 +534,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -624,8 +544,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -636,8 +554,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -648,8 +564,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
 
@@ -662,8 +576,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1528825871115-3581a5387919?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -674,8 +586,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -686,8 +596,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -698,8 +606,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
 
@@ -712,8 +618,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 100,
-                'min_stock' => 20,
                 'unit' => 'cup',
             ],
             [
@@ -724,8 +628,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 100,
-                'min_stock' => 20,
                 'unit' => 'cangkir',
             ],
             [
@@ -736,8 +638,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -748,8 +648,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -760,8 +658,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -772,8 +668,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cangkir',
             ],
             [
@@ -784,8 +678,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -796,8 +688,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -808,8 +698,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -820,8 +708,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
 
@@ -834,8 +720,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -846,8 +730,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -858,8 +740,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -870,8 +750,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
 
@@ -884,8 +762,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -896,8 +772,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -908,8 +782,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1497636577773-f1231844b336?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -920,8 +792,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -932,8 +802,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -944,8 +812,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
 
@@ -958,8 +824,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1599398054066-846f28917f38?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -970,8 +834,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1529892485617-25f63cd7b1e9?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -982,8 +844,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
             [
@@ -994,8 +854,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1497636577773-f1231844b336?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'cup',
             ],
 
@@ -1008,8 +866,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1541529086526-db283c563270?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1020,8 +876,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1032,8 +886,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1624300629298-e9de39c13be5?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1044,8 +896,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1551106652-a5bcf4b29ab6?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1056,8 +906,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1068,8 +916,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 35,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1080,8 +926,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1092,8 +936,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1541529086526-db283c563270?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 35,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1104,8 +946,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1116,8 +956,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1576107232684-1279f3908594?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 50,
-                'min_stock' => 15,
                 'unit' => 'porsi',
             ],
             [
@@ -1128,8 +966,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1576107232684-1279f3908594?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1140,8 +976,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 35,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1152,8 +986,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1541529086526-db283c563270?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1164,8 +996,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1541529086526-db283c563270?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1176,8 +1006,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1576107232684-1279f3908594?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1188,8 +1016,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1200,8 +1026,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1212,8 +1036,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1224,8 +1046,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1236,8 +1056,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1562967914-608f82629710?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1248,8 +1066,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 35,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1260,8 +1076,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1639024471285-056685704935?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1272,8 +1086,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 35,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1284,8 +1096,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 35,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1296,8 +1106,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1308,8 +1116,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1541529086526-db283c563270?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 35,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1320,8 +1126,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1541529086526-db283c563270?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1332,8 +1136,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 35,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1344,8 +1146,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1541529086526-db283c563270?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1356,8 +1156,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1562967914-608f82629710?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1368,8 +1166,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 35,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1380,8 +1176,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 35,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1392,8 +1186,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 35,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
 
@@ -1406,8 +1198,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1418,8 +1208,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1430,8 +1218,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1442,8 +1228,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1454,8 +1238,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1466,8 +1248,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1478,8 +1258,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1490,8 +1268,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1559847844-5315695dadae?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1502,8 +1278,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1514,8 +1288,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 50,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1526,8 +1298,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1538,8 +1308,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1550,8 +1318,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1562,8 +1328,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 30,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1574,8 +1338,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 35,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
 
@@ -1588,8 +1350,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1600,8 +1360,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1612,8 +1370,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
             [
@@ -1624,8 +1380,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 40,
-                'min_stock' => 10,
                 'unit' => 'porsi',
             ],
 
@@ -1638,8 +1392,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 60,
-                'min_stock' => 15,
                 'unit' => 'porsi',
             ],
             [
@@ -1650,8 +1402,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 60,
-                'min_stock' => 15,
                 'unit' => 'porsi',
             ],
             [
@@ -1662,8 +1412,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 60,
-                'min_stock' => 15,
                 'unit' => 'porsi',
             ],
             [
@@ -1674,8 +1422,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1516684732162-798a0062be99?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 100,
-                'min_stock' => 20,
                 'unit' => 'porsi',
             ],
             [
@@ -1686,8 +1432,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 100,
-                'min_stock' => 20,
                 'unit' => 'butir',
             ],
 
@@ -1700,8 +1444,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 30,
-                'min_stock' => 5,
                 'unit' => 'porsi',
             ],
             [
@@ -1712,8 +1454,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 30,
-                'min_stock' => 5,
                 'unit' => 'porsi',
             ],
             [
@@ -1724,8 +1464,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => false,
-                'stock' => 30,
-                'min_stock' => 5,
                 'unit' => 'porsi',
             ],
             [
@@ -1736,8 +1474,6 @@ class MenuUpdateSeeder extends Seeder
                 'image' => 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80',
                 'is_available' => true,
                 'is_best_seller' => true,
-                'stock' => 30,
-                'min_stock' => 5,
                 'unit' => 'porsi',
             ],
         ];

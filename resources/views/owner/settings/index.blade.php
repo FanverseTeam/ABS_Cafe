@@ -145,20 +145,12 @@
                             <label class="text-xs font-semibold text-cafe-text">Batas Order (Last Order)</label>
                             <input type="text" name="last_order" value="{{ old('last_order', $settings['last_order'] ?? '') }}" placeholder="22.00 WIB" class="w-full bg-cafe-cream/60 focus:bg-beige text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
                         </div>
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-semibold text-cafe-text">Min. Stok Default</label>
-                            <input type="number" min="0" name="default_min_stock" value="{{ old('default_min_stock', $settings['default_min_stock']) }}" class="w-full bg-cafe-cream/60 focus:bg-beige text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
-                        </div>
                     </div>
                 </div>
 
                 <!-- Notifications -->
                 <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 space-y-3">
                     <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2"><i data-lucide="bell" class="w-4 h-4 text-cafe-gold"></i> Notifikasi</h3>
-                    <label class="flex items-center gap-2 cursor-pointer text-xs text-cafe-text select-none">
-                        <input type="checkbox" name="notif_low_stock" value="1" {{ $settings['notif_low_stock'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded accent-[#290024]">
-                        <span>Peringatan stok menipis</span>
-                    </label>
                     <label class="flex items-center gap-2 cursor-pointer text-xs text-cafe-text select-none">
                         <input type="checkbox" name="notif_daily_report" value="1" {{ $settings['notif_daily_report'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded accent-[#290024]">
                         <span>Ringkasan laporan harian</span>

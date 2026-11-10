@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\ActivityLog;
+use App\Models\Menu;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\User;
@@ -67,7 +68,12 @@ class PaymentService
                 'cashier_name' => $lockedOrder->cashier_name ?: $cashier->name,
             ]);
 
-            $this->orders->decrementStock($lockedOrder->fresh('items'), $cashier);
+            foreach ($lockedOrder->items as $item) {
+                if ($item->menu_id) {
+                    Menu::where('id', $item->menu_id)->increment('sold_count', (int) $item->quantity);
+                }
+            }
+
             $this->orders->addTimeline($lockedOrder, 'LUNAS', $cashier->name,
                 'Pembayaran '.strtoupper($method).' lunas diverifikasi kasir');
 
@@ -76,9 +82,7 @@ class PaymentService
                     'Pesanan mulai diproses oleh tim bar / dapur');
             }
 
-            if (in_array($targetOrderStatus, ['selesai', 'dibatalkan'], true)) {
-                $this->orders->releaseTable($lockedOrder);
-            }
+            $this->orders->releaseTable($lockedOrder);
 
             ActivityLog::create([
                 'user_name' => $cashier->name,

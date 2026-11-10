@@ -46,7 +46,6 @@ class DashboardTest extends TestCase
             ->assertSee('Tambah Staf')
             ->assertSee('5 Menu Bestseller')
             ->assertDontSee('Aktivitas Terbaru')
-            ->assertDontSee('Peringatan Stok Menipis')
             ->assertDontSee('Pesanan Terbaru')
             ->assertDontSee('Pendapatan')
             ->assertDontSee('Menunggu Bayar')
@@ -58,8 +57,8 @@ class DashboardTest extends TestCase
         $this->requireLegacyAdminDisabled();
 
         $category = Category::factory()->create();
-        Menu::factory()->for($category)->create(['stock' => 50, 'min_stock' => 10]);
-        Menu::factory()->for($category)->lowStock()->create();
+        Menu::factory()->for($category)->create(['is_available' => true]);
+        Menu::factory()->for($category)->unavailable()->create();
 
         Promo::factory()->create(['is_active' => true]);
         Promo::factory()->inactive()->create();
@@ -73,7 +72,7 @@ class DashboardTest extends TestCase
         $this->get('/admin')
             ->assertOk()
             ->assertViewHas('totalMenus', 2)
-            ->assertViewHas('lowStockCount', 1)
+            ->assertViewHas('menuHabisCount', 1)
             ->assertViewHas('activePromoCount', 1)
             ->assertViewHas('activeStaffCount', 3)
             ->assertViewHas('totalTables', 3);
@@ -111,7 +110,6 @@ class DashboardTest extends TestCase
         $response->assertDontSee('/admin/pesanan', false)
             ->assertDontSee('/admin/menu"', false)
             ->assertDontSee('/admin/kategori', false)
-            ->assertDontSee('/admin/stok', false)
             ->assertDontSee('/admin/pengguna', false)
             ->assertDontSee('/admin/meja', false)
             ->assertDontSee('/admin/pengaturan', false)
@@ -161,18 +159,18 @@ class DashboardTest extends TestCase
         $response->assertViewHas('revenueToday', fn ($value) => (float) $value === 100000.0);
     }
 
-    public function test_low_stock_menus_are_listed(): void
+    public function test_menu_habis_are_listed(): void
     {
         $this->requireLegacyAdminDisabled();
 
         $category = Category::factory()->create();
-        Menu::factory()->for($category)->lowStock()->create(['name' => 'Kopi Menipis']);
-        Menu::factory()->for($category)->create(['name' => 'Kopi Aman', 'stock' => 99, 'min_stock' => 10]);
+        Menu::factory()->for($category)->unavailable()->create(['name' => 'Kopi Habis']);
+        Menu::factory()->for($category)->create(['name' => 'Kopi Aman', 'is_available' => true]);
 
         $response = $this->actingAsAdmin()->get('/admin');
         $response->assertOk();
-        $response->assertViewHas('lowStockMenus', function ($menus) {
-            return $menus->pluck('name')->contains('Kopi Menipis')
+        $response->assertViewHas('menuHabis', function ($menus) {
+            return $menus->pluck('name')->contains('Kopi Habis')
                 && ! $menus->pluck('name')->contains('Kopi Aman');
         });
     }

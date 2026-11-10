@@ -4,7 +4,7 @@
         ->whereDate('start_date', '<=', now())
         ->whereDate('end_date', '>=', now())
         ->count();
-    $lowStockCount = \App\Models\Menu::whereNotNull('min_stock')->whereColumn('stock', '<=', 'min_stock')->count();
+    $menuHabisCount = \App\Models\Menu::where('is_available', false)->count();
 
     $menus = [
         ['route' => 'owner.dashboard', 'label' => 'Dashboard Bisnis', 'icon' => 'layout-dashboard', 'badge' => null, 'match' => 'owner.dashboard'],
@@ -64,8 +64,8 @@
                     <span class="font-bold text-[#D4954D]">{{ $activePromoCount }}</span>
                 </div>
                 <div class="flex items-center justify-between">
-                    <span class="text-[#F2F5E2]/70">Stok Menipis</span>
-                    <span class="font-bold {{ $lowStockCount > 0 ? 'text-[#D4954D]' : 'text-[#D4954D]' }}">{{ $lowStockCount }}</span>
+                    <span class="text-[#F2F5E2]/70">Menu Habis</span>
+                    <span class="font-bold text-[#D4954D]">{{ $menuHabisCount }}</span>
                 </div>
             </div>
         </div>

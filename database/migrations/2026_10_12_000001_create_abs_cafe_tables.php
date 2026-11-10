@@ -42,9 +42,6 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->boolean('is_available')->default(true);
             $table->boolean('is_best_seller')->default(false);
-            $table->integer('stock')->default(50);
-            $table->integer('min_stock')->default(10);
-            $table->string('unit')->default('porsi'); // porsi, cup, pcs, pack
             $table->integer('sold_count')->default(0);
             $table->timestamps();
         });
@@ -103,20 +100,6 @@ return new class extends Migration
             $table->timestamp('logged_at')->useCurrent();
         });
 
-        // Stock Logs
-        Schema::create('stock_logs', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('menu_id')->nullable()->constrained('menus')->onDelete('set null');
-            $table->string('item_name');
-            $table->string('type'); // masuk, keluar, koreksi
-            $table->integer('quantity');
-            $table->integer('stock_before');
-            $table->integer('stock_after');
-            $table->string('notes')->nullable();
-            $table->string('actor')->default('Admin');
-            $table->timestamps();
-        });
-
         // Promos
         Schema::create('promos', function (Blueprint $table) {
             $table->id();
@@ -148,7 +131,7 @@ return new class extends Migration
             $table->string('user_name');
             $table->string('role')->default('admin');
             $table->text('activity');
-            $table->string('activity_type')->default('sistem'); // menu, pesanan, stok, pengguna, promo, meja, sistem
+            $table->string('activity_type')->default('sistem'); // menu, pesanan, pengguna, promo, meja, sistem
             $table->string('ip_address')->nullable();
             $table->timestamps();
         });
@@ -162,7 +145,6 @@ return new class extends Migration
         Schema::dropIfExists('activity_logs');
         Schema::dropIfExists('cafe_settings');
         Schema::dropIfExists('promos');
-        Schema::dropIfExists('stock_logs');
         Schema::dropIfExists('order_timelines');
         Schema::dropIfExists('order_items');
         Schema::dropIfExists('orders');

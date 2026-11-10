@@ -51,10 +51,7 @@
         ? $configuredLogo
         : asset(ltrim($configuredLogo, '/'));
 
-    $badgeBackground = '#290024';
-    if ($thermal) {
-        $badgeBackground = '#290024';
-    }
+    $badgeBackground = $thermal ? '#000000' : '#290024';
 
     $badgeStyle = $onDark
         ? 'background-color:transparent;'

@@ -23,9 +23,6 @@ class MenuFactory extends Factory
             'image' => null,
             'is_available' => true,
             'is_best_seller' => false,
-            'stock' => 50,
-            'min_stock' => 10,
-            'unit' => 'porsi',
             'sold_count' => 0,
         ];
     }
@@ -34,7 +31,6 @@ class MenuFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'is_available' => false,
-            'stock' => 0,
         ]);
     }
 
@@ -42,14 +38,6 @@ class MenuFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'is_best_seller' => true,
-        ]);
-    }
-
-    public function lowStock(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'stock' => 3,
-            'min_stock' => 10,
         ]);
     }
 }

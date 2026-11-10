@@ -9,8 +9,6 @@ use App\Models\MenuVariant;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Promo;
-use App\Models\Recipe;
-use App\Models\Stock;
 use App\Models\User;
 use App\Services\MenuMergeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -43,28 +41,12 @@ class MenuMergeServiceTest extends TestCase
         $ice = Menu::factory()->for($category)->create([
             'name' => 'Vietnam Drip (Ice)',
             'price' => 13000,
-            'stock' => 10,
             'sold_count' => 2,
         ]);
         $hot = Menu::factory()->for($category)->create([
             'name' => 'Vietnam Drip (Hot)',
             'price' => 12000,
-            'stock' => 5,
             'sold_count' => 1,
-        ]);
-
-        $stock = Stock::create([
-            'name' => 'Biji Kopi',
-            'unit' => 'gram',
-            'quantity' => 1000,
-            'min_quantity' => 100,
-            'is_active' => true,
-        ]);
-        Recipe::create([
-            'menu_id' => $ice->id,
-            'menu_variant_id' => null,
-            'stock_id' => $stock->id,
-            'amount' => 18,
         ]);
 
         $order = Order::factory()->create();
@@ -91,7 +73,6 @@ class MenuMergeServiceTest extends TestCase
         $this->assertSame('Vietnam Drip (Hot / Ice)', $parent->name);
         $this->assertSame(2, $parent->variants()->count());
         $this->assertSame(12000.0, (float) $parent->price);
-        $this->assertSame(15, (int) $parent->stock);
         $this->assertSame(3, (int) $parent->sold_count);
 
         $this->assertSoftDeleted('menu', ['id' => $ice->id]);
@@ -104,7 +85,6 @@ class MenuMergeServiceTest extends TestCase
             'variant_id' => $iceVariant->id,
             'name' => 'Vietnam Drip - Ice',
         ]);
-        $this->assertSame(1, Recipe::where('menu_id', $parent->id)->whereNotNull('menu_variant_id')->count());
         $this->assertDatabaseHas('promo', ['id' => $promo->id, 'target_menu_id' => $parent->id]);
         $this->assertDatabaseHas('favorit', ['user_id' => $user->id, 'menu_id' => $parent->id]);
 

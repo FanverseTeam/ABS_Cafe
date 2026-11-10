@@ -1,13 +1,13 @@
 @php
     $backUrl = \App\Support\MobileNavigation::backUrlForCurrentRoute();
-    $lowStockItems = \App\Models\Menu::with('category')->whereNotNull('min_stock')->whereColumn('stock', '<=', 'min_stock')->take(5)->get();
+    $menuHabisItems = \App\Models\Menu::with('category')->where('is_available', false)->take(5)->get();
     $endingPromos = \App\Models\Promo::where('is_active', true)
         ->whereDate('start_date', '<=', now())
         ->whereDate('end_date', '>=', now())
         ->whereDate('end_date', '<=', now()->addDays(3))
         ->take(3)
         ->get();
-    $totalNotif = $lowStockItems->count() + $endingPromos->count();
+    $totalNotif = $menuHabisItems->count() + $endingPromos->count();
 @endphp
 
 <header class="sticky top-0 z-30 min-h-[4rem] sm:min-h-[5rem] bg-[#F2F5E2]/95 backdrop-blur-md border-b border-cafe-beige/60 px-4 sm:px-8 shadow-sm transition-all @if(View::hasSection('has_form_header') || request()->routeIs('*.create', '*.edit')) hidden lg:block @endif" style="padding-top: env(safe-area-inset-top, 0px);">
@@ -73,16 +73,16 @@
                         </a>
                     @endforeach
 
-                    @foreach($lowStockItems as $item)
-                        <a href="{{ route('owner.reports.index', ['tab' => 'stok']) }}" class="p-3 hover:bg-cafe-cream/80 rounded-xl transition-colors flex items-start gap-3 block">
+                    @foreach($menuHabisItems as $item)
+                        <div class="p-3 hover:bg-cafe-cream/80 rounded-xl transition-colors flex items-start gap-3">
                             <div class="w-8 h-8 rounded-full bg-cafe-danger/15 text-cafe-danger flex items-center justify-center shrink-0">
-                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                <i data-lucide="slash" class="w-4 h-4"></i>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <p class="text-xs font-semibold text-cafe-dark truncate">Stok {{ $item->stock <= 0 ? 'Habis' : 'Menipis' }}: {{ $item->name }}</p>
-                                <p class="text-[11px] text-cafe-muted">Sisa {{ $item->stock }} {{ $item->unit ?? 'pcs' }} (Min: {{ $item->min_stock }})</p>
+                                <p class="text-xs font-semibold text-cafe-dark truncate">Menu Habis: {{ $item->name }}</p>
+                                <p class="text-[11px] text-cafe-muted">{{ $item->category?->name ?? 'Menu' }} saat ini dinonaktifkan</p>
                             </div>
-                        </a>
+                        </div>
                     @endforeach
 
                     @if($totalNotif === 0)

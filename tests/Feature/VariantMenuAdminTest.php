@@ -20,9 +20,6 @@ class VariantMenuAdminTest extends TestCase
             'name' => 'Vietnam Drip (Hot / Ice)',
             'category_id' => $category->id,
             'price' => 13000,
-            'stock' => 30,
-            'min_stock' => 5,
-            'unit' => 'cup',
             'variants_present' => 1,
             'variants' => [
                 ['name' => 'Ice', 'size' => 'Large', 'price' => 18000, 'is_available' => '1'],

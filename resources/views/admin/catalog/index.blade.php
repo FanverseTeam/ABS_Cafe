@@ -23,7 +23,6 @@
 
         @include('admin.catalog.partials.menu', [
             'categories' => $activeCategories,
-            'stocks' => $stocks,
         ])
         <div class="lg:block" id="kategori">
             @include('admin.catalog.partials.category', ['categories' => $categories])

@@ -246,7 +246,6 @@ class MobileBottomNavigationTest extends TestCase
         foreach ([
             'Pesanan',
             'Kategori',
-            'Stok',
             'Pengguna',
             'Meja',
             'Pengaturan',

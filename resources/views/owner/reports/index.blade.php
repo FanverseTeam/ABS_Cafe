@@ -8,7 +8,6 @@
     $tabs = [
         'penjualan' => ['label' => 'Penjualan', 'icon' => 'shopping-cart'],
         'keuangan' => ['label' => 'Keuangan', 'icon' => 'landmark'],
-        'stok' => ['label' => 'Stok & Bahan', 'icon' => 'boxes'],
     ];
     $tabQuery = fn ($t) => array_merge($period->queryParams(), ['tab' => $t]);
 @endphp
@@ -19,7 +18,7 @@
         <div class="hidden lg:flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
             <div>
                 <h2 class="font-serif text-2xl sm:text-3xl font-bold text-cafe-dark">Laporan Bisnis</h2>
-                <p class="text-xs text-cafe-muted mt-1">Analisis mendalam penjualan, keuangan, dan perputaran stok.</p>
+                <p class="text-xs text-cafe-muted mt-1">Analisis mendalam penjualan dan performa keuangan kafe.</p>
             </div>
             <div class="flex items-center gap-2">
                 <a href="{{ route('owner.reports.export', $tabQuery($tab)) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-cafe-card border border-cafe-beige text-cafe-dark text-xs font-semibold hover:bg-cafe-beige/60 transition-colors">
@@ -212,7 +211,7 @@
                     @endforelse
                 </x-responsive-table>
             </div>
-        @elseif($tab === 'keuangan')
+        @else
             <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
                 @foreach([
                     ['Penjualan Kotor', $rp($finance['gross']), 'wallet'],
@@ -359,136 +358,6 @@
                         </div>
                     @endif
                 </div>
-            </div>
-        @else
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-cafe-card rounded-2xl border border-cafe-beige/60 shadow-soft p-4">
-                    <div class="w-9 h-9 rounded-xl bg-cafe-info/15 text-cafe-info flex items-center justify-center mb-3"><i data-lucide="package" class="w-4 h-4"></i></div>
-                    <p class="text-[10px] uppercase tracking-wide text-cafe-muted font-semibold">Total Item Menu</p>
-                    <p class="font-serif text-lg font-bold text-cafe-dark mt-0.5">{{ number_format($stock['totalItems'], 0, ',', '.') }}</p>
-                </div>
-                <div class="bg-cafe-card rounded-2xl border border-cafe-beige/60 shadow-soft p-4">
-                    <div class="w-9 h-9 rounded-xl bg-cafe-gold/15 text-cafe-bronze flex items-center justify-center mb-3"><i data-lucide="banknote" class="w-4 h-4"></i></div>
-                    <p class="text-[10px] uppercase tracking-wide text-cafe-muted font-semibold">Nilai Stok (jual)</p>
-                    <p class="font-serif text-lg font-bold text-cafe-dark mt-0.5">{{ $rp($stock['stockValue']) }}</p>
-                </div>
-                <div class="bg-cafe-card rounded-2xl border border-cafe-beige/60 shadow-soft p-4">
-                    <div class="w-9 h-9 rounded-xl bg-cafe-warning/15 text-cafe-warning flex items-center justify-center mb-3"><i data-lucide="alert-triangle" class="w-4 h-4"></i></div>
-                    <p class="text-[10px] uppercase tracking-wide text-cafe-muted font-semibold">Stok Menipis</p>
-                    <p class="font-serif text-lg font-bold text-cafe-dark mt-0.5">{{ $stock['lowStock']->count() }}</p>
-                </div>
-                <div class="bg-cafe-card rounded-2xl border border-cafe-beige/60 shadow-soft p-4">
-                    <div class="w-9 h-9 rounded-xl bg-cafe-danger/15 text-cafe-danger flex items-center justify-center mb-3"><i data-lucide="x-octagon" class="w-4 h-4"></i></div>
-                    <p class="text-[10px] uppercase tracking-wide text-cafe-muted font-semibold">Stok Habis</p>
-                    <p class="font-serif text-lg font-bold text-cafe-dark mt-0.5">{{ $stock['outOfStock']->count() }}</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
-                    <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="package-search" class="w-4 h-4 text-cafe-gold"></i> Pemakaian vs Stok (Terlaris)</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs">
-                            <thead>
-                                <tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">
-                                    <th class="text-left py-2">Menu</th>
-                                    <th class="text-right py-2">Terjual</th>
-                                    <th class="text-right py-2">Sisa Stok</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-cafe-beige/40">
-                                @forelse($stock['usage']->take(12) as $u)
-                                    <tr>
-                                        <td class="py-2 font-medium text-cafe-text">{{ $u['name'] }}</td>
-                                        <td class="py-2 text-right text-cafe-muted">{{ number_format($u['sold'], 0, ',', '.') }}</td>
-                                        <td class="py-2 text-right font-semibold {{ $u['stock'] <= 0 ? 'text-cafe-danger' : 'text-cafe-dark' }}">{{ $u['stock'] }} {{ $u['unit'] }}</td>
-                                    </tr>
-                                @empty
-                                    <tr><td colspan="3" class="py-4 text-center text-cafe-muted">Belum ada data.</td></tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
-                    <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="arrow-right-left" class="w-4 h-4 text-cafe-gold"></i> Riwayat Pergerakan Stok</h3>
-                    <x-responsive-table>
-                        <x-slot:headers>
-                            <th class="text-left py-2">Item</th>
-                            <th class="text-left py-2">Tipe</th>
-                            <th class="text-right py-2">Qty</th>
-                            <th class="text-right py-2">Waktu</th>
-                        </x-slot:headers>
-
-                        @forelse($stock['movements'] as $mv)
-                            <x-responsive-table.row>
-                                <x-slot:title>
-                                    {{ $mv->item_name }}
-                                </x-slot:title>
-
-                                <x-slot:subtitle>
-                                    {{ $mv->created_at->format('d/m H:i') }}
-                                </x-slot:subtitle>
-
-                                <x-slot:badge>
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
-                                        {{ $mv->type === 'masuk' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
-                                        {{ $mv->type === 'keluar' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
-                                        {{ $mv->type === 'koreksi' ? 'bg-cafe-info/15 text-cafe-info' : '' }}">
-                                        {{ ucfirst($mv->type) }}
-                                    </span>
-                                </x-slot:badge>
-
-                                <x-slot:fields>
-                                    <x-responsive-table.field label="Jumlah" :value="$mv->quantity" is-highlight="true" />
-                                </x-slot:fields>
-
-                                <x-slot:desktop>
-                                    <td class="hidden md:table-cell py-2 font-medium text-cafe-text">{{ $mv->item_name }}</td>
-                                    <td class="hidden md:table-cell py-2">
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold
-                                            {{ $mv->type === 'masuk' ? 'bg-cafe-success/15 text-cafe-success' : '' }}
-                                            {{ $mv->type === 'keluar' ? 'bg-cafe-warning/15 text-cafe-warning' : '' }}
-                                            {{ $mv->type === 'koreksi' ? 'bg-cafe-info/15 text-cafe-info' : '' }}">
-                                            {{ ucfirst($mv->type) }}
-                                        </span>
-                                    </td>
-                                    <td class="hidden md:table-cell py-2 text-right font-semibold text-cafe-dark">{{ $mv->quantity }}</td>
-                                    <td class="hidden md:table-cell py-2 text-right text-cafe-muted">{{ $mv->created_at->format('d/m H:i') }}</td>
-                                </x-slot:desktop>
-                            </x-responsive-table.row>
-                        @empty
-                            <x-responsive-table.empty col-span="4" message="Belum ada pergerakan stok." />
-                        @endforelse
-                    </x-responsive-table>
-                </div>
-
-                @if(isset($stock['ingredientUsage']) && $stock['ingredientUsage']->isNotEmpty())
-                    <div class="col-span-1 lg:col-span-2 bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
-                        <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="beaker" class="w-4 h-4 text-cafe-gold"></i> Pemakaian Bahan Baku Resep dari Penjualan</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-xs">
-                                <thead>
-                                    <tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">
-                                        <th class="text-left py-2">Bahan Baku</th>
-                                        <th class="text-right py-2">Total Terpakai</th>
-                                        <th class="text-right py-2">Sisa Stok Bahan</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-cafe-beige/40">
-                                    @foreach($stock['ingredientUsage'] as $iu)
-                                        <tr>
-                                            <td class="py-2 font-medium text-cafe-text">{{ $iu['name'] }}</td>
-                                            <td class="py-2 text-right text-cafe-muted">{{ number_format($iu['used'], 2, ',', '.') }} {{ $iu['unit'] }}</td>
-                                            <td class="py-2 text-right font-semibold {{ $iu['remaining'] <= 0 ? 'text-cafe-danger' : 'text-cafe-dark' }}">{{ number_format($iu['remaining'], 2, ',', '.') }} {{ $iu['unit'] }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                @endif
             </div>
         @endif
     </div>

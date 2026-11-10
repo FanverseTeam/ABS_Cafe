@@ -41,8 +41,6 @@ class Order extends Model
         'paid_at',
         'received_at',
         'cancel_reason',
-        'stock_deducted',
-        'stock_returned',
     ];
 
     protected $casts = [
@@ -54,8 +52,6 @@ class Order extends Model
         'table_number' => 'integer',
         'paid_at' => 'datetime',
         'received_at' => 'datetime',
-        'stock_deducted' => 'boolean',
-        'stock_returned' => 'boolean',
     ];
 
     public function items(): HasMany

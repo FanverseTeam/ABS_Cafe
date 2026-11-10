@@ -14,16 +14,13 @@
         class="mb-3"
     />
 
-    <!-- Sub-Navigation Pills (Menu | Kategori | Stok) -->
+    <!-- Sub-Navigation Pills (Menu | Kategori) -->
     <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
         <a href="{{ route('admin.menu.index') }}" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-[#290024] text-[#F2F5E2] shadow-sm">
             Katalog Menu
         </a>
         <a href="{{ route('admin.category.index') }}" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-[#F2F5E2] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]">
             Kategori
-        </a>
-        <a href="{{ route('admin.stock.index') }}" class="px-4 py-2 rounded-full text-xs font-bold transition-all bg-[#F2F5E2] text-[#775533] border border-[#E3DEA4] hover:bg-[#E3DEA4]">
-            Stok &amp; Opname
         </a>
     </div>
 
@@ -118,13 +115,6 @@
                                     </span>
                                 </div>
                             @endif
-
-                            <!-- Stock Pill -->
-                            <div class="absolute bottom-3 right-3">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold backdrop-blur-md shadow-xs {{ $menu->stock <= 0 ? 'bg-cafe-danger text-beige' : ($menu->stock <= $menu->min_stock ? 'bg-cafe-warning text-beige' : 'bg-midnight/60 text-beige') }}">
-                                    Stok: {{ $menu->stock }} {{ $menu->unit }}
-                                </span>
-                            </div>
                         </div>
 
                         <!-- Card Body -->
@@ -206,7 +196,6 @@
                             <th class="py-3.5 pl-6">Foto &amp; Nama</th>
                             <th class="py-3.5 px-3">Kategori</th>
                             <th class="py-3.5 px-3">Harga</th>
-                            <th class="py-3.5 px-3">Stok</th>
                             <th class="py-3.5 px-3">Terjual</th>
                             <th class="py-3.5 px-3">Best Seller</th>
                             <th class="py-3.5 px-3">Status</th>
@@ -234,11 +223,6 @@
                                 </td>
                                 <td class="py-3 px-3 font-medium text-cafe-text">{{ $menu->category->name }}</td>
                                 <td class="py-3 px-3 font-bold text-cafe-dark">{{ $menu->priceRangeLabel() }}</td>
-                                <td class="py-3 px-3 font-medium">
-                                    <span class="{{ $menu->stock <= 0 ? 'text-cafe-danger font-bold' : ($menu->stock <= $menu->min_stock ? 'text-cafe-warning font-bold' : 'text-cafe-text') }}">
-                                        {{ $menu->stock }} {{ $menu->unit }}
-                                    </span>
-                                </td>
                                 <td class="py-3 px-3 text-cafe-muted">{{ $menu->sold_count }} porsi</td>
                                 <td class="py-3 px-3">
                                     @if($menu->is_best_seller)
@@ -295,7 +279,7 @@
         <div class="flex items-center justify-between px-6 py-4 border-b border-cafe-beige/50 bg-[#F2F5E2]/40">
             <div>
                 <h3 class="font-serif text-lg sm:text-xl font-bold text-cafe-dark" id="menu-modal-title">Tambah Menu Baru</h3>
-                <p class="text-[10px] sm:text-xs text-cafe-muted mt-0.5">Lengkapi informasi produk, harga, ketersediaan, dan stok kafe.</p>
+                <p class="text-[10px] sm:text-xs text-cafe-muted mt-0.5">Lengkapi informasi produk, harga, dan ketersediaan menu kafe.</p>
             </div>
             <button onclick="closeMenuModal()" class="w-8 h-8 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige text-cafe-muted hover:text-cafe-dark flex items-center justify-center transition-colors">
                 <i data-lucide="x" class="w-4 h-4"></i>
@@ -320,16 +304,9 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Harga Jual (Rp) *</label>
-                    <input type="number" name="price" id="menu-input-price" required min="0" step="500" placeholder="20000" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
-
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Satuan Produk</label>
-                    <input type="text" name="unit" id="menu-input-unit" value="porsi" placeholder="porsi, pcs, cup, pack" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
+            <div class="space-y-1">
+                <label class="font-semibold text-cafe-dark">Harga Jual (Rp) *</label>
+                <input type="number" name="price" id="menu-input-price" required min="0" step="500" placeholder="20000" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
             </div>
 
             <div class="space-y-1">
@@ -343,18 +320,6 @@
             </div>
 
             @include('admin.catalog.partials.variant-form')
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Stok Awal</label>
-                    <input type="number" name="stock" id="menu-input-stock" value="30" min="0" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
-
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Batas Minimum Peringatan</label>
-                    <input type="number" name="min_stock" id="menu-input-min-stock" value="10" min="1" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                </div>
-            </div>
 
             <div class="flex flex-wrap items-center gap-6 pt-2">
                 <label class="flex items-center gap-2 cursor-pointer select-none">
@@ -413,9 +378,6 @@
         document.getElementById('menu-input-price').value = '20000';
         document.getElementById('menu-input-desc').value = '';
         document.getElementById('menu-input-image').value = 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&auto=format&fit=crop&q=80';
-        document.getElementById('menu-input-stock').value = '30';
-        document.getElementById('menu-input-min-stock').value = '10';
-        document.getElementById('menu-input-unit').value = 'porsi';
         document.getElementById('menu-input-available').checked = true;
         document.getElementById('menu-input-bestseller').checked = false;
         setVariantRows([]);
@@ -430,9 +392,6 @@
         document.getElementById('menu-input-price').value = parseInt(menu.price);
         document.getElementById('menu-input-desc').value = menu.description || '';
         document.getElementById('menu-input-image').value = menu.image || '';
-        document.getElementById('menu-input-stock').value = menu.stock;
-        document.getElementById('menu-input-min-stock').value = menu.min_stock;
-        document.getElementById('menu-input-unit').value = menu.unit;
         document.getElementById('menu-input-available').checked = Boolean(menu.is_available);
         document.getElementById('menu-input-bestseller').checked = Boolean(menu.is_best_seller);
         setVariantRows(menu.variants || []);

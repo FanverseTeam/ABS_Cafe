@@ -5,8 +5,6 @@ namespace Tests\Feature;
 use App\Models\Menu;
 use App\Models\MenuVariant;
 use App\Models\Order;
-use App\Models\Recipe;
-use App\Models\Stock;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -19,7 +17,6 @@ class PosVariantTest extends TestCase
         $menu = Menu::factory()->create([
             'name' => 'Vietnam Drip (Hot / Ice)',
             'price' => 12000,
-            'stock' => 20,
         ]);
         $hot = MenuVariant::factory()->for($menu)->create([
             'name' => 'Hot',
@@ -72,28 +69,15 @@ class PosVariantTest extends TestCase
             ->assertJsonPath('ok', false);
     }
 
-    public function test_pos_order_stores_variant_snapshot_and_deducts_variant_recipe_stock(): void
+    public function test_pos_order_stores_variant_snapshot(): void
     {
         $this->actingAsKasir();
         $this->openShift();
         [$menu, , $ice] = $this->parentMenu();
 
-        $stock = Stock::create([
-            'name' => 'Susu Kental Manis',
-            'unit' => 'ml',
-            'quantity' => 100,
-            'min_quantity' => 10,
-            'is_active' => true,
-        ]);
-        Recipe::create([
-            'menu_id' => $menu->id,
-            'menu_variant_id' => $ice->id,
-            'stock_id' => $stock->id,
-            'amount' => 20,
-        ]);
-
         $this->post('/kasir/pos/store', [
             'order_type' => 'take_away',
+            'customer_name' => 'Budi',
             'cart' => json_encode([[
                 'menu_id' => $menu->id,
                 'variant_id' => $ice->id,
@@ -110,6 +94,5 @@ class PosVariantTest extends TestCase
         $this->assertSame($ice->id, $item->variant_id);
         $this->assertSame('Vietnam Drip - Ice - Large', $item->name);
         $this->assertSame(15000.0, (float) $item->price);
-        $this->assertSame(80.0, (float) $stock->fresh()->quantity);
     }
 }

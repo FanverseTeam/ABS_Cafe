@@ -10,7 +10,6 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderTimeline;
 use App\Models\Promo;
-use App\Models\StockLog;
 use App\Models\Table;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -317,43 +316,6 @@ class DatabaseSeeder extends Seeder
             'min_spend' => 45000,
         ]);
 
-        // 7. Stock Logs
-        StockLog::create([
-            'menu_id' => 1,
-            'item_name' => 'Caramel Latte (Bahan Sirup)',
-            'type' => 'masuk',
-            'quantity' => 30,
-            'stock_before' => 15,
-            'stock_after' => 45,
-            'notes' => 'Restock sirup Monin Caramel & fresh milk Greenfields',
-            'actor' => 'Admin ABS Cafe',
-            'created_at' => now()->subHours(6),
-        ]);
-
-        StockLog::create([
-            'menu_id' => 5,
-            'item_name' => 'Aren Brown Sugar Coffee',
-            'type' => 'keluar',
-            'quantity' => 3,
-            'stock_before' => 11,
-            'stock_after' => 8,
-            'notes' => 'Pengurangan otomatis dari pesanan meja',
-            'actor' => 'Sistem Kasir',
-            'created_at' => now()->subHours(2),
-        ]);
-
-        StockLog::create([
-            'menu_id' => 14,
-            'item_name' => 'ABS Canvas Tote Bag Natural',
-            'type' => 'koreksi',
-            'quantity' => -2,
-            'stock_before' => 5,
-            'stock_after' => 3,
-            'notes' => 'Koreksi fisik: 2 pcs cacat cetak sablon disisihkan',
-            'actor' => 'Admin ABS Cafe',
-            'created_at' => now()->subDays(1),
-        ]);
-
         // 8. Cafe Settings
         $settings = [
             'cafe_name' => 'ABS Cafe',
@@ -407,8 +369,6 @@ class DatabaseSeeder extends Seeder
             'target_monthly_sales' => '45000000',
             'profit_margin_percent' => '40',
             'price_rounding' => 'none',
-            'default_min_stock' => '10',
-            'notif_low_stock' => '1',
             'notif_daily_report' => '1',
             'notif_weekly_report' => '0',
             'default_opening_cash' => '100000',
@@ -426,8 +386,6 @@ class DatabaseSeeder extends Seeder
             ['Admin membatalkan pesanan #AB261005: "Pelanggan mendadak pergi"', 'pesanan', 'Admin Utama', 'admin', now()->subHours(1)],
             ['Mengubah harga menu Latte dari Rp 20.000 menjadi Rp 22.000', 'menu', 'Admin Utama', 'admin', now()->subHours(3)],
             ['Mengaktifkan promo "Buy 2 Get 1 Free All Coffee"', 'promo', 'Admin Utama', 'admin', now()->subHours(5)],
-            ['Menambah stok Caramel Latte sebanyak +30 porsi', 'stok', 'Admin Utama', 'admin', now()->subHours(6)],
-            ['Koreksi inventaris fisik: ABS Canvas Tote Bag (-2 pcs rusak)', 'stok', 'Admin Utama', 'admin', now()->subDays(1)],
             ['Mengubah status meja 10 menjadi nonaktif (perbaikan kursi)', 'meja', 'Admin Utama', 'admin', now()->subDays(1)],
             ['Admin Utama berhasil login ke sistem', 'sistem', 'Admin Utama', 'admin', now()->subHours(8)],
         ];

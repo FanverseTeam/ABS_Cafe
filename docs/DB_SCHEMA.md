@@ -12,8 +12,7 @@ Dokumen ini memuat arsitektur database baru ABS Cafe hasil penyederhanaan dan pe
 - **Tabel yang dilebur**:
   1. `tables` (10 baris aktif) + `cafe_tables` (0 baris, usang) $\rightarrow$ **`meja`**
   2. `cash_movements` (0 baris) + `cash_adjustments` (0 baris) $\rightarrow$ **`kas`** (dengan kolom pembeda `type`: `masuk`, `keluar`, `penyesuaian`)
-  3. `stock_logs` (18 baris menu) + `stock_movements` (0 baris bahan baku) $\rightarrow$ **`stok_riwayat`** (dengan kolom pembeda `type`: `masuk`, `keluar`, `koreksi`)
-  4. `cafe_settings` (28 baris aktif) + `settings` (0 baris, usang) $\rightarrow$ **`pengaturan`** (dengan kolom tambahan opsional `group`)
+  3. `cafe_settings` (28 baris aktif) + `settings` (0 baris, usang) $\rightarrow$ **`pengaturan`** (dengan kolom tambahan opsional `group`)
 - **Tabel pembayaran**: `payments` (1.032 baris) $\rightarrow$ **`pembayaran`**. Relasi 1-to-many tetap fleksibel untuk transaksi di masa mendatang.
 
 ---
@@ -33,14 +32,9 @@ Dokumen ini memuat arsitektur database baru ABS Cafe hasil penyederhanaan dan pe
 | 9 | `promos` | 3 | `promo` | Diskon & promo diskon menu / voucher |
 | 10 | `cafe_settings` | 28 | `pengaturan` | Peleburan `cafe_settings` + `settings` (kolom `group`) |
 | 11 | `settings` | 0 | `pengaturan` | Dilebur ke `pengaturan` |
-| 12 | `stocks` | 0 | `stok` | Master persediaan bahan baku |
-| 13 | `suppliers` | 0 | `pemasok` | Vendor / mitra pemasok bahan |
-| 14 | `stock_supplier` | 0 | `stok_pemasok` | Pivot relasi persediaan bahan dan pemasok |
-| 15 | `recipes` | 0 | `resep` | Komposisi bahan per menu/varian |
 | 16 | `cash_shifts` | 163 | `shift` | Sesi kerja dan pembukuan laci kasir |
 | 17 | `cash_movements` | 0 | `kas` | Peleburan arus kas masuk/keluar & penyesuaian |
 | 18 | `cash_adjustments` | 0 | `kas` | Dilebur ke `kas` (`type = penyesuaian`) |
-| 19 | `stock_logs` | 18 | `stok_riwayat` | Peleburan mutasi stok produk & bahan baku |
 | 20 | `stock_movements` | 0 | `stok_riwayat` | Dilebur ke `stok_riwayat` |
 | 21 | `orders` | 1.058 | `pesanan` | Transaksi pesanan offline & web |
 | 22 | `order_items` | 2.585 | `pesanan_item` | Rincian baris item pesanan |
@@ -73,23 +67,7 @@ Tabel ini mencatat seluruh mutasi kas laci kasir serta penyesuaian kas fisik ole
 - **`reason`** (`text`): Alasan atau keterangan transaksi kas.
 - **`created_at`, `updated_at`** (`timestamp`)
 
-### B. Tabel `stok_riwayat` (Peleburan `stock_logs` + `stock_movements`)
-Tabel ini menyatukan pencatatan mutasi sisa porsi menu siap saji dan pengurangan/penambahan bahan baku.
-
-- **`id`** (`bigint unsigned`, Primary Key)
-- **`menu_id`** (`bigint unsigned`, Foreign Key ke `menu.id`, nullable)
-- **`stock_id`** (`bigint unsigned`, Foreign Key ke `stok.id`, nullable)
-- **`user_id`** (`bigint unsigned`, Foreign Key ke `pengguna.id`, nullable)
-- **`type`** (`varchar(30)`): Nilai valid: `masuk`, `keluar`, `koreksi`.
-- **`quantity`** (`int` / `decimal(10,2)`): Jumlah unit yang bertambah/berkurang.
-- **`stock_before`** (`int`, nullable)
-- **`stock_after`** (`int`, nullable)
-- **`item_name`** (`varchar(255)`, nullable)
-- **`notes`** (`text`, nullable)
-- **`actor`** (`varchar(100)`, nullable)
-- **`created_at`, `updated_at`** (`timestamp`)
-
-### C. Tabel `meja` (Peleburan `tables` + `cafe_tables`)
+### B. Tabel `meja` (Peleburan `tables` + `cafe_tables`)
 - **`id`** (`bigint unsigned`, Primary Key)
 - **`number`** (`int`, Unique): Nomor meja.
 - **`capacity`** (`int`): Kapasitas kursi.
@@ -98,7 +76,7 @@ Tabel ini menyatukan pencatatan mutasi sisa porsi menu siap saji dan pengurangan
 - **`area`** (`varchar(50)`, nullable): Area kafe (indoor, outdoor, smoking).
 - **`notes`** (`text`, nullable): Catatan tambahan.
 
-### D. Tabel `pengaturan` (Peleburan `cafe_settings` + `settings`)
+### C. Tabel `pengaturan` (Peleburan `cafe_settings` + `settings`)
 - **`id`** (`bigint unsigned`, Primary Key)
 - **`key`** (`varchar(100)`, Unique): Kunci konfigurasi.
 - **`value`** (`longtext`, nullable): Nilai konfigurasi.
@@ -119,7 +97,6 @@ erDiagram
 
     kategori ||--o{ menu : "mengelompokkan"
     menu ||--o{ menu_varian : "memiliki"
-    menu ||--o{ resep : "membutuhkan"
     menu ||--o{ pesanan_item : "dipesan"
     menu ||--o{ stok_riwayat : "dicatat"
     menu ||--o{ favorit : "disukai"
@@ -136,10 +113,6 @@ erDiagram
 
     metode_bayar ||--o{ pembayaran : "digunakan"
 
-    stok ||--o{ stok_pemasok : "dipasok"
-    pemasok ||--o{ stok_pemasok : "memasok"
-    stok ||--o{ resep : "digunakan di"
-    stok ||--o{ stok_riwayat : "dicatat mutasi"
 ```
 
 ---

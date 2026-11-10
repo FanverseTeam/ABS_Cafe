@@ -6,8 +6,7 @@
 
     if ($legacyAdmin) {
         $pendingOrders = \App\Models\Order::where('payment_status', 'menunggu_pembayaran')->take(5)->get();
-        $lowStockItems = \App\Models\Menu::whereColumn('stock', '<=', 'min_stock')->take(5)->get();
-        $totalNotif = $pendingOrders->count() + $lowStockItems->count();
+        $totalNotif = $pendingOrders->count();
     }
 @endphp
 
@@ -78,19 +77,6 @@
                         @empty
                         @endforelse
 
-                        @forelse($lowStockItems as $lStk)
-                            <a href="{{ route('admin.stock.index') }}" class="p-3 hover:bg-cafe-cream/80 rounded-xl transition-colors flex items-start gap-3 block">
-                                <div class="w-8 h-8 rounded-full bg-cafe-danger/15 text-cafe-danger flex items-center justify-center shrink-0">
-                                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <p class="text-xs font-semibold text-cafe-dark truncate">Stok {{ $lStk->stock <= 0 ? 'Habis' : 'Menipis' }}: {{ $lStk->name }}</p>
-                                    <p class="text-[11px] text-cafe-muted">Sisa {{ $lStk->stock }} {{ $lStk->unit }} (Min: {{ $lStk->min_stock }})</p>
-                                </div>
-                            </a>
-                        @empty
-                        @endforelse
-
                         @if($totalNotif === 0)
                             <div class="py-6 text-center text-xs text-cafe-muted">
                                 Tidak ada notifikasi mendesak saat ini.
@@ -154,7 +140,7 @@
             </div>
         </div>
     @else
-        <!-- Active admin mode: no order/stock widgets from the legacy dashboard. -->
+        <!-- Active admin mode: no order widgets from the legacy dashboard. -->
         <div class="flex items-center gap-2 sm:gap-4 shrink-0">
             <a href="{{ route('admin.activity.index') }}" class="relative p-2.5 rounded-full bg-[#E3DEA4] hover:bg-[#E3DEA4]/80 text-cafe-dark transition-colors" title="Notifikasi Aktivitas" aria-label="Notifikasi Aktivitas">
                 <i data-lucide="bell" class="w-4 h-4"></i>

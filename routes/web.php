@@ -11,7 +11,6 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PromoController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StaffController;
-use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VoucherController;
@@ -100,7 +99,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
         Route::delete('/{id}', [StaffController::class, 'destroy'])->name('destroy');
     });
 
-    // 2. Manajemen Menu (Menu & Kategori | Stok & Supplier)
+    // 2. Manajemen Menu (Menu & Kategori)
     Route::prefix('katalog')->name('catalog.')->group(function () {
         Route::get('/', [CatalogController::class, 'index'])->name('index');
 
@@ -113,8 +112,6 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
             Route::post('/{id}/duplicate', [CatalogController::class, 'duplicateMenu'])->name('duplicate');
             Route::post('/{id}/toggle-available', [CatalogController::class, 'toggleMenuAvailable'])->name('toggle.available');
             Route::post('/{id}/toggle-bestseller', [CatalogController::class, 'toggleMenuBestSeller'])->name('toggle.bestseller');
-            Route::get('/{id}/resep', [CatalogController::class, 'recipes'])->name('recipes');
-            Route::post('/{id}/resep', [CatalogController::class, 'saveRecipes'])->name('recipes.save');
             Route::delete('/{id}', [CatalogController::class, 'destroyMenu'])->name('destroy');
         });
 
@@ -122,18 +119,6 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
             Route::post('/store', [CatalogController::class, 'storeCategory'])->name('store');
             Route::post('/{id}/update', [CatalogController::class, 'updateCategory'])->name('update');
             Route::delete('/{id}', [CatalogController::class, 'destroyCategory'])->name('destroy');
-        });
-
-        Route::prefix('stok')->name('stock.')->group(function () {
-            Route::post('/{id}/adjust', [CatalogController::class, 'adjustStock'])->name('adjust');
-            Route::post('/{id}/min-stock', [CatalogController::class, 'setMinStock'])->name('min_stock');
-        });
-
-        Route::prefix('supplier')->name('supplier.')->group(function () {
-            Route::post('/store', [CatalogController::class, 'storeSupplier'])->name('store');
-            Route::post('/{id}/update', [CatalogController::class, 'updateSupplier'])->name('update');
-            Route::post('/{id}/toggle-status', [CatalogController::class, 'toggleSupplierStatus'])->name('toggle.status');
-            Route::delete('/{id}', [CatalogController::class, 'destroySupplier'])->name('destroy');
         });
     });
 
@@ -216,8 +201,6 @@ if (config('features.legacy_admin')) {
             Route::post('/{id}/duplicate', [MenuController::class, 'duplicate'])->name('duplicate');
             Route::post('/{id}/toggle-available', [MenuController::class, 'toggleAvailable'])->name('toggle.available');
             Route::post('/{id}/toggle-bestseller', [MenuController::class, 'toggleBestSeller'])->name('toggle.bestseller');
-            Route::get('/{id}/resep', [MenuController::class, 'recipes'])->name('recipes');
-            Route::post('/{id}/resep', [MenuController::class, 'saveRecipes'])->name('recipes.save');
             Route::delete('/{id}', [MenuController::class, 'destroy'])->name('destroy');
         });
 
@@ -227,13 +210,6 @@ if (config('features.legacy_admin')) {
             Route::post('/store', [CategoryController::class, 'store'])->name('store');
             Route::post('/{id}/update', [CategoryController::class, 'update'])->name('update');
             Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
-        });
-
-        // LEGACY ADMIN: Stok standalone
-        Route::prefix('stok')->name('stock.')->group(function () {
-            Route::get('/', [StockController::class, 'index'])->name('index');
-            Route::post('/{id}/adjust', [StockController::class, 'adjust'])->name('adjust');
-            Route::post('/{id}/min-stock', [StockController::class, 'setMinStock'])->name('min_stock');
         });
 
         // LEGACY ADMIN: Promo standalone
@@ -287,14 +263,14 @@ if (config('features.legacy_admin')) {
 |--------------------------------------------------------------------------
 | Portal Owner (Analisis Bisnis)
 |--------------------------------------------------------------------------
-| Owner bersifat melihat & menganalisis. Tidak mengelola user staf, menu,
-| atau stok. Semua data bersumber dari modul admin.
+| Owner bersifat melihat & menganalisis. Tidak mengelola user staf atau
+| menu. Semua data bersumber dari modul admin.
 */
 Route::prefix('owner')->name('owner.')->middleware(['auth', 'role:owner', 'noindex.staf'])->group(function () {
     // 1. Dashboard Bisnis
     Route::get('/', [OwnerDashboardController::class, 'index'])->name('dashboard');
 
-    // 2. Laporan (Penjualan / Keuangan / Stok)
+    // 2. Laporan (Penjualan / Keuangan)
     Route::prefix('laporan')->name('reports.')->group(function () {
         Route::get('/', [OwnerReportController::class, 'index'])->name('index');
         Route::get('/export', [OwnerReportController::class, 'exportCsv'])->name('export');

@@ -106,7 +106,7 @@
                 @endforeach
             </tbody>
         </table>
-    @elseif($tab === 'keuangan')
+    @else
         <div class="cards">
             <div class="card"><div class="label">Penjualan Kotor</div><div class="value">Rp {{ number_format($report['finance']['gross'], 0, ',', '.') }}</div></div>
             <div class="card"><div class="label">Total Diskon</div><div class="value">Rp {{ number_format($report['finance']['discount'], 0, ',', '.') }}</div></div>
@@ -121,28 +121,6 @@
             <tbody>
                 @foreach($report['perMethod'] as $m)
                     <tr><td style="text-transform: capitalize">{{ $m['method'] }}</td><td class="num">{{ $m['count'] }}</td><td class="num">Rp {{ number_format($m['total'], 0, ',', '.') }}</td></tr>
-                @endforeach
-            </tbody>
-        </table>
-    @else
-        <div class="cards">
-            <div class="card"><div class="label">Nilai Stok (harga jual)</div><div class="value">Rp {{ number_format($report['stock']['stockValue'], 0, ',', '.') }}</div></div>
-            <div class="card"><div class="label">Stok Menipis</div><div class="value">{{ $report['stock']['lowStock']->count() }}</div></div>
-            <div class="card"><div class="label">Stok Habis</div><div class="value">{{ $report['stock']['outOfStock']->count() }}</div></div>
-        </div>
-
-        <h2>Daftar Stok Menipis & Habis</h2>
-        <table>
-            <thead><tr><th>Menu</th><th>Kategori</th><th class="num">Stok</th><th class="num">Min.</th><th>Status</th></tr></thead>
-            <tbody>
-                @foreach($report['stock']['lowStock'] as $menu)
-                    <tr>
-                        <td>{{ $menu->name }}</td>
-                        <td>{{ $menu->category?->name ?? '-' }}</td>
-                        <td class="num">{{ $menu->stock }}</td>
-                        <td class="num">{{ $menu->min_stock }}</td>
-                        <td>{{ $menu->stock <= 0 ? 'Habis' : 'Menipis' }}</td>
-                    </tr>
                 @endforeach
             </tbody>
         </table>

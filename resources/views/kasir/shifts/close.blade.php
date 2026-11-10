@@ -198,7 +198,7 @@
 
                     <div>
                         <label class="block text-xs font-semibold text-cafe-text mb-2">Catatan Penutupan (opsional)</label>
-                        <input type="text" name="notes" maxlength="500" placeholder="Misal: laci rapi, stok cup aman" class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-xs text-cafe-dark placeholder:text-cafe-muted/60 px-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20">
+                        <input type="text" name="notes" maxlength="500" placeholder="Misal: laci rapi, operasional aman" class="w-full bg-[#E3DEA4]/50 focus:bg-beige text-xs text-cafe-dark placeholder:text-cafe-muted/60 px-4 py-3 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20">
                     </div>
 
                     @php $hasBlockedOrders = isset($pendingOrders) && $pendingOrders->isNotEmpty(); @endphp

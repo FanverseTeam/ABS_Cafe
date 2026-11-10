@@ -252,25 +252,25 @@
             </div>
         </div>
 
-        <!-- Low Stock + Active Promos + Recent Orders -->
+        <!-- Menu Habis + Active Promos + Recent Orders -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
                 <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2 mb-4">
-                    <i data-lucide="package-search" class="w-4 h-4 text-cafe-danger"></i> Stok Menipis
+                    <i data-lucide="slash" class="w-4 h-4 text-cafe-danger"></i> Menu Habis
                 </h3>
                 <div class="space-y-2.5">
-                    @forelse($lowStockMenus as $menu)
+                    @forelse($unavailableMenus as $menu)
                         <div class="flex items-center justify-between gap-2">
                             <div class="min-w-0">
                                 <p class="text-xs font-semibold text-cafe-dark truncate">{{ $menu->name }}</p>
                                 <p class="text-[10px] text-cafe-muted">{{ $menu->category?->name ?? '-' }}</p>
                             </div>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $menu->stock <= 0 ? 'bg-cafe-danger/15 text-cafe-danger' : 'bg-cafe-warning/15 text-cafe-warning' }}">
-                                {{ $menu->stock }} {{ $menu->unit ?? 'pcs' }}
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cafe-danger/15 text-cafe-danger">
+                                Habis
                             </span>
                         </div>
                     @empty
-                        <p class="text-xs text-cafe-muted">Semua stok dalam kondisi aman.</p>
+                        <p class="text-xs text-cafe-muted">Semua menu aktif dan dapat dipesan.</p>
                     @endforelse
                 </div>
             </div>

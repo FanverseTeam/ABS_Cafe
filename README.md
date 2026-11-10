@@ -61,11 +61,10 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (*Accessories &
   - Pesanan Hari Ini.
   - Pendapatan Hari Ini.
   - Menunggu Pembayaran.
-  - Menu Stok Menipis.
+  - Menu Habis.
 - Grafik interaktif tren pendapatan tujuh hari menggunakan Chart.js.
 - Grafik donat penjualan per kategori.
 - Daftar lima menu terlaris dan tabel pesanan terbaru.
-- Panel peringatan stok di bawah batas minimum.
 
 ### 3. Pesanan (`/admin/pesanan`)
 
@@ -83,7 +82,7 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (*Accessories &
 - Filter 14 kategori makanan dan minuman, seperti Coffee Base, Speciality, Milk, Tea, Snacks, dan Main Course.
 - Pengurutan berdasarkan terlaris, nama, dan harga.
 - Switch status ketersediaan Tersedia/Habis dan tanda Best Seller.
-- Modal form tambah dan edit menu dengan URL foto, deskripsi, harga, satuan, dan stok.
+- Modal form tambah dan edit menu dengan URL foto, deskripsi, harga, dan ketersediaan.
 - Aksi duplikasi menu dan hapus permanen dengan dialog konfirmasi.
 
 ### 5. Kategori Menu (`/admin/kategori`)
@@ -91,19 +90,13 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (*Accessories &
 - Daftar 14 kategori kafe lengkap dengan ikon visual Lucide dan urutan tampil di POS.
 - Proteksi integritas: kategori yang masih memiliki menu tidak dapat dihapus dan akan menampilkan peringatan.
 
-### 6. Stok & Inventaris (`/admin/stok`)
-
-- Status stok otomatis: Aman, Menipis, atau Habis.
-- Modal aksi cepat untuk menambah stok, mengurangi stok, dan mengatur stok minimum.
-- Modal riwayat audit pergerakan stok, termasuk log masuk, keluar, koreksi, dan pelakunya.
-
-### 7. Promo & Diskon (`/admin/promo`)
+### 6. Promo & Diskon (`/admin/promo`)
 
 - Kartu banner promo, seperti Buy 2 Get 1, diskon persentase, dan potongan nominal.
 - Status promo berjalan, terjadwal, atau berakhir berdasarkan tanggal.
 - Switch untuk mengaktifkan atau menonaktifkan promo.
 
-### 8. Pengguna & Staf (`/admin/staf`)
+### 7. Pengguna & Staf (`/admin/staf`)
 
 - Tabel akun staf dengan peran Admin, Kasir, dan Staf Barista/Dapur.
 - Tambah dan edit data staf **hanya dengan username** (field email dihapus).
@@ -112,13 +105,13 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (*Accessories &
 - Mengaktifkan atau menonaktifkan akun.
 - Fitur reset password (oleh admin, tanpa email).
 
-### 9. Denah & Meja (`/admin/meja`)
+### 8. Denah & Meja (`/admin/meja`)
 
 - Grid kartu nomor meja dengan status Tersedia, Terpakai, dan Nonaktif.
 - Informasi kapasitas kursi dan catatan lokasi, seperti Indoor, Outdoor, dan Lantai 2.
 - Modal QR Code pemesanan meja dan tombol unduh gambar QR.
 
-### 10. Pengaturan Cafe (`/admin/pengaturan`)
+### 9. Pengaturan Cafe (`/admin/pengaturan`)
 
 - **Tab Profil Cafe:** Nama, tagline, alamat Tulungagung, dan jam buka hari kerja serta akhir pekan.
 - **Tab Pajak & Biaya:** Persentase pajak PB1 (10%) dan switch Service Charge.
@@ -127,7 +120,7 @@ Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (*Accessories &
 - **Tab Tampilan:** Pengaturan banner headline beranda.
 - **Tab Akun Saya:** Mengganti nama, username, nomor telepon, dan password admin.
 
-### 11. Log Aktivitas (`/admin/log`)
+### 10. Log Aktivitas (`/admin/log`)
 
 - Catatan audit sistem meliputi waktu, nama staf, peran, aksi, dan alamat IP.
 - Filter kategori aktivitas dan ekspor data ke CSV.

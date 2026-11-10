@@ -16,7 +16,6 @@ class ReportTest extends TestCase
     {
         $this->actingAsOwner()->get('/owner/laporan')->assertOk();
         $this->actingAsOwner()->get('/owner/laporan?tab=keuangan')->assertOk();
-        $this->actingAsOwner()->get('/owner/laporan?tab=stok')->assertOk();
         $this->actingAsOwner()->get('/owner/laporan?tab=ngawur')->assertOk();
     }
 
@@ -42,7 +41,7 @@ class ReportTest extends TestCase
 
     public function test_report_can_be_exported_as_csv_for_each_tab(): void
     {
-        foreach (['penjualan', 'keuangan', 'stok'] as $tab) {
+        foreach (['penjualan', 'keuangan'] as $tab) {
             $response = $this->actingAsOwner()->get("/owner/laporan/export?tab={$tab}");
             $response->assertOk();
             $this->assertStringContainsString('text/csv', $response->headers->get('content-type'));
@@ -51,7 +50,7 @@ class ReportTest extends TestCase
 
     public function test_report_print_view_loads(): void
     {
-        Menu::factory()->lowStock()->create();
+        Menu::factory()->unavailable()->create();
 
         $this->actingAsOwner()->get('/owner/laporan/cetak')->assertOk();
     }

@@ -19,7 +19,7 @@ class PosShiftFlowTest extends TestCase
         return json_encode([['menu_id' => $menu->id, 'quantity' => $qty]]);
     }
 
-    public function test_cash_sale_flow_reconciles_stock_and_shift_end_to_end(): void
+    public function test_cash_sale_flow_reconciles_shift_end_to_end(): void
     {
         $kasir = User::factory()->kasir()->create();
         $this->actingAs($kasir);
@@ -27,10 +27,11 @@ class PosShiftFlowTest extends TestCase
         $this->post('/kasir/shift/buka', ['opening_cash' => 100000])->assertRedirect();
         $shift = CashShift::where('user_id', $kasir->id)->where('status', 'buka')->firstOrFail();
 
-        $menu = Menu::factory()->create(['price' => 20000, 'stock' => 10, 'sold_count' => 0]);
+        $menu = Menu::factory()->create(['price' => 20000, 'sold_count' => 0]);
 
         $this->post('/kasir/pos/store', [
             'order_type' => 'take_away',
+            'customer_name' => 'Budi',
             'cart' => $this->cart($menu),
             'action' => 'pay',
             'payment_method' => 'tunai',
@@ -43,9 +44,7 @@ class PosShiftFlowTest extends TestCase
         $this->assertDatabaseHas('pembayaran', ['order_id' => $order->id, 'method' => 'tunai', 'amount' => 22000]);
 
         $menu->refresh();
-        $this->assertSame(9, $menu->stock);
         $this->assertSame(1, $menu->sold_count);
-        $this->assertDatabaseHas('stok_riwayat', ['menu_id' => $menu->id, 'type' => 'keluar', 'stock_after' => 9]);
 
         $this->post("/kasir/pesanan/{$order->id}/status", ['status' => 'siap'])->assertRedirect();
         $this->post("/kasir/pesanan/{$order->id}/status", ['status' => 'selesai'])->assertRedirect();
@@ -66,11 +65,12 @@ class PosShiftFlowTest extends TestCase
         $this->actingAs($kasir);
         $this->openShift();
 
-        $menu = Menu::factory()->create(['price' => 15000, 'stock' => 20, 'sold_count' => 0]);
+        $menu = Menu::factory()->create(['price' => 15000, 'sold_count' => 0]);
         Table::factory()->create(['number' => 5, 'status' => 'tersedia']);
 
         $this->post('/kasir/pos/store', [
             'order_type' => 'dine_in',
+            'customer_name' => 'Siti',
             'table_number' => 5,
             'cart' => $this->cart($menu),
             'action' => 'save',
@@ -90,6 +90,6 @@ class PosShiftFlowTest extends TestCase
 
         $this->assertSame('lunas', $order->fresh()->payment_status);
         $this->assertSame('tersedia', Table::where('number', 5)->firstOrFail()->status);
-        $this->assertSame(19, $menu->fresh()->stock);
+        $this->assertSame(1, $menu->fresh()->sold_count);
     }
 }

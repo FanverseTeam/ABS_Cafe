@@ -151,36 +151,16 @@
                 </div>
             </div>
 
-            <!-- Section 3: Stok & Ketersediaan -->
+            <!-- Section 3: Status & Ketersediaan -->
             <div>
                 <h4 class="font-serif font-bold text-xs sm:text-sm text-cafe-dark flex items-center gap-2 pb-3 border-b border-cafe-beige/40">
                     <span class="w-6 h-6 rounded-lg bg-cafe-gold/20 text-cafe-gold flex items-center justify-center">
                         <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
                     </span>
-                    Stok &amp; Status
+                    Status &amp; Ketersediaan
                 </h4>
 
                 <div class="mt-4 space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="space-y-1">
-                            <label class="font-semibold text-cafe-dark block text-xs">Stok Awal</label>
-                            <input type="number"
-                                   name="stock"
-                                   value="{{ old('stock', 30) }}"
-                                   min="0"
-                                   class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
-                        </div>
-
-                        <div class="space-y-1">
-                            <label class="font-semibold text-cafe-dark block text-xs">Batas Minimum Peringatan</label>
-                            <input type="number"
-                                   name="min_stock"
-                                   value="{{ old('min_stock', 10) }}"
-                                   min="1"
-                                   class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
-                        </div>
-                    </div>
-
                     <div class="flex flex-wrap items-center gap-6 pt-2">
                         <label class="flex items-center gap-2 cursor-pointer select-none">
                             <input type="checkbox"

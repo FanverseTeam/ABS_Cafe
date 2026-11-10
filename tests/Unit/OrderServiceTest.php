@@ -36,7 +36,7 @@ class OrderServiceTest extends TestCase
 
     public function test_build_lines_uses_price_from_database(): void
     {
-        $menu = Menu::factory()->create(['price' => 18000, 'stock' => 10, 'is_available' => true]);
+        $menu = Menu::factory()->create(['price' => 18000, 'is_available' => true]);
 
         $built = $this->service->buildLines([['menu_id' => $menu->id, 'quantity' => 2]]);
 
@@ -52,17 +52,18 @@ class OrderServiceTest extends TestCase
         $this->service->buildLines([['menu_id' => $menu->id, 'quantity' => 1]]);
     }
 
-    public function test_build_lines_rejects_insufficient_stock(): void
+    public function test_build_lines_rejects_unavailable_variant(): void
     {
-        $menu = Menu::factory()->create(['stock' => 1, 'is_available' => true]);
+        $menu = Menu::factory()->create(['is_available' => true]);
+        $variant = MenuVariant::factory()->for($menu)->unavailable()->create(['name' => 'Large']);
 
         $this->expectException(ValidationException::class);
-        $this->service->buildLines([['menu_id' => $menu->id, 'quantity' => 5]]);
+        $this->service->buildLines([['menu_id' => $menu->id, 'variant_id' => $variant->id, 'quantity' => 1]]);
     }
 
     public function test_build_lines_applies_variant_price_and_name(): void
     {
-        $menu = Menu::factory()->create(['price' => 18000, 'name' => 'Kopi', 'stock' => 10]);
+        $menu = Menu::factory()->create(['price' => 18000, 'name' => 'Kopi']);
         $variant = MenuVariant::factory()->for($menu)->create(['name' => 'Large', 'price' => 25000]);
 
         $built = $this->service->buildLines([['menu_id' => $menu->id, 'variant_id' => $variant->id, 'quantity' => 1]]);
@@ -187,7 +188,7 @@ class OrderServiceTest extends TestCase
 
     public function test_create_order_computes_totals_and_persists_items(): void
     {
-        $menu = Menu::factory()->create(['price' => 20000, 'stock' => 10, 'is_available' => true]);
+        $menu = Menu::factory()->create(['price' => 20000, 'is_available' => true]);
         $cashier = User::factory()->kasir()->create();
 
         $order = $this->service->createOrder([

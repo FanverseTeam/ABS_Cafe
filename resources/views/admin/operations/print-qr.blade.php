@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak Stand QR Code Meja - ABS Cafe</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css'])
     <style>
         * {
             box-sizing: border-box;
@@ -89,7 +87,7 @@
         }
 
         .brand-title {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Noto Serif', Georgia, serif;
             font-size: 22px;
             font-weight: 800;
             color: #290024;
@@ -132,7 +130,7 @@
         }
 
         .scan-instruction {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Noto Serif', Georgia, serif;
             font-size: 18px;
             font-weight: 700;
             color: #290024;

@@ -31,9 +31,6 @@ class MenuTest extends TestCase
             'name' => 'Matcha Baru',
             'category_id' => $category->id,
             'price' => 25000,
-            'stock' => 20,
-            'min_stock' => 5,
-            'unit' => 'cup',
         ])->assertRedirect();
 
         $this->assertDatabaseHas('menu', ['name' => 'Matcha Baru', 'category_id' => $category->id]);

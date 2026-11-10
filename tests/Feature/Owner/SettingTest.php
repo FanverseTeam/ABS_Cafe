@@ -25,7 +25,6 @@ class SettingTest extends TestCase
             'profit_margin_percent' => 35,
             'tax_percent' => 11,
             'price_rounding' => '500',
-            'default_min_stock' => 15,
             'service_charge_active' => '1',
             'receipt_show_logo' => '1',
         ])->assertRedirect();
@@ -33,7 +32,6 @@ class SettingTest extends TestCase
         $this->assertSame('3000000', (string) CafeSetting::get('target_daily_sales'));
         $this->assertSame('35', (string) CafeSetting::get('profit_margin_percent'));
         $this->assertSame('1', CafeSetting::get('service_charge_active'));
-        $this->assertSame('15', (string) CafeSetting::get('default_min_stock'));
     }
 
     public function test_owner_settings_validation(): void

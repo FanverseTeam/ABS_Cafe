@@ -12,7 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        }
 
         // 1. PENGGUNA (users)
         if (! Schema::hasTable('pengguna')) {
@@ -63,9 +65,6 @@ return new class extends Migration
                 $table->string('image')->nullable();
                 $table->boolean('is_available')->default(true);
                 $table->boolean('is_best_seller')->default(false);
-                $table->integer('stock')->default(0);
-                $table->integer('min_stock')->default(5);
-                $table->string('unit')->default('porsi');
                 $table->integer('sold_count')->default(0);
                 $table->timestamps();
                 $table->softDeletes();
@@ -177,63 +176,6 @@ return new class extends Migration
             });
         }
 
-        // 10. STOK (stocks)
-        if (! Schema::hasTable('stok')) {
-            Schema::create('stok', function (Blueprint $table) {
-                $table->id();
-                $table->string('name');
-                $table->string('unit', 30);
-                $table->decimal('quantity', 12, 2)->default(0.00);
-                $table->decimal('min_quantity', 12, 2)->default(0.00);
-                $table->boolean('is_active')->default(true);
-                $table->timestamps();
-            });
-        }
-
-        // 11. PEMASOK (suppliers)
-        if (! Schema::hasTable('pemasok')) {
-            Schema::create('pemasok', function (Blueprint $table) {
-                $table->id();
-                $table->string('name');
-                $table->string('contact_person')->nullable();
-                $table->string('phone', 30)->nullable();
-                $table->string('email')->nullable();
-                $table->text('address')->nullable();
-                $table->text('notes')->nullable();
-                $table->boolean('is_active')->default(true);
-                $table->timestamps();
-            });
-        }
-
-        // 12. STOK_PEMASOK (stock_supplier)
-        if (! Schema::hasTable('stok_pemasok')) {
-            Schema::create('stok_pemasok', function (Blueprint $table) {
-                $table->unsignedBigInteger('stock_id');
-                $table->unsignedBigInteger('supplier_id');
-                $table->timestamps();
-
-                $table->primary(['stock_id', 'supplier_id']);
-                $table->foreign('stock_id')->references('id')->on('stok')->onDelete('cascade');
-                $table->foreign('supplier_id')->references('id')->on('pemasok')->onDelete('cascade');
-            });
-        }
-
-        // 13. RESEP (recipes)
-        if (! Schema::hasTable('resep')) {
-            Schema::create('resep', function (Blueprint $table) {
-                $table->id();
-                $table->unsignedBigInteger('menu_id');
-                $table->unsignedBigInteger('menu_variant_id')->nullable();
-                $table->unsignedBigInteger('stock_id');
-                $table->decimal('amount', 12, 2);
-                $table->timestamps();
-
-                $table->foreign('menu_id')->references('id')->on('menu')->onDelete('cascade');
-                $table->foreign('menu_variant_id')->references('id')->on('menu_varian')->onDelete('cascade');
-                $table->foreign('stock_id')->references('id')->on('stok')->onDelete('cascade');
-            });
-        }
-
         // 14. SHIFT (cash_shifts)
         if (! Schema::hasTable('shift')) {
             Schema::create('shift', function (Blueprint $table) {
@@ -273,28 +215,6 @@ return new class extends Migration
             });
         }
 
-        // 16. STOK_RIWAYAT (lebur stock_logs + stock_movements)
-        if (! Schema::hasTable('stok_riwayat')) {
-            Schema::create('stok_riwayat', function (Blueprint $table) {
-                $table->id();
-                $table->unsignedBigInteger('menu_id')->nullable();
-                $table->unsignedBigInteger('stock_id')->nullable();
-                $table->unsignedBigInteger('user_id')->nullable();
-                $table->string('actor')->nullable();
-                $table->string('item_name')->nullable();
-                $table->string('type', 50);
-                $table->decimal('quantity', 12, 2)->default(0.00);
-                $table->decimal('stock_before', 12, 2)->nullable();
-                $table->decimal('stock_after', 12, 2)->nullable();
-                $table->text('notes')->nullable();
-                $table->timestamps();
-
-                $table->foreign('menu_id')->references('id')->on('menu')->onDelete('set null');
-                $table->foreign('stock_id')->references('id')->on('stok')->onDelete('set null');
-                $table->foreign('user_id')->references('id')->on('pengguna')->onDelete('set null');
-            });
-        }
-
         // 17. PESANAN (orders)
         if (! Schema::hasTable('pesanan')) {
             Schema::create('pesanan', function (Blueprint $table) {
@@ -313,8 +233,6 @@ return new class extends Migration
                 $table->decimal('total', 12, 2)->default(0.00);
                 $table->string('payment_method')->nullable();
                 $table->string('payment_status')->default('menunggu_pembayaran');
-                $table->boolean('stock_deducted')->default(false);
-                $table->boolean('stock_returned')->default(false);
                 $table->string('order_status')->default('baru');
                 $table->string('cashier_name')->nullable();
                 $table->unsignedBigInteger('cashier_id')->nullable();
@@ -484,7 +402,7 @@ return new class extends Migration
         }
 
         if (Schema::hasTable('menus') && DB::table('menu')->count() === 0) {
-            DB::statement('INSERT INTO `menu` (`id`, `merged_into_menu_id`, `variant_id`, `category_id`, `name`, `price`, `description`, `image`, `is_available`, `is_best_seller`, `stock`, `min_stock`, `unit`, `sold_count`, `created_at`, `updated_at`, `deleted_at`) SELECT `id`, `merged_into_menu_id`, `variant_id`, `category_id`, `name`, `price`, `description`, `image`, `is_available`, `is_best_seller`, `stock`, `min_stock`, `unit`, `sold_count`, `created_at`, `updated_at`, `deleted_at` FROM `menus`');
+            DB::statement('INSERT INTO `menu` (`id`, `merged_into_menu_id`, `variant_id`, `category_id`, `name`, `price`, `description`, `image`, `is_available`, `is_best_seller`, `sold_count`, `created_at`, `updated_at`, `deleted_at`) SELECT `id`, `merged_into_menu_id`, `variant_id`, `category_id`, `name`, `price`, `description`, `image`, `is_available`, `is_best_seller`, `sold_count`, `created_at`, `updated_at`, `deleted_at` FROM `menus`');
         }
 
         if (Schema::hasTable('menu_variants') && DB::table('menu_varian')->count() === 0) {
@@ -511,22 +429,6 @@ return new class extends Migration
             DB::statement('INSERT INTO `pengaturan` (`id`, `key`, `value`, `created_at`, `updated_at`) SELECT `id`, `key`, `value`, `created_at`, `updated_at` FROM `cafe_settings`');
         }
 
-        if (Schema::hasTable('stocks') && DB::table('stok')->count() === 0) {
-            DB::statement('INSERT INTO `stok` (`id`, `name`, `unit`, `quantity`, `min_quantity`, `is_active`, `created_at`, `updated_at`) SELECT `id`, `name`, `unit`, `quantity`, `min_quantity`, `is_active`, `created_at`, `updated_at` FROM `stocks`');
-        }
-
-        if (Schema::hasTable('suppliers') && DB::table('pemasok')->count() === 0) {
-            DB::statement('INSERT INTO `pemasok` (`id`, `name`, `contact_person`, `phone`, `email`, `address`, `notes`, `is_active`, `created_at`, `updated_at`) SELECT `id`, `name`, `contact_person`, `phone`, `email`, `address`, `notes`, `is_active`, `created_at`, `updated_at` FROM `suppliers`');
-        }
-
-        if (Schema::hasTable('stock_supplier') && DB::table('stok_pemasok')->count() === 0) {
-            DB::statement('INSERT INTO `stok_pemasok` (`stock_id`, `supplier_id`) SELECT `stock_id`, `supplier_id` FROM `stock_supplier`');
-        }
-
-        if (Schema::hasTable('recipes') && DB::table('resep')->count() === 0) {
-            DB::statement('INSERT INTO `resep` (`id`, `menu_id`, `menu_variant_id`, `stock_id`, `amount`, `created_at`, `updated_at`) SELECT `id`, `menu_id`, `menu_variant_id`, `stock_id`, `amount`, `created_at`, `updated_at` FROM `recipes`');
-        }
-
         if (Schema::hasTable('cash_shifts') && DB::table('shift')->count() === 0) {
             DB::statement('INSERT INTO `shift` (`id`, `user_id`, `opened_at`, `closed_at`, `opening_cash`, `opening_cash_source`, `expected_cash`, `closing_cash`, `cash_difference`, `total_sales`, `total_transactions`, `status`, `is_auto_closed`, `notes`, `created_at`, `updated_at`) SELECT `id`, `user_id`, `opened_at`, `closed_at`, `opening_cash`, `opening_cash_source`, `expected_cash`, `closing_cash`, `cash_difference`, `total_sales`, `total_transactions`, `status`, `is_auto_closed`, `notes`, `created_at`, `updated_at` FROM `cash_shifts`');
         }
@@ -550,28 +452,8 @@ return new class extends Migration
             }
         }
 
-        // Peleburan STOK_RIWAYAT (dari stock_logs + stock_movements)
-        if (Schema::hasTable('stock_logs') && DB::table('stok_riwayat')->count() === 0) {
-            DB::statement('INSERT INTO `stok_riwayat` (`id`, `menu_id`, `item_name`, `type`, `quantity`, `stock_before`, `stock_after`, `notes`, `actor`, `created_at`, `updated_at`) SELECT `id`, `menu_id`, `item_name`, `type`, `quantity`, `stock_before`, `stock_after`, `notes`, `actor`, `created_at`, `updated_at` FROM `stock_logs`');
-        }
-        if (Schema::hasTable('stock_movements')) {
-            $movements = DB::table('stock_movements')->get();
-            foreach ($movements as $m) {
-                DB::table('stok_riwayat')->insert([
-                    'stock_id' => $m->stock_id,
-                    'user_id' => $m->user_id,
-                    'type' => $m->type,
-                    'quantity' => $m->quantity,
-                    'stock_after' => $m->stock_after,
-                    'notes' => $m->note,
-                    'created_at' => $m->created_at,
-                    'updated_at' => $m->updated_at,
-                ]);
-            }
-        }
-
         if (Schema::hasTable('orders') && DB::table('pesanan')->count() === 0) {
-            DB::statement('INSERT INTO `pesanan` (`id`, `order_code`, `customer_name`, `table_number`, `order_type`, `source`, `subtotal`, `tax`, `service_charge`, `discount`, `promo_id`, `cash_shift_id`, `total`, `payment_method`, `payment_status`, `stock_deducted`, `stock_returned`, `order_status`, `cashier_name`, `cashier_id`, `paid_at`, `received_at`, `cancel_reason`, `created_at`, `updated_at`) SELECT `id`, `order_code`, `customer_name`, `table_number`, `order_type`, `source`, `subtotal`, `tax`, `service_charge`, `discount`, `promo_id`, `cash_shift_id`, `total`, `payment_method`, `payment_status`, `stock_deducted`, `stock_returned`, `order_status`, `cashier_name`, `cashier_id`, `paid_at`, `received_at`, `cancel_reason`, `created_at`, `updated_at` FROM `orders`');
+            DB::statement('INSERT INTO `pesanan` (`id`, `order_code`, `customer_name`, `table_number`, `order_type`, `source`, `subtotal`, `tax`, `service_charge`, `discount`, `promo_id`, `cash_shift_id`, `total`, `payment_method`, `payment_status`, `order_status`, `cashier_name`, `cashier_id`, `paid_at`, `received_at`, `cancel_reason`, `created_at`, `updated_at`) SELECT `id`, `order_code`, `customer_name`, `table_number`, `order_type`, `source`, `subtotal`, `tax`, `service_charge`, `discount`, `promo_id`, `cash_shift_id`, `total`, `payment_method`, `payment_status`, `order_status`, `cashier_name`, `cashier_id`, `paid_at`, `received_at`, `cancel_reason`, `created_at`, `updated_at` FROM `orders`');
         }
 
         if (Schema::hasTable('order_items') && DB::table('pesanan_item')->count() === 0) {
@@ -625,10 +507,6 @@ return new class extends Migration
             'payment_methods' => 'metode_bayar',
             'promos' => 'promo',
             'cafe_settings' => 'pengaturan',
-            'stocks' => 'stok',
-            'suppliers' => 'pemasok',
-            'stock_supplier' => 'stok_pemasok',
-            'recipes' => 'resep',
             'cash_shifts' => 'shift',
             'orders' => 'pesanan',
             'order_items' => 'pesanan_item',
@@ -667,9 +545,9 @@ return new class extends Migration
         // RENAME OLD TABLES TO ARSIP PHASE
         $tablesToArchive = [
             'users', 'categories', 'menus', 'menu_variants', 'favorites',
-            'tables', 'cafe_tables', 'recipes', 'payment_methods', 'promos',
-            'settings', 'cafe_settings', 'stocks', 'suppliers', 'stock_supplier',
-            'stock_logs', 'stock_movements', 'orders', 'order_items', 'order_timelines',
+            'tables', 'cafe_tables', 'payment_methods', 'promos',
+            'settings', 'cafe_settings',
+            'orders', 'order_items', 'order_timelines',
             'payments', 'cash_shifts', 'cash_movements', 'cash_adjustments',
             'reservations', 'activity_logs', 'roles', 'permissions',
             'role_has_permissions', 'model_has_roles', 'model_has_permissions',
@@ -681,7 +559,9 @@ return new class extends Migration
             }
         }
 
-        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+        }
     }
 
     /**
@@ -689,12 +569,14 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        }
 
         $newTables = [
             'pengguna_izin', 'pengguna_peran', 'peran_izin', 'izin', 'peran',
             'log_aktivitas', 'reservasi', 'pembayaran', 'pesanan_riwayat', 'pesanan_item', 'pesanan',
-            'stok_riwayat', 'kas', 'shift', 'resep', 'stok_pemasok', 'pemasok', 'stok',
+            'kas', 'shift',
             'pengaturan', 'promo', 'metode_bayar', 'meja', 'favorit', 'menu_varian', 'menu', 'kategori', 'pengguna',
         ];
 
@@ -704,9 +586,9 @@ return new class extends Migration
 
         $tablesToRestore = [
             'users', 'categories', 'menus', 'menu_variants', 'favorites',
-            'tables', 'cafe_tables', 'recipes', 'payment_methods', 'promos',
-            'settings', 'cafe_settings', 'stocks', 'suppliers', 'stock_supplier',
-            'stock_logs', 'stock_movements', 'orders', 'order_items', 'order_timelines',
+            'tables', 'cafe_tables', 'payment_methods', 'promos',
+            'settings', 'cafe_settings',
+            'orders', 'order_items', 'order_timelines',
             'payments', 'cash_shifts', 'cash_movements', 'cash_adjustments',
             'reservations', 'activity_logs', 'roles', 'permissions',
             'role_has_permissions', 'model_has_roles', 'model_has_permissions',
@@ -718,6 +600,8 @@ return new class extends Migration
             }
         }
 
-        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+        }
     }
 };

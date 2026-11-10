@@ -100,9 +100,6 @@ class EmojiFreeContentTest extends TestCase
                 'category_id' => $category->id,
                 'price' => 25000,
                 'description' => "Nikmat \u{1F60B}",
-                'stock' => 10,
-                'min_stock' => 3,
-                'unit' => 'cup',
             ]);
 
         $response->assertRedirect(route('admin.catalog.index'))
@@ -117,7 +114,6 @@ class EmojiFreeContentTest extends TestCase
         $menu = Menu::factory()->create([
             'name' => "Kopi Senja \u{2615}",
             'description' => "Nikmat \u{1F60B}",
-            'unit' => 'cup',
         ]);
 
         $migration = require database_path('migrations/2026_10_20_083704_strip_emoji_from_stored_text.php');

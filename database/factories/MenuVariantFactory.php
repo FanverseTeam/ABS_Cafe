@@ -20,6 +20,14 @@ class MenuVariantFactory extends Factory
             'name' => fake()->randomElement(['Hot', 'Iced', 'Large Iced']),
             'price' => fake()->numberBetween(15000, 50000),
             'is_default' => true,
+            'is_available' => true,
         ];
+    }
+
+    public function unavailable(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_available' => false,
+        ]);
     }
 }

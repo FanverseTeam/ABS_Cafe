@@ -12,11 +12,17 @@ class ModelsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_menu_stock_status_accessor(): void
+    public function test_menu_is_habis_and_scope_aktif(): void
     {
-        $this->assertSame('aman', Menu::factory()->create(['stock' => 50, 'min_stock' => 10])->stock_status);
-        $this->assertSame('menipis', Menu::factory()->create(['stock' => 5, 'min_stock' => 10])->stock_status);
-        $this->assertSame('habis', Menu::factory()->create(['stock' => 0, 'min_stock' => 10])->stock_status);
+        $aktif = Menu::factory()->create(['is_available' => true]);
+        $habis = Menu::factory()->create(['is_available' => false]);
+
+        $this->assertFalse($aktif->isHabis());
+        $this->assertTrue($habis->isHabis());
+
+        $aktifMenus = Menu::aktif()->get();
+        $this->assertTrue($aktifMenus->contains($aktif));
+        $this->assertFalse($aktifMenus->contains($habis));
     }
 
     public function test_user_role_helpers(): void

@@ -18,7 +18,7 @@ class Menu extends Model
 
     protected $fillable = [
         'category_id', 'name', 'description', 'price', 'image',
-        'is_available', 'is_best_seller', 'stock', 'min_stock', 'unit', 'sold_count',
+        'is_available', 'is_best_seller', 'sold_count',
         'merged_into_menu_id', 'variant_id',
     ];
 
@@ -28,8 +28,6 @@ class Menu extends Model
             'price' => 'decimal:2',
             'is_available' => 'boolean',
             'is_best_seller' => 'boolean',
-            'stock' => 'integer',
-            'min_stock' => 'integer',
             'sold_count' => 'integer',
             'merged_into_menu_id' => 'integer',
             'variant_id' => 'integer',
@@ -39,42 +37,6 @@ class Menu extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
-    }
-
-    /**
-     * Status stok untuk tampilan & filter: aman, menipis, habis.
-     */
-    public function getStockStatusAttribute(): string
-    {
-        if (! $this->is_available) {
-            return 'habis';
-        }
-
-        if ($this->stock !== null) {
-            if ($this->stock <= 0) {
-                return 'habis';
-            }
-
-            if ($this->min_stock !== null && $this->stock <= $this->min_stock) {
-                return 'menipis';
-            }
-        }
-
-        if ($this->relationLoaded('recipes') ? $this->recipes->isNotEmpty() : $this->recipes()->exists()) {
-            $recipes = $this->relationLoaded('recipes') ? $this->recipes : $this->recipes()->with('stock')->get();
-            foreach ($recipes as $r) {
-                if ($r->stock) {
-                    if ((float) $r->stock->quantity <= 0) {
-                        return 'habis';
-                    }
-                    if ((float) $r->stock->min_quantity > 0 && (float) $r->stock->quantity <= (float) $r->stock->min_quantity) {
-                        return 'menipis';
-                    }
-                }
-            }
-        }
-
-        return 'aman';
     }
 
     public function variants(): HasMany
@@ -102,11 +64,6 @@ class Menu extends Model
         return $this->hasMany(Favorite::class);
     }
 
-    public function recipes(): HasMany
-    {
-        return $this->hasMany(Recipe::class);
-    }
-
     public function imageUrl(): ?string
     {
         return $this->image ?: null;
@@ -131,7 +88,7 @@ class Menu extends Model
             }
         }
 
-        return $this->stock_status === 'habis';
+        return false;
     }
 
     public function getIsHabisAttribute(): bool
@@ -223,6 +180,11 @@ class Menu extends Model
         }
 
         return $this->name.' ('.$variant->displayName().')';
+    }
+
+    public function scopeAktif(Builder $query): Builder
+    {
+        return $query->where('is_available', true);
     }
 
     public function scopeSearch(Builder $query, ?string $term): Builder

@@ -90,20 +90,18 @@ class PaymentTest extends TestCase
         $this->assertDatabaseHas('pembayaran', ['order_id' => $order->id, 'method' => 'qris', 'reference' => 'QR-123']);
     }
 
-    public function test_paying_order_decrements_stock_and_writes_stock_log(): void
+    public function test_paying_order_increments_sold_count(): void
     {
         $this->actingAsKasir();
         $this->openShift();
-        $menu = Menu::factory()->create(['stock' => 10, 'sold_count' => 0]);
+        $menu = Menu::factory()->create(['sold_count' => 0]);
         $order = Order::factory()->create(['payment_status' => 'menunggu_pembayaran', 'total' => 30000]);
         OrderItem::factory()->for($order)->create(['menu_id' => $menu->id, 'quantity' => 3, 'price' => 10000, 'subtotal' => 30000]);
 
         $this->post("/kasir/pembayaran/{$order->id}/bayar", ['method' => 'tunai', 'cash_received' => 100000]);
 
         $menu->refresh();
-        $this->assertSame(7, $menu->stock);
         $this->assertSame(3, $menu->sold_count);
-        $this->assertDatabaseHas('stok_riwayat', ['menu_id' => $menu->id, 'type' => 'keluar', 'stock_after' => 7]);
     }
 
     public function test_receipt_page_and_json_load(): void

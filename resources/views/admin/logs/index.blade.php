@@ -18,7 +18,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h2 class="font-serif text-2xl font-bold text-cafe-dark">Catatan Audit &amp; Aktivitas</h2>
-            <p class="text-xs text-cafe-muted mt-0.5">Rekam jejak seluruh aksi admin dan kasir: perubahan harga, pembatalan pesanan, dan penyesuaian stok</p>
+            <p class="text-xs text-cafe-muted mt-0.5">Rekam jejak seluruh aksi admin dan kasir: perubahan harga, pembatalan pesanan, dan status menu</p>
         </div>
 
         <a href="{{ route('admin.logs.export') }}" class="px-4 py-2.5 rounded-full bg-cafe-card hover:bg-cafe-beige text-cafe-dark font-semibold text-xs border border-cafe-beige/80 transition-all flex items-center gap-2 shadow-xs">
@@ -40,7 +40,6 @@
                     <option value="all">Semua Jenis Aktivitas</option>
                     <option value="pesanan" {{ request('type') === 'pesanan' ? 'selected' : '' }}>Pesanan &amp; Kasir</option>
                     <option value="menu" {{ request('type') === 'menu' ? 'selected' : '' }}>Menu &amp; Harga</option>
-                    <option value="stok" {{ request('type') === 'stok' ? 'selected' : '' }}>Inventaris Stok</option>
                     <option value="promo" {{ request('type') === 'promo' ? 'selected' : '' }}>Promo &amp; Diskon</option>
                     <option value="pengguna" {{ request('type') === 'pengguna' ? 'selected' : '' }}>Pengguna &amp; Akun</option>
                     <option value="sistem" {{ request('type') === 'sistem' ? 'selected' : '' }}>Sistem &amp; Pengaturan</option>

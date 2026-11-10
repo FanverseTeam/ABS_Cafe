@@ -25,9 +25,9 @@
             </h2>
             <p class="text-sm leading-[1.5] text-cafe-beige/85 mt-2 max-w-xl line-clamp-3 sm:line-clamp-none">
                 @if ($legacyAdmin)
-                    Ikhtisar operasional ABS Cafe Tulungagung hari ini. Terdapat <strong class="font-semibold text-[#F2F5E2]">{{ $pendingPaymentsCount }} pesanan</strong> menunggu pembayaran dan <strong class="font-semibold text-[#F2F5E2]">{{ $lowStockCount }} menu</strong> dengan stok menipis.
+                    Ikhtisar operasional ABS Cafe Tulungagung hari ini. Terdapat <strong class="font-semibold text-[#F2F5E2]">{{ $pendingPaymentsCount }} pesanan</strong> menunggu pembayaran dan <strong class="font-semibold text-[#F2F5E2]">{{ $menuHabisCount }} menu</strong> berstatus habis.
                 @else
-                    Ikhtisar operasional ABS Cafe Tulungagung hari ini. Ada <strong class="font-semibold text-[#F2F5E2]">{{ $activePromoCount }} promo aktif</strong> dan <strong class="font-semibold text-[#F2F5E2]">{{ $lowStockCount }} menu</strong> yang perlu diperhatikan stoknya.
+                    Ikhtisar operasional ABS Cafe Tulungagung hari ini. Ada <strong class="font-semibold text-[#F2F5E2]">{{ $activePromoCount }} promo aktif</strong> dan <strong class="font-semibold text-[#F2F5E2]">{{ $menuHabisCount }} menu</strong> berstatus habis.
                 @endif
             </p>
         </div>
@@ -311,21 +311,21 @@
                     </div>
                 </div>
 
-                <!-- LEGACY ADMIN: Stat 4: Menu Stok Menipis -->
-                <div class="bg-cafe-card rounded-2xl p-4 sm:p-6 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between relative overflow-hidden">
+                <!-- LEGACY ADMIN: Stat 4: Menu Habis -->
+                <a href="{{ route('admin.catalog.index', ['tab' => 'menu']) }}" class="bg-cafe-card rounded-2xl p-4 sm:p-6 shadow-soft hover:shadow-soft-lg transition-all border border-cafe-beige/40 flex flex-col justify-between relative overflow-hidden group">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-cafe-muted truncate">Stok Menipis</p>
-                        <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-cafe-beige/80 flex items-center justify-center text-cafe-dark shadow-xs shrink-0">
-                            <i data-lucide="alert-triangle" class="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]"></i>
+                        <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-cafe-muted truncate">Menu Habis</p>
+                        <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-cafe-danger/15 flex items-center justify-center text-cafe-danger shadow-xs shrink-0">
+                            <i data-lucide="slash" class="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]"></i>
                         </div>
                     </div>
                     <div class="mt-2 sm:mt-3">
-                        <h3 class="text-lg sm:text-2xl lg:text-3xl font-serif font-bold text-cafe-text tracking-tight">{{ $lowStockMenus->count() }} Menu</h3>
+                        <h3 class="text-lg sm:text-2xl lg:text-3xl font-serif font-bold text-cafe-text tracking-tight">{{ $menuHabisCount }} Menu</h3>
                         <div class="flex items-center gap-1.5 mt-1 text-[10px] sm:text-xs">
-                            <span class="font-medium text-cafe-danger bg-cafe-danger/10 px-1.5 py-0.5 rounded-full">Restock</span>
+                            <span class="font-medium text-cafe-danger bg-cafe-danger/10 px-1.5 py-0.5 rounded-full">Nonaktif</span>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
 
@@ -348,7 +348,7 @@
             </div>
         </div>
 
-        <!-- LEGACY ADMIN: top menus, latest orders, and legacy stock panel. -->
+        <!-- LEGACY ADMIN: top menus, latest orders, and menu habis panel. -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="bg-cafe-card rounded-2xl p-6 shadow-soft border border-cafe-beige/40">
                 <div class="flex items-center justify-between mb-4">
@@ -457,32 +457,32 @@
                     </x-responsive-table>
                 </div>
 
-                <!-- LEGACY ADMIN: stock panel with its old standalone link. -->
+                <!-- Menu Habis Widget -->
                 <div class="mt-6 pt-4 border-t border-cafe-beige/50">
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-2">
-                            <i data-lucide="alert-triangle" class="w-4 h-4 text-cafe-warning"></i>
-                            <h4 class="font-serif text-sm font-bold text-cafe-dark">Peringatan Stok di Bawah Batas Minimum</h4>
+                            <i data-lucide="slash" class="w-4 h-4 text-cafe-danger"></i>
+                            <h4 class="font-serif text-sm font-bold text-cafe-dark">Daftar Menu Habis (Nonaktif)</h4>
                         </div>
-                        <a href="{{ route('admin.stock.index') }}" class="text-xs font-semibold text-cafe-brown hover:text-cafe-dark">
-                            Kelola Stok &rarr;
+                        <a href="{{ route('admin.catalog.index', ['tab' => 'menu']) }}" class="text-xs font-semibold text-cafe-brown hover:text-cafe-dark">
+                            Kelola Menu &rarr;
                         </a>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        @forelse ($lowStockMenus->take(3) as $ls)
+                        @forelse ($menuHabis->take(3) as $mh)
                             <div class="p-3 rounded-2xl bg-cafe-cream/80 border border-cafe-beige/80 flex items-center justify-between gap-2">
                                 <div class="min-w-0">
-                                    <p class="text-xs font-bold text-cafe-dark truncate">{{ $ls->name }}</p>
-                                    <p class="text-[11px] text-cafe-muted">Sisa: <strong class="text-cafe-danger">{{ $ls->stock }}</strong> {{ $ls->unit }} (Min: {{ $ls->min_stock }})</p>
+                                    <p class="text-xs font-bold text-cafe-dark truncate">{{ $mh->name }}</p>
+                                    <p class="text-[11px] text-cafe-muted">Status: Tidak dapat dipesan</p>
                                 </div>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $ls->stock <= 0 ? 'bg-cafe-danger/20 text-cafe-danger' : 'bg-cafe-warning/20 text-cafe-warning' }}">
-                                    {{ $ls->stock <= 0 ? 'Habis' : 'Menipis' }}
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cafe-danger/20 text-cafe-danger">
+                                    Habis
                                 </span>
                             </div>
                         @empty
                             <div class="col-span-3 py-3 text-center text-xs text-cafe-muted">
-                                Semua stok menu kafe saat ini berada dalam kondisi aman.
+                                Semua menu kafe saat ini aktif dan dapat dipesan.
                             </div>
                         @endforelse
                     </div>

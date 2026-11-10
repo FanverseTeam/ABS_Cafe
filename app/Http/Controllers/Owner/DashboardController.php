@@ -70,18 +70,13 @@ class DashboardController extends Controller
         // Kinerja kasir ringkas
         $cashierPerformance = $this->cashierPerformance($period, 5);
 
-        // Stok menipis
-        $lowStockMenus = Menu::with('category')
-            ->where(function ($q) {
-                $q->where(function ($sub) {
-                    $sub->whereNotNull('min_stock')
-                        ->whereColumn('stock', '<=', 'min_stock');
-                })->orWhere('stock', '<=', 0)
-                    ->orWhere('is_available', false);
-            })
-            ->orderBy('stock', 'asc')
+        // Menu habis
+        $unavailableMenus = Menu::with('category')
+            ->where('is_available', false)
+            ->orderBy('name', 'asc')
             ->take(6)
             ->get();
+        $menuHabis = $unavailableMenus;
 
         // Promo aktif
         $activePromos = Promo::where('is_active', true)
@@ -108,7 +103,8 @@ class DashboardController extends Controller
             'topMenus',
             'topCategories',
             'cashierPerformance',
-            'lowStockMenus',
+            'unavailableMenus',
+            'menuHabis',
             'activePromos',
             'recentOrders',
         ));
@@ -131,15 +127,19 @@ class DashboardController extends Controller
         $avgCurrent = $ordersCurrent > 0 ? $salesCurrent / $ordersCurrent : 0;
         $avgPrev = $ordersPrev > 0 ? $salesPrev / $ordersPrev : 0;
 
-        $profitCurrent = $salesCurrent * $margin / 100;
-        $profitPrev = $salesPrev * $margin / 100;
+        $discountCurrent = (float) $current->sum('discount');
+        $discountPrev = (float) $previous->sum('discount');
+
+        $netCurrent = $salesCurrent - $discountCurrent;
+        $netPrev = $salesPrev - $discountPrev;
 
         return [
             'sales' => ['value' => $salesCurrent, 'change' => PeriodFilter::percentChange($salesCurrent, $salesPrev)],
             'orders' => ['value' => $ordersCurrent, 'change' => PeriodFilter::percentChange($ordersCurrent, $ordersPrev)],
             'avg' => ['value' => $avgCurrent, 'change' => PeriodFilter::percentChange($avgCurrent, $avgPrev)],
-            'profit' => ['value' => $profitCurrent, 'change' => PeriodFilter::percentChange($profitCurrent, $profitPrev)],
-            'discount' => ['value' => (float) $current->sum('discount'), 'change' => PeriodFilter::percentChange((float) $current->sum('discount'), (float) $previous->sum('discount'))],
+            'profit' => ['value' => $netCurrent, 'change' => PeriodFilter::percentChange($netCurrent, $netPrev)],
+            'net' => ['value' => $netCurrent, 'change' => PeriodFilter::percentChange($netCurrent, $netPrev)],
+            'discount' => ['value' => $discountCurrent, 'change' => PeriodFilter::percentChange($discountCurrent, $discountPrev)],
             'margin' => $margin,
         ];
     }
@@ -234,7 +234,7 @@ class DashboardController extends Controller
             ->where('pesanan.payment_status', 'lunas')
             ->whereBetween('pesanan.created_at', [$period->start, $period->end])
             ->select(DB::raw("COALESCE(kategori.name, 'Tanpa Kategori') as name"), DB::raw('SUM(pesanan_item.quantity) as quantity'), DB::raw('SUM(pesanan_item.subtotal) as revenue'))
-            ->groupBy('name')
+            ->groupBy(DB::raw("COALESCE(kategori.name, 'Tanpa Kategori')"))
             ->orderByDesc('revenue')
             ->limit($limit)
             ->get()
