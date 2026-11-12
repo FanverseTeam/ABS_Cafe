@@ -81,23 +81,33 @@
         :focus-visible { outline: 2px solid #D4954D; outline-offset: 2px; }
     </style>
 </head>
-<body class="antialiased min-h-screen bg-[#F2F5E2] flex items-center justify-center p-0 sm:p-4 lg:p-6 font-sans text-[#290024] selection:bg-[#D4954D] selection:text-[#290024]">
+<body class="antialiased min-h-screen bg-[#F2F5E2] flex items-center justify-center p-0 sm:p-4 lg:p-8 xl:p-12 font-sans text-[#290024] selection:bg-[#D4954D] selection:text-[#290024]">
 
-    <!-- Container Mockup Mobile Frame -->
-    <div class="w-full max-w-md sm:max-w-[420px] h-screen sm:h-[820px] max-h-screen sm:max-h-[860px] bg-[#290024] sm:rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(41,0,36,0.3)] sm:border border-[#E3DEA4] overflow-hidden flex flex-col justify-between relative">
+    <!-- Container Mockup Mobile Frame di Mobile / Kartu 2-Kolom Elegan di Desktop -->
+    <div class="w-full max-w-md sm:max-w-[420px] lg:max-w-4xl xl:max-w-5xl h-screen sm:h-[820px] lg:h-auto lg:min-h-[620px] max-h-screen sm:max-h-[860px] lg:max-h-[92vh] bg-[#290024] sm:rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(41,0,36,0.3)] lg:shadow-[0_25px_70px_-15px_rgba(41,0,36,0.25)] sm:border border-[#E3DEA4] overflow-hidden flex flex-col lg:grid lg:grid-cols-12 justify-between relative">
 
         <!-- ============================================================== -->
-        <!-- AREA ATAS: HEADER GELAP (TANPA PANAH BACK)                     -->
+        <!-- AREA ATAS (MOBILE) / KOLOM KIRI (DESKTOP): BRANDING & HEADER   -->
         <!-- ============================================================== -->
-        <div class="relative bg-gradient-to-b from-[#290024] to-[#290024] p-6 pb-8 flex flex-col justify-between overflow-hidden shrink-0">
+        <div class="relative bg-gradient-to-b from-[#290024] to-[#290024] p-6 pb-8 lg:p-10 xl:p-12 flex flex-col justify-between overflow-hidden shrink-0 lg:col-span-5 xl:col-span-5 lg:h-full">
 
-            <!-- Baris Navigasi Atas: Logo Brand & Badge Status (Tanpa Tombol Back) -->
+            <!-- Background Ambient Glow & Curve Line Art (Khusus Desktop) -->
+            <div class="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-[#D4954D]/10 blur-3xl pointer-events-none hidden lg:block"></div>
+            <div class="absolute -bottom-20 -right-20 w-80 h-80 rounded-full bg-[#E3DEA4]/10 blur-3xl pointer-events-none hidden lg:block"></div>
+            <div class="absolute -bottom-10 -right-10 w-64 h-64 pointer-events-none opacity-20 hidden lg:block">
+                <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="100" cy="100" r="80" stroke="#D4954D" stroke-width="2"/>
+                    <path d="M30 150 C60 80, 140 120, 170 50" stroke="#E3DEA4" stroke-width="2"/>
+                </svg>
+            </div>
+
+            <!-- Baris Navigasi: Logo Brand & Badge Status -->
             <div class="relative z-10 flex items-center justify-between">
                 <div class="inline-flex items-center gap-2">
                     <img src="{{ asset('images/logo-badge.png') }}"
                          alt="Logo ABS Cafe"
-                         class="w-7 h-7 object-contain drop-shadow-xs">
-                    <span class="font-serif font-bold text-sm text-[#F2F5E2] tracking-tight">
+                         class="w-7 h-7 lg:w-8 lg:h-8 object-contain drop-shadow-xs">
+                    <span class="font-serif font-bold text-sm lg:text-base text-[#F2F5E2] tracking-tight">
                         ABS Cafe
                     </span>
                 </div>
@@ -109,27 +119,54 @@
             </div>
 
             <!-- Teks Utama Header Sesuai Desain -->
-            <div class="relative z-10 mt-6 mb-1">
-                <h1 class="font-serif text-2xl sm:text-[26px] font-bold text-[#F2F5E2] leading-snug">
+            <div class="relative z-10 mt-6 lg:mt-10 mb-1 lg:mb-0">
+                <h1 class="font-serif text-2xl sm:text-[26px] lg:text-3xl xl:text-[32px] font-bold text-[#F2F5E2] leading-snug lg:leading-tight">
                     Masuk untuk mengelola operasional dan memantau pesanan.
                 </h1>
-                <p class="text-xs text-[#E3DEA4] mt-2 leading-relaxed">
+                <p class="text-xs lg:text-sm text-[#E3DEA4] mt-2 lg:mt-3 leading-relaxed">
                     Satu pintu masuk untuk Administrator, Owner, dan Kasir ABS Cafe.
                 </p>
+
+                <!-- Poin Fitur Utama (Eksklusif Tampil di Desktop Saja) -->
+                <div class="hidden lg:flex flex-col gap-3.5 mt-8 pt-6 border-t border-[#E3DEA4]/20 text-xs text-[#E3DEA4]">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-xl bg-[#D4954D]/20 border border-[#D4954D]/40 flex items-center justify-center text-[#D4954D] shrink-0">
+                            <i data-lucide="receipt" class="w-4 h-4"></i>
+                        </div>
+                        <span class="font-medium">Kasir & Transaksi Cepat Terintegrasi</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-xl bg-[#D4954D]/20 border border-[#D4954D]/40 flex items-center justify-center text-[#D4954D] shrink-0">
+                            <i data-lucide="utensils" class="w-4 h-4"></i>
+                        </div>
+                        <span class="font-medium">Katalog Menu & Manajemen Meja</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-xl bg-[#D4954D]/20 border border-[#D4954D]/40 flex items-center justify-center text-[#D4954D] shrink-0">
+                            <i data-lucide="trending-up" class="w-4 h-4"></i>
+                        </div>
+                        <span class="font-medium">Pantauan Bisnis & Laporan Penjualan</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Kolom Kiri Desktop -->
+            <div class="relative z-10 hidden lg:block pt-6 border-t border-[#E3DEA4]/10 text-[11px] text-[#E3DEA4]/60">
+                &copy; {{ date('Y') }} ABS Cafe &bull; Portal Internal Staf & Pengelola
             </div>
         </div>
 
         <!-- ============================================================== -->
-        <!-- AREA BAWAH: KARTU FORMULIR LOGIN MELENGKUNG (BOTTOM SHEET)     -->
+        <!-- AREA BAWAH (MOBILE) / KOLOM KANAN (DESKTOP): FORMULIR LOGIN    -->
         <!-- ============================================================== -->
-        <div class="bg-[#F2F5E2] rounded-t-[2.5rem] p-6 sm:p-8 pt-7 flex flex-col justify-between flex-1 shadow-[0_-12px_30px_rgba(41,0,36,0.15)] relative z-20 overflow-y-auto">
+        <div class="bg-[#F2F5E2] rounded-t-[2.5rem] lg:rounded-none p-6 sm:p-8 lg:p-10 xl:p-12 pt-7 flex flex-col justify-between flex-1 shadow-[0_-12px_30px_rgba(41,0,36,0.15)] lg:shadow-none lg:border-l lg:border-[#E3DEA4] relative z-20 overflow-y-auto lg:col-span-7 xl:col-span-7 lg:h-full">
             <div class="space-y-5">
                 <!-- Judul Form Login -->
-                <div class="text-center">
+                <div class="text-center lg:text-left">
                     <h2 class="font-serif text-2xl sm:text-3xl font-bold text-[#290024]">
                         Masuk
                     </h2>
-                    <p class="text-xs text-[#775533] mt-1">
+                    <p class="text-xs sm:text-sm text-[#775533] mt-1">
                         Masuk ke Dashboard staf & pengelola
                     </p>
                 </div>
