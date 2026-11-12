@@ -7,7 +7,6 @@ use App\Models\ActivityLog;
 use App\Models\CafeSetting;
 use App\Models\Category;
 use App\Models\Menu;
-use App\Models\MenuVariant;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderTimeline;
@@ -66,10 +65,7 @@ class PelangganController extends Controller
 
         $baseMenuQuery = Menu::query()
             ->whereNull('merged_into_menu_id')
-            ->with([
-                'variants' => fn ($q) => $q->orderBy('sort_order')->orderBy('id'),
-                'category',
-            ]);
+            ->with(['category']);
 
         // Muat seluruh menu untuk payload Alpine.js (pencarian & filter instan client-side)
         $allMenus = (clone $baseMenuQuery)
@@ -77,30 +73,50 @@ class PelangganController extends Controller
             ->orderBy('name')
             ->get();
 
-        $allMenusPayload = $allMenus->map(function ($menu) {
+        $grouped = $allMenus->groupBy(fn ($m) => $m->variant_group ? 'group-'.$m->variant_group : 'single-'.$m->id);
+
+        $allMenusPayload = $grouped->map(function ($groupMembers) {
+            $primary = $groupMembers->first();
+            $hasGroup = $groupMembers->count() > 1 || filled($primary->variant_group);
+
+            $cardName = ($hasGroup && $primary->variant_group) ? $primary->variant_group : $primary->name;
+            $minPrice = (float) $groupMembers->min('price');
+            $maxPrice = (float) $groupMembers->max('price');
+            $priceLabel = ($hasGroup && $minPrice !== $maxPrice)
+                ? 'Mulai Rp '.number_format($minPrice, 0, ',', '.')
+                : 'Rp '.number_format($minPrice, 0, ',', '.');
+
+            $allHabis = $groupMembers->every(fn ($m) => $m->isHabis());
+
+            $variants = $hasGroup
+                ? $groupMembers->map(fn ($m, $idx) => [
+                    'id' => $m->id,
+                    'menu_id' => $m->id,
+                    'name' => $m->variant_label ?: $m->name,
+                    'size' => null,
+                    'display_name' => $m->variant_label ?: $m->name,
+                    'full_name' => $m->name,
+                    'price' => (float) $m->price,
+                    'price_label' => 'Rp '.number_format((float) $m->price, 0, ',', '.'),
+                    'is_available' => (bool) $m->is_available,
+                    'is_default' => $idx === 0,
+                    'is_habis' => $m->isHabis(),
+                ])->values()->all()
+                : [];
+
             return [
-                'id' => $menu->id,
-                'category_id' => $menu->category_id,
-                'category_slug' => $menu->category?->slug ?? '',
-                'category_name' => $menu->category?->name ?? '',
-                'name' => $menu->name,
-                'description' => $menu->description ?: '',
-                'price' => (float) $menu->price,
-                'image' => $menu->imageUrl(),
-                'is_habis' => $menu->isHabis(),
-                'is_best_seller' => (bool) $menu->is_best_seller,
-                'price_label' => $menu->customerPriceLabel(),
-                'variants' => $menu->variants->map(fn ($v) => [
-                    'id' => $v->id,
-                    'name' => $v->name,
-                    'size' => $v->size,
-                    'display_name' => $v->displayName(),
-                    'price' => (float) $v->price,
-                    'price_label' => 'Rp '.number_format((float) $v->price, 0, ',', '.'),
-                    'is_available' => (bool) $v->is_available,
-                    'is_default' => (bool) $v->is_default,
-                    'is_habis' => $v->isHabis(),
-                ])->values()->all(),
+                'id' => $primary->id,
+                'category_id' => $primary->category_id,
+                'category_slug' => $primary->category?->slug ?? '',
+                'category_name' => $primary->category?->name ?? '',
+                'name' => $cardName,
+                'description' => $primary->description ?: '',
+                'price' => $minPrice,
+                'image' => $primary->imageUrl(),
+                'is_habis' => $allHabis,
+                'is_best_seller' => (bool) $groupMembers->contains('is_best_seller', true),
+                'price_label' => $priceLabel,
+                'variants' => $variants,
             ];
         })->values()->all();
 
@@ -324,21 +340,14 @@ class PelangganController extends Controller
                         continue;
                     }
 
-                    $variant = ! empty($item['varian_id'])
-                        ? MenuVariant::where('id', $item['varian_id'])->where('menu_id', $menu->id)->first()
-                        : null;
-
-                    $price = $variant ? (float) $variant->price : (float) $menu->price;
+                    $price = (float) $menu->price;
                     $qty = (int) $item['jumlah'];
                     $itemSubtotal = $price * $qty;
                     $subtotal += $itemSubtotal;
 
-                    $displayName = $menu->name.($variant ? " ({$variant->name})" : '');
-
                     $builtItems[] = [
                         'menu_id' => $menu->id,
-                        'variant_id' => $variant?->id,
-                        'name' => $displayName,
+                        'name' => $menu->name,
                         'price' => $price,
                         'quantity' => $qty,
                         'subtotal' => $itemSubtotal,
@@ -379,7 +388,6 @@ class PelangganController extends Controller
                     OrderItem::create([
                         'order_id' => $order->id,
                         'menu_id' => $item['menu_id'],
-                        'variant_id' => $item['variant_id'],
                         'name' => $item['name'],
                         'price' => $item['price'],
                         'quantity' => $item['quantity'],

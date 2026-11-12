@@ -5,9 +5,6 @@ namespace Tests\Unit;
 use App\Models\Category;
 use App\Models\Favorite;
 use App\Models\Menu;
-use App\Models\MenuVariant;
-use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\Promo;
 use App\Models\User;
 use App\Services\MenuMergeService;
@@ -35,7 +32,7 @@ class MenuMergeServiceTest extends TestCase
         $this->assertNotEmpty($analysis['ambiguous']);
     }
 
-    public function test_merge_moves_related_data_and_rollback_restores_archived_menus(): void
+    public function test_merge_groups_menus_and_rollback_ungroups(): void
     {
         $category = Category::factory()->create();
         $ice = Menu::factory()->for($category)->create([
@@ -49,16 +46,6 @@ class MenuMergeServiceTest extends TestCase
             'sold_count' => 1,
         ]);
 
-        $order = Order::factory()->create();
-        $item = OrderItem::factory()->for($order)->create([
-            'menu_id' => $ice->id,
-            'variant_id' => null,
-            'name' => 'Vietnam Drip (Ice)',
-            'price' => 13000,
-            'quantity' => 2,
-            'subtotal' => 26000,
-        ]);
-
         $promo = Promo::factory()->create([
             'applies_to' => 'menu',
             'target_menu_id' => $ice->id,
@@ -68,79 +55,21 @@ class MenuMergeServiceTest extends TestCase
         Favorite::create(['user_id' => $user->id, 'menu_id' => $ice->id]);
 
         $service = app(MenuMergeService::class);
-        $parent = $service->mergeMenus([$ice->id, $hot->id]);
+        $first = $service->mergeMenus([$ice->id, $hot->id]);
 
-        $this->assertSame('Vietnam Drip (Hot / Ice)', $parent->name);
-        $this->assertSame(2, $parent->variants()->count());
-        $this->assertSame(12000.0, (float) $parent->price);
-        $this->assertSame(3, (int) $parent->sold_count);
+        $this->assertSame('Vietnam Drip', $ice->fresh()->variant_group);
+        $this->assertSame('Ice', $ice->fresh()->variant_label);
+        $this->assertSame('Vietnam Drip', $hot->fresh()->variant_group);
+        $this->assertSame('Hot', $hot->fresh()->variant_label);
 
-        $this->assertSoftDeleted('menu', ['id' => $ice->id]);
-        $this->assertSoftDeleted('menu', ['id' => $hot->id]);
+        // Menus remain active with their own PK
+        $this->assertDatabaseHas('menu', ['id' => $ice->id, 'deleted_at' => null]);
+        $this->assertDatabaseHas('menu', ['id' => $hot->id, 'deleted_at' => null]);
 
-        $iceVariant = $parent->variants()->where('name', 'Ice')->firstOrFail();
-        $this->assertDatabaseHas('pesanan_item', [
-            'id' => $item->id,
-            'menu_id' => $parent->id,
-            'variant_id' => $iceVariant->id,
-            'name' => 'Vietnam Drip - Ice',
-        ]);
-        $this->assertDatabaseHas('promo', ['id' => $promo->id, 'target_menu_id' => $parent->id]);
-        $this->assertDatabaseHas('favorit', ['user_id' => $user->id, 'menu_id' => $parent->id]);
-
-        $restored = $service->rollback($parent);
+        $restored = $service->rollback($first);
 
         $this->assertSame(2, $restored);
-        $this->assertSoftDeleted('menu', ['id' => $parent->id]);
-        $this->assertDatabaseHas('menu', ['id' => $ice->id, 'merged_into_menu_id' => null, 'deleted_at' => null]);
-        $this->assertDatabaseHas('menu', ['id' => $hot->id, 'merged_into_menu_id' => null, 'deleted_at' => null]);
-        $this->assertDatabaseHas('pesanan_item', ['id' => $item->id, 'menu_id' => $ice->id]);
-        $this->assertDatabaseHas('promo', ['id' => $promo->id, 'target_menu_id' => $ice->id]);
-        $this->assertDatabaseHas('favorit', ['user_id' => $user->id, 'menu_id' => $ice->id]);
-        $this->assertDatabaseMissing('menu_varian', ['menu_id' => $parent->id]);
-    }
-
-    public function test_variant_sizes_survive_merge_and_order_items_map_to_the_right_variant(): void
-    {
-        $category = Category::factory()->create();
-        $ice = Menu::factory()->for($category)->create(['name' => 'Teh Tarik (Ice)']);
-        $hot = Menu::factory()->for($category)->create(['name' => 'Teh Tarik (Hot)']);
-
-        $iceLarge = MenuVariant::factory()->for($ice)->create([
-            'name' => 'Ice',
-            'size' => 'Large',
-            'price' => 18000,
-            'sort_order' => 0,
-        ]);
-        MenuVariant::factory()->for($ice)->create([
-            'name' => 'Ice',
-            'size' => 'Reguler',
-            'price' => 14000,
-            'sort_order' => 1,
-        ]);
-        MenuVariant::factory()->for($hot)->create([
-            'name' => 'Hot',
-            'size' => null,
-            'price' => 15000,
-            'sort_order' => 0,
-        ]);
-
-        $order = Order::factory()->create();
-        $item = OrderItem::factory()->for($order)->create([
-            'menu_id' => $ice->id,
-            'variant_id' => $iceLarge->id,
-            'name' => 'Teh Tarik (Ice)',
-        ]);
-
-        $parent = app(MenuMergeService::class)->mergeMenus([$ice->id, $hot->id]);
-
-        $newVariant = $parent->variants()->where('name', 'Ice')->where('size', 'Large')->firstOrFail();
-
-        $this->assertDatabaseHas('pesanan_item', [
-            'id' => $item->id,
-            'menu_id' => $parent->id,
-            'variant_id' => $newVariant->id,
-            'name' => 'Teh Tarik - Ice - Large',
-        ]);
+        $this->assertNull($ice->fresh()->variant_group);
+        $this->assertNull($hot->fresh()->variant_group);
     }
 }

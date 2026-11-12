@@ -21,7 +21,6 @@ class OrderItemFactory extends Factory
         return [
             'order_id' => Order::factory(),
             'menu_id' => null,
-            'variant_id' => null,
             'name' => ucfirst(fake()->words(2, true)),
             'price' => $price,
             'quantity' => $quantity,

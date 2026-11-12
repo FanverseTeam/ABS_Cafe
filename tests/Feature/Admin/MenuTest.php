@@ -99,20 +99,18 @@ class MenuTest extends TestCase
         $category = Category::factory()->create();
 
         $this->actingAsAdmin()->post('/admin/menu/store', [
-            'name' => 'Teh Tarik (Hot / Ice)',
+            'name' => 'Teh Tarik (Ice)',
+            'variant_group' => 'Teh Tarik',
+            'variant_label' => 'Ice',
             'category_id' => $category->id,
-            'price' => 8000,
-            'variants_present' => 1,
-            'variants' => [
-                ['name' => 'Ice', 'price' => 9000, 'is_available' => '1'],
-                ['name' => 'Hot', 'price' => 8000, 'is_available' => '1'],
-            ],
+            'price' => 9000,
         ])->assertRedirect();
 
-        $menu = Menu::where('name', 'Teh Tarik (Hot / Ice)')->firstOrFail();
+        $menu = Menu::where('name', 'Teh Tarik (Ice)')->firstOrFail();
 
-        $this->assertSame(8000.0, (float) $menu->price);
-        $this->assertSame(2, $menu->variants()->count());
+        $this->assertSame(9000.0, (float) $menu->price);
+        $this->assertSame('Teh Tarik', $menu->variant_group);
+        $this->assertSame('Ice', $menu->variant_label);
     }
 
     public function test_legacy_admin_can_merge_menus(): void
@@ -125,6 +123,7 @@ class MenuTest extends TestCase
             'menu_ids' => [$ice->id, $hot->id],
         ])->assertRedirect()->assertSessionHas('success');
 
-        $this->assertDatabaseHas('menu', ['name' => 'Teh Tarik (Hot / Ice)', 'deleted_at' => null]);
+        $this->assertSame('Teh Tarik', $ice->fresh()->variant_group);
+        $this->assertSame('Teh Tarik', $hot->fresh()->variant_group);
     }
 }

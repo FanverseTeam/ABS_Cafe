@@ -7,21 +7,18 @@ use App\Models\ActivityLog;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Services\MenuMergeService;
-use App\Services\MenuVariantService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class CatalogController extends Controller
 {
-    public function __construct(private readonly MenuVariantService $variants) {}
-
     public function index(Request $request)
     {
         $activeCategories = Category::where('is_active', true)->orderBy('order', 'asc')->get();
         $categories = Category::withCount('menus')->orderBy('order', 'asc')->get();
 
-        $menuQuery = Menu::with(['category', 'variants']);
+        $menuQuery = Menu::with('category');
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -65,7 +62,7 @@ class CatalogController extends Controller
 
     public function editMenu($id)
     {
-        $menu = Menu::with('variants')->findOrFail($id);
+        $menu = Menu::findOrFail($id);
         $categories = Category::where('is_active', true)->orderBy('order', 'asc')->get();
         if ($categories->isEmpty()) {
             $categories = Category::orderBy('order', 'asc')->get();
@@ -78,8 +75,19 @@ class CatalogController extends Controller
     {
         $this->validateMenu($request);
 
+        $variantGroup = $request->filled('variant_group') ? trim($request->input('variant_group')) : null;
+        $variantLabel = $request->filled('variant_label') ? trim($request->input('variant_label')) : null;
+
+        // Auto-detect group and label from name if not provided
+        if (! $variantGroup && preg_match('/^(.+?)\s*\(([^)]+)\)\s*$/', $request->input('name'), $m)) {
+            $variantGroup = trim($m[1]);
+            $variantLabel = trim($m[2]);
+        }
+
         $menu = Menu::create([
             'name' => $request->input('name'),
+            'variant_group' => $variantGroup,
+            'variant_label' => $variantLabel,
             'category_id' => $request->input('category_id'),
             'price' => $request->input('price'),
             'description' => $request->input('description'),
@@ -88,8 +96,6 @@ class CatalogController extends Controller
             'is_best_seller' => $request->boolean('is_best_seller', false),
             'sold_count' => 0,
         ]);
-
-        $this->variants->sync($menu, $this->variantPayload($request));
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
@@ -108,8 +114,18 @@ class CatalogController extends Controller
 
         $menu = Menu::findOrFail($id);
 
+        $variantGroup = $request->filled('variant_group') ? trim($request->input('variant_group')) : null;
+        $variantLabel = $request->filled('variant_label') ? trim($request->input('variant_label')) : null;
+
+        if (! $variantGroup && preg_match('/^(.+?)\s*\(([^)]+)\)\s*$/', $request->input('name'), $m)) {
+            $variantGroup = trim($m[1]);
+            $variantLabel = trim($m[2]);
+        }
+
         $menu->update([
             'name' => $request->input('name'),
+            'variant_group' => $variantGroup,
+            'variant_label' => $variantLabel,
             'category_id' => $request->input('category_id'),
             'price' => $request->input('price'),
             'description' => $request->input('description'),
@@ -117,10 +133,6 @@ class CatalogController extends Controller
             'is_available' => $request->boolean('is_available'),
             'is_best_seller' => $request->boolean('is_best_seller'),
         ]);
-
-        if ($request->has('variants') || $request->boolean('variants_present')) {
-            $this->variants->sync($menu, $this->variantPayload($request));
-        }
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
@@ -229,29 +241,14 @@ class CatalogController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'variant_group' => 'nullable|string|max:100',
+            'variant_label' => 'nullable|string|max:50',
             'category_id' => 'required|exists:kategori,id',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|string',
             'variants' => 'nullable|array',
-            'variants.*.id' => 'nullable|integer|exists:menu_varian,id',
-            'variants.*.name' => 'nullable|string|max:100',
-            'variants.*.size' => 'nullable|string|max:50',
-            'variants.*.price' => 'nullable|numeric|min:0',
-            'variants.*.is_available' => 'nullable|boolean',
-            'variants.*.sort_order' => 'nullable|integer|min:0',
         ]);
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    private function variantPayload(Request $request): array
-    {
-        return array_values(array_filter(
-            (array) $request->input('variants', []),
-            fn ($item) => is_array($item) && (! empty($item['name']) || ! empty($item['price']))
-        ));
     }
 
     public function storeCategory(Request $request)

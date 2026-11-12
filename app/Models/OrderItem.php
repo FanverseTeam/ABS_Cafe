@@ -15,7 +15,6 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'menu_id',
-        'variant_id',
         'name',
         'price',
         'quantity',
@@ -37,10 +36,5 @@ class OrderItem extends Model
     public function menu(): BelongsTo
     {
         return $this->belongsTo(Menu::class);
-    }
-
-    public function variant(): BelongsTo
-    {
-        return $this->belongsTo(MenuVariant::class, 'variant_id');
     }
 }

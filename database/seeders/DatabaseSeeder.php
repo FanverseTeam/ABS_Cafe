@@ -136,7 +136,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         $paymentMethods = ['qris', 'tunai', 'debit'];
-        $menuList = Menu::with('variants')->get();
+        $menuList = Menu::get();
 
         foreach ($sampleCustomers as $index => $customer) {
             $orderCode = sprintf('#AB2610%02d', $index + 1);
@@ -197,16 +197,14 @@ class DatabaseSeeder extends Seeder
             $order->items()->delete();
             foreach ($selectedMenus as $menu) {
                 $qty = ($index % 2 === 0) ? 1 : 2;
-                $variant = $menu->variants->where('is_available', true)->first() ?? $menu->variants->first();
-                $itemPrice = $variant ? (float) $variant->price : (float) $menu->price;
+                $itemPrice = (float) $menu->price;
                 $itemSubtotal = $itemPrice * $qty;
                 $subtotal += $itemSubtotal;
 
                 OrderItem::create([
                     'order_id' => $order->id,
                     'menu_id' => $menu->id,
-                    'variant_id' => $variant?->id,
-                    'name' => $menu->orderLineName($variant),
+                    'name' => $menu->name,
                     'price' => $itemPrice,
                     'quantity' => $qty,
                     'subtotal' => $itemSubtotal,

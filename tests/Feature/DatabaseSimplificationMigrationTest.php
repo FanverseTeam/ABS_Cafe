@@ -19,7 +19,7 @@ class DatabaseSimplificationMigrationTest extends TestCase
     public function test_new_tables_exist_and_models_operate_on_them(): void
     {
         $newTables = [
-            'pengguna', 'kategori', 'menu', 'menu_varian', 'favorit', 'meja',
+            'pengguna', 'kategori', 'menu', 'favorit', 'meja',
             'metode_bayar', 'promo', 'pengaturan',
             'shift', 'kas',
             'pesanan', 'pesanan_item', 'pesanan_riwayat', 'pembayaran',

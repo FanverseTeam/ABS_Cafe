@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class MenuSalesReport
 {
     /**
-     * Ringkas penjualan per menu induk beserta rincian variannya.
+     * Ringkas penjualan per menu induk/grup beserta rincian variannya.
      *
      * @return Collection<int, array{name: string, quantity: int, revenue: float, variants: array<int, array{name: string, quantity: int, revenue: float}>}>
      */
@@ -17,54 +17,52 @@ class MenuSalesReport
         return DB::table('pesanan_item')
             ->join('pesanan', 'pesanan.id', '=', 'pesanan_item.order_id')
             ->leftJoin('menu', 'menu.id', '=', 'pesanan_item.menu_id')
-            ->leftJoin('menu_varian', 'menu_varian.id', '=', 'pesanan_item.variant_id')
             ->where('pesanan.payment_status', 'lunas')
             ->whereBetween('pesanan.created_at', [$period->start, $period->end])
             ->select(
                 'pesanan_item.menu_id',
                 'pesanan_item.name as item_name',
-                'pesanan_item.variant_id',
                 'menu.name as menu_name',
-                'menu_varian.name as variant_name',
-                'menu_varian.size as variant_size',
+                'menu.variant_group',
+                'menu.variant_label',
                 DB::raw('SUM(pesanan_item.quantity) as quantity'),
                 DB::raw('SUM(pesanan_item.subtotal) as revenue')
             )
             ->groupBy(
                 'pesanan_item.menu_id',
                 'pesanan_item.name',
-                'pesanan_item.variant_id',
                 'menu.name',
-                'menu_varian.name',
-                'menu_varian.size'
+                'menu.variant_group',
+                'menu.variant_label'
             )
             ->get()
-            ->groupBy(fn ($row) => $row->menu_id ? 'menu-'.$row->menu_id : 'name-'.$row->menu_name)
+            ->groupBy(fn ($row) => $row->variant_group ? 'group-'.$row->variant_group : ($row->menu_id ? 'menu-'.$row->menu_id : 'name-'.($row->menu_name ?: $row->item_name)))
             ->map(function (Collection $rows) {
                 $first = $rows->first();
-                $variants = $rows
-                    ->filter(fn ($row) => $row->variant_id || $row->variant_name)
-                    ->groupBy(fn ($row) => ($row->variant_name ?: 'Varian').'|'.($row->variant_size ?: ''))
-                    ->map(function (Collection $variantRows) {
-                        $variant = $variantRows->first();
-                        $name = $variant->variant_name ?: 'Varian';
+                $displayName = $first->variant_group ?: ($first->menu_name ?: $first->item_name);
 
-                        if ($variant->variant_size) {
-                            $name .= ' - '.$variant->variant_size;
-                        }
+                $hasVariants = $rows->contains(fn ($row) => filled($row->variant_label) || filled($row->variant_group));
 
-                        return [
-                            'name' => $name,
-                            'quantity' => (int) $variantRows->sum('quantity'),
-                            'revenue' => (float) $variantRows->sum('revenue'),
-                        ];
-                    })
-                    ->sortByDesc('revenue')
-                    ->values()
-                    ->all();
+                $variants = $hasVariants
+                    ? $rows
+                        ->groupBy(fn ($row) => $row->variant_label ?: $row->item_name)
+                        ->map(function (Collection $variantRows) {
+                            $variant = $variantRows->first();
+                            $name = $variant->variant_label ?: $variant->item_name;
+
+                            return [
+                                'name' => $name,
+                                'quantity' => (int) $variantRows->sum('quantity'),
+                                'revenue' => (float) $variantRows->sum('revenue'),
+                            ];
+                        })
+                        ->sortByDesc('revenue')
+                        ->values()
+                        ->all()
+                    : [];
 
                 return [
-                    'name' => $first->menu_name,
+                    'name' => $displayName,
                     'quantity' => (int) $rows->sum('quantity'),
                     'revenue' => (float) $rows->sum('revenue'),
                     'variants' => $variants,

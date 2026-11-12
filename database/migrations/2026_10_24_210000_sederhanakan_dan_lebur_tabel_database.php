@@ -92,7 +92,7 @@ return new class extends Migration
         }
 
         // Foreign key menu ke menu_varian
-        if ($createdMenu && Schema::hasTable('menu_varian')) {
+        if ($createdMenu && Schema::hasTable('menu_varian') && DB::getDriverName() !== 'sqlite') {
             Schema::table('menu', function (Blueprint $table) {
                 $table->foreign('variant_id')->references('id')->on('menu_varian')->onDelete('set null');
             });
@@ -263,7 +263,9 @@ return new class extends Migration
 
                 $table->foreign('order_id')->references('id')->on('pesanan')->onDelete('cascade');
                 $table->foreign('menu_id')->references('id')->on('menu')->onDelete('set null');
-                $table->foreign('variant_id')->references('id')->on('menu_varian')->onDelete('set null');
+                if (DB::getDriverName() !== 'sqlite') {
+                    $table->foreign('variant_id')->references('id')->on('menu_varian')->onDelete('set null');
+                }
             });
         }
 

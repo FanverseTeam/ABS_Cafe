@@ -15,25 +15,32 @@
 </style>
 
 @php
-    $posMenuData = $categories->flatMap->menus->mapWithKeys(fn ($menu) => [
-        $menu->id => [
-            'id' => $menu->id,
-            'name' => $menu->name,
-            'base_name' => $menu->variantBaseName(),
-            'price' => (float) $menu->price,
-            'description' => $menu->description,
-            'image' => $menu->image,
-            'is_available' => (bool) $menu->is_available,
-            'variants' => $menu->variants->map(fn ($variant) => [
-                'id' => $variant->id,
-                'name' => $variant->name,
-                'size' => $variant->size,
-                'display_name' => $variant->displayName(),
-                'price' => (float) $variant->price,
-                'is_available' => (bool) $variant->is_available,
-            ])->values(),
-        ],
-    ]);
+    $posMenuData = $categories->flatMap->menus->mapWithKeys(function ($menu) {
+        $siblings = $menu->groupSiblings();
+        $hasGroup = $siblings->count() > 1;
+
+        return [
+            $menu->id => [
+                'id' => $menu->id,
+                'name' => ($hasGroup && $menu->variant_group) ? $menu->variant_group : $menu->name,
+                'base_name' => $menu->variantBaseName(),
+                'price' => (float) $menu->price,
+                'description' => $menu->description,
+                'image' => $menu->image,
+                'is_available' => (bool) $menu->is_available,
+                'variants' => $hasGroup ? $siblings->map(fn ($s) => [
+                    'id' => $s->id,
+                    'menu_id' => $s->id,
+                    'name' => $s->variant_label ?: $s->name,
+                    'size' => null,
+                    'display_name' => $s->variant_label ?: $s->name,
+                    'full_name' => $s->name,
+                    'price' => (float) $s->price,
+                    'is_available' => (bool) $s->is_available,
+                ])->values() : collect(),
+            ],
+        ];
+    });
 @endphp
 
 <!-- ==================== VIEW 1: KATALOG MENU & KERANJANG CEPAT ==================== -->
@@ -95,11 +102,16 @@
                     <div class="grid grid-cols-2 md:landscape:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-2.5 sm:gap-3">
                         @forelse($category->menus as $menu)
                             @php
-                                $availableVariants = $menu->variants->where('is_available', true);
-                                $defaultPrice = $availableVariants->count() ? (float) $availableVariants->min('price') : (float) $menu->price;
-                                $hasVariants = $menu->variants->count() > 1;
-                                $priceLabel = $hasVariants ? $menu->priceRangeLabel() : 'Rp '.number_format($defaultPrice, 0, ',', '.');
-                                $isSoldOut = ! $menu->is_available || ($menu->variants->isNotEmpty() && $availableVariants->isEmpty());
+                                $siblings = $menu->groupSiblings();
+                                $hasVariants = $siblings->count() > 1;
+                                $availableSiblings = $siblings->where('is_available', true);
+                                $minPrice = (float) $siblings->min('price');
+                                $maxPrice = (float) $siblings->max('price');
+                                $priceLabel = ($hasVariants && $minPrice !== $maxPrice)
+                                    ? 'Rp '.number_format($minPrice, 0, ',', '.').' - Rp '.number_format($maxPrice, 0, ',', '.')
+                                    : 'Rp '.number_format($minPrice, 0, ',', '.');
+                                $isSoldOut = $hasVariants ? $availableSiblings->isEmpty() : ! $menu->is_available;
+                                $cardTitle = ($hasVariants && $menu->variant_group) ? $menu->variant_group : $menu->name;
                             @endphp
                             <div class="menu-item-wrapper pos-menu-card bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/70 p-2.5 sm:p-3 landscape:p-2.5 shadow-soft flex flex-col justify-between cursor-pointer group {{ $isSoldOut ? 'opacity-50 pointer-events-none' : '' }}"
                                  data-menu-name="{{ strtolower($menu->name) }}"
@@ -128,7 +140,7 @@
                                         @endif
                                     </div>
                                     <h4 class="font-serif font-bold text-xs sm:text-sm text-[#290024] leading-tight line-clamp-1 group-hover:text-[#775533] transition-colors">
-                                        {{ $menu->name }}
+                                        {{ $cardTitle }}
                                     </h4>
                                     <p class="text-[10px] sm:text-[11px] text-[#775533] line-clamp-2 mt-0.5 leading-snug">
                                         {{ $menu->description ?: 'Menu nikmat dari ABS Cafe.' }}
@@ -563,7 +575,6 @@ let cart = [];
 @if($resume)
     cart = {!! json_encode($resume->items->map(fn ($it) => [
         'menu_id' => $it->menu_id,
-        'variant_id' => $it->variant_id,
         'name' => $it->name,
         'price' => (float) $it->price,
         'qty' => $it->quantity,
@@ -932,21 +943,13 @@ function handleMenuClick(id) {
         }
 
         const variant = currentSelectedVariant;
-        const isMergedName = /\s*\([^)]*\/[^)]*\)\s*$/.test(menu.name);
-        let finalName = menu.name;
-
-        if (variant && isMergedName) {
-            finalName = `${menu.base_name} - ${variant.name}${variant.size ? ` - ${variant.size}` : ''}`;
-        } else if (variant && variant.name !== 'Porsi' && menu.name.includes(variant.name)) {
-            finalName = variant.size ? `${menu.name} - ${variant.size}` : menu.name;
-        } else if (variant && variant.name !== 'Porsi') {
-            finalName = `${menu.name} (${variant.display_name || variant.name})`;
-        }
+        const targetMenuId = variant ? (variant.menu_id || variant.id) : menu.id;
+        const finalName = variant ? (variant.full_name || `${menu.name} (${variant.display_name || variant.name})`) : menu.name;
 
         const finalPrice = variant ? Number(variant.price) : Number(menu.price);
         const notes = document.getElementById('sheet-notes').value.trim();
 
-        addToCartWithOptions(menu.id, finalName, finalPrice, currentSheetQty, notes, variant?.id ?? null);
+        addToCartWithOptions(targetMenuId, finalName, finalPrice, currentSheetQty, notes);
         closeMenuDetailSheet();
         showToast('Ditambahkan', `${currentSheetQty}x ${finalName} masuk ke keranjang`);
 
@@ -991,13 +994,13 @@ function closeMenuDetailSheet() {
 }
 
 // ---------- Cart Operations ----------
-function addToCartWithOptions(menuId, name, price, qty = 1, notes = '', variantId = null) {
-    const existing = cart.find(i => i.menu_id === menuId && i.variant_id === variantId);
+function addToCartWithOptions(menuId, name, price, qty = 1, notes = '') {
+    const existing = cart.find(i => i.menu_id === menuId && (i.notes || '') === (notes || ''));
     if (existing) {
         existing.qty += qty;
         if (notes) existing.notes = notes;
     } else {
-        cart.push({ menu_id: menuId, variant_id: variantId, name, price, qty, notes });
+        cart.push({ menu_id: menuId, name, price, qty, notes });
     }
     renderCart();
 }

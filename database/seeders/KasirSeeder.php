@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Menu;
-use App\Models\MenuVariant;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderTimeline;
@@ -71,33 +70,6 @@ class KasirSeeder extends Seeder
             }
         }
 
-        // 4. Varian menu (apabila masih kosong) untuk ukuran Hot / Iced / Large
-        if (MenuVariant::count() === 0) {
-            $withVariants = [
-                'Caramel Latte' => ['Hot' => 24000, 'Iced' => 26000, 'Large Iced' => 30000],
-                'Cafe Latte' => ['Hot' => 22000, 'Iced' => 24000, 'Large Iced' => 28000],
-                'Matcha Latte' => ['Hot' => 25000, 'Iced' => 27000, 'Large Iced' => 31000],
-                'Signature Belgian Chocolate' => ['Hot' => 24000, 'Iced' => 26000],
-                'Aren Brown Sugar Coffee' => ['Iced' => 20000, 'Large Iced' => 24000],
-            ];
-
-            foreach ($withVariants as $menuName => $variants) {
-                $menu = Menu::where('name', $menuName)->first();
-                if (! $menu) {
-                    continue;
-                }
-
-                foreach ($variants as $variantName => $price) {
-                    MenuVariant::create([
-                        'menu_id' => $menu->id,
-                        'name' => $variantName,
-                        'price' => $price,
-                        'is_default' => $variantName === 'Iced' || $variantName === 'Hot',
-                    ]);
-                }
-            }
-        }
-
         // 5. Contoh pesanan Web yang masuk hari ini (menunggu diterima)
         $kasir = User::where('email', 'siti.kasir@abscafe.com')->first() ?: User::where('email', 'kasir@abscafe.com')->first();
         $caramel = Menu::where('name', 'like', '%Caramel Latte%')->first() ?: Menu::first();
@@ -151,15 +123,8 @@ class KasirSeeder extends Seeder
             foreach ($menuItems as [$menu, $qty, $note]) {
                 $price = (float) $menu->price;
                 $name = $menu->name;
-                if ($note === 'Iced' || $note === 'Hot' || $note === 'Large Iced') {
-                    $variant = MenuVariant::where('menu_id', $menu->id)->where('name', $note)->first();
-                    if ($variant) {
-                        $price = (float) $variant->price;
-                        $name = $menu->name.' ('.$variant->name.')';
-                    }
-                }
                 $subtotal += $price * $qty;
-                $lines[] = [$menu->id, $name, $price, $qty, $note === 'Iced' || $note === 'Hot' || $note === 'Large Iced' ? null : $note];
+                $lines[] = [$menu->id, $name, $price, $qty, $note];
             }
 
             $tax = round($subtotal * 0.10, 2);

@@ -34,7 +34,7 @@ class TransactionSeeder extends Seeder
         mt_srand(20261012);
 
         $kasirs = User::where('role', 'kasir')->where('status', 'aktif')->get();
-        $menus = Menu::with('variants')->get();
+        $menus = Menu::get();
         $promos = Promo::where('is_active', true)->get();
         $methods = ['tunai', 'qris', 'debit'];
 
@@ -119,14 +119,12 @@ class TransactionSeeder extends Seeder
 
                 foreach ($selected as $menu) {
                     $qty = mt_rand(1, 3);
-                    $variant = $menu->variants->where('is_available', true)->first() ?? $menu->variants->first();
-                    $itemPrice = $variant ? (float) $variant->price : (float) $menu->price;
+                    $itemPrice = (float) $menu->price;
                     $lineSubtotal = $itemPrice * $qty;
                     $subtotal += $lineSubtotal;
                     $items[] = [
                         'menu_id' => $menu->id,
-                        'variant_id' => $variant?->id,
-                        'name' => $menu->orderLineName($variant),
+                        'name' => $menu->name,
                         'price' => $itemPrice,
                         'quantity' => $qty,
                         'subtotal' => $lineSubtotal,

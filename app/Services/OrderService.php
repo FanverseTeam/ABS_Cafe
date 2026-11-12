@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\CafeSetting;
 use App\Models\CashShift;
 use App\Models\Menu;
-use App\Models\MenuVariant;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderTimeline;
@@ -40,17 +39,12 @@ class OrderService
     /**
      * Hitung subtotal dari payload item (harga diambil ulang dari DB).
      *
-     * @param  array<int, array{menu_id: int, variant_id?: int|null, quantity: int, notes?: string|null}>  $lines
+     * @param  array<int, array{menu_id: int, quantity: int, notes?: string|null}>  $lines
      * @return array{items: array<int, array<string, mixed>>, subtotal: float}
      */
     public function buildLines(array $lines): array
     {
         $menus = Menu::whereIn('id', collect($lines)->pluck('menu_id')->unique())->get()->keyBy('id');
-        $variantsByMenu = MenuVariant::whereIn('menu_id', $menus->keys())
-            ->orderBy('sort_order')
-            ->orderBy('id')
-            ->get()
-            ->groupBy('menu_id');
 
         $built = [];
         $subtotal = 0.0;
@@ -64,44 +58,15 @@ class OrderService
                 throw ValidationException::withMessages(['cart' => "Menu \"{$menu->name}\" sedang habis."]);
             }
 
-            $menuVariants = $variantsByMenu->get($menu->id, collect());
             $quantity = max(1, (int) ($line['quantity'] ?? 1));
             $price = (float) $menu->price;
-            $name = $menu->name;
-            $variantId = null;
-            $variant = null;
-
-            if (! empty($line['variant_id'])) {
-                $variant = $menuVariants->firstWhere('id', (int) $line['variant_id']);
-
-                if (! $variant) {
-                    throw ValidationException::withMessages(['cart' => "Varian untuk menu \"{$menu->name}\" tidak valid."]);
-                }
-            } elseif ($menuVariants->count() === 1) {
-                $variant = $menuVariants->first();
-            } elseif ($menuVariants->count() > 1) {
-                throw ValidationException::withMessages(['cart' => "Pilih varian untuk menu \"{$menu->name}\"."]);
-            }
-
-            if ($variant) {
-                if (! $variant->is_available) {
-                    throw ValidationException::withMessages([
-                        'cart' => "Varian \"{$variant->displayName()}\" untuk menu \"{$menu->name}\" sedang habis.",
-                    ]);
-                }
-
-                $price = (float) $variant->price;
-                $variantId = $variant->id;
-                $name = $this->lineName($menu, $variant, $menuVariants->count());
-            }
 
             $lineSubtotal = round($price * $quantity, 2);
             $subtotal += $lineSubtotal;
 
             $built[] = [
                 'menu_id' => $menu->id,
-                'variant_id' => $variantId,
-                'name' => $name,
+                'name' => $menu->name,
                 'price' => $price,
                 'quantity' => $quantity,
                 'subtotal' => $lineSubtotal,
@@ -114,25 +79,6 @@ class OrderService
         }
 
         return ['items' => $built, 'subtotal' => round($subtotal, 2)];
-    }
-
-    private function lineName(Menu $menu, MenuVariant $variant, int $variantCount): string
-    {
-        if ($variantCount > 1 || str_contains($menu->name, ' / ')) {
-            return trim($menu->variantBaseName().' - '.$variant->name.($variant->size ? ' - '.$variant->size : ''));
-        }
-
-        if ($variant->name === 'Porsi' && ! $variant->size) {
-            return $menu->name;
-        }
-
-        if (str_contains($menu->name, $variant->name)) {
-            return $variant->size ? $menu->name.' - '.$variant->size : $menu->name;
-        }
-
-        $display = $variant->displayName();
-
-        return $menu->name.' ('.$display.')';
     }
 
     public function findPromo(?string $code): ?Promo
@@ -276,7 +222,6 @@ class OrderService
                 OrderItem::create([
                     'order_id' => $order->id,
                     'menu_id' => $item['menu_id'],
-                    'variant_id' => $item['variant_id'] ?? null,
                     'name' => $item['name'],
                     'price' => $item['price'],
                     'quantity' => $item['quantity'],

@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Category;
 use App\Models\Menu;
-use App\Models\MenuVariant;
 use App\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,38 +14,22 @@ class PosVariantTest extends TestCase
 
     private function parentMenu(): array
     {
-        $menu = Menu::factory()->create([
-            'name' => 'Vietnam Drip (Hot / Ice)',
-            'price' => 12000,
-        ]);
-        $hot = MenuVariant::factory()->for($menu)->create([
-            'name' => 'Hot',
-            'size' => null,
-            'price' => 12000,
-            'is_available' => true,
-            'sort_order' => 0,
-        ]);
-        $ice = MenuVariant::factory()->for($menu)->create([
-            'name' => 'Ice',
-            'size' => 'Large',
-            'price' => 15000,
-            'is_available' => true,
-            'sort_order' => 1,
-        ]);
+        $category = Category::factory()->create();
+        $hot = Menu::factory()->for($category)->variant('Vietnam Drip', 'Hot', 12000)->create();
+        $ice = Menu::factory()->for($category)->variant('Vietnam Drip', 'Ice', 15000)->create();
 
-        return [$menu, $hot, $ice];
+        return [$hot, $ice];
     }
 
     public function test_totals_use_the_selected_variant_price(): void
     {
         $this->actingAsKasir();
         $this->openShift();
-        [$menu, , $ice] = $this->parentMenu();
+        [$hot, $ice] = $this->parentMenu();
 
         $this->postJson('/kasir/pos/totals', [
             'cart' => json_encode([[
-                'menu_id' => $menu->id,
-                'variant_id' => $ice->id,
+                'menu_id' => $ice->id,
                 'quantity' => 2,
             ]]),
         ])->assertOk()
@@ -56,13 +40,12 @@ class PosVariantTest extends TestCase
     {
         $this->actingAsKasir();
         $this->openShift();
-        [$menu, , $ice] = $this->parentMenu();
+        [$hot, $ice] = $this->parentMenu();
         $ice->update(['is_available' => false]);
 
         $this->postJson('/kasir/pos/totals', [
             'cart' => json_encode([[
-                'menu_id' => $menu->id,
-                'variant_id' => $ice->id,
+                'menu_id' => $ice->id,
                 'quantity' => 1,
             ]]),
         ])->assertStatus(422)
@@ -73,14 +56,13 @@ class PosVariantTest extends TestCase
     {
         $this->actingAsKasir();
         $this->openShift();
-        [$menu, , $ice] = $this->parentMenu();
+        [$hot, $ice] = $this->parentMenu();
 
         $this->post('/kasir/pos/store', [
             'order_type' => 'take_away',
             'customer_name' => 'Budi',
             'cart' => json_encode([[
-                'menu_id' => $menu->id,
-                'variant_id' => $ice->id,
+                'menu_id' => $ice->id,
                 'quantity' => 1,
             ]]),
             'action' => 'pay',
@@ -91,8 +73,8 @@ class PosVariantTest extends TestCase
         $order = Order::latest('id')->firstOrFail();
         $item = $order->items()->firstOrFail();
 
-        $this->assertSame($ice->id, $item->variant_id);
-        $this->assertSame('Vietnam Drip - Ice - Large', $item->name);
+        $this->assertSame($ice->id, $item->menu_id);
+        $this->assertSame('Vietnam Drip (Ice)', $item->name);
         $this->assertSame(15000.0, (float) $item->price);
     }
 }

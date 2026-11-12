@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\Menu;
-use App\Models\MenuVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -12,58 +11,46 @@ class VariantMenuAdminTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_can_create_menu_with_variants(): void
+    public function test_admin_can_create_menu_with_variant_group(): void
     {
         $category = Category::factory()->create();
 
         $this->actingAsAdmin()->post('/admin/katalog/menu/store', [
-            'name' => 'Vietnam Drip (Hot / Ice)',
+            'name' => 'Vietnam Drip (Ice)',
+            'variant_group' => 'Vietnam Drip',
+            'variant_label' => 'Ice',
             'category_id' => $category->id,
-            'price' => 13000,
-            'variants_present' => 1,
-            'variants' => [
-                ['name' => 'Ice', 'size' => 'Large', 'price' => 18000, 'is_available' => '1'],
-                ['name' => 'Hot', 'size' => null, 'price' => 15000, 'is_available' => '0'],
-            ],
+            'price' => 15000,
         ])->assertRedirect();
 
-        $menu = Menu::where('name', 'Vietnam Drip (Hot / Ice)')->firstOrFail();
+        $menu = Menu::where('name', 'Vietnam Drip (Ice)')->firstOrFail();
 
         $this->assertSame(15000.0, (float) $menu->price);
-        $this->assertSame(2, $menu->variants()->count());
-        $this->assertDatabaseHas('menu_varian', [
-            'menu_id' => $menu->id,
-            'name' => 'Hot',
-            'is_available' => false,
-        ]);
+        $this->assertSame('Vietnam Drip', $menu->variant_group);
+        $this->assertSame('Ice', $menu->variant_label);
     }
 
-    public function test_admin_can_update_and_remove_variants(): void
+    public function test_admin_can_update_variant_group(): void
     {
-        $menu = Menu::factory()->create(['name' => 'Teh Tarik (Hot / Ice)']);
-        $ice = MenuVariant::factory()->for($menu)->create([
-            'name' => 'Ice',
-            'size' => 'Large',
-            'price' => 18000,
-        ]);
-        MenuVariant::factory()->for($menu)->create([
-            'name' => 'Hot',
-            'size' => null,
+        $menu = Menu::factory()->create([
+            'name' => 'Teh Tarik (Ice)',
+            'variant_group' => 'Teh Tarik',
+            'variant_label' => 'Ice',
             'price' => 15000,
         ]);
 
         $this->actingAsAdmin()->post("/admin/katalog/menu/{$menu->id}/update", [
-            'name' => 'Teh Tarik (Hot / Ice)',
+            'name' => 'Teh Tarik (Ice)',
+            'variant_group' => 'Teh Tarik Manis',
+            'variant_label' => 'Dingin',
             'category_id' => $menu->category_id,
-            'price' => 15000,
-            'variants_present' => 1,
-            'variants' => [
-                ['id' => $ice->id, 'name' => 'Ice', 'size' => 'Reguler', 'price' => 16000, 'is_available' => '1'],
-            ],
+            'price' => 16000,
         ])->assertRedirect();
 
-        $this->assertSame(1, $menu->variants()->count());
-        $this->assertSame(1, $menu->fresh()->variants()->where('name', 'Ice')->where('size', 'Reguler')->count());
+        $fresh = $menu->fresh();
+        $this->assertSame('Teh Tarik Manis', $fresh->variant_group);
+        $this->assertSame('Dingin', $fresh->variant_label);
+        $this->assertSame(16000.0, (float) $fresh->price);
     }
 
     public function test_admin_can_merge_selected_menus(): void
@@ -76,24 +63,36 @@ class VariantMenuAdminTest extends TestCase
             'menu_ids' => [$ice->id, $hot->id],
         ])->assertRedirect()->assertSessionHas('success');
 
-        $parent = Menu::where('name', 'Cappucino (Hot / Ice)')->firstOrFail();
+        $iceFresh = $ice->fresh();
+        $hotFresh = $hot->fresh();
 
-        $this->assertSame(2, $parent->variants()->count());
-        $this->assertSoftDeleted('menu', ['id' => $ice->id]);
-        $this->assertSoftDeleted('menu', ['id' => $hot->id]);
+        $this->assertSame('Cappucino', $iceFresh->variant_group);
+        $this->assertSame('Ice', $iceFresh->variant_label);
+        $this->assertSame('Cappucino', $hotFresh->variant_group);
+        $this->assertSame('Hot', $hotFresh->variant_label);
     }
 
-    public function test_menu_list_shows_variant_chips_and_price_range(): void
+    public function test_menu_list_shows_variant_chips(): void
     {
-        $menu = Menu::factory()->create(['name' => 'Matcha Milk (Hot / Ice)', 'price' => 15000]);
-        MenuVariant::factory()->for($menu)->create(['name' => 'Ice', 'price' => 17000]);
-        MenuVariant::factory()->for($menu)->create(['name' => 'Hot', 'price' => 15000]);
+        $category = Category::factory()->create();
+        Menu::factory()->for($category)->create([
+            'name' => 'Matcha Milk (Ice)',
+            'variant_group' => 'Matcha Milk',
+            'variant_label' => 'Ice',
+            'price' => 17000,
+        ]);
+        Menu::factory()->for($category)->create([
+            'name' => 'Matcha Milk (Hot)',
+            'variant_group' => 'Matcha Milk',
+            'variant_label' => 'Hot',
+            'price' => 15000,
+        ]);
 
         $this->actingAsAdmin()->get('/admin/katalog')
             ->assertOk()
-            ->assertSee('Matcha Milk (Hot / Ice)')
-            ->assertSee('Ice')
-            ->assertSee('Hot')
-            ->assertSee('Rp 15.000 - Rp 17.000', false);
+            ->assertSee('Matcha Milk (Ice)')
+            ->assertSee('Varian: Ice')
+            ->assertSee('Matcha Milk (Hot)')
+            ->assertSee('Varian: Hot');
     }
 }

@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Menu;
-use App\Models\MenuVariant;
 use App\Services\MenuMergeService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
@@ -15,8 +14,7 @@ class MenuUpdateSeeder extends Seeder
     {
         Schema::disableForeignKeyConstraints();
 
-        // Kosongkan menu lama & varian lama
-        MenuVariant::truncate();
+        // Kosongkan menu lama
         Menu::truncate();
         Category::truncate();
 
@@ -1480,20 +1478,6 @@ class MenuUpdateSeeder extends Seeder
 
         foreach ($menus as $idx => $menuData) {
             $createdMenu = Menu::create(array_merge(['id' => $idx + 1], $menuData));
-
-            // Buat variant default
-            $variantName = 'Porsi';
-            if (str_contains($menuData['name'], '(Ice)')) {
-                $variantName = 'Ice';
-            } elseif (str_contains($menuData['name'], '(Hot)')) {
-                $variantName = 'Hot';
-            }
-            MenuVariant::create([
-                'menu_id' => $createdMenu->id,
-                'name' => $variantName,
-                'price' => $menuData['price'],
-                'is_default' => true,
-            ]);
         }
 
         Schema::enableForeignKeyConstraints();

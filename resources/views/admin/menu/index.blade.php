@@ -123,13 +123,11 @@
                                 <h3 class="font-serif font-bold text-base text-cafe-dark leading-snug">{{ $menu->name }}</h3>
                                 <span class="font-bold text-sm text-cafe-brown shrink-0">{{ $menu->priceRangeLabel() }}</span>
                             </div>
-                            @if($menu->variants->isNotEmpty())
+                            @if($menu->variant_label)
                                 <div class="flex flex-wrap gap-1">
-                                    @foreach($menu->variants as $variant)
-                                        <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold border {{ $variant->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
-                                            {{ $variant->displayName() }}
-                                        </span>
-                                    @endforeach
+                                    <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold border bg-cafe-success/10 text-cafe-success border-cafe-success/30">
+                                        Varian: {{ $menu->variant_label }}
+                                    </span>
                                 </div>
                             @endif
                             <p class="text-xs text-cafe-muted line-clamp-2 leading-relaxed">{{ $menu->description }}</p>
@@ -211,11 +209,9 @@
                                         <div>
                                             <p class="font-semibold text-cafe-dark text-xs">{{ $menu->name }}</p>
                                             <p class="text-[11px] text-cafe-muted line-clamp-1 max-w-xs">{{ $menu->description }}</p>
-                                            @if($menu->variants->isNotEmpty())
+                                            @if($menu->variant_label)
                                                 <div class="flex flex-wrap gap-1 mt-1">
-                                                    @foreach($menu->variants as $variant)
-                                                        <span class="px-1.5 py-0.5 rounded-full text-[9px] font-semibold border {{ $variant->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">{{ $variant->displayName() }}</span>
-                                                    @endforeach
+                                                    <span class="px-1.5 py-0.5 rounded-full text-[9px] font-semibold border bg-cafe-success/10 text-cafe-success border-cafe-success/30">{{ $menu->variant_label }}</span>
                                                 </div>
                                             @endif
                                         </div>
@@ -394,7 +390,12 @@
         document.getElementById('menu-input-image').value = menu.image || '';
         document.getElementById('menu-input-available').checked = Boolean(menu.is_available);
         document.getElementById('menu-input-bestseller').checked = Boolean(menu.is_best_seller);
-        setVariantRows(menu.variants || []);
+        if (document.getElementById('menu-input-variant-group')) {
+            document.getElementById('menu-input-variant-group').value = menu.variant_group || '';
+        }
+        if (document.getElementById('menu-input-variant-label')) {
+            document.getElementById('menu-input-variant-label').value = menu.variant_label || '';
+        }
         document.getElementById('menu-modal').classList.remove('hidden');
     }
 
