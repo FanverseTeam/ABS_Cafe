@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\Models\Menu;
-use App\Models\MenuVariant;
 use App\Models\Order;
 use App\Models\Promo;
 use App\Models\Table;
@@ -52,21 +51,23 @@ class OrderServiceTest extends TestCase
         $this->service->buildLines([['menu_id' => $menu->id, 'quantity' => 1]]);
     }
 
-    public function test_build_lines_rejects_unavailable_variant(): void
+    public function test_build_lines_rejects_unavailable_item_in_cart(): void
     {
-        $menu = Menu::factory()->create(['is_available' => true]);
-        $variant = MenuVariant::factory()->for($menu)->unavailable()->create(['name' => 'Large']);
+        $available = Menu::factory()->create(['is_available' => true]);
+        $unavailable = Menu::factory()->unavailable()->create();
 
         $this->expectException(ValidationException::class);
-        $this->service->buildLines([['menu_id' => $menu->id, 'variant_id' => $variant->id, 'quantity' => 1]]);
+        $this->service->buildLines([
+            ['menu_id' => $available->id, 'quantity' => 1],
+            ['menu_id' => $unavailable->id, 'quantity' => 1],
+        ]);
     }
 
-    public function test_build_lines_applies_variant_price_and_name(): void
+    public function test_build_lines_uses_individual_menu_price_and_name(): void
     {
-        $menu = Menu::factory()->create(['price' => 18000, 'name' => 'Kopi']);
-        $variant = MenuVariant::factory()->for($menu)->create(['name' => 'Large', 'price' => 25000]);
+        $menu = Menu::factory()->create(['price' => 25000, 'name' => 'Kopi (Large)']);
 
-        $built = $this->service->buildLines([['menu_id' => $menu->id, 'variant_id' => $variant->id, 'quantity' => 1]]);
+        $built = $this->service->buildLines([['menu_id' => $menu->id, 'quantity' => 1]]);
 
         $this->assertSame(25000.0, $built['items'][0]['price']);
         $this->assertSame('Kopi (Large)', $built['items'][0]['name']);

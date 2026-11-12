@@ -158,7 +158,7 @@
                 $sheetId  = 'menu-action-' . $menu->id;
                 $isBest   = (bool) $menu->is_best_seller;
                 $isAvail  = (bool) $menu->is_available;
-                $menuJson = Illuminate\Support\Js::from($menu->load('variants'));
+                $menuJson = Illuminate\Support\Js::from($menu);
             @endphp
 
             {{-- Single card per menu --}}
@@ -425,13 +425,11 @@
                                 <h3 class="font-serif font-bold text-base text-cafe-dark leading-snug">{{ $menu->name }}</h3>
                                 <span class="font-bold text-sm text-cafe-brown shrink-0">{{ $menu->priceRangeLabel() }}</span>
                             </div>
-                            @if($menu->variants->isNotEmpty())
+                            @if($menu->variant_label)
                                 <div class="flex flex-wrap gap-1">
-                                    @foreach($menu->variants as $variant)
-                                        <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold border {{ $variant->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
-                                            {{ $variant->displayName() }}
-                                        </span>
-                                    @endforeach
+                                    <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold border bg-cafe-success/10 text-cafe-success border-cafe-success/30">
+                                        Varian: {{ $menu->variant_label }}
+                                    </span>
                                 </div>
                             @endif
                             <p class="text-xs text-cafe-muted line-clamp-2 leading-relaxed">{{ $menu->description }}</p>
@@ -521,13 +519,9 @@
                     <x-slot:fields>
                         <x-responsive-table.field label="Harga" :value="$menu->priceRangeLabel()" />
                         <x-responsive-table.field label="Terjual" :value="$menu->sold_count . ' porsi'" />
-                        @if($menu->variants->isNotEmpty())
+                        @if($menu->variant_label)
                             <x-responsive-table.field label="Varian">
-                                <div class="flex flex-wrap gap-1 mt-0.5">
-                                    @foreach($menu->variants as $variant)
-                                        <span class="px-1.5 py-0.5 rounded-full text-[9px] font-semibold border {{ $variant->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">{{ $variant->displayName() }}</span>
-                                    @endforeach
-                                </div>
+                                <span class="px-1.5 py-0.5 rounded-full text-[9px] font-semibold border bg-cafe-success/10 text-cafe-success border-cafe-success/30">{{ $menu->variant_label }}</span>
                             </x-responsive-table.field>
                         @endif
                     </x-slot:fields>
@@ -563,11 +557,9 @@
                                 <div>
                                     <p class="font-semibold text-cafe-dark text-xs">{{ $menu->name }}</p>
                                     <p class="text-[11px] text-cafe-muted line-clamp-1 max-w-xs">{{ $menu->description }}</p>
-                                    @if($menu->variants->isNotEmpty())
+                                    @if($menu->variant_label)
                                         <div class="flex flex-wrap gap-1 mt-1">
-                                            @foreach($menu->variants as $variant)
-                                                <span class="px-1.5 py-0.5 rounded-full text-[9px] font-semibold border {{ $variant->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">{{ $variant->displayName() }}</span>
-                                            @endforeach
+                                            <span class="px-1.5 py-0.5 rounded-full text-[9px] font-semibold border bg-cafe-success/10 text-cafe-success border-cafe-success/30">{{ $menu->variant_label }}</span>
                                         </div>
                                     @endif
                                 </div>

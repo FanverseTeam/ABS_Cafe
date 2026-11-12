@@ -2,25 +2,33 @@
     $isHabis = $menu->isHabis();
     $priceLabel = $menu->customerPriceLabel();
     $imageUrl = $menu->imageUrl();
+    $siblings = $menu->groupSiblings();
+    $hasGroup = $siblings->count() > 1;
+    $variantsPayload = $hasGroup
+        ? $siblings->map(fn ($v, $idx) => [
+            'id' => $v->id,
+            'menu_id' => $v->id,
+            'name' => $v->variant_label ?: $v->name,
+            'size' => null,
+            'display_name' => $v->variant_label ?: $v->name,
+            'full_name' => $v->name,
+            'price' => (float) $v->price,
+            'price_label' => 'Rp ' . number_format((float) $v->price, 0, ',', '.'),
+            'is_available' => (bool) $v->is_available,
+            'is_default' => $idx === 0,
+            'is_habis' => $v->isHabis(),
+        ])->values()->all()
+        : [];
+
     $menuPayload = [
         'id' => $menu->id,
-        'name' => $menu->name,
+        'name' => ($hasGroup && $menu->variant_group) ? $menu->variant_group : $menu->name,
         'description' => $menu->description ?: '',
         'price' => (float) $menu->price,
         'image' => $imageUrl,
         'is_habis' => $isHabis,
         'price_label' => $priceLabel,
-        'variants' => $menu->variants->map(fn ($v) => [
-            'id' => $v->id,
-            'name' => $v->name,
-            'size' => $v->size,
-            'display_name' => $v->displayName(),
-            'price' => (float) $v->price,
-            'price_label' => 'Rp ' . number_format((float) $v->price, 0, ',', '.'),
-            'is_available' => (bool) $v->is_available,
-            'is_default' => (bool) $v->is_default,
-            'is_habis' => $v->isHabis(),
-        ])->values()->all(),
+        'variants' => $variantsPayload,
     ];
 @endphp
 

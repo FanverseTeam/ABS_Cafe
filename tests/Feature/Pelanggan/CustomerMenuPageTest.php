@@ -4,7 +4,6 @@ namespace Tests\Feature\Pelanggan;
 
 use App\Models\Category;
 use App\Models\Menu;
-use App\Models\MenuVariant;
 use App\Models\Table;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
@@ -45,14 +44,6 @@ class CustomerMenuPageTest extends TestCase
             'is_available' => true,
             'is_best_seller' => true,
             'image' => 'https://example.com/wedang.jpg',
-        ]);
-
-        MenuVariant::factory()->create([
-            'menu_id' => $menu->id,
-            'name' => 'Porsi',
-            'price' => 15000,
-            'is_available' => true,
-            'is_default' => true,
         ]);
 
         $response = $this->get(route('pelanggan.menu'))->assertOk();
@@ -101,27 +92,12 @@ class CustomerMenuPageTest extends TestCase
             'is_active' => true,
         ]);
 
-        $menu = Menu::factory()->create([
-            'category_id' => $category->id,
-            'name' => 'Kopi Tarik Signature',
-            'price' => 12000,
+        Menu::factory()->for($category)->variant('Kopi Tarik Signature', 'Hot', 12000)->create([
             'is_available' => true,
         ]);
 
-        MenuVariant::factory()->create([
-            'menu_id' => $menu->id,
-            'name' => 'Hot',
-            'price' => 12000,
+        Menu::factory()->for($category)->variant('Kopi Tarik Signature', 'Ice', 14000)->create([
             'is_available' => true,
-            'is_default' => true,
-        ]);
-
-        MenuVariant::factory()->create([
-            'menu_id' => $menu->id,
-            'name' => 'Ice',
-            'price' => 14000,
-            'is_available' => true,
-            'is_default' => false,
         ]);
 
         $response = $this->get(route('pelanggan.menu'))->assertOk();

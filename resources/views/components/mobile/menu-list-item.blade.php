@@ -19,7 +19,7 @@
     $sheetId   = 'menu-action-' . $menu->id;
     $isBest    = (bool) $menu->is_best_seller;
     $isAvail   = (bool) $menu->is_available;
-    $menuJson  = Illuminate\Support\Js::from($menu->load('variants'));
+    $menuJson  = Illuminate\Support\Js::from($menu);
 @endphp
 
 <div {{ $attributes->merge(['class' => 'flex items-center gap-3 p-3 bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/60 shadow-sm transition-all hover:border-[#290024]/20 min-h-[88px]']) }}>

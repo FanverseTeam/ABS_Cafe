@@ -25,7 +25,7 @@
                                     <input type="checkbox" name="menu_ids[]" value="{{ $menu->id }}" class="w-4 h-4 rounded accent-[#290024]">
                                     <span class="min-w-0 flex-1">
                                         <span class="block text-xs font-semibold text-cafe-dark truncate">{{ $menu->name }}</span>
-                                        <span class="block text-[10px] text-cafe-muted">{{ $menu->priceRangeLabel() }}@if($menu->variants->isNotEmpty()) &bull; {{ $menu->variantNameList() }}@endif</span>
+                                        <span class="block text-[10px] text-cafe-muted">{{ $menu->priceRangeLabel() }}@if($menu->hasVariantGroup()) &bull; {{ $menu->variantNameList() }}@endif</span>
                                     </span>
                                 </label>
                             @endforeach

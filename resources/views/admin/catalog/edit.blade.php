@@ -201,13 +201,4 @@
         </form>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const variants = @json($menu->variants ?? []);
-        if (typeof setVariantRows === 'function') {
-            setVariantRows(variants);
-        }
-    });
-</script>
 @endsection

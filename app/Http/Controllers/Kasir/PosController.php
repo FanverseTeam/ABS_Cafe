@@ -29,7 +29,7 @@ class PosController extends Controller
     {
         $categories = Category::where('is_active', true)
             ->orderBy('order')
-            ->with(['menus' => fn ($q) => $q->orderByDesc('is_best_seller')->orderBy('name')->with('variants')])
+            ->with(['menus' => fn ($q) => $q->orderByDesc('is_best_seller')->orderBy('name')])
             ->get();
 
         $tables = Table::orderBy('number')->get();

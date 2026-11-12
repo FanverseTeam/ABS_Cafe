@@ -40,4 +40,14 @@ class MenuFactory extends Factory
             'is_best_seller' => true,
         ]);
     }
+
+    public function variant(string $group, string $label, ?float $price = null): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'name' => "{$group} ({$label})",
+            'variant_group' => $group,
+            'variant_label' => $label,
+            'price' => $price ?? $attributes['price'],
+        ]);
+    }
 }

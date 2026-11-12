@@ -1347,21 +1347,22 @@ function menuPage() {
             const variant = this.getSelectedVariant();
             const unitPrice = this.getUnitPrice();
 
+            const selectedMenuId = variant ? variant.menu_id : this.activeMenu.id;
+            const itemName = variant ? (variant.full_name || (this.activeMenu.name + ' (' + variant.display_name + ')')) : this.activeMenu.name;
+
             const cartItem = {
-                menu_id: this.activeMenu.id,
-                varian_id: variant ? variant.id : null,
+                menu_id: selectedMenuId,
                 jumlah: this.quantity,
                 catatan: this.notes ? this.notes.trim() : '',
-                nama: this.activeMenu.name,
+                nama: itemName,
                 varian_nama: variant ? variant.display_name : null,
                 harga: unitPrice,
                 foto: this.activeMenu.image || null
             };
 
-            // Gabungkan jika menu, varian, dan catatan persis sama
+            // Gabungkan jika menu dan catatan persis sama
             const existingIndex = this.cart.findIndex(item =>
                 item.menu_id === cartItem.menu_id &&
-                item.varian_id === cartItem.varian_id &&
                 (item.catatan || '') === (cartItem.catatan || '')
             );
 
