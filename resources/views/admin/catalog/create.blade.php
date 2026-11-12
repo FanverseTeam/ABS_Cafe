@@ -46,7 +46,7 @@
 
     <!-- Form Card -->
     <div class="bg-cafe-card rounded-2xl sm:rounded-3xl border border-cafe-beige/60 shadow-soft overflow-hidden">
-        <form id="menu-form" method="POST" action="{{ route('admin.catalog.menu.store') }}" class="p-5 sm:p-8 space-y-6 text-xs">
+        <form id="menu-form" method="POST" action="{{ route('admin.catalog.menu.store') }}" enctype="multipart/form-data" class="p-5 sm:p-8 space-y-6 text-xs">
             @csrf
 
             <!-- Section 1: Informasi Dasar -->
@@ -125,14 +125,22 @@
                                   class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark p-3.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">{{ old('description') }}</textarea>
                     </div>
 
-                    <!-- Foto Menu URL -->
+                    <!-- Foto Menu Upload -->
                     <div class="space-y-1">
-                        <label class="font-semibold text-cafe-dark block text-xs">URL Foto Menu</label>
-                        <input type="url"
-                               name="image"
-                               value="{{ old('image', 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&auto=format&fit=crop&q=80') }}"
-                               placeholder="https://images.unsplash.com/..."
-                               class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
+                        <label class="font-semibold text-cafe-dark block text-xs">Foto Menu</label>
+                        <div class="relative">
+                            <input type="file"
+                                   name="image_file"
+                                   id="create-image-file"
+                                   accept="image/*"
+                                   class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cafe-gold/20 file:text-cafe-dark hover:file:bg-cafe-gold/30 cursor-pointer"
+                                   onchange="previewCreateImage(this)">
+                        </div>
+                        <div id="create-image-preview" class="mt-2 hidden">
+                            <img id="create-preview-img" src="" alt="Preview" class="w-24 h-24 object-cover rounded-xl border border-cafe-beige shadow-sm">
+                            <p class="text-[10px] text-cafe-muted mt-1">Preview foto yang akan diupload</p>
+                        </div>
+                        <p class="text-[10px] text-cafe-muted">Format: JPG, PNG, WEBP. Maks 2MB. Nama file otomatis disesuaikan dengan nama menu.</p>
                     </div>
                 </div>
             </div>
@@ -201,4 +209,24 @@
         </form>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    function previewCreateImage(input) {
+        const preview = document.getElementById('create-image-preview');
+        const img = document.getElementById('create-preview-img');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                preview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.classList.add('hidden');
+        }
+    }
+</script>
+@endpush
+
 @endsection

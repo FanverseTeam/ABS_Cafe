@@ -67,11 +67,16 @@ class MenuController extends Controller
             'category_id' => $request->input('category_id'),
             'price' => $request->input('price'),
             'description' => $request->input('description'),
-            'image' => $request->input('image') ?: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&auto=format&fit=crop&q=80',
+            'image' => null,
             'is_available' => $request->boolean('is_available', true),
             'is_best_seller' => $request->boolean('is_best_seller', false),
             'sold_count' => 0,
         ]);
+
+        if ($request->hasFile('image_file')) {
+            $menu->updateImageFile($request->file('image_file'));
+            $menu->save();
+        }
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
@@ -98,6 +103,10 @@ class MenuController extends Controller
             $variantLabel = trim($m[2]);
         }
 
+        if ($request->hasFile('image_file')) {
+            $menu->updateImageFile($request->file('image_file'));
+        }
+
         $menu->update([
             'name' => $request->input('name'),
             'variant_group' => $variantGroup,
@@ -105,7 +114,7 @@ class MenuController extends Controller
             'category_id' => $request->input('category_id'),
             'price' => $request->input('price'),
             'description' => $request->input('description'),
-            'image' => $request->input('image') ?: $menu->image,
+            'image' => $menu->image,
             'is_available' => $request->boolean('is_available'),
             'is_best_seller' => $request->boolean('is_best_seller'),
         ]);
@@ -182,6 +191,7 @@ class MenuController extends Controller
     {
         $menu = Menu::findOrFail($id);
         $name = $menu->name;
+        $menu->deleteImageFile();
         $menu->delete();
 
         ActivityLog::create([
@@ -222,7 +232,7 @@ class MenuController extends Controller
             'category_id' => 'required|exists:kategori,id',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
-            'image' => 'nullable|string',
+            'image_file' => 'nullable|image|max:2048',
             'variants' => 'nullable|array',
         ]);
     }

@@ -328,7 +328,7 @@ class DatabaseSeeder extends Seeder
             'peta_lng' => '111.9111798',
             'last_order' => '22.00 WIB',
             'cafe_instagram' => 'abs_tulungagung_24',
-            'cafe_tiktok' => 'abs_tulungagung_24',
+            'cafe_tiktok' => 'abs.tulungagung',
             'whatsapp_nomor' => '6289620102010',
             'whatsapp_pesan' => 'Halo ABS Cafe, saya ingin bertanya.',
             'hero_badge' => 'SELAMAT DATANG DI ABS CAFE',
