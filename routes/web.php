@@ -164,6 +164,9 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
         Route::post('/receipt', [WebsiteController::class, 'updateReceipt'])->name('receipt');
         Route::post('/display', [WebsiteController::class, 'updateDisplay'])->name('display');
         Route::post('/account', [WebsiteController::class, 'updateAccount'])->name('account');
+        Route::post('/landing', [WebsiteController::class, 'updateLanding'])->name('landing');
+        Route::post('/landing/foto', [WebsiteController::class, 'updateLandingPhoto'])->name('landing.photo');
+        Route::delete('/landing/foto/{slot}', [WebsiteController::class, 'deleteLandingPhoto'])->name('landing.photo.delete');
     });
 
     // 6. Log Aktivitas

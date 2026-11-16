@@ -58,6 +58,16 @@ class LandingData
     ];
 
     /**
+     * Mengambil daftar nilai default landing page.
+     *
+     * @return array<string, string>
+     */
+    public static function defaults(): array
+    {
+        return self::DEFAULTS;
+    }
+
+    /**
      * Membaca dan menyiapkan data landing page.
      *
      * @return array<string, mixed>

@@ -8,6 +8,7 @@ use App\Models\CafeSetting;
 use App\Support\LandingData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
 class WebsiteController extends Controller
@@ -46,7 +47,31 @@ class WebsiteController extends Controller
             'qris_image' => CafeSetting::get('qris_image', 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=00020101021226590014ID.LINKAJA.WWW0118936009110021200000021500000000000005204581253033605802ID5908ABS CAFE6011TULUNGAGUNG61056623362070703A0163041234'),
         ];
 
-        return view('admin.website.index', compact('settings', 'tab'));
+        // Data khusus tab Landing Page
+        $landingSettings = [];
+        $landingPhotos = [];
+        if ($tab === 'landing') {
+            $defaults = LandingData::defaults();
+            $landingKeys = array_keys($defaults);
+            foreach ($landingKeys as $key) {
+                $landingSettings[$key] = CafeSetting::get($key, $defaults[$key]);
+            }
+
+            // Resolve foto slot saat ini
+            $photoSlots = ['hero', 'hero_cup', 'tentang', 'suasana'];
+            foreach ($photoSlots as $slot) {
+                $photoData = LandingData::resolvePhoto($slot);
+                $slotConfig = config("pelanggan.photos.{$slot}", []);
+                $landingPhotos[$slot] = [
+                    'src' => $photoData['src'],
+                    'is_local' => $photoData['is_local'],
+                    'label' => $slotConfig['label'] ?? ucfirst($slot),
+                    'suggested_size' => $slotConfig['suggested_size'] ?? '1200x800',
+                ];
+            }
+        }
+
+        return view('admin.website.index', compact('settings', 'tab', 'landingSettings', 'landingPhotos'));
     }
 
     public function updateProfile(Request $request)
@@ -253,5 +278,164 @@ class WebsiteController extends Controller
         ]);
 
         return redirect()->route('admin.website.index', ['tab' => 'akun'])->with('success', 'Profil akun admin berhasil diperbarui.');
+    }
+
+    /**
+     * Simpan perubahan teks konten landing page.
+     */
+    public function updateLanding(Request $request)
+    {
+        $request->validate([
+            'hero_badge' => 'nullable|string|max:100',
+            'hero_title_prefix' => 'nullable|string|max:200',
+            'hero_title_highlight' => 'nullable|string|max:100',
+            'hero_description' => 'nullable|string|max:500',
+            'about_badge' => 'nullable|string|max:100',
+            'about_title' => 'nullable|string|max:200',
+            'about_description' => 'nullable|string|max:1000',
+            'about_tagline' => 'nullable|string|max:200',
+            'feature_1_title' => 'nullable|string|max:100',
+            'feature_2_title' => 'nullable|string|max:100',
+            'feature_3_title' => 'nullable|string|max:100',
+            'feature_4_title' => 'nullable|string|max:100',
+            'atmosphere_badge' => 'nullable|string|max:100',
+            'atmosphere_title' => 'nullable|string|max:200',
+            'atmosphere_description' => 'nullable|string|max:500',
+            'location_badge' => 'nullable|string|max:100',
+            'location_title' => 'nullable|string|max:200',
+            'social_title' => 'nullable|string|max:200',
+            'cafe_instagram' => 'nullable|string|max:100',
+            'cafe_tiktok' => 'nullable|string|max:100',
+        ]);
+
+        $landingKeys = [
+            'hero_badge', 'hero_title_prefix', 'hero_title_highlight', 'hero_description',
+            'about_badge', 'about_title', 'about_description', 'about_tagline',
+            'feature_1_title', 'feature_2_title', 'feature_3_title', 'feature_4_title',
+            'atmosphere_badge', 'atmosphere_title', 'atmosphere_description',
+            'location_badge', 'location_title',
+            'social_title',
+            'cafe_instagram', 'cafe_tiktok',
+        ];
+
+        foreach ($landingKeys as $key) {
+            if ($request->has($key)) {
+                CafeSetting::set($key, $request->input($key, ''));
+            }
+        }
+
+        LandingData::clearCache();
+
+        ActivityLog::create([
+            'user_name' => Auth::user()->name,
+            'role' => Auth::user()->role,
+            'activity' => 'Memperbarui Konten Teks Landing Page',
+            'activity_type' => 'sistem',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('success', 'Konten landing page berhasil disimpan.');
+    }
+
+    /**
+     * Upload foto landing page untuk slot tertentu.
+     */
+    public function updateLandingPhoto(Request $request)
+    {
+        $allowedSlots = ['hero', 'hero_cup', 'tentang', 'suasana'];
+
+        $request->validate([
+            'slot' => 'required|string|in:' . implode(',', $allowedSlots),
+            'photo' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+        ], [
+            'photo.required' => 'Pilih file foto untuk diupload.',
+            'photo.image' => 'File harus berupa gambar.',
+            'photo.mimes' => 'Format yang diperbolehkan: JPG, PNG, atau WebP.',
+            'photo.max' => 'Ukuran foto maksimal 5 MB.',
+        ]);
+
+        $slot = $request->input('slot');
+        $file = $request->file('photo');
+        $extension = $file->getClientOriginalExtension();
+
+        $targetDir = public_path('images/pelanggan');
+        if (! File::isDirectory($targetDir)) {
+            File::makeDirectory($targetDir, 0755, true);
+        }
+
+        // Hapus file lama dengan ekstensi berbeda
+        $extensions = ['webp', 'jpg', 'jpeg', 'png'];
+        foreach ($extensions as $ext) {
+            $oldFile = $targetDir . DIRECTORY_SEPARATOR . "{$slot}.{$ext}";
+            if (File::exists($oldFile)) {
+                File::delete($oldFile);
+            }
+        }
+
+        // Simpan file baru
+        $file->move($targetDir, "{$slot}.{$extension}");
+
+        LandingData::clearCache();
+
+        $slotLabels = [
+            'hero' => 'Latar Hero',
+            'hero_cup' => 'Cangkir Kopi Hero',
+            'tentang' => 'Tentang Kami',
+            'suasana' => 'Suasana Kafe',
+        ];
+
+        ActivityLog::create([
+            'user_name' => Auth::user()->name,
+            'role' => Auth::user()->role,
+            'activity' => 'Mengupload foto Landing Page: ' . ($slotLabels[$slot] ?? $slot),
+            'activity_type' => 'sistem',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('success', 'Foto "' . ($slotLabels[$slot] ?? $slot) . '" berhasil diupload.');
+    }
+
+    /**
+     * Hapus foto landing page lokal (kembali ke default Unsplash).
+     */
+    public function deleteLandingPhoto(Request $request, string $slot)
+    {
+        $allowedSlots = ['hero', 'hero_cup', 'tentang', 'suasana'];
+        if (! in_array($slot, $allowedSlots, true)) {
+            abort(404);
+        }
+
+        $targetDir = public_path('images/pelanggan');
+        $extensions = ['webp', 'jpg', 'jpeg', 'png'];
+        $deleted = false;
+
+        foreach ($extensions as $ext) {
+            $filePath = $targetDir . DIRECTORY_SEPARATOR . "{$slot}.{$ext}";
+            if (File::exists($filePath)) {
+                File::delete($filePath);
+                $deleted = true;
+            }
+        }
+
+        LandingData::clearCache();
+
+        $slotLabels = [
+            'hero' => 'Latar Hero',
+            'hero_cup' => 'Cangkir Kopi Hero',
+            'tentang' => 'Tentang Kami',
+            'suasana' => 'Suasana Kafe',
+        ];
+
+        if ($deleted) {
+            ActivityLog::create([
+                'user_name' => Auth::user()->name,
+                'role' => Auth::user()->role,
+                'activity' => 'Menghapus foto Landing Page: ' . ($slotLabels[$slot] ?? $slot) . ' (kembali ke default)',
+                'activity_type' => 'sistem',
+                'ip_address' => $request->ip(),
+            ]);
+        }
+
+        return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('success', 'Foto "' . ($slotLabels[$slot] ?? $slot) . '" berhasil dihapus. Akan menggunakan foto default.');
     }
 }
