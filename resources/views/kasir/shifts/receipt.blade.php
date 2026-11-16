@@ -16,7 +16,7 @@
         </button>
     </div>
 
-    <div id="printable-receipt" class="bg-white text-black mx-auto rounded-none" style="width:80mm">
+    <div id="printable-receipt" class="bg-white text-black mx-auto rounded-none" style="width:80mm; max-width:100%;">
         <div class="text-center px-4 pt-6 pb-4 border-b border-black/20">
             <x-logo :show-text="false" size="md" thermal loading="eager" class="mx-auto mb-2" />
             <h1 class="font-serif font-bold text-sm">{{ \App\Models\CafeSetting::get('cafe_name', 'ABS Cafe') }}</h1>

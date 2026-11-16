@@ -233,26 +233,28 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
                     <h3 class="font-serif font-bold text-cafe-dark mb-4 flex items-center gap-2"><i data-lucide="credit-card" class="w-4 h-4 text-cafe-gold"></i> Rekap Metode Pembayaran</h3>
-                    <table class="w-full text-xs">
-                        <thead>
-                            <tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">
-                                <th class="text-left py-2">Metode</th>
-                                <th class="text-right py-2">Transaksi</th>
-                                <th class="text-right py-2">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-cafe-beige/40">
-                            @forelse($finance['byMethod'] as $m)
-                                <tr>
-                                    <td class="py-2 capitalize font-medium text-cafe-text">{{ $m['method'] }}</td>
-                                    <td class="py-2 text-right text-cafe-muted">{{ $m['count'] }}</td>
-                                    <td class="py-2 text-right font-semibold text-cafe-dark">{{ $rp($m['total']) }}</td>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs">
+                            <thead>
+                                <tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">
+                                    <th class="text-left py-2">Metode</th>
+                                    <th class="text-right py-2">Transaksi</th>
+                                    <th class="text-right py-2">Total</th>
                                 </tr>
-                            @empty
-                                <tr><td colspan="3" class="py-4 text-center text-cafe-muted">Belum ada data.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="divide-y divide-cafe-beige/40">
+                                @forelse($finance['byMethod'] as $m)
+                                    <tr>
+                                        <td class="py-2 capitalize font-medium text-cafe-text">{{ $m['method'] }}</td>
+                                        <td class="py-2 text-right text-cafe-muted">{{ $m['count'] }}</td>
+                                        <td class="py-2 text-right font-semibold text-cafe-dark">{{ $rp($m['total']) }}</td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="3" class="py-4 text-center text-cafe-muted">Belum ada data.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                     <div class="mt-4 p-3 rounded-2xl bg-cafe-cream/70 border border-cafe-beige/50 text-xs">
                         <p class="text-cafe-muted">Estimasi laba (margin {{ $finance['margin'] }}%)</p>
                         <p class="font-serif text-lg font-bold text-cafe-dark">{{ $rp($finance['net'] * $finance['margin'] / 100) }}</p>
@@ -265,7 +267,7 @@
                             <span class="ml-2 text-[10px] bg-cafe-success/15 text-cafe-success font-semibold px-2 py-0.5 rounded-full">Mode Otomatis</span>
                         @endif
                     </h3>
-                    <div class="overflow-x-hidden md:overflow-x-auto">
+                    <div class="overflow-x-auto">
                         <table class="w-full text-xs">
                             <thead>
                                 <tr class="text-cafe-muted uppercase text-[10px] tracking-wide border-b border-cafe-beige/60">

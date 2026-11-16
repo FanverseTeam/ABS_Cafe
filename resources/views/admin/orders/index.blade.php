@@ -310,7 +310,7 @@
 
                     <div>
                         <h4 class="font-serif font-bold text-sm text-cafe-dark mb-2">Item Menu Dipesan</h4>
-                        <div class="border border-cafe-beige/60 rounded-2xl overflow-hidden">
+                        <div class="border border-cafe-beige/60 rounded-2xl overflow-hidden overflow-x-auto">
                             <table class="w-full text-left text-xs">
                                 <thead class="bg-[#F2F5E2]/70 border-b border-cafe-beige text-cafe-muted">
                                     <tr>

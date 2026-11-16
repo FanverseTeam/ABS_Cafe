@@ -16,34 +16,77 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #f5f2eb;
             color: #290024;
-            padding: 24px;
+            padding: 12px;
+        }
+
+        @media (min-width: 480px) {
+            body { padding: 24px; }
         }
 
         .no-print-bar {
             max-width: 900px;
-            margin: 0 auto 24px;
+            margin: 0 auto 16px;
             background: #ffffff;
-            padding: 16px 24px;
+            padding: 16px;
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
+            flex-direction: column;
+            gap: 12px;
         }
+
+        .no-print-bar-actions {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .no-print-bar-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        @media (min-width: 640px) {
+            .no-print-bar {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 24px;
+                padding: 16px 24px;
+            }
+
+            .no-print-bar-actions {
+                width: auto;
+                flex-shrink: 0;
+            }
+
+            .no-print-bar-actions .btn {
+                flex: initial;
+            }
+        }
+
+        .no-print-bar-title { font-size: 15px; font-weight: 800; color: #290024; }
+        .no-print-bar-desc { font-size: 11px; color: #775533; margin-top: 2px; line-height: 1.4; }
 
         .btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 20px;
+            padding: 10px 16px;
             border-radius: 9999px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             text-decoration: none;
             cursor: pointer;
             border: none;
             transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 640px) {
+            .no-print-bar-title { font-size: 16px; }
+            .no-print-bar-desc { font-size: 12px; }
+            .btn { padding: 10px 20px; font-size: 13px; }
         }
 
         .btn-primary {
@@ -64,22 +107,40 @@
             max-width: 900px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 640px) {
+            .sheet-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
         }
 
         .qr-card {
             background: #ffffff;
             border: 2px solid #290024;
-            border-radius: 24px;
-            padding: 32px 24px;
+            border-radius: 20px;
+            padding: 24px 16px;
             text-align: center;
             position: relative;
             box-shadow: 0 8px 30px rgba(41, 0, 36, 0.06);
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
+            max-width: 440px;
+            margin: 0 auto;
             page-break-inside: avoid;
+        }
+
+        @media (min-width: 640px) {
+            .qr-card {
+                padding: 32px 24px;
+                border-radius: 24px;
+                max-width: none;
+            }
         }
 
         .qr-card-header {
@@ -88,10 +149,14 @@
 
         .brand-title {
             font-family: 'Noto Serif', Georgia, serif;
-            font-size: 22px;
+            font-size: 18px;
             font-weight: 800;
             color: #290024;
             letter-spacing: 0.5px;
+        }
+
+        @media (min-width: 480px) {
+            .brand-title { font-size: 22px; }
         }
 
         .brand-sub {
@@ -124,17 +189,29 @@
         }
 
         .qr-img {
-            width: 220px;
-            height: 220px;
+            width: 160px;
+            height: 160px;
             display: block;
+        }
+
+        @media (min-width: 420px) {
+            .qr-img { width: 190px; height: 190px; }
+        }
+
+        @media (min-width: 640px) {
+            .qr-img { width: 220px; height: 220px; }
         }
 
         .scan-instruction {
             font-family: 'Noto Serif', Georgia, serif;
-            font-size: 18px;
+            font-size: 14px;
             font-weight: 700;
             color: #290024;
             margin-bottom: 12px;
+        }
+
+        @media (min-width: 480px) {
+            .scan-instruction { font-size: 18px; }
         }
 
         .steps-box {
@@ -189,10 +266,10 @@
     <!-- Bar Kontrol (Hanya tampil di layar) -->
     <div class="no-print-bar">
         <div>
-            <h2 style="font-size: 16px; font-weight: 800; color: #290024;">Siap Cetak Stand Meja ({{ $tables->count() }} Meja)</h2>
-            <p style="font-size: 12px; color: #775533; margin-top: 2px;">Ukuran dioptimalkan untuk dicetak di kertas A4 lalu dipotong / dipajang di stand meja.</p>
+            <h2 class="no-print-bar-title">Siap Cetak Stand Meja ({{ $tables->count() }} Meja)</h2>
+            <p class="no-print-bar-desc">Ukuran dioptimalkan untuk dicetak di kertas A4 lalu dipotong / dipajang di stand meja.</p>
         </div>
-        <div style="display: flex; gap: 8px;">
+        <div class="no-print-bar-actions">
             <button onclick="window.print()" class="btn btn-primary">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="6 9 6 2 18 2 18 9"></polyline>

@@ -62,7 +62,7 @@
             <span class="text-[10px] text-olive/80 font-mono">{{ $order->paid_at?->format('d/m/Y H:i') }}</span>
         </div>
 
-        <div id="printable-receipt" class="bg-white text-black mx-auto rounded-none" style="width:80mm">
+        <div id="printable-receipt" class="bg-white text-black mx-auto rounded-none" style="width:80mm; max-width:100%;">
             <div class="text-center px-4 pt-4 pb-4 border-b border-black/20">
                 @if(\App\Models\CafeSetting::get('receipt_show_logo', '1') == '1')
                     <x-logo :show-text="false" size="md" thermal loading="eager" class="mx-auto mb-2" />

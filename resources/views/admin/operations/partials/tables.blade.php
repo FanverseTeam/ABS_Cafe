@@ -122,16 +122,18 @@
                     <p class="text-[11px] text-cafe-muted">
                         Simulasi pelanggan memindai QR code fisik di meja kafe. Halaman menu langsung terkoneksi ke nomor meja.
                     </p>
-                    <div class="flex items-center gap-2 pt-1">
-                        <input type="text" readonly value="{{ $testUrlScan }}" id="test-url-1" class="flex-1 bg-stone-50 text-[11px] font-mono text-cafe-dark p-2 rounded-lg border border-stone-200 truncate select-all">
-                        <button type="button" onclick="copyText('{{ $testUrlScan }}', 'URL Scan Meja berhasil disalin!')" class="px-3 py-2 rounded-lg bg-cafe-card hover:bg-cafe-beige text-cafe-dark text-xs font-semibold border border-cafe-beige shrink-0 flex items-center gap-1" title="Salin URL">
-                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                            <span>Salin</span>
-                        </button>
-                        <a href="{{ $testUrlScan }}" target="_blank" class="px-3 py-2 rounded-lg bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold shrink-0 flex items-center gap-1" title="Buka URL">
-                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                            <span>Buka Tes</span>
-                        </a>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
+                        <input type="text" readonly value="{{ $testUrlScan }}" id="test-url-1" class="w-full sm:flex-1 bg-stone-50 text-[11px] font-mono text-cafe-dark p-2 rounded-lg border border-stone-200 truncate select-all">
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="button" onclick="copyText('{{ $testUrlScan }}', 'URL Scan Meja berhasil disalin!')" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-cafe-card hover:bg-cafe-beige text-cafe-dark text-xs font-semibold border border-cafe-beige flex items-center justify-center gap-1" title="Salin URL">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                <span>Salin</span>
+                            </button>
+                            <a href="{{ $testUrlScan }}" target="_blank" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold flex items-center justify-center gap-1" title="Buka URL">
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                <span>Buka Tes</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -147,29 +149,31 @@
                     <p class="text-[11px] text-cafe-muted">
                         Simulasi pelanggan membuka menu dari tombol beranda. Pelanggan bisa memilih nomor meja atau memilih pesan bawa pulang (takeaway).
                     </p>
-                    <div class="flex items-center gap-2 pt-1">
-                        <input type="text" readonly value="{{ $testUrlLanding }}" id="test-url-2" class="flex-1 bg-stone-50 text-[11px] font-mono text-cafe-dark p-2 rounded-lg border border-stone-200 truncate select-all">
-                        <button type="button" onclick="copyText('{{ $testUrlLanding }}', 'URL Menu Landing Page berhasil disalin!')" class="px-3 py-2 rounded-lg bg-cafe-card hover:bg-cafe-beige text-cafe-dark text-xs font-semibold border border-cafe-beige shrink-0 flex items-center gap-1" title="Salin URL">
-                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                            <span>Salin</span>
-                        </button>
-                        <a href="{{ $testUrlLanding }}" target="_blank" class="px-3 py-2 rounded-lg bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold shrink-0 flex items-center gap-1" title="Buka URL">
-                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                            <span>Buka Tes</span>
-                        </a>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
+                        <input type="text" readonly value="{{ $testUrlLanding }}" id="test-url-2" class="w-full sm:flex-1 bg-stone-50 text-[11px] font-mono text-cafe-dark p-2 rounded-lg border border-stone-200 truncate select-all">
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="button" onclick="copyText('{{ $testUrlLanding }}', 'URL Menu Landing Page berhasil disalin!')" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-cafe-card hover:bg-cafe-beige text-cafe-dark text-xs font-semibold border border-cafe-beige flex items-center justify-center gap-1" title="Salin URL">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                <span>Salin</span>
+                            </button>
+                            <a href="{{ $testUrlLanding }}" target="_blank" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold flex items-center justify-center gap-1" title="Buka URL">
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                <span>Buka Tes</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tables Grid Cards (2 cols on mobile, 3 on tablet, 5 on desktop) -->
-    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
+    <!-- Tables Grid Cards (1 col on narrow mobile, 2 cols on mobile, 3 on tablet, 5 on desktop) -->
+    <div class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
         @forelse($tables as $table)
             @php
                 $tableOrderUrl = rtrim($orderBaseUrl, '/') . '?meja=' . $table->number;
             @endphp
-            <div class="bg-cafe-card rounded-2xl p-5 shadow-soft hover:shadow-soft-lg border border-cafe-beige/50 flex flex-col justify-between transition-all relative overflow-hidden group">
+            <div class="bg-cafe-card rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg border border-cafe-beige/50 flex flex-col justify-between transition-all relative overflow-hidden group">
                 <!-- Status Top Border Indicator -->
                 <div class="absolute top-0 left-0 right-0 h-1.5 {{ $table->status === 'tersedia' ? 'bg-cafe-success' : ($table->status === 'terpakai' ? 'bg-cafe-warning' : 'bg-cafe-muted') }}"></div>
 
@@ -216,7 +220,7 @@
                 </div>
 
                 <!-- Footer Action Buttons -->
-                <div class="pt-3 border-t border-cafe-beige/50 flex items-center justify-between gap-1">
+                <div class="pt-3 border-t border-cafe-beige/50 flex flex-wrap items-center justify-between gap-1.5">
                     <!-- QR Code Button -->
                     <button onclick="openQrModal({{ $table->number }}, {{ $table->id }})" class="inline-flex items-center gap-1 text-[11px] font-bold text-cafe-brown hover:text-cafe-dark px-2.5 py-1.5 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige transition-colors">
                         <i data-lucide="qr-code" class="w-3.5 h-3.5"></i>
@@ -224,7 +228,7 @@
                     </button>
 
                     <!-- Edit, Print & Delete -->
-                    <div class="flex items-center gap-1">
+                    <div class="flex items-center gap-1 shrink-0">
                         <a href="{{ route('admin.operations.tables.print_single', $table->id) }}" target="_blank" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-muted hover:text-cafe-dark transition-colors" title="Cetak Stand Meja Ini">
                             <i data-lucide="printer" class="w-3.5 h-3.5"></i>
                         </a>

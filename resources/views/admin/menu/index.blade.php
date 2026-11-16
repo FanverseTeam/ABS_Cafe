@@ -91,16 +91,16 @@
 
     <!-- Content: Grid View or Table View -->
     @if($viewMode === 'grid')
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+        <div class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
             @forelse($menus as $menu)
                 <div class="bg-cafe-card rounded-2xl shadow-soft hover:shadow-soft-lg border border-cafe-beige/50 overflow-hidden flex flex-col justify-between transition-all group">
                     <div>
                         <!-- Image Container -->
-                        <div class="relative h-32 sm:h-44 w-full bg-cafe-beige overflow-hidden">
+                        <div class="relative h-36 sm:h-44 w-full bg-cafe-beige overflow-hidden">
                             <img src="{{ $menu->image }}" alt="{{ $menu->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
 
                             <!-- Category Badge -->
-                            <div class="absolute top-3 left-3">
+                            <div class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3">
                                 <span class="px-2.5 py-1 rounded-full bg-[#290024]/80 backdrop-blur-md text-[#F2F5E2] text-[10px] font-semibold tracking-wide">
                                     {{ $menu->category->name }}
                                 </span>
@@ -108,7 +108,7 @@
 
                             <!-- Best Seller Badge -->
                             @if($menu->is_best_seller)
-                                <div class="absolute top-3 right-3">
+                                <div class="absolute top-2.5 right-2.5 sm:top-3 sm:right-3">
                                     <span class="px-2.5 py-1 rounded-full bg-cafe-gold text-cafe-dark text-[10px] font-bold shadow-sm flex items-center gap-1">
                                         <i data-lucide="star" class="w-3 h-3 fill-current"></i>
                                         <span>Best Seller</span>
@@ -118,10 +118,10 @@
                         </div>
 
                         <!-- Card Body -->
-                        <div class="p-4 space-y-2">
+                        <div class="p-3.5 sm:p-4 space-y-1.5 sm:space-y-2">
                             <div class="flex items-start justify-between gap-2">
-                                <h3 class="font-serif font-bold text-base text-cafe-dark leading-snug">{{ $menu->name }}</h3>
-                                <span class="font-bold text-sm text-cafe-brown shrink-0">{{ $menu->priceRangeLabel() }}</span>
+                                <h3 class="font-serif font-bold text-sm sm:text-base text-cafe-dark leading-snug">{{ $menu->name }}</h3>
+                                <span class="font-bold text-xs sm:text-sm text-cafe-brown shrink-0">{{ $menu->priceRangeLabel() }}</span>
                             </div>
                             @if($menu->variant_label)
                                 <div class="flex flex-wrap gap-1">
@@ -135,19 +135,19 @@
                     </div>
 
                     <!-- Card Actions -->
-                    <div class="p-4 pt-2 border-t border-cafe-beige/40 flex items-center justify-between text-xs">
+                    <div class="p-3 sm:p-4 pt-2 border-t border-cafe-beige/40 flex flex-wrap items-center justify-between gap-1.5 text-xs">
                         <!-- Switch Tersedia / Habis -->
                         <form action="{{ route('admin.menu.toggle.available', $menu->id) }}" method="POST">
                             @csrf
-                            <button type="submit" class="flex items-center gap-2 cursor-pointer select-none">
-                                <div class="w-8 h-4.5 rounded-full p-0.5 transition-colors {{ $menu->is_available ? 'bg-cafe-success' : 'bg-cafe-muted/40' }}">
-                                    <div class="w-3.5 h-3.5 rounded-full bg-beige transition-transform {{ $menu->is_available ? 'translate-x-3.5' : 'translate-x-0' }}"></div>
+                            <button type="submit" class="flex items-center gap-1.5 sm:gap-2 cursor-pointer select-none">
+                                <div class="w-7 sm:w-8 h-4 sm:h-4.5 rounded-full p-0.5 transition-colors {{ $menu->is_available ? 'bg-cafe-success' : 'bg-cafe-muted/40' }}">
+                                    <div class="w-3 sm:w-3.5 h-3 sm:h-3.5 rounded-full bg-beige transition-transform {{ $menu->is_available ? 'translate-x-3 sm:translate-x-3.5' : 'translate-x-0' }}"></div>
                                 </div>
-                                <span class="text-[11px] font-medium text-cafe-text">{{ $menu->is_available ? 'Tersedia' : 'Habis' }}</span>
+                                <span class="text-[10px] sm:text-[11px] font-medium text-cafe-text">{{ $menu->is_available ? 'Tersedia' : 'Habis' }}</span>
                             </button>
                         </form>
 
-                        <div class="flex items-center gap-1">
+                        <div class="flex items-center gap-1 shrink-0">
                             <!-- Toggle Best Seller -->
                             <form action="{{ route('admin.menu.toggle.bestseller', $menu->id) }}" method="POST" class="inline">
                                 @csrf
@@ -177,7 +177,7 @@
                     </div>
                 </div>
             @empty
-                <div class="col-span-4 p-12 text-center bg-cafe-card/50 rounded-2xl border border-dashed border-cafe-beige/80">
+                <div class="col-span-full p-12 text-center bg-cafe-card/50 rounded-2xl border border-dashed border-cafe-beige/80">
                     <i data-lucide="coffee" class="w-10 h-10 text-cafe-muted mx-auto mb-2"></i>
                     <h4 class="font-serif font-bold text-base text-cafe-dark">Tidak Ada Menu Ditemukan</h4>
                     <p class="text-xs text-cafe-muted mt-1">Coba ganti filter atau tambahkan menu baru sekarang.</p>

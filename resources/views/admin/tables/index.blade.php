@@ -67,7 +67,7 @@
                 </div>
 
                 <!-- Footer Action Buttons -->
-                <div class="pt-3 border-t border-cafe-beige/50 flex items-center justify-between">
+                <div class="pt-3 border-t border-cafe-beige/50 flex flex-wrap items-center justify-between gap-1.5">
                     <!-- QR Code Button -->
                     <button onclick="openQrModal({{ $table->number }})" class="inline-flex items-center gap-1 text-[11px] font-bold text-cafe-brown hover:text-cafe-dark px-2.5 py-1 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige transition-colors">
                         <i data-lucide="qr-code" class="w-3.5 h-3.5"></i>
@@ -75,7 +75,7 @@
                     </button>
 
                     <!-- Edit & Delete -->
-                    <div class="flex items-center gap-1">
+                    <div class="flex items-center gap-1 shrink-0">
                         <button onclick="editTableModal({{ json_encode($table) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark transition-colors" title="Edit Meja">
                             <i data-lucide="edit" class="w-3.5 h-3.5"></i>
                         </button>

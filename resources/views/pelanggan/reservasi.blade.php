@@ -166,8 +166,8 @@
             </div>
 
             <!-- Rekapitulasi Jumlah Meja -->
-            <div class="grid grid-cols-4 gap-2">
-                <div class="px-2.5 py-2 rounded-xl bg-[#D4954D]/10 border border-[#D4954D]/30 text-center">
+            <div class="grid grid-cols-2 min-[380px]:grid-cols-4 gap-2">
+                <div class="px-2 sm:px-2.5 py-2 rounded-xl bg-[#D4954D]/10 border border-[#D4954D]/30 text-center">
                     <span class="block text-[10px] text-[#775533] font-semibold uppercase">Kosong</span>
                     <span id="count-tersedia" class="text-base sm:text-lg font-bold text-[#D4954D]">{{ $summary['tersedia'] }}</span>
                 </div>
