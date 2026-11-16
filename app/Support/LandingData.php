@@ -29,7 +29,7 @@ class LandingData
         'street_address' => 'Jl. Letjend Suprapto No.44',
         'postal_code' => '66219',
         'cafe_instagram' => 'abs_tulungagung_24',
-        'cafe_tiktok' => 'abs_tulungagung_24',
+        'cafe_tiktok' => 'abs.tulungagung',
         'whatsapp_nomor' => '6289620102010',
         'whatsapp_pesan' => 'Halo ABS Cafe, saya ingin bertanya.',
 

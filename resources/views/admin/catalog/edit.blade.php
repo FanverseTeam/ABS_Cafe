@@ -46,7 +46,7 @@
 
     <!-- Form Card -->
     <div class="bg-cafe-card rounded-2xl sm:rounded-3xl border border-cafe-beige/60 shadow-soft overflow-hidden">
-        <form id="menu-form" method="POST" action="{{ route('admin.catalog.menu.update', $menu->id) }}" class="p-5 sm:p-8 space-y-6 text-xs">
+        <form id="menu-form" method="POST" action="{{ route('admin.catalog.menu.update', $menu->id) }}" enctype="multipart/form-data" class="p-5 sm:p-8 space-y-6 text-xs">
             @csrf
 
             <!-- Section 1: Informasi Dasar -->
@@ -125,14 +125,28 @@
                                   class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark p-3.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">{{ old('description', $menu->description) }}</textarea>
                     </div>
 
-                    <!-- Foto Menu URL -->
+                    <!-- Foto Menu Upload -->
                     <div class="space-y-1">
-                        <label class="font-semibold text-cafe-dark block text-xs">URL Foto Menu</label>
-                        <input type="url"
-                               name="image"
-                               value="{{ old('image', $menu->image) }}"
-                               placeholder="https://images.unsplash.com/..."
-                               class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm">
+                        <label class="font-semibold text-cafe-dark block text-xs">Foto Menu</label>
+                        @if($menu->imageUrl())
+                        <div class="mb-2 flex items-center gap-3">
+                            <img src="{{ $menu->imageUrl() }}" alt="{{ $menu->name }}" class="w-20 h-20 object-cover rounded-xl border border-cafe-beige shadow-sm">
+                            <p class="text-[10px] text-cafe-muted">Foto saat ini. Upload foto baru untuk mengganti.</p>
+                        </div>
+                        @endif
+                        <div class="relative">
+                            <input type="file"
+                                   name="image_file"
+                                   id="edit-image-file"
+                                   accept="image/*"
+                                   class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cafe-gold/20 file:text-cafe-dark hover:file:bg-cafe-gold/30 cursor-pointer"
+                                   onchange="previewEditImage(this)">
+                        </div>
+                        <div id="edit-image-preview" class="mt-2 hidden">
+                            <img id="edit-preview-img" src="" alt="Preview" class="w-24 h-24 object-cover rounded-xl border border-cafe-beige shadow-sm">
+                            <p class="text-[10px] text-cafe-muted mt-1">Preview foto yang akan diupload</p>
+                        </div>
+                        <p class="text-[10px] text-cafe-muted">Format: JPG, PNG, WEBP. Maks 2MB. Foto lama akan dihapus otomatis.</p>
                     </div>
                 </div>
             </div>
@@ -201,4 +215,24 @@
         </form>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    function previewEditImage(input) {
+        const preview = document.getElementById('edit-image-preview');
+        const img = document.getElementById('edit-preview-img');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                preview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.classList.add('hidden');
+        }
+    }
+</script>
+@endpush
+
 @endsection

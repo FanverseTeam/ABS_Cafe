@@ -9,7 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Menu extends Model
 {
@@ -95,16 +98,92 @@ class Menu extends Model
         return $this->isHabis();
     }
 
-    // ─── Display helpers ───────────────────────────────────────────────────
+    // ─── Display & File helpers ──────────────────────────────────────────
 
     public function imageUrl(): ?string
     {
-        return $this->image ?: null;
+        if (! $this->image) {
+            return null;
+        }
+
+        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+            return $this->image;
+        }
+
+        if (str_starts_with($this->image, '/storage/') || str_starts_with($this->image, 'storage/')) {
+            return asset(ltrim($this->image, '/'));
+        }
+
+        return Storage::disk('public')->url($this->image);
     }
 
     public function getGambarAttribute(): ?string
     {
         return $this->imageUrl();
+    }
+
+    public function getFotoAttribute(): ?string
+    {
+        return $this->imageUrl();
+    }
+
+    public function getPhotoUrlAttribute(): ?string
+    {
+        return $this->imageUrl();
+    }
+
+    /**
+     * Upload and attach a new photo file, deleting any previously uploaded local file.
+     */
+    public function updateImageFile(UploadedFile $file): string
+    {
+        $this->deleteImageFile();
+
+        $slug = Str::slug($this->name) ?: 'menu';
+        $extension = $file->getClientOriginalExtension() ?: 'jpg';
+        $filename = "{$slug}-".time().'-'.Str::random(6).".{$extension}";
+
+        $path = $file->storeAs('menus', $filename, 'public');
+        $url = Storage::disk('public')->url($path);
+
+        $this->image = $url;
+
+        return $url;
+    }
+
+    /**
+     * Delete the uploaded image file from public storage if it is a local file.
+     */
+    public function deleteImageFile(): void
+    {
+        if (! $this->image) {
+            return;
+        }
+
+        $relativePath = self::extractStoragePath($this->image);
+        if ($relativePath && Storage::disk('public')->exists($relativePath)) {
+            Storage::disk('public')->delete($relativePath);
+        }
+    }
+
+    /**
+     * Extract storage-relative path (e.g. 'menus/file.jpg') from a stored image URL/path.
+     */
+    public static function extractStoragePath(?string $imageUrl): ?string
+    {
+        if (! $imageUrl) {
+            return null;
+        }
+
+        if (preg_match('#(?:/storage/|^storage/)(menus/[^?\#]+)#', $imageUrl, $m)) {
+            return $m[1];
+        }
+
+        if (str_starts_with($imageUrl, 'menus/')) {
+            return $imageUrl;
+        }
+
+        return null;
     }
 
     /**

@@ -282,7 +282,7 @@
             </button>
         </div>
 
-        <form id="menu-form" method="POST" action="{{ route('admin.menu.store') }}" class="p-6 max-h-[75vh] overflow-y-auto space-y-4 text-xs">
+        <form id="menu-form" method="POST" action="{{ route('admin.menu.store') }}" enctype="multipart/form-data" class="p-6 max-h-[75vh] overflow-y-auto space-y-4 text-xs">
             @csrf
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
@@ -311,8 +311,19 @@
             </div>
 
             <div class="space-y-1">
-                <label class="font-semibold text-cafe-dark">URL Foto Menu</label>
-                <input type="url" name="image" id="menu-input-image" placeholder="https://images.unsplash.com/..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <label class="font-semibold text-cafe-dark">Foto Menu</label>
+                <!-- Preview foto saat ini (edit mode) -->
+                <div id="menu-current-image-wrap" class="hidden mb-2 flex items-center gap-3">
+                    <img id="menu-current-image" src="" alt="Foto saat ini" class="w-16 h-16 object-cover rounded-xl border border-cafe-beige shadow-sm">
+                    <p class="text-[10px] text-cafe-muted">Foto saat ini. Upload foto baru untuk mengganti.</p>
+                </div>
+                <input type="file" name="image_file" id="menu-input-image" accept="image/*"
+                       class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cafe-gold/20 file:text-cafe-dark hover:file:bg-cafe-gold/30 cursor-pointer"
+                       onchange="previewModalImage(this)">
+                <div id="menu-image-preview" class="mt-2 hidden">
+                    <img id="menu-preview-img" src="" alt="Preview" class="w-16 h-16 object-cover rounded-xl border border-cafe-beige shadow-sm">
+                </div>
+                <p class="text-[10px] text-cafe-muted mt-1">JPG, PNG, WEBP. Maks 2MB.</p>
             </div>
 
             @include('admin.catalog.partials.variant-form')
@@ -367,13 +378,35 @@
 </div>
 
 <script>
+    function resetModalImage() {
+        const fileInput = document.getElementById('menu-input-image');
+        fileInput.value = '';
+        document.getElementById('menu-current-image-wrap').classList.add('hidden');
+        document.getElementById('menu-image-preview').classList.add('hidden');
+    }
+
+    function previewModalImage(input) {
+        const preview = document.getElementById('menu-image-preview');
+        const img = document.getElementById('menu-preview-img');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                preview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.classList.add('hidden');
+        }
+    }
+
     function openMenuModal() {
         document.getElementById('menu-modal-title').innerText = 'Tambah Menu / Produk Baru';
         document.getElementById('menu-form').action = "{{ route('admin.menu.store') }}";
         document.getElementById('menu-input-name').value = '';
         document.getElementById('menu-input-price').value = '20000';
         document.getElementById('menu-input-desc').value = '';
-        document.getElementById('menu-input-image').value = 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&auto=format&fit=crop&q=80';
+        resetModalImage();
         document.getElementById('menu-input-available').checked = true;
         document.getElementById('menu-input-bestseller').checked = false;
         setVariantRows([]);
@@ -387,7 +420,13 @@
         document.getElementById('menu-input-category').value = menu.category_id;
         document.getElementById('menu-input-price').value = parseInt(menu.price);
         document.getElementById('menu-input-desc').value = menu.description || '';
-        document.getElementById('menu-input-image').value = menu.image || '';
+        // Show current image, reset file input
+        resetModalImage();
+        if (menu.image) {
+            const imgUrl = menu.image.startsWith('http') ? menu.image : `/storage/${menu.image}`;
+            document.getElementById('menu-current-image').src = imgUrl;
+            document.getElementById('menu-current-image-wrap').classList.remove('hidden');
+        }
         document.getElementById('menu-input-available').checked = Boolean(menu.is_available);
         document.getElementById('menu-input-bestseller').checked = Boolean(menu.is_best_seller);
         if (document.getElementById('menu-input-variant-group')) {
