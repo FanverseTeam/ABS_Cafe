@@ -100,4 +100,93 @@ class OrderTest extends TestCase
         $this->post("/kasir/pesanan/{$order->id}/status", ['status' => 'siap'])
             ->assertRedirect(route('kasir.shift.open'));
     }
+
+    public function test_kasir_can_scan_qr_order_and_advances_status_to_diproses(): void
+    {
+        $this->actingAsKasir();
+        $this->openShift();
+        $order = Order::factory()->web()->create([
+            'order_status' => 'baru',
+            'payment_status' => 'menunggu_pembayaran',
+        ]);
+
+        $response = $this->get('/kasir/pesanan/scan/'.urlencode($order->order_code));
+        $response->assertRedirect(route('kasir.payments.checkout', $order));
+
+        $order->refresh();
+        $this->assertSame('diproses', $order->order_status);
+        $this->assertDatabaseHas('pesanan_riwayat', [
+            'order_id' => $order->id,
+            'status' => 'DIPROSES',
+        ]);
+    }
+
+    public function test_kasir_can_scan_qr_via_post_submit_json(): void
+    {
+        $this->actingAsKasir();
+        $this->openShift();
+        $order = Order::factory()->web()->create([
+            'order_status' => 'baru',
+            'payment_status' => 'menunggu_pembayaran',
+        ]);
+
+        $response = $this->postJson('/kasir/pesanan/scan', [
+            'code' => $order->order_code,
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('order_code', $order->order_code)
+            ->assertJsonPath('order_status', 'diproses');
+
+        $this->assertSame('diproses', $order->fresh()->order_status);
+    }
+
+    public function test_customer_status_endpoint_reflects_is_processed(): void
+    {
+        $order = Order::factory()->web()->create([
+            'order_status' => 'baru',
+            'payment_status' => 'menunggu_pembayaran',
+        ]);
+
+        $this->getJson('/pesanan/status/'.urlencode($order->order_code))
+            ->assertOk()
+            ->assertJsonPath('order_status', 'baru')
+            ->assertJsonPath('order_status_label', 'Menunggu')
+            ->assertJsonPath('is_processed', false);
+
+        $order->update(['order_status' => 'diproses']);
+
+        $this->getJson('/pesanan/status/'.urlencode($order->order_code))
+            ->assertOk()
+            ->assertJsonPath('order_status', 'diproses')
+            ->assertJsonPath('is_processed', true);
+    }
+
+    public function test_unscanned_web_orders_do_not_appear_in_kasir_order_list_until_scanned(): void
+    {
+        $this->actingAsKasir();
+        $this->openShift();
+
+        $order = Order::factory()->web()->create([
+            'order_code' => '#ORD-UNSCANNED-999',
+            'order_status' => 'baru',
+            'payment_status' => 'menunggu_pembayaran',
+        ]);
+
+        // Sebelum di-scan, tidak muncul di tab aktif maupun tab web
+        $this->get('/kasir/pesanan')->assertDontSee('#ORD-UNSCANNED-999');
+        $this->get('/kasir/pesanan?tab=web')->assertDontSee('#ORD-UNSCANNED-999');
+        $this->get('/kasir/pembayaran')->assertDontSee('#ORD-UNSCANNED-999');
+
+        // Kasir scan QR code pesanan
+        $this->get('/kasir/pesanan/scan/'.urlencode($order->order_code));
+
+        // Setelah di-scan, status menjadi diproses dan muncul di daftar pesanan kasir
+        $this->assertSame('diproses', $order->fresh()->order_status);
+        $this->get('/kasir/pesanan')->assertSee('#ORD-UNSCANNED-999');
+        $this->get('/kasir/pesanan?tab=web')->assertSee('#ORD-UNSCANNED-999');
+        $this->get('/kasir/pembayaran')->assertSee('#ORD-UNSCANNED-999');
+        $this->get('/kasir/pembayaran')->assertSee('#ORD-UNSCANNED-999');
+    }
 }

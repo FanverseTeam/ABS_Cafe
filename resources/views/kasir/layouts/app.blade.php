@@ -210,6 +210,7 @@
 
     @include('partials.confirm-modal')
     @include('components.mobile.confirm-sheet')
+    @include('kasir.orders.partials.scan-modal')
 
     @stack('scripts')
 </body>

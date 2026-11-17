@@ -134,7 +134,7 @@ class Order extends Model
         }
 
         return match ($this->order_status) {
-            'baru' => ['label' => 'Baru', 'color' => 'warning'],
+            'baru', 'menunggu' => ['label' => 'Menunggu', 'color' => 'warning'],
             'diterima' => ['label' => 'Diterima', 'color' => 'info'],
             'diproses' => ['label' => 'Diproses', 'color' => 'warning'],
             'siap' => ['label' => 'Siap / Disajikan', 'color' => 'info'],
@@ -169,6 +169,17 @@ class Order extends Model
             ->where('order_status', '!=', 'selesai');
     }
 
+    /**
+     * Scope untuk pesanan yang masuk ke daftar kasir (hanya tampil setelah di-scan jika via web, atau pesanan offline/pos).
+     */
+    public function scopeForKasir($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('source', '!=', 'web')
+                ->orWhere('order_status', '!=', 'baru');
+        });
+    }
+
     public function latestPayment(): ?Payment
     {
         return $this->payments()->latest('id')->first();
@@ -194,5 +205,26 @@ class Order extends Model
     public function paymentChange(): float
     {
         return (float) ($this->latestPayment()?->change_given ?? 0);
+    }
+
+    /**
+     * URL yang dibuka kasir saat memindai QR Code pesanan pelanggan.
+     */
+    public function cashierScanUrl(): string
+    {
+        $baseUrl = CafeSetting::get('order_base_url');
+        if ($baseUrl) {
+            return rtrim($baseUrl, '/').'/kasir/pesanan/scan/'.urlencode($this->order_code);
+        }
+
+        return route('kasir.orders.scan', ['code' => $this->order_code]);
+    }
+
+    /**
+     * URL API QR Code yang di-generate untuk pesanan ini.
+     */
+    public function qrCodeApiUrl(int $size = 300): string
+    {
+        return 'https://api.qrserver.com/v1/create-qr-code/?size='.$size.'x'.$size.'&data='.urlencode($this->cashierScanUrl());
     }
 }

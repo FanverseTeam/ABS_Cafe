@@ -5,14 +5,20 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
             <h3 class="font-serif font-bold text-cafe-dark">Tagihan Menunggu Pembayaran</h3>
             <p class="text-xs text-cafe-muted mt-0.5">Proses pembayaran lalu cetak struk untuk pelanggan.</p>
         </div>
-        <div class="bg-cafe-card rounded-2xl border border-cafe-beige/60 px-4 py-2.5 text-right shadow-soft">
-            <p class="text-[10px] text-cafe-muted">Pembayaran Hari Ini</p>
-            <p class="font-serif font-bold text-cafe-success">Rp {{ number_format($paidTotal, 0, ',', '.') }}</p>
+        <div class="flex items-center gap-2">
+            <button type="button" onclick="openScanModal()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#290024] text-[#F2F5E2] text-xs font-bold hover:bg-[#775533] transition-colors shadow-md shrink-0">
+                <i data-lucide="scan" class="w-4 h-4 text-cafe-gold"></i>
+                <span>Scan QR Pesanan</span>
+            </button>
+            <div class="bg-cafe-card rounded-2xl border border-cafe-beige/60 px-4 py-2 text-right shadow-soft shrink-0">
+                <p class="text-[10px] text-cafe-muted">Pembayaran Hari Ini</p>
+                <p class="font-serif font-bold text-cafe-success text-xs sm:text-sm">Rp {{ number_format($paidTotal, 0, ',', '.') }}</p>
+            </div>
         </div>
     </div>
 

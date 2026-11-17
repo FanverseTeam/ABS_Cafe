@@ -28,11 +28,32 @@
          x-init="startPolling()">
     <div class="max-w-md mx-auto space-y-5">
 
+        {{-- Toast Notifikasi Saat QR Pertama Kali Di-scan Kasir --}}
+        <div x-show="justScannedAlert"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 -translate-y-4"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-4"
+             x-cloak
+             class="p-4 rounded-2xl bg-[#290024] text-[#F2F5E2] border-2 border-[#D4954D] shadow-xl flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-[#D4954D] text-[#290024] flex items-center justify-center shrink-0">
+                <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xs text-[#E3DEA4]">QR Code Berhasil Di-scan!</h4>
+                <p class="text-[11px] text-[#F2F5E2] leading-tight">Pesanan Anda kini masuk ke tahap <strong>Sedang Diproses</strong> oleh barista.</p>
+            </div>
+        </div>
+
         {{-- ========================================================================= --}}
-        {{-- BANNER STATUS 1: JIKA BELUM LUNAS (SILAKAN BAYAR DI KASIR)                 --}}
+        {{-- BANNER TAHAP 1: BELUM DI-SCAN KASIR (TETAP TAHAP MENUNGGU)               --}}
         {{-- ========================================================================= --}}
-        <div x-show="paymentStatus !== 'lunas'"
-             class="text-center p-6 rounded-3xl bg-[#F2F5E2] border-2 border-[#D4954D]/60 shadow-soft space-y-3">
+        <div x-show="!isProcessed && paymentStatus !== 'lunas'"
+             class="text-center p-6 rounded-3xl bg-[#F2F5E2] border-2 border-[#D4954D]/60 shadow-soft space-y-4">
             <div class="w-16 h-16 rounded-full bg-[#D4954D]/20 text-[#D4954D] flex items-center justify-center mx-auto shadow-inner animate-pulse">
                 <svg class="w-8 h-8 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="5" width="20" height="14" rx="2"></rect>
@@ -43,30 +64,80 @@
             <div class="space-y-1">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-[#D4954D]/15 text-[#290024] border border-[#D4954D]/40">
                     <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-ping"></span>
-                    Menunggu Pembayaran
+                    Tahap: Menunggu (Belum Di-scan Kasir)
                 </span>
                 <h1 class="font-serif text-2xl sm:text-3xl font-black text-[#290024] pt-1">
                     Silakan Bayar di Kasir
                 </h1>
                 <p class="text-xs sm:text-sm text-[#775533] leading-relaxed max-w-sm mx-auto">
-                    Pesanan Anda telah masuk di antrean kasir. Tunjukkan kode pesanan di bawah ini ke kasir untuk menyelesaikan pembayaran.
+                    Tunjukkan QR Code di bawah ini ke kasir. Begitu di-scan oleh kasir, pesanan Anda akan langsung masuk ke tahap <strong>Sedang Diproses</strong>.
                 </p>
             </div>
 
-            <!-- Kode Pesanan Box -->
+            {{-- QR Code Pesanan untuk Kasir --}}
+            <div class="p-4 bg-white rounded-2xl border-2 border-dashed border-[#D4954D]/80 shadow-sm inline-block mx-auto">
+                <img src="{{ $order->qrCodeApiUrl(260) }}"
+                     alt="QR Code Pesanan {{ $order->order_code }}"
+                     class="w-48 h-48 sm:w-52 sm:h-52 mx-auto object-contain">
+                <p class="text-[11px] font-bold text-[#290024] mt-2.5 flex items-center justify-center gap-1.5">
+                    <svg class="w-4 h-4 text-[#D4954D]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                    </svg>
+                    <span>Tunjukkan QR Code ke Kasir</span>
+                </p>
+            </div>
+
+            <!-- Kode Pesanan Box (Tepat di Bawah QR Code) -->
             <div class="p-3.5 rounded-2xl bg-[#E3DEA4]/30 border border-[#E3DEA4] space-y-1">
                 <div class="text-[10px] font-bold uppercase tracking-wider text-[#775533]">Kode Pesanan Anda</div>
                 <div class="font-mono text-3xl font-black text-[#290024] tracking-widest select-all">
                     {{ $order->order_code }}
                 </div>
                 <p class="text-[10px] text-[#775533] font-medium">
-                    (Sebutkan kode ini di meja kasir)
+                    (Kasir dapat memindai QR code di atas atau sebutkan kode ini di meja kasir)
                 </p>
             </div>
         </div>
 
         {{-- ========================================================================= --}}
-        {{-- BANNER STATUS 2: JIKA SUDAH LUNAS (LUNAS & PESANAN DIPROSES)             --}}
+        {{-- BANNER TAHAP 2: SUDAH DI-SCAN KASIR (MASUK TAHAP SEDANG DIPROSES)         --}}
+        {{-- ========================================================================= --}}
+        <div x-show="isProcessed && paymentStatus !== 'lunas'"
+             x-cloak
+             class="text-center p-6 rounded-3xl bg-[#F2F5E2] border-2 border-emerald-600/70 shadow-soft space-y-4">
+            <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-700 flex items-center justify-center mx-auto shadow-inner animate-pulse">
+                <svg class="w-8 h-8 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+
+            <div class="space-y-1">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
+                    Pesanan Sedang Diproses
+                </span>
+                <h1 class="font-serif text-2xl sm:text-3xl font-black text-[#290024] pt-1">
+                    Pesanan Sedang Dibuat
+                </h1>
+                <p class="text-xs sm:text-sm text-[#775533] leading-relaxed max-w-sm mx-auto">
+                    QR Code telah berhasil di-scan oleh kasir! Pesanan Anda saat ini sedang diracik oleh barista / dapur. Silakan selesaikan pembayaran di kasir.
+                </p>
+            </div>
+
+            <!-- Kode Pesanan Box -->
+            <div class="p-3.5 rounded-2xl bg-[#E3DEA4]/30 border border-[#E3DEA4] space-y-1">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-[#775533]">Kode Pesanan Terverifikasi</div>
+                <div class="font-mono text-3xl font-black text-[#290024] tracking-widest select-all">
+                    {{ $order->order_code }}
+                </div>
+                <p class="text-[10px] text-emerald-700 font-semibold">
+                    &check; Sudah diverifikasi oleh kasir
+                </p>
+            </div>
+        </div>
+
+        {{-- ========================================================================= --}}
+        {{-- BANNER TAHAP 3: JIKA SUDAH LUNAS (LUNAS & PESANAN DIPROSES / SELESAI)     --}}
         {{-- ========================================================================= --}}
         <div x-show="paymentStatus === 'lunas'"
              x-cloak
@@ -149,6 +220,12 @@
                             Bawa Pulang (Takeaway)
                         </span>
                     @endif
+                </div>
+                <div class="flex justify-between items-center pt-1 border-t border-[#E3DEA4]/70">
+                    <span>Status Pesanan:</span>
+                    <span class="font-bold uppercase px-2 py-0.5 rounded text-[11px]"
+                          :class="isProcessed ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-[#E3DEA4] text-[#775533]'"
+                          x-text="orderStatusLabel"></span>
                 </div>
                 <div class="flex justify-between items-center pt-1 border-t border-[#E3DEA4]/70">
                     <span>Status Pembayaran:</span>
@@ -255,18 +332,33 @@ function customerOrderWatcher(orderCode, initialPaymentStatus, initialOrderStatu
         orderCode: orderCode,
         paymentStatus: initialPaymentStatus,
         orderStatus: initialOrderStatus,
+        isProcessed: ['diproses', 'siap', 'selesai'].includes(initialOrderStatus),
         paidAt: null,
         cashierName: null,
         pollTimer: null,
+        justScannedAlert: false,
+
+        get orderStatusLabel() {
+            switch(this.orderStatus) {
+                case 'baru':
+                case 'menunggu': return 'Menunggu';
+                case 'diterima': return 'Diterima Kasir';
+                case 'diproses': return 'Sedang Diproses';
+                case 'siap': return 'Siap Disajikan';
+                case 'selesai': return 'Selesai';
+                case 'dibatalkan': return 'Dibatalkan';
+                default: return this.orderStatus;
+            }
+        },
 
         startPolling() {
-            if (this.paymentStatus === 'lunas') {
+            if (this.paymentStatus === 'lunas' && (this.orderStatus === 'selesai' || this.orderStatus === 'dibatalkan')) {
                 return;
             }
 
             this.pollTimer = setInterval(() => {
                 this.checkStatus();
-            }, 3000);
+            }, 2500);
         },
 
         async checkStatus() {
@@ -278,12 +370,23 @@ function customerOrderWatcher(orderCode, initialPaymentStatus, initialOrderStatu
                 if (response.ok) {
                     const data = await response.json();
                     if (data.success) {
+                        const wasProcessed = this.isProcessed;
                         this.paymentStatus = data.payment_status;
                         this.orderStatus = data.order_status;
+                        this.isProcessed = Boolean(data.is_processed) || ['diproses', 'siap', 'selesai'].includes(data.order_status);
                         this.paidAt = data.paid_at;
                         this.cashierName = data.cashier_name;
 
-                        if (this.paymentStatus === 'lunas') {
+                        // Tampilkan toast notifikasi saat status pertama kali berubah ke 'diproses'
+                        if (!wasProcessed && this.isProcessed) {
+                            this.justScannedAlert = true;
+                            if (navigator.vibrate) {
+                                navigator.vibrate([100, 50, 100]);
+                            }
+                            setTimeout(() => { this.justScannedAlert = false; }, 6000);
+                        }
+
+                        if (this.paymentStatus === 'lunas' && (this.orderStatus === 'selesai' || this.orderStatus === 'dibatalkan')) {
                             clearInterval(this.pollTimer);
                             this.pollTimer = null;
                         }

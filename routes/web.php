@@ -344,6 +344,8 @@ Route::prefix('kasir')->name('kasir.')->middleware(['auth', 'role:kasir', 'noind
     // 4. Pesanan Masuk & Status
     Route::prefix('pesanan')->name('orders.')->group(function () {
         Route::get('/', [KasirOrderController::class, 'index'])->name('index');
+        Route::get('/scan/{code}', [KasirOrderController::class, 'scan'])->name('scan')->middleware('kasir.shift');
+        Route::post('/scan', [KasirOrderController::class, 'scanSubmit'])->name('scan.submit')->middleware('kasir.shift');
         Route::get('/{order}/data', [KasirOrderController::class, 'show'])->name('data');
         Route::post('/{order}/terima', [KasirOrderController::class, 'accept'])->name('accept')->middleware('kasir.shift');
         Route::post('/{order}/status', [KasirOrderController::class, 'status'])->name('status')->middleware('kasir.shift');

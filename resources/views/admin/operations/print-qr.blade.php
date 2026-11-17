@@ -191,6 +191,9 @@
         .qr-img {
             width: 160px;
             height: 160px;
+            aspect-ratio: 1/1;
+            object-fit: contain;
+            max-width: 100%;
             display: block;
         }
 

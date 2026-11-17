@@ -1,6 +1,6 @@
 @php
-    $newWebOrdersCount = \App\Models\Order::where('source', 'web')->where('order_status', 'baru')->count();
-    $unpaidOrdersCount = \App\Models\Order::where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
+    $newWebOrdersCount = \App\Models\Order::forKasir()->where('source', 'web')->where('order_status', 'diproses')->count();
+    $unpaidOrdersCount = \App\Models\Order::forKasir()->where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
     $todayReservationCount = \App\Models\Reservation::whereDate('reservation_date', today())->count();
     $hasActiveShift = \App\Models\CashShift::where('status', 'buka')->exists();
 

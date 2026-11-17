@@ -18,14 +18,16 @@ class OrderController extends Controller
     {
         $tab = $request->get('tab', 'aktif');
 
-        $query = Order::with(['items', 'timelines' => fn ($q) => $q->latest('logged_at')]);
+        // Pesanan web yang belum di-scan (order_status == 'baru') tidak masuk ke daftar pesanan kasir
+        $query = Order::with(['items', 'timelines' => fn ($q) => $q->latest('logged_at')])
+            ->forKasir();
 
         if ($request->filled('source')) {
             $query->where('source', $request->get('source'));
         }
 
         $query = match ($tab) {
-            'web' => $query->where('source', 'web')->whereIn('order_status', ['baru', 'diterima', 'diproses', 'siap']),
+            'web' => $query->where('source', 'web')->whereIn('order_status', ['diproses', 'siap']),
             'belum_bayar' => $query->unpaid()->where('order_status', '!=', 'selesai'),
             'selesai' => $query->whereDate('created_at', today())->whereIn('order_status', ['selesai', 'dibatalkan']),
             default => $query->active(),
@@ -34,9 +36,9 @@ class OrderController extends Controller
         $orders = $query->latest()->paginate(12)->withQueryString();
 
         $counts = [
-            'aktif' => Order::active()->count(),
-            'web' => Order::where('source', 'web')->whereIn('order_status', ['baru', 'diterima', 'diproses', 'siap'])->count(),
-            'belum_bayar' => Order::unpaid()->where('order_status', '!=', 'selesai')->count(),
+            'aktif' => Order::forKasir()->active()->count(),
+            'web' => Order::forKasir()->where('source', 'web')->whereIn('order_status', ['diproses', 'siap'])->count(),
+            'belum_bayar' => Order::forKasir()->unpaid()->where('order_status', '!=', 'selesai')->count(),
         ];
 
         return view('kasir.orders.index', compact('orders', 'tab', 'counts'));
@@ -126,6 +128,105 @@ class OrderController extends Controller
         $this->log($request, "Membatalkan pesanan {$order->order_code}");
 
         return back()->with('success', "Pesanan {$order->order_code} dibatalkan.");
+    }
+
+    /**
+     * Memproses scan QR code pesanan dari pelanggan.
+     * Mengubah status pesanan dari 'baru'/'menunggu' menjadi 'diproses'.
+     */
+    public function scan(Request $request, string $code)
+    {
+        $raw = trim($code);
+        if (preg_match('~(?:scan|sukses)/([^/?#]+)~i', $raw, $matches)) {
+            $raw = $matches[1];
+        }
+        $cleanCode = urldecode($raw);
+
+        $order = Order::where('order_code', $cleanCode)
+            ->orWhere('order_code', '#'.$cleanCode)
+            ->orWhere('order_code', ltrim($cleanCode, '#'))
+            ->first();
+
+        if (! $order) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Pesanan dengan kode {$cleanCode} tidak ditemukan.",
+                ], 404);
+            }
+
+            return redirect()->route('kasir.orders.index')
+                ->with('error', "Pesanan dengan kode {$cleanCode} tidak ditemukan.");
+        }
+
+        if ($order->isCancelled()) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Pesanan {$order->order_code} sudah dibatalkan.",
+                ], 422);
+            }
+
+            return redirect()->route('kasir.orders.index')
+                ->with('error', "Pesanan {$order->order_code} sudah dibatalkan.");
+        }
+
+        $user = Auth::user();
+        $isNewlyProcessed = false;
+
+        // Jika pesanan belum diproses (masih baru / diterima / menunggu), ubah ke diproses
+        if (in_array($order->order_status, ['baru', 'diterima', 'menunggu'], true)) {
+            $order->update([
+                'order_status' => 'diproses',
+                'cashier_id' => $order->cashier_id ?: $user->id,
+                'cashier_name' => $order->cashier_name ?: $user->name,
+            ]);
+
+            $this->orders->addTimeline(
+                $order,
+                'DIPROSES',
+                $user->name,
+                'Pesanan diverifikasi melalui Scan QR Kasir dan mulai diproses bar/dapur'
+            );
+
+            $this->log($request, "Scan QR pesanan {$order->order_code} - status diubah menjadi Sedang Diproses");
+            $isNewlyProcessed = true;
+        }
+
+        $checkoutUrl = route('kasir.payments.checkout', $order);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Pesanan {$order->order_code} berhasil di-scan! Status kini: Sedang Diproses.",
+                'order_code' => $order->order_code,
+                'order_status' => $order->order_status,
+                'payment_status' => $order->payment_status,
+                'checkout_url' => $checkoutUrl,
+                'is_newly_processed' => $isNewlyProcessed,
+            ]);
+        }
+
+        // Jika pesanan belum lunas, langsung arahkan kasir ke halaman pembayaran
+        if (! $order->isPaid()) {
+            return redirect()->route('kasir.payments.checkout', $order)
+                ->with('success', "Pesanan {$order->order_code} berhasil di-scan! Status kini: Sedang Diproses. Silakan proses pembayaran.");
+        }
+
+        return redirect()->route('kasir.orders.index')
+            ->with('success', "Pesanan {$order->order_code} berhasil di-scan! Status: Sedang Diproses.");
+    }
+
+    /**
+     * Endpoint form submit untuk Scan QR / input manual dari modal kasir.
+     */
+    public function scanSubmit(Request $request)
+    {
+        $validated = $request->validate([
+            'code' => 'required|string|max:150',
+        ]);
+
+        return $this->scan($request, $validated['code']);
     }
 
     private function log(Request $request, string $activity): void

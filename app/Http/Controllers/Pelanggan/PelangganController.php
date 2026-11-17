@@ -467,9 +467,10 @@ class PelangganController extends Controller
             'payment_status' => $order->payment_status,
             'payment_status_label' => $order->payment_status === 'lunas' ? 'Lunas' : 'Menunggu Pembayaran',
             'order_status' => $order->order_status,
+            'is_processed' => in_array($order->order_status, ['diproses', 'siap', 'selesai'], true),
             'order_status_label' => match ($order->order_status) {
-                'baru' => 'Pesanan Diterima Sistem',
-                'diterima' => 'Pesanan Diterima Kasir',
+                'baru', 'menunggu' => 'Menunggu',
+                'diterima' => 'Diterima Kasir',
                 'diproses' => 'Pesanan Sedang Diproses',
                 'siap' => 'Pesanan Siap',
                 'selesai' => 'Pesanan Selesai',

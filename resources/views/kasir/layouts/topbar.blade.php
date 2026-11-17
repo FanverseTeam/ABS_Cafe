@@ -1,11 +1,11 @@
 @php
     $backUrl = \App\Support\MobileNavigation::backUrlForCurrentRoute();
     $hasActiveShift = \App\Models\CashShift::where('status', 'buka')->exists();
-    $newWebOrdersCount = \App\Models\Order::where('source', 'web')->where('order_status', 'baru')->count();
-    $unpaidOrdersCount = \App\Models\Order::where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
+    $newWebOrdersCount = \App\Models\Order::forKasir()->where('source', 'web')->where('order_status', 'diproses')->count();
+    $unpaidOrdersCount = \App\Models\Order::forKasir()->where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
     $totalNotif = $newWebOrdersCount + $unpaidOrdersCount;
-    $newWebOrders = \App\Models\Order::where('source', 'web')->where('order_status', 'baru')->take(5)->get();
-    $unpaidOrders = \App\Models\Order::unpaid()->where('order_status', '!=', 'selesai')->take(5)->get();
+    $newWebOrders = \App\Models\Order::forKasir()->where('source', 'web')->where('order_status', 'diproses')->take(5)->get();
+    $unpaidOrders = \App\Models\Order::forKasir()->unpaid()->where('order_status', '!=', 'selesai')->take(5)->get();
 @endphp
 
 <header class="sticky top-0 z-30 bg-[#F2F5E2]/95 backdrop-blur-md border-b border-cafe-beige/60 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">

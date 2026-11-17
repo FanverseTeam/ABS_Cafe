@@ -19,6 +19,7 @@ class PaymentController extends Controller
     public function index(Request $request)
     {
         $unpaid = Order::with('items')
+            ->forKasir()
             ->unpaid()
             ->where('order_status', '!=', 'selesai')
             ->orderBy('created_at')

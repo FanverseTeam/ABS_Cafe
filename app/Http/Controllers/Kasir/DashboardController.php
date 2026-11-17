@@ -29,6 +29,7 @@ class DashboardController extends Controller
             ->get();
 
         $waitingOrders = Order::with('items')
+            ->forKasir()
             ->unpaid()
             ->where('order_status', '!=', 'selesai')
             ->orderBy('created_at')

@@ -16,20 +16,26 @@
     </div>
 
     <!-- Pesan Manual Quick Card on Mobile / Tablet -->
-    <div class="lg:hidden bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4] p-3 sm:p-4 shadow-soft flex items-center justify-between gap-3">
+    <div class="lg:hidden bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4] p-3 sm:p-4 shadow-soft flex items-center justify-between gap-2">
         <div class="flex items-center gap-2.5 min-w-0">
             <div class="w-8 h-8 rounded-xl bg-cafe-gold/20 text-[#290024] flex items-center justify-center shrink-0">
-                <i data-lucide="utensils" class="w-4 h-4 text-cafe-gold"></i>
+                <i data-lucide="qr-code" class="w-4 h-4 text-cafe-gold"></i>
             </div>
             <div class="min-w-0">
-                <p class="text-xs font-bold text-cafe-dark truncate">Pesan Manual untuk Customer</p>
-                <p class="text-[10px] text-cafe-muted truncate">Catat pesanan walk-in / pesan langsung di meja</p>
+                <p class="text-xs font-bold text-cafe-dark truncate">Scan QR Pesanan</p>
+                <p class="text-[10px] text-cafe-muted truncate">Verifikasi pesanan pelanggan</p>
             </div>
         </div>
-        <a href="{{ route('kasir.pos.index') }}" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#D4954D] transition-all shadow-sm shrink-0">
-            <i data-lucide="plus-circle" class="w-4 h-4"></i>
-            <span>Pesan</span>
-        </a>
+        <div class="flex items-center gap-1.5 shrink-0">
+            <button type="button" onclick="openScanModal()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#290024] text-[#F2F5E2] text-xs font-bold hover:bg-[#775533] transition-all shadow-sm">
+                <i data-lucide="scan" class="w-3.5 h-3.5 text-cafe-gold"></i>
+                <span>Scan</span>
+            </button>
+            <a href="{{ route('kasir.pos.index') }}" class="inline-flex items-center gap-1 px-3 py-2 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#D4954D] transition-all shadow-sm">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>POS</span>
+            </a>
+        </div>
     </div>
 
     <!-- Tabs & Filter -->
@@ -70,11 +76,17 @@
             @endforeach
         </div>
 
-        <!-- Desktop Action Button -->
-        <a href="{{ route('kasir.pos.index') }}" class="hidden lg:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#D4954D] transition-colors shadow-md shrink-0">
-            <i data-lucide="plus-circle" class="w-4 h-4"></i>
-            Pesan Manual (Customer)
-        </a>
+        <!-- Desktop Action Buttons -->
+        <div class="hidden lg:flex items-center gap-2 shrink-0">
+            <button type="button" onclick="openScanModal()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#290024] text-[#F2F5E2] text-xs font-bold hover:bg-[#775533] transition-colors shadow-md">
+                <i data-lucide="scan" class="w-4 h-4 text-cafe-gold"></i>
+                <span>Scan QR Pesanan</span>
+            </button>
+            <a href="{{ route('kasir.pos.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#D4954D] transition-colors shadow-md">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>Pesan Manual (Customer)</span>
+            </a>
+        </div>
     </div>
 
     <!-- List Pesanan -->
