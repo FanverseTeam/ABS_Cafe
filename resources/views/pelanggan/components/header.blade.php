@@ -2,7 +2,7 @@
         x-init="isScrolled = (window.pageYOffset > 20)"
         @scroll.window="isScrolled = (window.pageYOffset > 20)"
         @keydown.escape.window="mobileMenuOpen = false"
-        :class="isScrolled ? 'bg-[#290024]/95 backdrop-blur-md border-b border-[#D4954D]/20 shadow-[0_4px_24px_rgba(41,0,36,0.35)] py-3' : 'bg-transparent py-4 sm:py-6'"
+        :class="isScrolled ? 'bg-[#000000]/95 backdrop-blur-md border-b border-[#D4954D]/20 shadow-[0_4px_24px_rgba(0,0,0,0.5)] py-3' : 'bg-transparent py-4 sm:py-6'"
         class="fixed top-0 inset-x-0 z-40 transition-all duration-300">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         <!-- Logo & Branding di Kiri -->
@@ -35,6 +35,10 @@
             <a href="{{ route('pelanggan.beranda') }}#tentang-kami"
                class="text-xs font-semibold uppercase tracking-wider text-[#F2F5E2] hover:text-[#D4954D] transition-colors py-2">
                 Tentang Kami
+            </a>
+            <a href="{{ route('pelanggan.beranda') }}#suasana"
+               class="text-xs font-semibold uppercase tracking-wider text-[#F2F5E2] hover:text-[#D4954D] transition-colors py-2">
+                Galeri
             </a>
             <a href="{{ route('pelanggan.beranda') }}#lokasi"
                class="text-xs font-semibold uppercase tracking-wider text-[#F2F5E2] hover:text-[#D4954D] transition-colors py-2">
@@ -72,7 +76,7 @@
          role="dialog"
          aria-modal="true"
          aria-label="Menu navigasi layar penuh"
-         class="lg:hidden fixed inset-0 z-50 bg-[#290024]/98 backdrop-blur-xl flex flex-col justify-between px-6 pt-6 pb-8 overflow-y-auto">
+         class="lg:hidden fixed inset-0 z-50 bg-[#000000]/98 backdrop-blur-xl flex flex-col justify-between px-6 pt-6 pb-8 overflow-y-auto">
 
         <!-- Baris Atas Menu Mobile: Logo & Tombol Tutup -->
         <div class="flex items-center justify-between">
@@ -115,6 +119,11 @@
                @click="mobileMenuOpen = false"
                class="min-h-[44px] flex items-center justify-center font-serif text-2xl sm:text-3xl font-semibold tracking-wide text-[#F2F5E2] hover:text-[#D4954D] transition-colors">
                 Tentang Kami
+            </a>
+            <a href="{{ route('pelanggan.beranda') }}#suasana"
+               @click="mobileMenuOpen = false"
+               class="min-h-[44px] flex items-center justify-center font-serif text-2xl sm:text-3xl font-semibold tracking-wide text-[#F2F5E2] hover:text-[#D4954D] transition-colors">
+                Galeri
             </a>
             <a href="{{ route('pelanggan.beranda') }}#lokasi"
                @click="mobileMenuOpen = false"

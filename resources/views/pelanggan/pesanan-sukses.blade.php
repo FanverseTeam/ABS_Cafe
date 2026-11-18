@@ -213,7 +213,7 @@
                     <span>Tipe Pemesanan:</span>
                     @if($order->order_type === 'dine_in')
                         <span class="font-bold text-[#290024] px-2 py-0.5 rounded-md bg-[#D4954D]/15 border border-[#D4954D]/30">
-                            Santap di Tempat (Dine In){{ $order->table_number ? ' &bull; Meja #' . $order->table_number : '' }}
+                            Santap di Tempat (Dine In){{ $order->table_number ? ' • Meja #' . $order->table_number : '' }}
                         </span>
                     @else
                         <span class="font-bold text-[#290024] px-2 py-0.5 rounded-md bg-[#E3DEA4] border border-[#E3DEA4]">

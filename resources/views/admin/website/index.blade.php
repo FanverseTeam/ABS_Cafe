@@ -388,6 +388,115 @@
                 </div>
             </div>
 
+            <!-- BAGIAN 1b: KELOLA FOTO GALERI CAROUSEL (MOMENTS WORTH SHARING) -->
+            <div class="bg-cafe-card rounded-2xl p-6 sm:p-8 shadow-soft border border-cafe-beige/40">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-cafe-beige/40 pb-4 mb-6">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-serif font-bold text-base text-cafe-dark">Galeri Foto Carousel (Moments Worth Sharing)</h4>
+                            @if(!empty($isCustomGallery))
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                    Custom ({{ count($galleryItems) }} Foto)
+                                </span>
+                            @else
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-800 border border-amber-200">
+                                    Bawaan Sistem ({{ count($galleryItems) }} Foto)
+                                </span>
+                            @endif
+                        </div>
+                        <p class="text-xs text-cafe-muted mt-0.5">Foto-foto ini tampil dalam carousel geser kiri-kanan (touch scroll / swipe) di landing page. Anda dapat menambah, mengubah judul, atau menghapus foto.</p>
+                    </div>
+
+                    @if(!empty($isCustomGallery))
+                        <form action="{{ route('admin.website.landing.gallery.reset') }}" method="POST" onsubmit="return confirm('Kembalikan galeri foto carousel ke default bawaan sistem?');" class="shrink-0">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-[11px] font-semibold transition-colors">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                                <span>Reset ke Default Bawaan</span>
+                            </button>
+                        </form>
+                    @endif
+                </div>
+
+                <!-- Form Tambah Foto Baru ke Galeri Carousel -->
+                <div class="mb-8 p-5 rounded-2xl border-2 border-dashed border-[#D4954D]/50 bg-[#E3DEA4]/20">
+                    <h5 class="font-bold text-xs text-cafe-dark mb-1 flex items-center gap-1.5">
+                        <i data-lucide="plus-circle" class="w-4 h-4 text-cafe-gold"></i>
+                        <span>Tambah Foto Baru ke Galeri Carousel</span>
+                    </h5>
+                    <p class="text-[11px] text-cafe-muted mb-4">Upload foto berorientasi portrait/tegak (rekomendasi rasio 4:5 atau 960x1200 px). Maksimal 5 MB.</p>
+
+                    <form action="{{ route('admin.website.landing.gallery.add') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+                        @csrf
+                        <div class="sm:col-span-5 space-y-1">
+                            <label class="block text-[11px] font-semibold text-cafe-dark">Pilih Berkas Foto</label>
+                            <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" required
+                                   class="w-full text-xs text-cafe-dark file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-cafe-dark file:text-cafe-cream hover:file:bg-cafe-brown cursor-pointer border border-cafe-beige bg-white rounded-xl p-1">
+                        </div>
+                        <div class="sm:col-span-4 space-y-1">
+                            <label class="block text-[11px] font-semibold text-cafe-dark">Keterangan / Judul Foto (Opsional)</label>
+                            <input type="text" name="title" placeholder="Contoh: Suasana Malam Outdoor"
+                                   class="w-full bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        </div>
+                        <div class="sm:col-span-3">
+                            <button type="submit" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold shadow-xs transition-all active:scale-95">
+                                <i data-lucide="upload" class="w-3.5 h-3.5 text-cafe-gold"></i>
+                                <span>Unggah ke Galeri</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Daftar Kartu Foto Galeri Saat Ini -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    @foreach($galleryItems as $itemIdx => $gItem)
+                        @php
+                            $imgSrc = $gItem['image'] ?? '';
+                            if ($imgSrc !== '' && !str_starts_with($imgSrc, 'http') && !str_starts_with($imgSrc, '/')) {
+                                $imgSrc = asset($imgSrc);
+                            }
+                        @endphp
+                        <div class="rounded-2xl border border-cafe-beige/60 bg-[#F2F5E2]/40 p-3 flex flex-col justify-between space-y-3 group shadow-xs">
+                            <div class="space-y-2">
+                                <div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden border border-cafe-beige bg-[#290024] shadow-inner">
+                                    <img src="{{ $imgSrc }}"
+                                         alt="{{ $gItem['title'] ?? 'Galeri' }}"
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                         onerror="this.style.display='none'">
+                                    <div class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#000000]/70 text-[#D4954D] text-[10px] font-bold border border-[#D4954D]/40 backdrop-blur-sm">
+                                        #{{ $itemIdx + 1 }}
+                                    </div>
+                                </div>
+
+                                <div class="text-[11px] font-bold text-cafe-dark truncate px-1" title="{{ $gItem['title'] ?? '-' }}">
+                                    {{ $gItem['title'] ?: '(Tanpa Judul)' }}
+                                </div>
+                            </div>
+
+                            <div class="pt-2 border-t border-cafe-beige/40 flex items-center justify-between gap-1">
+                                <!-- Trigger Edit Judul Modal/Form -->
+                                <button type="button"
+                                        onclick="openEditGalleryModal('{{ $gItem['id'] }}', '{{ addslashes($gItem['title'] ?? '') }}')"
+                                        class="inline-flex items-center gap-1 text-[11px] font-semibold text-cafe-dark hover:text-cafe-gold transition-colors py-1">
+                                    <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                                    <span>Ubah</span>
+                                </button>
+
+                                <!-- Form Hapus Item -->
+                                <form action="{{ route('admin.website.landing.gallery.delete', $gItem['id']) }}" method="POST" onsubmit="return confirm('Hapus foto ini dari galeri carousel?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-600 hover:text-rose-800 transition-colors py-1">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                        <span>Hapus</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
             <!-- BAGIAN 2: KELOLA TEKS KONTEN LANDING PAGE -->
             <div class="bg-cafe-card rounded-2xl p-6 sm:p-8 shadow-soft border border-cafe-beige/40">
                 <div class="border-b border-cafe-beige/40 pb-4 mb-6">
@@ -522,35 +631,35 @@
                         </div>
                     </div>
 
-                    <!-- SUASANA KAFE SECTION -->
+                    <!-- SUASANA & GALERI CAROUSEL SECTION -->
                     <div class="rounded-xl border border-cafe-beige/60 bg-[#F2F5E2]/30 p-4 sm:p-5 space-y-4">
                         <div class="border-b border-cafe-beige/40 pb-2">
-                            <h5 class="font-serif font-bold text-sm text-cafe-dark">Bagian Suasana Kafe</h5>
-                            <p class="text-[11px] text-cafe-muted">Teks overlay di atas foto banner suasana kafe.</p>
+                            <h5 class="font-serif font-bold text-sm text-cafe-dark">Bagian Suasana &amp; Galeri Carousel (Moments Worth Sharing)</h5>
+                            <p class="text-[11px] text-cafe-muted">Teks judul dan narasi di atas barisan foto carousel yang bisa digeser dengan jari.</p>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="space-y-1">
                                 <label class="font-semibold text-cafe-dark">Badge / Label</label>
                                 <input type="text"
-                                       name="atmosphere_badge"
-                                       value="{{ $landingSettings['atmosphere_badge'] ?? 'SUASANA' }}"
+                                       name="gallery_badge"
+                                       value="{{ $landingSettings['gallery_badge'] ?? ($landingSettings['atmosphere_badge'] ?? 'SUASANA & MOMEN') }}"
                                        class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                             </div>
                             <div class="space-y-1">
-                                <label class="font-semibold text-cafe-dark">Judul Suasana</label>
+                                <label class="font-semibold text-cafe-dark">Judul Galeri (Headline Utama)</label>
                                 <input type="text"
-                                       name="atmosphere_title"
-                                       value="{{ $landingSettings['atmosphere_title'] ?? 'Nyaman & Elegan' }}"
+                                       name="gallery_title"
+                                       value="{{ $landingSettings['gallery_title'] ?? ($landingSettings['atmosphere_title'] ?? 'Moments Worth Sharing') }}"
                                        class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
                             </div>
                         </div>
 
                         <div class="space-y-1">
-                            <label class="font-semibold text-cafe-dark">Deskripsi Suasana</label>
-                            <textarea name="atmosphere_description"
+                            <label class="font-semibold text-cafe-dark">Deskripsi Galeri</label>
+                            <textarea name="gallery_description"
                                       rows="2"
-                                      class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">{{ $landingSettings['atmosphere_description'] ?? '' }}</textarea>
+                                      class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">{{ $landingSettings['gallery_description'] ?? ($landingSettings['atmosphere_description'] ?? 'From your first sip of coffee to meaningful moments with friends, ABS Cafe is where every visit becomes a memory.') }}</textarea>
                         </div>
                     </div>
 
@@ -627,6 +736,62 @@
                 </form>
             </div>
         </div>
+
+        <!-- Modal Ubah Foto / Keterangan Galeri Carousel -->
+        <div id="editGalleryModal" class="fixed inset-0 z-50 bg-[#000000]/70 backdrop-blur-sm hidden items-center justify-center p-4">
+            <div class="bg-cafe-card rounded-2xl border border-cafe-beige/60 max-w-md w-full p-6 shadow-xl space-y-4">
+                <div class="flex items-center justify-between border-b border-cafe-beige/40 pb-3">
+                    <h5 class="font-serif font-bold text-sm text-cafe-dark">Ubah Keterangan / Ganti Foto Galeri</h5>
+                    <button type="button" onclick="closeEditGalleryModal()" class="w-7 h-7 rounded-full bg-cafe-beige/60 flex items-center justify-center text-cafe-dark hover:bg-cafe-beige">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <form id="editGalleryForm" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs">
+                    @csrf
+                    <div class="space-y-1">
+                        <label class="font-semibold text-cafe-dark">Judul / Keterangan Foto</label>
+                        <input type="text" id="editGalleryTitle" name="title" class="w-full bg-white text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="font-semibold text-cafe-dark">Ganti Berkas Foto (Opsional)</label>
+                        <input type="file" name="photo" accept="image/jpeg,image/png,image/webp"
+                               class="w-full text-xs text-cafe-dark file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-cafe-dark file:text-cafe-cream border border-cafe-beige bg-white rounded-xl p-1">
+                        <p class="text-[10px] text-cafe-muted">Kosongkan jika hanya ingin mengubah judul/keterangan.</p>
+                    </div>
+                    <div class="flex items-center justify-end gap-2 pt-2">
+                        <button type="button" onclick="closeEditGalleryModal()" class="px-4 py-2 rounded-xl bg-cafe-beige/60 text-cafe-dark font-semibold text-xs">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-4 py-2 rounded-xl bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-xs">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     @endif
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function openEditGalleryModal(id, title) {
+        const modal = document.getElementById('editGalleryModal');
+        const form = document.getElementById('editGalleryForm');
+        const inputTitle = document.getElementById('editGalleryTitle');
+        if (!modal || !form || !inputTitle) return;
+
+        form.action = "{{ url('admin/website/landing/gallery') }}/" + id + "/update";
+        inputTitle.value = title;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeEditGalleryModal() {
+        const modal = document.getElementById('editGalleryModal');
+        if (!modal) return;
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+</script>
+@endpush

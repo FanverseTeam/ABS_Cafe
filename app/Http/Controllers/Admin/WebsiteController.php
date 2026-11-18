@@ -50,6 +50,8 @@ class WebsiteController extends Controller
         // Data khusus tab Landing Page
         $landingSettings = [];
         $landingPhotos = [];
+        $galleryItems = [];
+        $isCustomGallery = false;
         if ($tab === 'landing') {
             $defaults = LandingData::defaults();
             $landingKeys = array_keys($defaults);
@@ -69,9 +71,11 @@ class WebsiteController extends Controller
                     'suggested_size' => $slotConfig['suggested_size'] ?? '1200x800',
                 ];
             }
+            $galleryItems = LandingData::rawGallery();
+            $isCustomGallery = CafeSetting::get('landing_gallery') !== null;
         }
 
-        return view('admin.website.index', compact('settings', 'tab', 'landingSettings', 'landingPhotos'));
+        return view('admin.website.index', compact('settings', 'tab', 'landingSettings', 'landingPhotos', 'galleryItems', 'isCustomGallery'));
     }
 
     public function updateProfile(Request $request)
@@ -301,6 +305,9 @@ class WebsiteController extends Controller
             'atmosphere_badge' => 'nullable|string|max:100',
             'atmosphere_title' => 'nullable|string|max:200',
             'atmosphere_description' => 'nullable|string|max:500',
+            'gallery_badge' => 'nullable|string|max:100',
+            'gallery_title' => 'nullable|string|max:200',
+            'gallery_description' => 'nullable|string|max:500',
             'location_badge' => 'nullable|string|max:100',
             'location_title' => 'nullable|string|max:200',
             'social_title' => 'nullable|string|max:200',
@@ -313,6 +320,7 @@ class WebsiteController extends Controller
             'about_badge', 'about_title', 'about_description', 'about_tagline',
             'feature_1_title', 'feature_2_title', 'feature_3_title', 'feature_4_title',
             'atmosphere_badge', 'atmosphere_title', 'atmosphere_description',
+            'gallery_badge', 'gallery_title', 'gallery_description',
             'location_badge', 'location_title',
             'social_title',
             'cafe_instagram', 'cafe_tiktok',
@@ -345,7 +353,7 @@ class WebsiteController extends Controller
         $allowedSlots = ['hero', 'hero_cup', 'tentang', 'suasana'];
 
         $request->validate([
-            'slot' => 'required|string|in:' . implode(',', $allowedSlots),
+            'slot' => 'required|string|in:'.implode(',', $allowedSlots),
             'photo' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
         ], [
             'photo.required' => 'Pilih file foto untuk diupload.',
@@ -366,7 +374,7 @@ class WebsiteController extends Controller
         // Hapus file lama dengan ekstensi berbeda
         $extensions = ['webp', 'jpg', 'jpeg', 'png'];
         foreach ($extensions as $ext) {
-            $oldFile = $targetDir . DIRECTORY_SEPARATOR . "{$slot}.{$ext}";
+            $oldFile = $targetDir.DIRECTORY_SEPARATOR."{$slot}.{$ext}";
             if (File::exists($oldFile)) {
                 File::delete($oldFile);
             }
@@ -387,12 +395,12 @@ class WebsiteController extends Controller
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => 'Mengupload foto Landing Page: ' . ($slotLabels[$slot] ?? $slot),
+            'activity' => 'Mengupload foto Landing Page: '.($slotLabels[$slot] ?? $slot),
             'activity_type' => 'sistem',
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('success', 'Foto "' . ($slotLabels[$slot] ?? $slot) . '" berhasil diupload.');
+        return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('success', 'Foto "'.($slotLabels[$slot] ?? $slot).'" berhasil diupload.');
     }
 
     /**
@@ -410,7 +418,7 @@ class WebsiteController extends Controller
         $deleted = false;
 
         foreach ($extensions as $ext) {
-            $filePath = $targetDir . DIRECTORY_SEPARATOR . "{$slot}.{$ext}";
+            $filePath = $targetDir.DIRECTORY_SEPARATOR."{$slot}.{$ext}";
             if (File::exists($filePath)) {
                 File::delete($filePath);
                 $deleted = true;
@@ -430,12 +438,183 @@ class WebsiteController extends Controller
             ActivityLog::create([
                 'user_name' => Auth::user()->name,
                 'role' => Auth::user()->role,
-                'activity' => 'Menghapus foto Landing Page: ' . ($slotLabels[$slot] ?? $slot) . ' (kembali ke default)',
+                'activity' => 'Menghapus foto Landing Page: '.($slotLabels[$slot] ?? $slot).' (kembali ke default)',
                 'activity_type' => 'sistem',
                 'ip_address' => $request->ip(),
             ]);
         }
 
-        return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('success', 'Foto "' . ($slotLabels[$slot] ?? $slot) . '" berhasil dihapus. Akan menggunakan foto default.');
+        return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('success', 'Foto "'.($slotLabels[$slot] ?? $slot).'" berhasil dihapus. Akan menggunakan foto default.');
+    }
+
+    /**
+     * Tambah foto baru ke galeri carousel landing page.
+     */
+    public function addGalleryPhoto(Request $request)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'title' => 'nullable|string|max:100',
+        ], [
+            'photo.required' => 'Pilih file foto galeri untuk diupload.',
+            'photo.image' => 'File harus berupa gambar.',
+            'photo.mimes' => 'Format foto yang didukung: JPG, PNG, atau WebP.',
+            'photo.max' => 'Ukuran foto maksimal 5 MB.',
+        ]);
+
+        $file = $request->file('photo');
+        $extension = $file->getClientOriginalExtension();
+        $filename = 'gallery_'.time().'_'.substr(md5(uniqid()), 0, 8).'.'.$extension;
+
+        $targetDir = public_path('images/pelanggan/gallery');
+        if (! File::isDirectory($targetDir)) {
+            File::makeDirectory($targetDir, 0755, true);
+        }
+
+        $file->move($targetDir, $filename);
+
+        $items = LandingData::rawGallery();
+        $title = trim((string) $request->input('title', ''));
+        $newItem = [
+            'id' => 'gal_'.uniqid(),
+            'image' => 'images/pelanggan/gallery/'.$filename,
+            'title' => $title,
+            'alt' => $title !== '' ? $title : 'Suasana Kafe ABS Cafe',
+        ];
+
+        $items[] = $newItem;
+        CafeSetting::set('landing_gallery', json_encode($items));
+        LandingData::clearCache();
+
+        ActivityLog::create([
+            'user_name' => Auth::user()->name,
+            'role' => Auth::user()->role,
+            'activity' => 'Menambahkan foto baru ke Galeri Suasana Landing Page',
+            'activity_type' => 'sistem',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('success', 'Foto berhasil ditambahkan ke galeri carousel.');
+    }
+
+    /**
+     * Update keterangan / foto galeri carousel.
+     */
+    public function updateGalleryPhoto(Request $request, string $id)
+    {
+        $request->validate([
+            'title' => 'nullable|string|max:100',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+        ]);
+
+        $items = LandingData::rawGallery();
+        $found = false;
+
+        foreach ($items as &$item) {
+            if (($item['id'] ?? '') === $id) {
+                $item['title'] = trim((string) $request->input('title', ''));
+                if ($item['title'] !== '') {
+                    $item['alt'] = $item['title'];
+                }
+
+                if ($request->hasFile('photo')) {
+                    $file = $request->file('photo');
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = 'gallery_'.time().'_'.substr(md5(uniqid()), 0, 8).'.'.$extension;
+                    $targetDir = public_path('images/pelanggan/gallery');
+                    if (! File::isDirectory($targetDir)) {
+                        File::makeDirectory($targetDir, 0755, true);
+                    }
+                    $file->move($targetDir, $filename);
+
+                    // Hapus file lama jika lokal
+                    $oldImage = $item['image'] ?? '';
+                    if ($oldImage && ! str_starts_with($oldImage, 'http') && File::exists(public_path($oldImage))) {
+                        File::delete(public_path($oldImage));
+                    }
+
+                    $item['image'] = 'images/pelanggan/gallery/'.$filename;
+                }
+
+                $found = true;
+                break;
+            }
+        }
+        unset($item);
+
+        if ($found) {
+            CafeSetting::set('landing_gallery', json_encode($items));
+            LandingData::clearCache();
+
+            ActivityLog::create([
+                'user_name' => Auth::user()->name,
+                'role' => Auth::user()->role,
+                'activity' => 'Memperbarui foto galeri landing page ID: '.$id,
+                'activity_type' => 'sistem',
+                'ip_address' => $request->ip(),
+            ]);
+
+            return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('success', 'Data foto galeri berhasil diperbarui.');
+        }
+
+        return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('error', 'Item galeri tidak ditemukan.');
+    }
+
+    /**
+     * Hapus foto dari galeri carousel landing page.
+     */
+    public function deleteGalleryPhoto(Request $request, string $id)
+    {
+        $items = LandingData::rawGallery();
+        $filtered = [];
+        $deleted = false;
+
+        foreach ($items as $item) {
+            if (($item['id'] ?? '') === $id) {
+                $imagePath = $item['image'] ?? '';
+                if ($imagePath && ! str_starts_with($imagePath, 'http') && File::exists(public_path($imagePath))) {
+                    File::delete(public_path($imagePath));
+                }
+                $deleted = true;
+            } else {
+                $filtered[] = $item;
+            }
+        }
+
+        if ($deleted) {
+            CafeSetting::set('landing_gallery', json_encode(array_values($filtered)));
+            LandingData::clearCache();
+
+            ActivityLog::create([
+                'user_name' => Auth::user()->name,
+                'role' => Auth::user()->role,
+                'activity' => 'Menghapus foto dari galeri carousel landing page',
+                'activity_type' => 'sistem',
+                'ip_address' => $request->ip(),
+            ]);
+
+            return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('success', 'Foto galeri berhasil dihapus.');
+        }
+
+        return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('error', 'Item galeri tidak ditemukan.');
+    }
+
+    /**
+     * Reset galeri carousel ke default bawaan sistem.
+     */
+    public function resetGallery(Request $request)
+    {
+        CafeSetting::where('key', 'landing_gallery')->delete();
+        LandingData::clearCache();
+
+        ActivityLog::create([
+            'user_name' => Auth::user()->name,
+            'role' => Auth::user()->role,
+            'activity' => 'Mereset galeri carousel landing page ke default bawaan',
+            'activity_type' => 'sistem',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('success', 'Galeri foto carousel berhasil dikembalikan ke default bawaan.');
     }
 }

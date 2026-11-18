@@ -1,4 +1,4 @@
-<footer class="relative bg-[#290024] border-t border-[#775533]/30 text-[#E3DEA4] pt-12 pb-8 overflow-hidden">
+<footer class="relative bg-[#000000] border-t border-[#775533]/30 text-[#E3DEA4] pt-12 pb-8 overflow-hidden">
     <!-- Ornamen Daun Garis di Sudut Kiri Bawah (SVG Inline Dekoratif) -->
     <div class="pointer-events-none absolute -bottom-6 -left-6 w-32 h-32 opacity-20 sm:opacity-30 text-[#D4954D]" aria-hidden="true">
         <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-full h-full">

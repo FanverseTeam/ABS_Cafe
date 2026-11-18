@@ -6,6 +6,7 @@ use App\Models\CafeSetting;
 use App\Models\User;
 use App\Support\LandingData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Tests\TestCase;
@@ -416,5 +417,73 @@ class LandingPageCustomerTest extends TestCase
                 'hours_weekend' => '09:00 - 23:00',
             ])
             ->assertSessionHasErrors('whatsapp_nomor');
+    }
+
+    public function test_landing_page_renders_gallery_carousel(): void
+    {
+        $response = $this->get(route('pelanggan.beranda'));
+
+        $response->assertOk();
+        $response->assertSee('Moments Worth Sharing');
+        $response->assertSee('From your first sip of coffee to meaningful moments with friends');
+        $response->assertSee('gallery-marquee-track', false);
+        $response->assertSee('gallery-film-card', false);
+        $response->assertSee('gallery-marquee-wrapper', false);
+    }
+
+    public function test_admin_can_manage_gallery_carousel_items(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'is_active' => true]);
+
+        // 1. Admin melihat galeri di tab landing
+        $this->actingAs($admin)
+            ->get(route('admin.website.index', ['tab' => 'landing']))
+            ->assertOk()
+            ->assertSee('Galeri Foto Carousel (Moments Worth Sharing)');
+
+        // 2. Admin mengunggah foto baru
+        $fakeImage = UploadedFile::fake()->create('suasana_baru.jpg', 50, 'image/jpeg');
+        $this->actingAs($admin)
+            ->post(route('admin.website.landing.gallery.add'), [
+                'photo' => $fakeImage,
+                'title' => 'Sudut Favorit Pelanggan',
+            ])
+            ->assertRedirect(route('admin.website.index', ['tab' => 'landing']))
+            ->assertSessionHas('success');
+
+        $gallery = LandingData::rawGallery();
+        $this->assertNotEmpty($gallery);
+        $lastItem = end($gallery);
+        $this->assertSame('Sudut Favorit Pelanggan', $lastItem['title']);
+
+        // 3. Admin memperbarui judul foto galeri
+        $itemId = $lastItem['id'];
+        $this->actingAs($admin)
+            ->post(route('admin.website.landing.gallery.update', $itemId), [
+                'title' => 'Sudut Favorit Diperbarui',
+            ])
+            ->assertRedirect(route('admin.website.index', ['tab' => 'landing']))
+            ->assertSessionHas('success');
+
+        $updatedGallery = LandingData::rawGallery();
+        $updatedItem = collect($updatedGallery)->firstWhere('id', $itemId);
+        $this->assertSame('Sudut Favorit Diperbarui', $updatedItem['title']);
+
+        // 4. Admin menghapus foto galeri
+        $this->actingAs($admin)
+            ->delete(route('admin.website.landing.gallery.delete', $itemId))
+            ->assertRedirect(route('admin.website.index', ['tab' => 'landing']))
+            ->assertSessionHas('success');
+
+        $deletedGallery = LandingData::rawGallery();
+        $this->assertNull(collect($deletedGallery)->firstWhere('id', $itemId));
+
+        // 5. Admin mereset galeri ke default bawaan
+        $this->actingAs($admin)
+            ->post(route('admin.website.landing.gallery.reset'))
+            ->assertRedirect(route('admin.website.index', ['tab' => 'landing']))
+            ->assertSessionHas('success');
+
+        $this->assertNull(CafeSetting::get('landing_gallery'));
     }
 }

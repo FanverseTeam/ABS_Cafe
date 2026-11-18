@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>ABS Cafe – Good Coffee, Good Mood</title>
     <meta name="description" content="Portal Staf ABS Cafe. Kelola operasional dan pantau bisnis ABS Cafe dalam satu tempat. Akses dashboard Admin, Owner, dan Kasir.">
-    <meta name="theme-color" content="#290024">
+    <meta name="theme-color" content="#000000">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
@@ -116,7 +116,7 @@
         body {
             overflow-x: hidden;
             overflow-y: auto;
-            background-color: #290024;
+            background-color: #000000;
         }
 
         .landing-screen {
