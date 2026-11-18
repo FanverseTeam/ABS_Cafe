@@ -23,7 +23,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
-    <meta name="theme-color" content="#290024">
+    <meta name="theme-color" content="#000000">
 
     <!-- Preload Font Lokal -->
     @include('partials.font-preloads')
@@ -65,7 +65,7 @@
 
     <style>
         :root {
-            --color-bg-primary: #290024;
+            --color-bg-primary: #000000;
             --color-surface-olive: #775533;
             --color-accent-gold: #D4954D;
             --color-text-main: #F2F5E2;
@@ -100,7 +100,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col @yield('body_class', 'bg-[#290024] text-[#F2F5E2]') selection:bg-[#D4954D]/30 selection:text-[#F2F5E2]" style="@yield('body_style', 'background-color: #290024; color: #F2F5E2;')">
+<body class="min-h-screen flex flex-col @yield('body_class', 'bg-[#000000] text-[#F2F5E2]') selection:bg-[#D4954D]/30 selection:text-[#F2F5E2]" style="@yield('body_style', 'background-color: #000000; color: #F2F5E2;')">
     <!-- Aksesibilitas: Lewati ke konten utama -->
     <a href="#main-content"
        class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2.5 focus:rounded-full focus:bg-[#D4954D] focus:text-[#290024] focus:font-semibold focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#F2F5E2]">

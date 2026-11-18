@@ -49,8 +49,12 @@ class LandingData
         'feature_4_title' => 'Cocok untuk Semua',
 
         'atmosphere_badge' => 'SUASANA',
-        'atmosphere_title' => 'Nyaman & Elegan',
-        'atmosphere_description' => 'Desain interior kami yang modern dengan sentuhan alami menciptakan suasana yang hangat dan menenangkan.',
+        'atmosphere_title' => 'Moments Worth Sharing',
+        'atmosphere_description' => 'From your first sip of coffee to meaningful moments with friends, ABS Cafe is where every visit becomes a memory.',
+
+        'gallery_badge' => 'SUASANA & MOMEN',
+        'gallery_title' => 'Moments Worth Sharing',
+        'gallery_description' => 'From your first sip of coffee to meaningful moments with friends, ABS Cafe is where every visit becomes a memory.',
 
         'location_badge' => 'LOKASI',
         'location_title' => 'Temukan Kami',
@@ -226,6 +230,14 @@ class LandingData
                 'title' => $resolve('atmosphere_title'),
                 'description' => $resolve('atmosphere_description'),
                 'photo' => self::resolvePhoto('suasana'),
+                'gallery' => self::getGallery(),
+            ],
+
+            'gallery' => [
+                'badge' => $resolve(['gallery_badge', 'atmosphere_badge']),
+                'title' => $resolve(['gallery_title', 'atmosphere_title']),
+                'description' => $resolve(['gallery_description', 'atmosphere_description']),
+                'items' => self::getGallery(),
             ],
 
             'location' => [
@@ -290,5 +302,87 @@ class LandingData
             'height' => $height,
             'preload' => $preload,
         ];
+    }
+
+    /**
+     * Galeri foto suasana bawaan sistem.
+     *
+     * @return array<int, array<string, string>>
+     */
+    public static function defaultGallery(): array
+    {
+        $hasLocalCafe = File::exists(public_path('images/pelanggan/gallery/cafe_portrait.jpg'));
+
+        $items = [
+            [
+                'id' => 'default_1',
+                'image' => $hasLocalCafe ? 'images/pelanggan/gallery/cafe_portrait.jpg' : 'https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1000&q=80',
+                'title' => 'Fasad & Sudut Hangat Kafe',
+                'alt' => 'Suasana cafe malam hari dengan lampu temaram',
+            ],
+            [
+                'id' => 'default_2',
+                'image' => 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1000&q=80',
+                'title' => 'Teras Santai Sore Hari',
+                'alt' => 'Teras outdoor cafe yang asri dan sejuk',
+            ],
+            [
+                'id' => 'default_3',
+                'image' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1000&q=80',
+                'title' => 'Momen Syahdu Bersama Teman',
+                'alt' => 'Area duduk cafe malam hari berhias lampu gantung cantik',
+            ],
+            [
+                'id' => 'default_4',
+                'image' => 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=1000&q=80',
+                'title' => 'Racikan Kopi Pilihan Barista',
+                'alt' => 'Barista sedang meracik kopi dengan cermat di coffee bar',
+            ],
+            [
+                'id' => 'default_5',
+                'image' => 'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&w=1000&q=80',
+                'title' => 'Ruang Interior Nyaman & Estetik',
+                'alt' => 'Desain interior cafe dengan meja kayu dan suasana tenang',
+            ],
+        ];
+
+        return $items;
+    }
+
+    /**
+     * Mengambil item galeri untuk antarmuka publik (URL sudah diselesaikan).
+     *
+     * @return array<int, array<string, string>>
+     */
+    public static function getGallery(): array
+    {
+        $items = self::rawGallery();
+
+        return array_map(function ($item) {
+            $img = $item['image'] ?? '';
+            if ($img !== '' && ! str_starts_with($img, 'http://') && ! str_starts_with($img, 'https://')) {
+                $item['image'] = asset(ltrim($img, '/'));
+            }
+
+            return $item;
+        }, $items);
+    }
+
+    /**
+     * Mengambil item galeri mentah (untuk admin).
+     *
+     * @return array<int, array<string, string>>
+     */
+    public static function rawGallery(): array
+    {
+        $raw = CafeSetting::get('landing_gallery');
+        if ($raw) {
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded) && count($decoded) > 0) {
+                return $decoded;
+            }
+        }
+
+        return self::defaultGallery();
     }
 }

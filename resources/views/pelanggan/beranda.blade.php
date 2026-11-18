@@ -2,15 +2,15 @@
 
 @section('title', ($landing['cafe']['name'] ?? 'ABS Cafe') . ' - ' . ($landing['cafe']['tagline'] ?? 'Good Coffee, Better Moments.'))
 
-@section('body_class', 'bg-[#290024] text-[#F2F5E2]')
-@section('body_style', 'background-color: #290024 !important; color: #F2F5E2 !important;')
+@section('body_class', 'bg-[#000000] text-[#F2F5E2]')
+@section('body_style', 'background-color: #000000 !important; color: #F2F5E2 !important;')
 
 @section('content')
 <!-- ======================================================================= -->
 <!-- 1. HERO SECTION                                                         -->
 <!-- ======================================================================= -->
-<section id="beranda" class="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center pt-24 sm:pt-28 pb-16 overflow-hidden">
-    <!-- Foto Latar Hero dengan Overlay Gradasi Midnight Violet -->
+<section id="beranda" class="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center pt-24 sm:pt-28 pb-16 overflow-hidden bg-[#000000]">
+    <!-- Foto Latar Hero dengan Overlay Gradasi Gelap -->
     <div class="absolute inset-0 z-0">
         @if(!empty($landing['hero']['bg_photo']['src']))
             <img src="{{ $landing['hero']['bg_photo']['src'] }}"
@@ -23,9 +23,9 @@
                  onerror="this.style.display='none'"
                  class="w-full h-full object-cover object-center filter brightness-[0.45] contrast-[1.05] scale-105 transition-transform duration-1000 ease-out motion-reduce:transition-none">
         @endif
-        <!-- Gradasi Palet Midnight Violet Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-b from-[#290024]/90 via-[#290024]/80 to-[#290024]"></div>
-        <div class="absolute inset-0 bg-radial from-transparent via-[#290024]/60 to-[#290024]"></div>
+        <!-- Gradasi Palet Hitam Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-b from-[#000000]/90 via-[#000000]/80 to-[#000000]"></div>
+        <div class="absolute inset-0 bg-radial from-transparent via-[#000000]/60 to-[#000000]"></div>
     </div>
 
     <!-- Konten Hero -->
@@ -73,7 +73,7 @@
 
                     <!-- Tombol Reservasi -->
                     <a href="{{ route('pelanggan.reservasi') }}"
-                       class="inline-flex items-center justify-center gap-2.5 min-h-[44px] px-6 sm:px-7 py-3 rounded-full border border-[#D4954D] bg-[#290024]/60 hover:bg-[#D4954D]/15 text-[#F2F5E2] font-semibold text-xs sm:text-sm tracking-wide transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D] motion-reduce:transform-none">
+                       class="inline-flex items-center justify-center gap-2.5 min-h-[44px] px-6 sm:px-7 py-3 rounded-full border border-[#D4954D] bg-[#050604] hover:bg-[#D4954D]/15 text-[#F2F5E2] font-semibold text-xs sm:text-sm tracking-wide transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D] motion-reduce:transform-none">
                         <!-- Ikon Kalender -->
                         <svg class="w-4 h-4 stroke-current text-[#D4954D]" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -107,7 +107,7 @@
                                  decoding="async"
                                  referrerpolicy="no-referrer"
                                  onerror="this.style.display='none'"
-                                 class="w-full h-full object-cover rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.6)] border border-[#D4954D]/30 filter drop-shadow-2xl">
+                                 class="w-full h-full object-cover rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.6)] border border-[#A09B90]/40 filter drop-shadow-2xl">
                         </div>
                     @endif
                 </div>
@@ -119,7 +119,7 @@
 <!-- ======================================================================= -->
 <!-- 2. TENTANG KAMI SECTION                                                 -->
 <!-- ======================================================================= -->
-<section id="tentang-kami" class="relative py-20 sm:py-28 bg-gradient-to-b from-[#290024] via-[#290024] to-[#290024] overflow-hidden">
+<section id="tentang-kami" class="relative py-20 sm:py-28 bg-[#000000] overflow-hidden">
     <!-- Ornamen Daun Garis Halus di Latar Belakang (Inline SVG) -->
     <div class="pointer-events-none absolute -top-10 -left-10 w-48 h-48 opacity-15 text-[#D4954D]" aria-hidden="true">
         <svg viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -178,7 +178,7 @@
                     </div>
 
                     <!-- Foto Kafe dengan Bingkai Organik Melengkung Asimetris -->
-                    <div class="relative w-full h-full overflow-hidden border border-[#D4954D]/50 shadow-[0_16px_50px_rgba(41,0,36,0.7)]"
+                    <div class="relative w-full h-full overflow-hidden border border-[#A09B90]/60 shadow-[0_16px_50px_rgba(41,0,36,0.7)]"
                          style="border-radius: 65% 35% 55% 45% / 45% 55% 45% 55%;">
                         @if(!empty($landing['about']['photo']['src']))
                             <img src="{{ $landing['about']['photo']['src'] }}"
@@ -204,14 +204,14 @@
 <!-- ======================================================================= -->
 <!-- 3. EMPAT KEUNGGULAN SECTION                                             -->
 <!-- ======================================================================= -->
-<section class="relative py-14 sm:py-20 bg-[#290024] border-y border-[#775533]/25">
+<section class="relative py-14 sm:py-20 bg-[#000000] border-y border-[#A09B90]/30">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <!-- 2x2 di Mobile, 4 Kolom di Tablet & Desktop -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-4 md:divide-x md:divide-[#775533]/40">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
             @foreach($landing['features'] as $index => $feature)
-                <div class="flex flex-col items-center text-center px-2 sm:px-4 reveal-on-scroll">
+                <div class="flex flex-col items-center text-center p-5 sm:p-6 rounded-2xl bg-[#050604] border border-[#A09B90]/30 reveal-on-scroll">
                     <!-- Ikon Garis dalam Lingkaran Berbingkai Tipis -->
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-[#D4954D]/70 bg-[#775533]/20 flex items-center justify-center text-[#D4954D] mb-3 shadow-[0_4px_16px_rgba(212,149,77,0.15)] group-hover:scale-110 transition-transform">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-[#A09B90]/80 bg-[#050604] flex items-center justify-center text-[#D4954D] mb-3 shadow-[0_4px_16px_rgba(212,149,77,0.15)] group-hover:scale-110 transition-transform">
                         @if($feature['icon'] === 'coffee')
                             <!-- Ikon Kopi -->
                             <svg class="w-6 h-6 sm:w-7 sm:h-7 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -259,56 +259,63 @@
 </section>
 
 <!-- ======================================================================= -->
-<!-- 4. SUASANA SECTION                                                      -->
+<!-- 4. GALERI SUASANA SECTION (AUTO-SCROLL FILMSTRIP) -->
 <!-- ======================================================================= -->
-<section class="relative py-20 sm:py-28 bg-[#290024] overflow-hidden">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <!-- Bingkai Foto Lebar Suasana Kafe -->
-        <div class="relative w-full rounded-3xl overflow-hidden border border-[#D4954D]/35 shadow-[0_20px_60px_rgba(41,0,36,0.8)] aspect-[16/10] sm:aspect-[21/9] flex items-center justify-start p-6 sm:p-12 lg:p-16 reveal-on-scroll">
-            <!-- Foto Lebar Interior -->
-            <div class="absolute inset-0 z-0">
-                @if(!empty($landing['atmosphere']['photo']['src']))
-                    <img src="{{ $landing['atmosphere']['photo']['src'] }}"
-                         alt="{{ $landing['atmosphere']['photo']['alt'] }}"
-                         width="{{ $landing['atmosphere']['photo']['width'] }}"
-                         height="{{ $landing['atmosphere']['photo']['height'] }}"
+<section id="suasana" class="relative py-20 sm:py-28 bg-[#000000] overflow-hidden">
+    <!-- Header -->
+    <div class="relative mx-auto max-w-3xl px-4 sm:px-6 text-center mb-10 sm:mb-14 reveal-on-scroll">
+        @if(!empty($landing['gallery']['badge']))
+            <span class="inline-block text-[11px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#D4954D] mb-3">
+                {{ $landing['gallery']['badge'] }}
+            </span>
+        @endif
+
+        <h2 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#F2F5E2] leading-tight mb-4 tracking-tight">
+            {{ $landing['gallery']['title'] ?? 'Moments Worth Sharing' }}
+        </h2>
+
+        <p class="text-xs sm:text-sm md:text-base text-[#E3DEA4] leading-relaxed max-w-xl mx-auto">
+            {{ $landing['gallery']['description'] ?? 'From your first sip of coffee to meaningful moments with friends, ABS Cafe is where every visit becomes a memory.' }}
+        </p>
+    </div>
+
+    @php
+        $galleryList = $landing['gallery']['items'] ?? [];
+    @endphp
+
+    @if(count($galleryList) > 0)
+    <!-- Filmstrip: auto-scroll tanpa henti, dua salinan untuk seamless loop -->
+    <div class="gallery-marquee-wrapper overflow-hidden w-full" aria-hidden="true">
+        <div class="gallery-marquee-track flex gap-3 sm:gap-4 w-max">
+            {{-- Salinan 1 --}}
+            @foreach($galleryList as $gItem)
+                <div class="gallery-film-card shrink-0 w-[52vw] sm:w-[300px] md:w-[340px] h-[38vw] sm:h-[220px] md:h-[250px] rounded-2xl overflow-hidden bg-[#120010]">
+                    <img src="{{ $gItem['image'] }}"
+                         alt="{{ $gItem['alt'] ?? ($gItem['title'] ?? 'Suasana ABS Cafe') }}"
                          loading="lazy"
                          decoding="async"
-                         referrerpolicy="no-referrer"
-                         onerror="this.style.display='none'"
-                         class="w-full h-full object-cover object-center filter brightness-[0.55] contrast-[1.05]">
-                @else
-                    <div class="w-full h-full bg-gradient-to-r from-[#290024] via-[#775533]/40 to-[#290024]"></div>
-                @endif
-                <!-- Overlay Gradasi Gelap Elegan untuk Memastikan Keterbacaan Teks -->
-                <div class="absolute inset-0 bg-gradient-to-r from-[#290024]/95 via-[#290024]/75 to-transparent"></div>
-            </div>
-
-            <!-- Konten Teks di Atas Foto -->
-            <div class="relative z-10 max-w-lg text-left">
-                <!-- Label / Kicker -->
-                <span class="inline-block text-[11px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#D4954D] mb-2">
-                    {{ $landing['atmosphere']['badge'] ?? 'SUASANA' }}
-                </span>
-
-                <!-- Judul -->
-                <h2 class="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#F2F5E2] leading-tight mb-3">
-                    {{ $landing['atmosphere']['title'] ?? 'Nyaman & Elegan' }}
-                </h2>
-
-                <!-- Deskripsi -->
-                <p class="text-xs sm:text-sm md:text-base text-[#E3DEA4] leading-relaxed">
-                    {{ $landing['atmosphere']['description'] ?? 'Desain interior kami yang modern dengan sentuhan alami menciptakan suasana yang hangat dan menenangkan.' }}
-                </p>
-            </div>
+                         class="w-full h-full object-cover object-center pointer-events-none select-none">
+                </div>
+            @endforeach
+            {{-- Salinan 2 (untuk seamless loop) --}}
+            @foreach($galleryList as $gItem)
+                <div class="gallery-film-card shrink-0 w-[52vw] sm:w-[300px] md:w-[340px] h-[38vw] sm:h-[220px] md:h-[250px] rounded-2xl overflow-hidden bg-[#120010]">
+                    <img src="{{ $gItem['image'] }}"
+                         alt="{{ $gItem['alt'] ?? ($gItem['title'] ?? 'Suasana ABS Cafe') }}"
+                         loading="lazy"
+                         decoding="async"
+                         class="w-full h-full object-cover object-center pointer-events-none select-none">
+                </div>
+            @endforeach
         </div>
     </div>
+    @endif
 </section>
 
 <!-- ======================================================================= -->
 <!-- 5. LOKASI SECTION                                                       -->
 <!-- ======================================================================= -->
-<section id="lokasi" class="relative py-20 sm:py-28 bg-gradient-to-b from-[#290024] via-[#290024] to-[#290024]">
+<section id="lokasi" class="relative py-20 sm:py-28 bg-[#000000]">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-14 items-center">
             <!-- Informasi Lokasi (Kiri) -->
@@ -324,10 +331,10 @@
                 </h2>
 
                 <!-- Daftar Informasi Alamat, Jam, Telepon -->
-                <div class="space-y-4 mb-8 w-full max-w-md">
+                <div class="space-y-3 mb-8 w-full max-w-md">
                     <!-- Alamat -->
-                    <div class="flex items-start gap-3.5">
-                        <div class="w-8 h-8 rounded-full bg-[#775533]/25 border border-[#D4954D]/40 flex items-center justify-center text-[#D4954D] shrink-0 mt-0.5">
+                    <div class="flex items-start gap-3.5 p-4 rounded-2xl bg-[#050604] border border-[#A09B90]/30">
+                        <div class="w-8 h-8 rounded-full bg-[#050604] border border-[#A09B90]/50 flex items-center justify-center text-[#D4954D] shrink-0 mt-0.5">
                             <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                 <circle cx="12" cy="10" r="3"></circle>
@@ -341,8 +348,8 @@
                     </div>
 
                     <!-- Jam Operasional -->
-                    <div class="flex items-start gap-3.5">
-                        <div class="w-8 h-8 rounded-full bg-[#775533]/25 border border-[#D4954D]/40 flex items-center justify-center text-[#D4954D] shrink-0 mt-0.5">
+                    <div class="flex items-start gap-3.5 p-4 rounded-2xl bg-[#050604] border border-[#A09B90]/30">
+                        <div class="w-8 h-8 rounded-full bg-[#050604] border border-[#A09B90]/50 flex items-center justify-center text-[#D4954D] shrink-0 mt-0.5">
                             <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 6 12 12 16 14"></polyline>
@@ -359,8 +366,8 @@
                     </div>
 
                     <!-- Nomor Telepon -->
-                    <div class="flex items-start gap-3.5">
-                        <div class="w-8 h-8 rounded-full bg-[#775533]/25 border border-[#D4954D]/40 flex items-center justify-center text-[#D4954D] shrink-0 mt-0.5">
+                    <div class="flex items-start gap-3.5 p-4 rounded-2xl bg-[#050604] border border-[#A09B90]/30">
+                        <div class="w-8 h-8 rounded-full bg-[#050604] border border-[#A09B90]/50 flex items-center justify-center text-[#D4954D] shrink-0 mt-0.5">
                             <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                             </svg>
@@ -378,7 +385,7 @@
                     <a href="{{ $landing['cafe']['maps_url'] ?? 'https://maps.app.goo.gl/mvEr6sWCacKH5j677' }}"
                        target="_blank"
                        rel="noopener noreferrer"
-                       class="inline-flex items-center justify-center gap-2.5 min-h-[44px] px-6 py-2.5 rounded-full border border-[#D4954D] bg-[#775533]/20 hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] font-semibold text-xs sm:text-sm tracking-wide transition-all duration-200 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]">
+                       class="inline-flex items-center justify-center gap-2.5 min-h-[44px] px-6 py-2.5 rounded-full border border-[#D4954D] bg-[#050604] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] font-semibold text-xs sm:text-sm tracking-wide transition-all duration-200 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]">
                         <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                             <circle cx="12" cy="10" r="3"></circle>
@@ -390,7 +397,7 @@
                         <a href="{{ $landing['cafe']['whatsapp_url'] }}"
                            target="_blank"
                            rel="noopener noreferrer"
-                           class="inline-flex items-center justify-center gap-2.5 min-h-[44px] px-6 py-2.5 rounded-full border border-[#E3DEA4]/60 bg-[#775533]/20 hover:bg-[#E3DEA4]/20 hover:border-[#E3DEA4] text-[#F2F5E2] font-semibold text-xs sm:text-sm tracking-wide transition-all duration-200 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E3DEA4]">
+                           class="inline-flex items-center justify-center gap-2.5 min-h-[44px] px-6 py-2.5 rounded-full border border-[#A09B90]/60 bg-[#050604] hover:bg-[#E3DEA4]/20 hover:border-[#E3DEA4] text-[#F2F5E2] font-semibold text-xs sm:text-sm tracking-wide transition-all duration-200 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E3DEA4]">
                             <svg class="w-4 h-4 fill-current text-[#E3DEA4]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zm-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
                             </svg>
@@ -402,16 +409,16 @@
 
             <!-- Kartu Peta Bergaya Gelap (Kanan di Desktop, Bawah di Mobile) -->
             <div class="lg:col-span-6 reveal-on-scroll">
-                <div class="relative w-full aspect-[4/3] rounded-3xl border border-[#D4954D]/35 bg-[#290024] p-4 sm:p-6 overflow-hidden shadow-[0_16px_50px_rgba(41,0,36,0.7)] flex flex-col justify-between">
+                <div class="relative w-full aspect-[4/3] rounded-3xl border border-[#A09B90]/40 bg-[#050604] p-4 sm:p-6 overflow-hidden shadow-[0_16px_50px_rgba(0,0,0,0.8)] flex flex-col justify-between">
                     <!-- Ilustrasi Vektor Peta Gelap Elegan (Inline SVG) -->
                     <svg class="absolute inset-0 w-full h-full opacity-60" viewBox="0 0 500 375" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <!-- Poligon Blok Area Kafe -->
-                        <rect width="500" height="375" fill="#290024" />
-                        <path d="M30 40 L160 30 L140 180 L20 160 Z" fill="#290024" opacity="0.6" />
-                        <path d="M200 50 L340 30 L320 150 L180 160 Z" fill="#290024" opacity="0.6" />
-                        <path d="M360 40 L480 30 L460 200 L340 180 Z" fill="#290024" opacity="0.6" />
-                        <path d="M40 220 L180 200 L160 340 L30 350 Z" fill="#290024" opacity="0.6" />
-                        <path d="M220 210 L380 200 L360 350 L200 340 Z" fill="#290024" opacity="0.6" />
+                        <rect width="500" height="375" fill="#000000" />
+                        <path d="M30 40 L160 30 L140 180 L20 160 Z" fill="#000000" opacity="0.6" />
+                        <path d="M200 50 L340 30 L320 150 L180 160 Z" fill="#000000" opacity="0.6" />
+                        <path d="M360 40 L480 30 L460 200 L340 180 Z" fill="#000000" opacity="0.6" />
+                        <path d="M40 220 L180 200 L160 340 L30 350 Z" fill="#000000" opacity="0.6" />
+                        <path d="M220 210 L380 200 L360 350 L200 340 Z" fill="#000000" opacity="0.6" />
 
                         <!-- Garis Jalan Raya (Grid Peta) -->
                         <line x1="0" y1="190" x2="500" y2="170" stroke="#775533" stroke-width="12" opacity="0.45" />
@@ -442,7 +449,7 @@
                         </div>
 
                         <!-- Tag Badge Lokasi -->
-                        <div class="mt-2.5 px-3.5 py-1 rounded-full bg-[#290024]/90 border border-[#D4954D]/60 backdrop-blur-md shadow-lg">
+                        <div class="mt-2.5 px-3.5 py-1 rounded-full bg-[#050604] border border-[#A09B90]/70 backdrop-blur-md shadow-lg">
                             <span class="font-serif font-bold text-xs text-[#F2F5E2] tracking-wider">
                                 {{ $landing['cafe']['name'] ?? 'ABS Cafe' }}
                             </span>
@@ -457,37 +464,43 @@
 <!-- ======================================================================= -->
 <!-- 5b. RESERVASI MEJA REAL-TIME BANNER                                    -->
 <!-- ======================================================================= -->
-<section class="relative py-16 sm:py-20 bg-[#290024] border-t border-[#D4954D]/20 overflow-hidden">
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#D4954D]/10 via-transparent to-transparent pointer-events-none"></div>
-    <div class="relative mx-auto max-w-5xl px-4 sm:px-6 text-center reveal-on-scroll">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4954D]/15 border border-[#D4954D]/30 text-[#F2F5E2] text-xs font-semibold tracking-wider uppercase mb-4">
-            <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4954D] opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-[#D4954D]"></span>
-            </span>
-            Ketersediaan Meja Real-Time
-        </div>
-        <h2 class="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#F2F5E2] mb-4">
-            Ingin Bersantai Tanpa Khawatir Kehabisan Tempat?
-        </h2>
-        <p class="text-xs sm:text-sm md:text-base text-[#E3DEA4] leading-relaxed max-w-2xl mx-auto mb-8">
-            Pantau denah meja kafe secara langsung. Ketahui meja yang sedang terisi atau masih kosong secara real-time, lalu amankan reservasi Anda hanya dalam beberapa klik.
-        </p>
-        <div class="flex flex-wrap items-center justify-center gap-4">
-            <a href="{{ route('pelanggan.reservasi') }}"
-               class="inline-flex items-center justify-center gap-2.5 min-h-[48px] px-8 py-3.5 rounded-full bg-[#D4954D] hover:bg-[#D4954D]/90 text-[#290024] font-bold text-sm tracking-wide transition-all duration-200 shadow-[0_6px_20px_rgba(212,149,77,0.35)] hover:shadow-[0_8px_25px_rgba(212,149,77,0.45)] hover:-translate-y-0.5">
-                <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
-                <span>Lihat Meja & Reservasi Sekarang</span>
-                <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-            </a>
+<section class="relative py-16 sm:py-20 bg-[#000000] border-t border-[#A09B90]/25 overflow-hidden">
+    <div class="relative mx-auto max-w-4xl px-4 sm:px-6 reveal-on-scroll">
+        <!-- Kotak Banner Reservasi Bergaya Elevated Card -->
+        <div class="relative p-8 sm:p-12 md:p-14 rounded-3xl bg-[#050604] border border-[#A09B90]/40 shadow-[0_20px_50px_rgba(0,0,0,0.85)] text-center overflow-hidden">
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#D4954D]/10 via-transparent to-transparent pointer-events-none"></div>
+            
+            <div class="relative z-10">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4954D]/15 border border-[#A09B90]/40 text-[#F2F5E2] text-xs font-semibold tracking-wider uppercase mb-4">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4954D] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-[#D4954D]"></span>
+                    </span>
+                    Ketersediaan Meja Real-Time
+                </div>
+                <h2 class="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-[#F2F5E2] mb-4">
+                    Ingin Bersantai Tanpa Khawatir Kehabisan Tempat?
+                </h2>
+                <p class="text-xs sm:text-sm md:text-base text-[#E3DEA4] leading-relaxed max-w-2xl mx-auto mb-8">
+                    Pantau denah meja kafe secara langsung. Ketahui meja yang sedang terisi atau masih kosong secara real-time, lalu amankan reservasi Anda hanya dalam beberapa klik.
+                </p>
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <a href="{{ route('pelanggan.reservasi') }}"
+                       class="inline-flex items-center justify-center gap-2.5 min-h-[48px] px-8 py-3.5 rounded-full bg-[#D4954D] hover:bg-[#D4954D]/90 text-[#290024] font-bold text-sm tracking-wide transition-all duration-200 shadow-[0_6px_20px_rgba(212,149,77,0.35)] hover:shadow-[0_8px_25px_rgba(212,149,77,0.45)] hover:-translate-y-0.5">
+                        <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span>Lihat Meja & Reservasi Sekarang</span>
+                        <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -495,7 +508,7 @@
 <!-- ======================================================================= -->
 <!-- 6. MEDIA SOSIAL SECTION                                                 -->
 <!-- ======================================================================= -->
-<section class="relative py-16 sm:py-20 bg-[#290024] border-t border-[#775533]/25">
+<section class="relative py-16 sm:py-20 bg-[#000000] border-t border-[#A09B90]/30">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 text-center reveal-on-scroll">
         <!-- Judul Bagian Sosial Media -->
         <h3 class="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-[#F2F5E2] mb-6 sm:mb-8">
@@ -508,7 +521,7 @@
                 <a href="{{ $landing['cafe']['instagram_url'] ?? '#' }}"
                    target="_blank"
                    rel="noopener noreferrer"
-                   class="inline-flex items-center gap-3 min-h-[44px] px-5 py-2.5 rounded-full bg-[#775533]/15 hover:bg-[#D4954D]/15 border border-[#D4954D]/40 text-[#F2F5E2] hover:text-[#D4954D] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]">
+                   class="inline-flex items-center gap-3 min-h-[44px] px-5 py-2.5 rounded-full bg-[#050604] hover:bg-[#D4954D]/15 border border-[#A09B90]/50 text-[#F2F5E2] hover:text-[#D4954D] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]">
                     <!-- Ikon Instagram SVG -->
                     <svg class="w-5 h-5 stroke-current text-[#D4954D]" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -523,7 +536,7 @@
                 <a href="{{ $landing['cafe']['tiktok_url'] ?? '#' }}"
                    target="_blank"
                    rel="noopener noreferrer"
-                   class="inline-flex items-center gap-3 min-h-[44px] px-5 py-2.5 rounded-full bg-[#775533]/15 hover:bg-[#D4954D]/15 border border-[#D4954D]/40 text-[#F2F5E2] hover:text-[#D4954D] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]">
+                   class="inline-flex items-center gap-3 min-h-[44px] px-5 py-2.5 rounded-full bg-[#050604] hover:bg-[#D4954D]/15 border border-[#A09B90]/50 text-[#F2F5E2] hover:text-[#D4954D] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]">
                     <!-- Ikon TikTok SVG -->
                     <svg class="w-5 h-5 stroke-current text-[#D4954D]" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
@@ -536,7 +549,7 @@
                 <a href="{{ $landing['cafe']['whatsapp_url'] }}"
                    target="_blank"
                    rel="noopener noreferrer"
-                   class="inline-flex items-center gap-3 min-h-[44px] px-5 py-2.5 rounded-full bg-[#775533]/15 hover:bg-[#D4954D]/15 border border-[#D4954D]/40 text-[#F2F5E2] hover:text-[#D4954D] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]">
+                   class="inline-flex items-center gap-3 min-h-[44px] px-5 py-2.5 rounded-full bg-[#050604] hover:bg-[#D4954D]/15 border border-[#A09B90]/50 text-[#F2F5E2] hover:text-[#D4954D] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]">
                     <!-- Ikon WhatsApp SVG -->
                     <svg class="w-5 h-5 fill-current text-[#D4954D]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zm-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
@@ -571,6 +584,30 @@
     });
 </script>
 <style>
+    /* ── Marquee filmstrip gallery ── */
+    @keyframes gallery-marquee {
+        0%   { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+
+    .gallery-marquee-track {
+        animation: gallery-marquee 28s linear infinite;
+        will-change: transform;
+    }
+
+    /* Jeda saat hover (opsional tapi smooth UX) */
+    .gallery-marquee-wrapper:hover .gallery-marquee-track {
+        animation-play-state: paused;
+    }
+
+    /* Jika user prefer reduced motion → matikan animasi */
+    @media (prefers-reduced-motion: reduce) {
+        .gallery-marquee-track {
+            animation: none;
+        }
+    }
+
+    /* ── Reveal on scroll ── */
     .reveal-on-scroll {
         opacity: 0;
         transform: translateY(20px);

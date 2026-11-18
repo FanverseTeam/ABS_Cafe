@@ -167,6 +167,10 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
         Route::post('/landing', [WebsiteController::class, 'updateLanding'])->name('landing');
         Route::post('/landing/foto', [WebsiteController::class, 'updateLandingPhoto'])->name('landing.photo');
         Route::delete('/landing/foto/{slot}', [WebsiteController::class, 'deleteLandingPhoto'])->name('landing.photo.delete');
+        Route::post('/landing/gallery/tambah', [WebsiteController::class, 'addGalleryPhoto'])->name('landing.gallery.add');
+        Route::post('/landing/gallery/{id}/update', [WebsiteController::class, 'updateGalleryPhoto'])->name('landing.gallery.update');
+        Route::delete('/landing/gallery/{id}', [WebsiteController::class, 'deleteGalleryPhoto'])->name('landing.gallery.delete');
+        Route::post('/landing/gallery/reset', [WebsiteController::class, 'resetGallery'])->name('landing.gallery.reset');
     });
 
     // 6. Log Aktivitas

@@ -71,4 +71,13 @@
         outline: 2px solid var(--color-apricot);
         outline-offset: 2px;
     }
+
+    /* Hilangkan scrollbar default untuk carousel sentuh */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
 }
