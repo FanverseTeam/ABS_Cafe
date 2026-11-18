@@ -161,6 +161,11 @@ class LandingData
         $petaLat = (float) $resolve(['peta_lat', 'latitude'], '-8.0646338');
         $petaLng = (float) $resolve(['peta_lng', 'longitude'], '111.9111798');
 
+        $mapsEmbedUrl = $resolve(['cafe_maps_embed_url', 'maps_embed_url', 'peta_embed_url']);
+        if (empty($mapsEmbedUrl)) {
+            $mapsEmbedUrl = "https://maps.google.com/maps?q={$petaLat},{$petaLng}&hl=id&z=17&output=embed";
+        }
+
         return [
             'cafe' => [
                 'name' => $resolve(['cafe_name', 'nama_cafe']),
@@ -173,6 +178,7 @@ class LandingData
                 'phone' => $phone,
                 'phone_tel' => $phoneTel,
                 'maps_url' => $resolve(['cafe_maps_url', 'google_maps_url', 'maps_url']),
+                'maps_embed_url' => $mapsEmbedUrl,
                 'peta_lat' => $petaLat,
                 'peta_lng' => $petaLng,
                 'opening_hours_schema' => 'Mo-Su 09:00-23:00',
