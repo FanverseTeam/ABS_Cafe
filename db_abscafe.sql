@@ -341,11 +341,7 @@ CREATE TABLE `metode_bayar` (
 --
 
 INSERT INTO `metode_bayar` (`id`, `name`, `code`, `type`, `description`, `instructions`, `is_active`, `sort_order`, `created_at`, `updated_at`) VALUES
-(1, 'Tunai', 'tunai', 'cash', 'Pembayaran langsung dengan uang tunai.', 'Siapkan uang pas bila memungkinkan.', 1, 1, '2026-10-12 10:28:30', '2026-10-12 10:28:30'),
-(2, 'QRIS', 'qris', 'e_wallet', 'Bayar scan QRIS melalui aplikasi pembayaran apa pun.', 'Arahkan kamera HP pelanggan ke kode QRIS kasir.', 1, 2, '2026-10-12 10:28:30', '2026-10-12 10:28:30'),
-(3, 'Kartu Debit / Kredit', 'debit', 'debit', 'Pembayaran menggunakan kartu bank / EDC.', 'Gesek/tap kartu pada mesin EDC.', 1, 3, '2026-10-12 10:28:30', '2026-10-12 10:28:30'),
-(4, 'Transfer Bank', 'transfer', 'bank_transfer', 'Transfer manual via m-banking.', 'Cocokkan nama & nominal transfer pelanggan.', 1, 4, '2026-10-12 10:28:30', '2026-10-12 10:28:30'),
-(5, 'E-Wallet', 'ewallet', 'e_wallet', 'Pembayaran via e-wallet (OVO/GoPay/Dana).', 'Minta bukti transfer kepada pelanggan.', 1, 5, '2026-10-12 10:28:30', '2026-10-12 10:28:30');
+(1, 'Tunai', 'tunai', 'cash', 'Pembayaran langsung dengan uang tunai.', 'Siapkan uang pas bila memungkinkan.', 1, 1, '2026-10-12 10:28:30', '2026-10-12 10:28:30');
 
 -- --------------------------------------------------------
 
@@ -447,8 +443,8 @@ INSERT INTO `pengaturan` (`id`, `key`, `value`, `group`, `created_at`, `updated_
 (7, 'service_charge_active', '0', NULL, '2026-10-11 23:41:00', '2026-10-11 23:41:00'),
 (8, 'service_charge_percent', '5', NULL, '2026-10-11 23:41:00', '2026-10-11 23:41:00'),
 (9, 'payment_cash', '1', NULL, '2026-10-11 23:41:00', '2026-10-11 23:41:00'),
-(10, 'payment_qris', '1', NULL, '2026-10-11 23:41:00', '2026-10-11 23:41:00'),
-(11, 'payment_debit', '1', NULL, '2026-10-11 23:41:00', '2026-10-11 23:41:00'),
+(10, 'payment_qris', '0', NULL, '2026-10-11 23:41:00', '2026-10-11 23:41:00'),
+(11, 'payment_debit', '0', NULL, '2026-10-11 23:41:00', '2026-10-11 23:41:00'),
 (12, 'receipt_header', 'ABS CAFE - ACCESSORIES & CAFE\nJl. Letjend Suprapto No.44, Kepatihan, Kec. Tulungagung, Kabupaten Tulungagung, Jawa Timur 66219\nTelp: 0896-2010-2010', NULL, '2026-10-11 23:41:01', '2026-10-25 14:30:00'),
 (13, 'receipt_footer', 'Terima kasih atas kunjungan Anda!\nFollow Instagram kami: @abs_tulungagung_24\n\"Good Coffee, Better Moments\"', NULL, '2026-10-11 23:41:01', '2026-10-25 12:00:00'),
 (14, 'receipt_show_logo', '1', NULL, '2026-10-11 23:41:01', '2026-10-11 23:41:01'),
@@ -958,7 +954,7 @@ ALTER TABLE `menu`
 -- AUTO_INCREMENT for table `metode_bayar`
 --
 ALTER TABLE `metode_bayar`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `migrations`

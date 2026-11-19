@@ -375,7 +375,7 @@
 
             <!-- Catatan Informasi Pembayaran Ringkas -->
             <div class="px-3 py-2 rounded-xl bg-[#E3DEA4]/30 border border-[#E3DEA4] text-[11px] text-[#775533] text-center">
-                * Pembayaran dilakukan di kasir saat mengambil atau setelah selesai santap (Tunai, QRIS, Kartu Debit).
+                * Pembayaran dilakukan di kasir saat mengambil atau setelah selesai santap (Tunai).
             </div>
         </div>
 

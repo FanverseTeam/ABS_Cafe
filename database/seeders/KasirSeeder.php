@@ -47,28 +47,20 @@ class KasirSeeder extends Seeder
             Promo::where('title', $title)->update(['code' => $code]);
         }
 
-        // 3. Metode pembayaran (apabila masih kosong)
-        if (PaymentMethod::count() === 0) {
-            $methods = [
-                ['tunai', 'Tunai', 'cash', 'Pembayaran langsung dengan uang tunai.', 'Siapkan uang pas bila memungkinkan.', true, 1],
-                ['qris', 'QRIS', 'e_wallet', 'Bayar scan QRIS melalui aplikasi pembayaran apa pun.', 'Arahkan kamera HP pelanggan ke kode QRIS kasir.', true, 2],
-                ['debit', 'Kartu Debit / Kredit', 'debit', 'Pembayaran menggunakan kartu bank / EDC.', 'Gesek/tap kartu pada mesin EDC.', true, 3],
-                ['transfer', 'Transfer Bank', 'bank_transfer', 'Transfer manual via m-banking.', 'Cocokkan nama & nominal transfer pelanggan.', true, 4],
-                ['ewallet', 'E-Wallet', 'e_wallet', 'Pembayaran via e-wallet (OVO/GoPay/Dana).', 'Minta bukti transfer kepada pelanggan.', true, 5],
-            ];
-
-            foreach ($methods as [$code, $name, $type, $desc, $instr, $active, $sort]) {
-                PaymentMethod::create([
-                    'code' => $code,
-                    'name' => $name,
-                    'type' => $type,
-                    'description' => $desc,
-                    'instructions' => $instr,
-                    'is_active' => $active,
-                    'sort_order' => $sort,
-                ]);
-            }
-        }
+        // 3. Metode pembayaran — hanya Tunai
+        PaymentMethod::firstOrCreate(
+            ['code' => 'tunai'],
+            [
+                'name' => 'Tunai',
+                'type' => 'cash',
+                'description' => 'Pembayaran langsung dengan uang tunai.',
+                'instructions' => 'Siapkan uang pas bila memungkinkan.',
+                'is_active' => true,
+                'sort_order' => 1,
+            ]
+        );
+        // Nonaktifkan metode lain jika ada dari data lama
+        PaymentMethod::where('code', '!=', 'tunai')->update(['is_active' => false]);
 
         // 5. Contoh pesanan Web yang masuk hari ini (menunggu diterima)
         $kasir = User::where('email', 'siti.kasir@abscafe.com')->first() ?: User::where('email', 'kasir@abscafe.com')->first();
