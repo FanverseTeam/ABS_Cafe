@@ -313,6 +313,72 @@
 </section>
 
 <!-- ======================================================================= -->
+<!-- 4b. MENU TERFAVORIT (BEST OF TASTE - 3 MENU PENJUALAN TERBANYAK)        -->
+<!-- ======================================================================= -->
+@if(isset($topFavorites) && $topFavorites->count() > 0)
+<section id="favorit" class="relative py-20 sm:py-28 bg-[#000000] border-t border-[#A09B90]/30 overflow-hidden">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <!-- Header Section -->
+        <div class="relative mx-auto max-w-3xl px-4 sm:px-6 text-center mb-12 sm:mb-16 reveal-on-scroll">
+            <span class="inline-block text-[11px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#D4954D] mb-3">
+                MENU TERFAVORIT
+            </span>
+            <h2 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#F2F5E2] leading-tight tracking-wide mb-3 uppercase">
+                BEST OF TASTE
+            </h2>
+            <div class="w-16 h-0.5 bg-[#A09B90]/50 mx-auto mb-4"></div>
+            <p class="text-xs sm:text-sm md:text-base text-[#E3DEA4] leading-relaxed max-w-xl mx-auto">
+                Tiga racikan dan hidangan yang paling sering dipesan pelanggan setia ABS Cafe setiap harinya.
+            </p>
+        </div>
+
+        <!-- 3 Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+            @foreach($topFavorites as $fav)
+                <div class="bg-[#050604] rounded-3xl border border-[#A09B90]/40 overflow-hidden flex flex-col justify-between hover:border-[#D4954D]/60 transition-all duration-300 group shadow-[0_16px_40px_rgba(0,0,0,0.85)] reveal-on-scroll">
+                    <div>
+                        <!-- Photo Container -->
+                        <div class="relative w-full aspect-[4/3] bg-[#120010] overflow-hidden">
+                            <img src="{{ $fav->imageUrl() }}"
+                                 alt="{{ $fav->name }}"
+                                 loading="lazy"
+                                 decoding="async"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+
+                            @if($fav->category)
+                                <span class="absolute top-3 left-3 bg-[#050604]/80 backdrop-blur-md text-[#D4954D] border border-[#A09B90]/40 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                                    {{ $fav->category->name }}
+                                </span>
+                            @endif
+                        </div>
+
+                        <!-- Content -->
+                        <div class="p-6 sm:p-7">
+                            <h3 class="font-serif text-xl sm:text-2xl font-bold text-[#F2F5E2] mb-2.5 group-hover:text-[#D4954D] transition-colors line-clamp-1">
+                                {{ $fav->name }}
+                            </h3>
+                            <p class="text-xs sm:text-sm text-[#E3DEA4]/80 leading-relaxed line-clamp-3">
+                                {{ $fav->description ?: 'Pilihan menu terfavorit pelanggan ABS Cafe dengan cita rasa istimewa dan kualitas bahan terbaik.' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Footer Action Link -->
+                    <div class="px-6 pb-6 sm:px-7 sm:pb-7 pt-2">
+                        <a href="{{ route('pelanggan.menu', ['q' => $fav->name]) }}"
+                           class="inline-flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase text-[#F2F5E2] group-hover:text-[#D4954D] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#D4954D] rounded">
+                            <span>LIHAT MENU</span>
+                            <span class="transform group-hover:translate-x-1 transition-transform duration-200">&rarr;</span>
+                        </a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+<!-- ======================================================================= -->
 <!-- 5. LOKASI SECTION                                                       -->
 <!-- ======================================================================= -->
 <section id="lokasi" class="relative py-20 sm:py-28 bg-[#000000]">
@@ -409,8 +475,7 @@
 
             <!-- Kartu Google Maps Asli (Kanan di Desktop, Bawah di Mobile) -->
             <div class="lg:col-span-6 reveal-on-scroll">
-<<<<<<< HEAD
-                <div class="relative w-full aspect-[4/3] min-h-[320px] sm:min-h-[400px] rounded-3xl border border-[#D4954D]/35 bg-[#290024] overflow-hidden shadow-[0_16px_50px_rgba(41,0,36,0.7)] group">
+                <div class="relative w-full aspect-[4/3] min-h-[320px] sm:min-h-[400px] rounded-3xl border border-[#A09B90]/40 bg-[#050604] overflow-hidden shadow-[0_16px_50px_rgba(0,0,0,0.8)] group">
                     <!-- Google Maps Real Interactive Embed -->
                     <iframe
                         src="{{ $landing['cafe']['maps_embed_url'] ?? ('https://maps.google.com/maps?q=' . ($landing['cafe']['peta_lat'] ?? '-8.0646338') . ',' . ($landing['cafe']['peta_lng'] ?? '111.9111798') . '&hl=id&z=17&output=embed') }}"
@@ -421,21 +486,9 @@
                         referrerpolicy="no-referrer-when-downgrade"
                         title="Peta Lokasi {{ $landing['cafe']['name'] ?? 'ABS Cafe' }}">
                     </iframe>
-=======
-                <div class="relative w-full aspect-[4/3] rounded-3xl border border-[#A09B90]/40 bg-[#050604] p-4 sm:p-6 overflow-hidden shadow-[0_16px_50px_rgba(0,0,0,0.8)] flex flex-col justify-between">
-                    <!-- Ilustrasi Vektor Peta Gelap Elegan (Inline SVG) -->
-                    <svg class="absolute inset-0 w-full h-full opacity-60" viewBox="0 0 500 375" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <!-- Poligon Blok Area Kafe -->
-                        <rect width="500" height="375" fill="#000000" />
-                        <path d="M30 40 L160 30 L140 180 L20 160 Z" fill="#000000" opacity="0.6" />
-                        <path d="M200 50 L340 30 L320 150 L180 160 Z" fill="#000000" opacity="0.6" />
-                        <path d="M360 40 L480 30 L460 200 L340 180 Z" fill="#000000" opacity="0.6" />
-                        <path d="M40 220 L180 200 L160 340 L30 350 Z" fill="#000000" opacity="0.6" />
-                        <path d="M220 210 L380 200 L360 350 L200 340 Z" fill="#000000" opacity="0.6" />
->>>>>>> 400677224366d7a7751f276dfaef3126c72b1e04
 
                     <!-- Tag Badge Lokasi Cafe (Pojok Kiri Atas) -->
-                    <div class="pointer-events-none absolute top-3 sm:top-4 left-3 sm:left-4 z-10 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#290024]/90 border border-[#D4954D]/60 backdrop-blur-md shadow-lg">
+                    <div class="pointer-events-none absolute top-3 sm:top-4 left-3 sm:left-4 z-10 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#050604]/90 border border-[#A09B90]/60 backdrop-blur-md shadow-lg">
                         <span class="relative flex h-2 w-2">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4954D] opacity-75"></span>
                             <span class="relative inline-flex rounded-full h-2 w-2 bg-[#D4954D]"></span>
@@ -445,50 +498,17 @@
                         </span>
                     </div>
 
-<<<<<<< HEAD
                     <!-- Tombol Cepat: Buka di Google Maps (Pojok Kanan Bawah) -->
                     <div class="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 z-10">
                         <a href="{{ $landing['cafe']['maps_url'] ?? 'https://maps.app.goo.gl/mvEr6sWCacKH5j677' }}"
                            target="_blank"
                            rel="noopener noreferrer"
-                           class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#290024]/95 hover:bg-[#D4954D] text-[#E3DEA4] hover:text-[#290024] border border-[#D4954D]/70 backdrop-blur-md text-xs font-semibold shadow-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]">
+                           class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#050604]/95 hover:bg-[#D4954D] text-[#E3DEA4] hover:text-[#290024] border border-[#A09B90]/70 backdrop-blur-md text-xs font-semibold shadow-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]">
                             <svg class="w-3.5 h-3.5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
                             </svg>
                             <span>Buka Peta</span>
                         </a>
-=======
-                        <line x1="170" y1="0" x2="190" y2="375" stroke="#775533" stroke-width="10" opacity="0.4" />
-                        <line x1="330" y1="0" x2="350" y2="375" stroke="#775533" stroke-width="8" opacity="0.35" />
-                        <line x1="0" y1="80" x2="500" y2="60" stroke="#775533" stroke-width="6" opacity="0.3" />
-                        <line x1="0" y1="310" x2="500" y2="290" stroke="#775533" stroke-width="7" opacity="0.35" />
-
-                        <!-- Label Nama Jalan Gaya Peta -->
-                        <text x="210" y="160" fill="#E3DEA4" font-size="11" font-weight="600" opacity="0.75" transform="rotate(-2 210 160)">Jl. Letjend Suprapto</text>
-                        <text x="180" y="90" fill="#E3DEA4" font-size="9" opacity="0.6" transform="rotate(85 180 90)">Jl. Pahlawan</text>
-                        <text x="340" y="90" fill="#E3DEA4" font-size="9" opacity="0.6" transform="rotate(85 340 90)">Jl. Basuki</text>
-                    </svg>
-
-                    <!-- Pin Penanda Lokasi ABS Cafe di Tengah Peta -->
-                    <div class="relative z-10 m-auto flex flex-col items-center">
-                        <div class="relative flex items-center justify-center">
-                            <!-- Efek Pulse Cahaya Emas -->
-                            <span class="animate-ping absolute inline-flex h-12 w-12 rounded-full bg-[#D4954D] opacity-40"></span>
-                            <div class="relative w-12 h-12 rounded-full bg-[#D4954D] text-[#290024] flex items-center justify-center shadow-[0_4px_20px_rgba(212,149,77,0.7)] border-2 border-[#F2F5E2]">
-                                <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                    <circle cx="12" cy="10" r="3"></circle>
-                                </svg>
-                            </div>
-                        </div>
-
-                        <!-- Tag Badge Lokasi -->
-                        <div class="mt-2.5 px-3.5 py-1 rounded-full bg-[#050604] border border-[#A09B90]/70 backdrop-blur-md shadow-lg">
-                            <span class="font-serif font-bold text-xs text-[#F2F5E2] tracking-wider">
-                                {{ $landing['cafe']['name'] ?? 'ABS Cafe' }}
-                            </span>
-                        </div>
->>>>>>> 400677224366d7a7751f276dfaef3126c72b1e04
                     </div>
                 </div>
             </div>

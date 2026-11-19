@@ -358,7 +358,7 @@
     <div class="relative w-full max-w-md bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8 p-6 space-y-4">
         <div class="flex items-start gap-3">
             <div class="w-10 h-10 rounded-2xl bg-cafe-danger/10 text-cafe-danger flex items-center justify-center shrink-0">
-                <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                <i data-lucide="trash-2" class="w-5 h-5"></i>
             </div>
             <div>
                 <h4 class="font-serif text-lg font-bold text-cafe-dark">Hapus Menu</h4>
@@ -366,12 +366,21 @@
             </div>
         </div>
 
+        <div class="p-3 bg-cafe-beige/40 rounded-xl border border-cafe-beige/60 flex items-start gap-2.5">
+            <i data-lucide="info" class="w-4 h-4 text-cafe-gold shrink-0 mt-0.5"></i>
+            <p class="text-[11px] text-cafe-muted leading-relaxed">
+                Menu yang dihapus tidak akan tampil di katalog dan kasir. <strong class="text-cafe-dark">Data historis penjualan tetap tersimpan aman untuk rekap laporan cafe.</strong>
+            </p>
+        </div>
+
         <form id="delete-menu-form" method="POST" action="">
             @csrf
             @method('DELETE')
             <div class="flex items-center justify-end gap-3 pt-3 border-t border-cafe-beige/60">
                 <button type="button" onclick="closeDeleteMenuModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-cafe-dark hover:bg-cafe-beige/60">Batal</button>
-                <button type="submit" class="px-5 py-2 rounded-full bg-cafe-danger hover:bg-cafe-danger/90 text-beige font-semibold text-xs shadow-sm">Hapus Permanen</button>
+                <button type="submit" class="px-5 py-2 rounded-full bg-cafe-danger hover:bg-cafe-danger/90 text-beige font-semibold text-xs shadow-sm inline-flex items-center gap-1.5">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Hapus Menu
+                </button>
             </div>
         </form>
     </div>
@@ -443,7 +452,7 @@
     }
 
     function openDeleteMenuModal(id, name) {
-        document.getElementById('delete-menu-message').innerText = `Apakah Anda yakin ingin menghapus "${name}"? Tindakan ini tidak dapat dibatalkan.`;
+        document.getElementById('delete-menu-message').innerText = `Apakah Anda yakin ingin menghapus "${name}"?`;
         document.getElementById('delete-menu-form').action = `/admin/menu/${id}`;
         document.getElementById('delete-menu-modal').classList.remove('hidden');
     }

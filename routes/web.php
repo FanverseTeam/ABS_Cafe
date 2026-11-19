@@ -112,6 +112,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
             Route::post('/{id}/duplicate', [CatalogController::class, 'duplicateMenu'])->name('duplicate');
             Route::post('/{id}/toggle-available', [CatalogController::class, 'toggleMenuAvailable'])->name('toggle.available');
             Route::post('/{id}/toggle-bestseller', [CatalogController::class, 'toggleMenuBestSeller'])->name('toggle.bestseller');
+            Route::post('/{id}/restore', [CatalogController::class, 'restoreMenu'])->name('restore');
             Route::delete('/{id}', [CatalogController::class, 'destroyMenu'])->name('destroy');
         });
 
@@ -208,6 +209,7 @@ if (config('features.legacy_admin')) {
             Route::post('/{id}/duplicate', [MenuController::class, 'duplicate'])->name('duplicate');
             Route::post('/{id}/toggle-available', [MenuController::class, 'toggleAvailable'])->name('toggle.available');
             Route::post('/{id}/toggle-bestseller', [MenuController::class, 'toggleBestSeller'])->name('toggle.bestseller');
+            Route::post('/{id}/restore', [MenuController::class, 'restore'])->name('restore');
             Route::delete('/{id}', [MenuController::class, 'destroy'])->name('destroy');
         });
 

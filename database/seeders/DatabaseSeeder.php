@@ -6,9 +6,6 @@ use App\Models\ActivityLog;
 use App\Models\CafeSetting;
 use App\Models\Category;
 use App\Models\Menu;
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\OrderTimeline;
 use App\Models\Promo;
 use App\Models\Table;
 use App\Models\User;
@@ -110,185 +107,36 @@ class DatabaseSeeder extends Seeder
         // 2 & 3. Categories & Menus (Menu Baru Fix ABS Cafe)
         $this->call(MenuUpdateSeeder::class);
 
-        // 4. Tables (10 tables)
-        for ($i = 1; $i <= 10; $i++) {
-            $cap = ($i % 3 === 0) ? 6 : (($i % 2 === 0) ? 4 : 2);
-            $status = ($i === 2 || $i === 4) ? 'terpakai' : (($i === 10) ? 'nonaktif' : 'tersedia');
-            $loc = ($i <= 4) ? 'Lantai 1 Indoor' : (($i <= 7) ? 'Outdoor Garden' : 'Lantai 2 Mezanin');
+        // 4. Tables (20 Meja ABS Cafe)
+        for ($i = 1; $i <= 20; $i++) {
+            $cap = ($i % 4 === 0) ? 6 : (($i % 2 === 0) ? 4 : 2);
+            $loc = ($i <= 8) ? 'Lantai 1 Indoor' : (($i <= 14) ? 'Outdoor Garden' : 'Lantai 2 Mezanin');
             Table::updateOrCreate(
                 ['number' => $i],
                 [
                     'capacity' => $cap,
-                    'status' => $status,
+                    'status' => 'tersedia',
                     'location_notes' => $loc,
                 ]
             );
         }
 
-        // 5. Orders (25 realistic orders)
-        $sampleCustomers = [
-            'Rian Pratama', 'Dinda Ayu', 'Fajar Nugraha', 'Nadia Salsabila',
-            'Bagas Aditya', 'Clara Anindya', 'Dimas Wicaksono', 'Mega Putri',
-            'Hendra Setiawan', 'Anisa Maulida', 'Yogi Saputra', 'Kurnia Sandy',
-            'Bayu Pamungkas', 'Tiara Anggraini', 'Rizky Firmansyah', 'Salsabila Putri',
-            'Zaky Alfarizi', 'Nadira Ramadhani', 'Ilham Prasetyo', 'Novi Safitri',
-            'Doni Kusuma', 'Rani Octaviana', 'Eko Purnomo', 'Vina Melati', 'Arif Budiman',
-        ];
-
-        $paymentMethods = ['qris', 'tunai', 'debit'];
-        $menuList = Menu::get();
-
-        foreach ($sampleCustomers as $index => $customer) {
-            $orderCode = sprintf('#AB2610%02d', $index + 1);
-            $isDineIn = ($index % 5 !== 3);
-            $tableNum = $isDineIn ? (($index % 9) + 1) : null;
-            $type = $isDineIn ? 'dine_in' : 'take_away';
-            $method = $paymentMethods[$index % 3];
-
-            // Variasi status
-            $payStatus = 'lunas';
-            $orderStatus = 'selesai';
-            $cancelReason = null;
-            $cashier = ($index % 2 === 0) ? 'Siti Rahma' : 'Budi Santoso';
-            $paidAt = now()->subHours(25 - $index);
-
-            if ($index === 0) {
-                // Pesanan sedang diproses hari ini
-                $payStatus = 'lunas';
-                $orderStatus = 'diproses';
-                $paidAt = now()->subMinutes(15);
-            } elseif ($index === 1) {
-                $payStatus = 'lunas';
-                $orderStatus = 'siap';
-                $paidAt = now()->subMinutes(25);
-            } elseif ($index === 3) {
-                $payStatus = 'menunggu_pembayaran';
-                $orderStatus = 'diproses';
-                $paidAt = null;
-                $cashier = null;
-            } elseif ($index === 4) {
-                $payStatus = 'dibatalkan';
-                $orderStatus = 'selesai';
-                $cancelReason = 'Pelanggan membatalkan pesanan karena urusan mendadak.';
-            }
-
-            // Pilih 1 - 3 menu random
-            $itemCount = ($index % 3) + 1;
-            $subtotal = 0;
-            $selectedMenus = $menuList->slice(($index * 2) % 12, $itemCount);
-
-            $order = Order::updateOrCreate(
-                ['order_code' => $orderCode],
-                [
-                    'customer_name' => $customer,
-                    'table_number' => $tableNum,
-                    'order_type' => $type,
-                    'payment_method' => $method,
-                    'payment_status' => $payStatus,
-                    'order_status' => $orderStatus,
-                    'cashier_name' => $cashier,
-                    'paid_at' => $paidAt,
-                    'cancel_reason' => $cancelReason,
-                    'created_at' => now()->subHours(26 - $index),
-                ]
-            );
-
-            // Create items
-            $order->items()->delete();
-            foreach ($selectedMenus as $menu) {
-                $qty = ($index % 2 === 0) ? 1 : 2;
-                $itemPrice = (float) $menu->price;
-                $itemSubtotal = $itemPrice * $qty;
-                $subtotal += $itemSubtotal;
-
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'menu_id' => $menu->id,
-                    'name' => $menu->name,
-                    'price' => $itemPrice,
-                    'quantity' => $qty,
-                    'subtotal' => $itemSubtotal,
-                    'notes' => ($index % 4 === 0) ? 'Less sweet, ice dipisah' : null,
-                ]);
-            }
-
-            $tax = $subtotal * 0.10;
-            $discount = ($index === 3) ? 10000 : 0;
-            $total = $subtotal + $tax - $discount;
-
-            $order->update([
-                'subtotal' => $subtotal,
-                'tax' => $tax,
-                'discount' => $discount,
-                'total' => $total,
+        // 5. Promos (3 promos)
+        $catCoffee = Category::where('name', 'Coffee Base')->first();
+        if ($catCoffee) {
+            Promo::updateOrCreate(['title' => 'Buy 2 Get 1 Free All Coffee'], [
+                'description' => 'Beli 2 cup menu coffee apa saja, dapatkan gratis 1 Americano atau Latte setiap hari!',
+                'type' => 'buy_x_get_y',
+                'value' => 100,
+                'applies_to' => 'kategori',
+                'target_category_id' => $catCoffee->id,
+                'start_date' => now()->startOfMonth(),
+                'end_date' => now()->endOfMonth(),
+                'banner' => 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&auto=format&fit=crop&q=80',
+                'is_active' => true,
+                'min_spend' => 0,
             ]);
-
-            // Timeline
-            $order->timelines()->delete();
-            OrderTimeline::create([
-                'order_id' => $order->id,
-                'status' => 'DIBUAT',
-                'actor' => 'Sistem Meja',
-                'description' => "Pesanan dibuat dari {$type} ".($tableNum ? "Meja {$tableNum}" : ''),
-                'logged_at' => $order->created_at,
-            ]);
-
-            if ($payStatus === 'lunas') {
-                OrderTimeline::create([
-                    'order_id' => $order->id,
-                    'status' => 'LUNAS',
-                    'actor' => $cashier,
-                    'description' => "Pembayaran {$method} lunas diverifikasi kasir",
-                    'logged_at' => $paidAt,
-                ]);
-            }
-
-            if ($orderStatus === 'siap' || $orderStatus === 'selesai') {
-                OrderTimeline::create([
-                    'order_id' => $order->id,
-                    'status' => 'SIAP',
-                    'actor' => 'Barista / Kitchen',
-                    'description' => 'Pesanan siap disajikan ke meja',
-                    'logged_at' => $paidAt ? $paidAt->addMinutes(10) : now(),
-                ]);
-            }
-
-            if ($orderStatus === 'selesai') {
-                OrderTimeline::create([
-                    'order_id' => $order->id,
-                    'status' => 'SELESAI',
-                    'actor' => 'Staf Floor',
-                    'description' => 'Pelanggan telah menikmati hidangan',
-                    'logged_at' => $paidAt ? $paidAt->addMinutes(35) : now(),
-                ]);
-            }
-
-            if ($payStatus === 'dibatalkan') {
-                OrderTimeline::create([
-                    'order_id' => $order->id,
-                    'status' => 'DIBATALKAN',
-                    'actor' => 'Admin ABS Cafe',
-                    'description' => "Alasan: {$cancelReason}",
-                    'logged_at' => now()->subHours(25 - $index),
-                ]);
-            }
         }
-
-        // 6. Promos (3 promos)
-        $catCoffee = Category::where('name', 'Coffee Base')->firstOrFail();
-
-        Promo::updateOrCreate(['title' => 'Buy 2 Get 1 Free All Coffee'], [
-            'description' => 'Beli 2 cup menu coffee apa saja, dapatkan gratis 1 Americano atau Latte setiap hari!',
-            'type' => 'buy_x_get_y',
-            'value' => 100,
-            'applies_to' => 'kategori',
-            'target_category_id' => $catCoffee->id,
-            'start_date' => now()->startOfMonth(),
-            'end_date' => now()->endOfMonth(),
-            'banner' => 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&auto=format&fit=crop&q=80',
-            'is_active' => true,
-            'min_spend' => 0,
-        ]);
 
         Promo::updateOrCreate(['title' => 'Diskon 20% Pelajar & Mahasiswa Tulungagung'], [
             'description' => 'Tunjukkan kartu pelajar atau KTM kampus Boyolangu/Tulungagung untuk diskon seluruh menu minuman.',
@@ -314,7 +162,7 @@ class DatabaseSeeder extends Seeder
             'min_spend' => 45000,
         ]);
 
-        // 8. Cafe Settings
+        // 6. Cafe Settings
         $settings = [
             'cafe_name' => 'ABS Cafe',
             'cafe_tagline' => 'Good Coffee, Better Moments.',
