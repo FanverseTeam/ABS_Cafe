@@ -508,6 +508,7 @@
         <!-- Footer -->
         <footer class="relative z-10 shrink-0 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-2 text-center">
             <p class="text-[11px] font-medium tracking-[0.16em] text-beige/80 sm:text-xs">ABS Cafe • Tulungagung</p>
+            <x-team-watermark theme="dark" class="mt-2" />
         </footer>
     </main>
 

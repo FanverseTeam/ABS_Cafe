@@ -299,6 +299,9 @@
                     </span>
                 </div>
             </div>
+
+            <!-- Watermark Logo & Nama Team -->
+            <x-team-watermark theme="light" class="mt-3" />
         </div>
 
     </div>

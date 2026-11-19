@@ -147,6 +147,11 @@
             <div class="relative max-w-7xl mx-auto">
                 @yield('content')
             </div>
+
+            <!-- Watermark Logo & Nama Team -->
+            <footer class="mt-10 pt-4 border-t border-[#775533]/15 text-center">
+                <x-team-watermark theme="light" />
+            </footer>
         </main>
     </div>
 

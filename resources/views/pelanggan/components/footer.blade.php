@@ -47,5 +47,8 @@
                 &copy; {{ date('Y') }} {{ $landing['cafe']['name'] ?? 'ABS Cafe' }}. Hak cipta dilindungi.
             </p>
         </div>
+
+        <!-- Watermark Logo & Nama Team -->
+        <x-team-watermark theme="dark" class="mt-4" />
     </div>
 </footer>

@@ -295,6 +295,38 @@
             animation: fadeToDark {{ $tFadeout }}s ease-in {{ $dFadeout }}s forwards;
         }
 
+        /* Watermark Logo & Nama Team */
+        .splash-team-watermark {
+            position: absolute;
+            bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+            left: 50%;
+            transform: translateX(-50%);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(212, 149, 77, 0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            font-size: 0.75rem;
+            color: #E3DEA4;
+            z-index: 20;
+            opacity: 0;
+            animation: slideUp {{ $tTagline }}s cubic-bezier(0.16, 1, 0.3, 1) {{ $dTagline }}s forwards;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .splash-team-watermark img {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 9999px;
+            object-fit: cover;
+            border: 1px solid rgba(212, 149, 77, 0.5);
+        }
+
         /* Screen reader only */
         .sr-only {
             position: absolute;
@@ -360,7 +392,8 @@
             .splash-logo-container,
             .splash-welcome,
             .splash-brand,
-            .splash-tagline {
+            .splash-tagline,
+            .splash-team-watermark {
                 animation: none !important;
                 opacity: 1 !important;
                 transform: none !important;
@@ -430,6 +463,12 @@
             <h1 class="splash-brand">ABS Cafe</h1>
             <p class="splash-tagline">Good Coffee, <em class="splash-tagline-accent">Good Mood.</em></p>
         </main>
+
+        {{-- Watermark Logo & Nama Team --}}
+        <div class="splash-team-watermark" aria-hidden="true">
+            <img src="{{ asset('images/logo-team.jpeg') }}" alt="Favnverse Team">
+            <span>By <strong>Favnverse team</strong> &bull; SMKN 1 Boyolangu</span>
+        </div>
 
 
         {{-- Garis Progres --}}

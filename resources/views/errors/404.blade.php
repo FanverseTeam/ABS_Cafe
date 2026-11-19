@@ -54,6 +54,7 @@
             </a>
         </div>
         <p class="text-[11px] text-cafe-muted mt-6">ABS Cafe &bull; Accessories & Cafe</p>
+        <x-team-watermark theme="light" class="mt-3" />
     </div>
     <script>lucide.createIcons();</script>
 </body>
