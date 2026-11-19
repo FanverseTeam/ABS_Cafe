@@ -30,11 +30,11 @@
             <div class="flex p-1 bg-[#E3DEA4]/40 rounded-2xl border border-[#E3DEA4]/80 text-xs font-bold text-[#775533]">
                 <button type="button" id="tab-btn-camera" onclick="switchScanTab('camera')" class="flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 bg-[#290024] text-[#F2F5E2] shadow-sm">
                     <i data-lucide="camera" class="w-4 h-4 text-[#D4954D]"></i>
-                    <span>Kamera HP (Utama)</span>
+                    <span>Kamera</span>
                 </button>
                 <button type="button" id="tab-btn-scanner" onclick="switchScanTab('scanner')" class="flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 hover:text-[#290024]">
                     <i data-lucide="keyboard" class="w-4 h-4"></i>
-                    <span>Input Kode Manual (Cadangan)</span>
+                    <span>Input Kode Manual</span>
                 </button>
             </div>
 
