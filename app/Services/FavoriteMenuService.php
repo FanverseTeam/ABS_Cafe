@@ -22,9 +22,44 @@ class FavoriteMenuService
     {
         $cacheKey = 'daily_top_favorites_'.Carbon::today()->format('Y-m-d').'_'.$limit;
 
-        return Cache::remember($cacheKey, Carbon::now()->endOfDay(), function () use ($limit) {
-            return self::calculateTopFavorites($limit);
-        });
+        $cached = null;
+        try {
+            $cached = Cache::get($cacheKey);
+        } catch (\Throwable) {
+            $cached = null;
+        }
+
+        if ($cached instanceof Collection) {
+            $hasIncomplete = false;
+            foreach ($cached as $item) {
+                if (! ($item instanceof Menu) || ($item instanceof \__PHP_Incomplete_Class)) {
+                    $hasIncomplete = true;
+                    break;
+                }
+
+                if ($item->relationLoaded('category') && ($item->category instanceof \__PHP_Incomplete_Class)) {
+                    $hasIncomplete = true;
+                    break;
+                }
+            }
+
+            if (! $hasIncomplete && $cached->isNotEmpty()) {
+                return $cached;
+            }
+        }
+
+        // Jika cache rusak (__PHP_Incomplete_Class), kosong, atau tidak valid, bersihkan dan hitung ulang
+        Cache::forget($cacheKey);
+
+        $fresh = self::calculateTopFavorites($limit);
+
+        try {
+            Cache::put($cacheKey, $fresh, Carbon::now()->endOfDay());
+        } catch (\Throwable) {
+            // Abaikan kegagalan cache write, tetap return data segar
+        }
+
+        return $fresh;
     }
 
     /**

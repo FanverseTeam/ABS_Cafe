@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Services\FavoriteMenuService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
@@ -86,6 +87,24 @@ class DailyFavoriteMenuTest extends TestCase
         $favorites = FavoriteMenuService::getDailyTopFavorites(3);
         $this->assertCount(3, $favorites);
         $this->assertTrue(Cache::has($cacheKey));
+    }
+
+    public function test_get_daily_top_favorites_recovers_gracefully_from_incomplete_class_in_cache(): void
+    {
+        $category = Category::factory()->create();
+        Menu::factory()->count(3)->for($category)->create(['is_available' => true]);
+
+        $cacheKey = 'daily_top_favorites_'.Carbon::today()->format('Y-m-d').'_3';
+
+        // Simulasikan corrupt cache yang menghasilkan __PHP_Incomplete_Class
+        $incomplete = unserialize('O:31:"App\Models\NonExistentClassDemo":0:{}');
+        Cache::put($cacheKey, $incomplete, 3600);
+
+        // Service harus otomatis mendeteksi corrupt object, membersihkannya, dan mengembalikan Collection valid
+        $favorites = FavoriteMenuService::getDailyTopFavorites(3);
+        $this->assertInstanceOf(Collection::class, $favorites);
+        $this->assertCount(3, $favorites);
+        $this->assertInstanceOf(Menu::class, $favorites->first());
     }
 
     public function test_landing_page_renders_best_of_taste_section_with_3_top_menus(): void
