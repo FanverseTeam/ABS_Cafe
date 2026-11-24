@@ -17,7 +17,17 @@ class MenuController extends Controller
     {
         $categories = Category::where('is_active', true)->orderBy('order', 'asc')->get();
 
-        $query = Menu::with('category');
+        $status = $request->input('status', 'all');
+        if ($status === 'trashed') {
+            $query = Menu::onlyTrashed()->with('category');
+        } else {
+            $query = Menu::with('category');
+            if ($status === 'available') {
+                $query->where('is_available', true);
+            } elseif ($status === 'unavailable') {
+                $query->where('is_available', false);
+            }
+        }
 
         // Search
         if ($request->filled('search')) {
@@ -191,18 +201,35 @@ class MenuController extends Controller
     {
         $menu = Menu::findOrFail($id);
         $name = $menu->name;
-        $menu->deleteImageFile();
+        // Soft delete: tandai deleted_at tanpa menghapus file gambar fisik agar data rekap historis tetap utuh
         $menu->delete();
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Menghapus menu: {$name}",
+            'activity' => "Menghapus menu: {$name} (Soft Delete)",
             'activity_type' => 'menu',
             'ip_address' => request()->ip(),
         ]);
 
-        return back()->with('success', "Menu {$name} berhasil dihapus!");
+        return back()->with('success', "Menu {$name} berhasil dihapus (tetap tersimpan untuk data rekap).");
+    }
+
+    public function restore($id)
+    {
+        $menu = Menu::onlyTrashed()->findOrFail($id);
+        $name = $menu->name;
+        $menu->restore();
+
+        ActivityLog::create([
+            'user_name' => Auth::user()->name,
+            'role' => Auth::user()->role,
+            'activity' => "Memulihkan menu: {$name}",
+            'activity_type' => 'menu',
+            'ip_address' => request()->ip(),
+        ]);
+
+        return back()->with('success', "Menu {$name} berhasil dipulihkan.");
     }
 
     public function mergeMenus(Request $request, MenuMergeService $merge)

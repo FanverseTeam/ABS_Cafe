@@ -71,7 +71,7 @@
                 {{-- Status filter --}}
                 <div class="space-y-2">
                     <p class="text-xs font-bold text-[#290024] uppercase tracking-wide">Status</p>
-                    @foreach(['all' => 'Semua', 'available' => 'Tersedia', 'unavailable' => 'Habis'] as $statusKey => $statusLabel)
+                    @foreach(['all' => 'Semua Aktif', 'available' => 'Tersedia', 'unavailable' => 'Habis (Nonaktif)', 'trashed' => 'Terhapus (Arsip Rekap)'] as $statusKey => $statusLabel)
                         <a
                             href="{{ route('admin.catalog.index', array_merge(request()->query(), ['status' => $statusKey === 'all' ? null : $statusKey, 'page' => 1])) }}"
                             class="flex items-center justify-between w-full py-2.5 px-4 rounded-2xl text-sm transition-colors {{ (request('status', 'all') === $statusKey || ($statusKey === 'all' && !request('status'))) ? 'bg-[#290024] text-[#F2F5E2] font-semibold' : 'text-[#290024] hover:bg-[#E3DEA4]/50' }}"
@@ -156,6 +156,7 @@
         @forelse($menus as $menu)
             @php
                 $sheetId  = 'menu-action-' . $menu->id;
+                $isTrashed = $menu->trashed();
                 $isBest   = (bool) $menu->is_best_seller;
                 $isAvail  = (bool) $menu->is_available;
                 $menuJson = Illuminate\Support\Js::from($menu);
@@ -164,7 +165,7 @@
             {{-- Single card per menu --}}
             <div
                 data-menu-id="{{ $menu->id }}"
-                class="bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/60 shadow-sm overflow-hidden flex flex-col transition-all hover:border-[#290024]/20"
+                class="bg-[#F2F5E2] rounded-2xl border border-[#E3DEA4]/60 shadow-sm overflow-hidden flex flex-col transition-all hover:border-[#290024]/20 {{ $isTrashed ? 'opacity-75 bg-gray-100/80 border-dashed border-red-300' : '' }}"
             >
                 {{-- Square photo area --}}
                 <div class="relative w-full aspect-square bg-[#E3DEA4]/40 overflow-hidden shrink-0">
@@ -175,14 +176,17 @@
                         loading="lazy"
                         onclick="openBottomSheet('{{ $sheetId }}')"
                     >
-                    {{-- Best Seller ribbon: top-left --}}
-                    @if($isBest)
+                    {{-- Badges --}}
+                    @if($isTrashed)
+                        <span class="absolute top-1.5 left-1.5 bg-red-800 text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow-xs leading-none whitespace-nowrap">
+                            Terhapus (Rekap)
+                        </span>
+                    @elseif($isBest)
                         <span class="absolute top-1.5 left-1.5 bg-[#D4954D] text-[#290024] text-[8px] font-bold px-1.5 py-0.5 rounded shadow-xs leading-none whitespace-nowrap">
                             Best Seller
                         </span>
                     @endif
-                    {{-- Habis badge: top-right, only when unavailable --}}
-                    @if(!$isAvail)
+                    @if(!$isTrashed && !$isAvail)
                         <span class="absolute top-1.5 right-1.5 bg-[#775533] text-beige text-[8px] font-bold px-1.5 py-0.5 rounded shadow-xs leading-none">
                             Habis
                         </span>
@@ -222,73 +226,105 @@
                     </p>
                 </div>
 
-                {{-- Footer: availability label + toggle (min 44px touch target) --}}
+                {{-- Footer: availability label + toggle / restore button --}}
                 <div
                     class="px-2.5 py-1.5 border-t border-[#E3DEA4]/40 flex items-center justify-between"
                     onclick="event.stopPropagation()"
                 >
-                    <span class="text-[9px] sm:text-[10px] font-semibold {{ $isAvail ? 'text-[#775533]' : 'text-[#775533]' }}">
-                        {{ $isAvail ? 'Tersedia' : 'Habis' }}
-                    </span>
-                    <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
-                        @csrf
-                        <button
-                            type="submit"
-                            class="min-w-[44px] min-h-[44px] -my-1.5 -mr-2 flex items-center justify-center p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]/70 rounded-full"
-                            title="{{ $isAvail ? 'Tandai Habis' : 'Tandai Tersedia' }}"
-                            aria-label="{{ $isAvail ? 'Tandai Habis' : 'Tandai Tersedia' }} {{ $menu->name }}"
-                        >
-                            <div class="w-9 h-5 rounded-full p-0.5 transition-colors {{ $isAvail ? 'bg-[#775533]' : 'bg-[#775533]/30' }}">
-                                <div class="w-4 h-4 rounded-full bg-beige shadow-sm transition-transform {{ $isAvail ? 'translate-x-4' : 'translate-x-0' }}"></div>
-                            </div>
-                        </button>
-                    </form>
+                    @if($isTrashed)
+                        <span class="text-[9px] sm:text-[10px] font-semibold text-red-700">Terhapus (Rekap)</span>
+                        <form action="{{ route('admin.catalog.menu.restore', $menu->id) }}" method="POST">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="px-2 py-0.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-[9px] font-semibold flex items-center gap-1 shadow-xs transition-colors"
+                                title="Pulihkan Menu"
+                            >
+                                <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+                                <span>Pulihkan</span>
+                            </button>
+                        </form>
+                    @else
+                        <span class="text-[9px] sm:text-[10px] font-semibold text-[#775533]">
+                            {{ $isAvail ? 'Tersedia' : 'Habis' }}
+                        </span>
+                        <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="min-w-[44px] min-h-[44px] -my-1.5 -mr-2 flex items-center justify-center p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D]/70 rounded-full"
+                                title="{{ $isAvail ? 'Tandai Habis' : 'Tandai Tersedia' }}"
+                                aria-label="{{ $isAvail ? 'Tandai Habis' : 'Tandai Tersedia' }} {{ $menu->name }}"
+                            >
+                                <div class="w-9 h-5 rounded-full p-0.5 transition-colors {{ $isAvail ? 'bg-[#775533]' : 'bg-[#775533]/30' }}">
+                                    <div class="w-4 h-4 rounded-full bg-beige shadow-sm transition-transform {{ $isAvail ? 'translate-x-4' : 'translate-x-0' }}"></div>
+                                </div>
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </div>
 
             {{-- Action bottom sheet --}}
             <x-mobile.bottom-sheet :id="$sheetId" :title="$menu->name" :subtitle="$menu->category?->name">
                 <div class="space-y-1">
-                    <a
-                        href="{{ route('admin.catalog.menu.edit', $menu->id) }}"
-                        class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
-                    >
-                        <i data-lucide="edit" class="w-5 h-5 text-[#775533] shrink-0"></i>
-                        <span>Ubah Menu</span>
-                    </a>
+                    @if($isTrashed)
+                        <div class="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-xs text-red-900 leading-relaxed mb-2">
+                            Menu ini telah dihapus dari katalog (Soft Delete). Data menu tetap dipertahankan untuk keperluan rekap transaksi cafe.
+                        </div>
 
-                    <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
-                        @csrf
-                        <button
-                            type="submit"
+                        <form action="{{ route('admin.catalog.menu.restore', $menu->id) }}" method="POST">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-emerald-800 hover:bg-emerald-50 transition-colors text-left min-h-[48px]"
+                            >
+                                <i data-lucide="rotate-ccw" class="w-5 h-5 text-emerald-600 shrink-0"></i>
+                                <span>Pulihkan Menu (Aktifkan Kembali)</span>
+                            </button>
+                        </form>
+                    @else
+                        <a
+                            href="{{ route('admin.catalog.menu.edit', $menu->id) }}"
                             class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
                         >
-                            <i data-lucide="{{ $isAvail ? 'eye-off' : 'eye' }}" class="w-5 h-5 text-[#775533] shrink-0"></i>
-                            <span>{{ $isAvail ? 'Nonaktifkan (Tandai Habis)' : 'Aktifkan (Tandai Tersedia)' }}</span>
-                        </button>
-                    </form>
+                            <i data-lucide="edit" class="w-5 h-5 text-[#775533] shrink-0"></i>
+                            <span>Ubah Menu</span>
+                        </a>
 
-                    <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST">
-                        @csrf
+                        <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
+                            >
+                                <i data-lucide="{{ $isAvail ? 'eye-off' : 'eye' }}" class="w-5 h-5 text-[#775533] shrink-0"></i>
+                                <span>{{ $isAvail ? 'Nonaktifkan (Tandai Habis)' : 'Aktifkan (Tandai Tersedia)' }}</span>
+                            </button>
+                        </form>
+
+                        <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
+                            >
+                                <i data-lucide="copy" class="w-5 h-5 text-[#775533] shrink-0"></i>
+                                <span>Duplikat Menu</span>
+                            </button>
+                        </form>
+
+                        <div class="h-px bg-[#E3DEA4]/60 my-2"></div>
+
                         <button
-                            type="submit"
-                            class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#290024] hover:bg-[#E3DEA4]/50 transition-colors text-left min-h-[48px]"
+                            type="button"
+                            onclick="closeBottomSheet('{{ $sheetId }}'); openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}');"
+                            class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-cafe-danger hover:bg-cafe-danger/10 transition-colors text-left min-h-[48px]"
                         >
-                            <i data-lucide="copy" class="w-5 h-5 text-[#775533] shrink-0"></i>
-                            <span>Duplikat Menu</span>
+                            <i data-lucide="trash-2" class="w-5 h-5 text-cafe-danger shrink-0"></i>
+                            <span>Hapus Menu</span>
                         </button>
-                    </form>
-
-                    <div class="h-px bg-[#E3DEA4]/60 my-2"></div>
-
-                    <button
-                        type="button"
-                        onclick="closeBottomSheet('{{ $sheetId }}'); openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}');"
-                        class="flex items-center gap-3 w-full px-4 py-3.5 rounded-2xl text-sm font-semibold text-[#775533] hover:bg-[#775533]/10 transition-colors text-left min-h-[48px]"
-                    >
-                        <i data-lucide="trash-2" class="w-5 h-5 text-[#775533] shrink-0"></i>
-                        <span>Hapus Menu</span>
-                    </button>
+                    @endif
                 </div>
             </x-mobile.bottom-sheet>
         @empty
@@ -348,6 +384,57 @@
         </div>
     </div>
 
+    {{-- Status Filter Tabs (Desktop) --}}
+    @php
+        $currentStatus = request('status', 'all');
+    @endphp
+    <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none text-xs">
+        <a href="{{ route('admin.catalog.index', array_merge(request()->query(), ['status' => null, 'page' => 1])) }}"
+           class="px-3.5 py-1.5 rounded-full font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 {{ $currentStatus === 'all' || !$currentStatus ? 'bg-cafe-dark text-cafe-cream shadow-xs' : 'bg-cafe-card border border-cafe-beige/60 text-cafe-dark hover:bg-cafe-beige/40' }}">
+            <span>Semua Aktif</span>
+            <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $currentStatus === 'all' || !$currentStatus ? 'bg-cafe-gold text-cafe-dark' : 'bg-cafe-beige text-cafe-text' }}">
+                {{ $totalActiveCount ?? \App\Models\Menu::count() }}
+            </span>
+        </a>
+        <a href="{{ route('admin.catalog.index', array_merge(request()->query(), ['status' => 'available', 'page' => 1])) }}"
+           class="px-3.5 py-1.5 rounded-full font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 {{ $currentStatus === 'available' ? 'bg-cafe-dark text-cafe-cream shadow-xs' : 'bg-cafe-card border border-cafe-beige/60 text-cafe-dark hover:bg-cafe-beige/40' }}">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Tersedia</span>
+            <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $currentStatus === 'available' ? 'bg-cafe-gold text-cafe-dark' : 'bg-cafe-beige text-cafe-text' }}">
+                {{ $availableCount ?? \App\Models\Menu::where('is_available', true)->count() }}
+            </span>
+        </a>
+        <a href="{{ route('admin.catalog.index', array_merge(request()->query(), ['status' => 'unavailable', 'page' => 1])) }}"
+           class="px-3.5 py-1.5 rounded-full font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 {{ $currentStatus === 'unavailable' ? 'bg-cafe-dark text-cafe-cream shadow-xs' : 'bg-cafe-card border border-cafe-beige/60 text-cafe-dark hover:bg-cafe-beige/40' }}">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            <span>Habis (Nonaktif)</span>
+            <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $currentStatus === 'unavailable' ? 'bg-cafe-gold text-cafe-dark' : 'bg-cafe-beige text-cafe-text' }}">
+                {{ $unavailableCount ?? \App\Models\Menu::where('is_available', false)->count() }}
+            </span>
+        </a>
+        <a href="{{ route('admin.catalog.index', array_merge(request()->query(), ['status' => 'trashed', 'page' => 1])) }}"
+           class="px-3.5 py-1.5 rounded-full font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 {{ $currentStatus === 'trashed' ? 'bg-red-800 text-white shadow-xs' : 'bg-cafe-card border border-red-200 text-red-700 hover:bg-red-50' }}"
+           title="Menu yang dihapus (Soft Delete) tetap tersimpan untuk rekap transaksi cafe">
+            <i data-lucide="archive" class="w-3.5 h-3.5 {{ $currentStatus === 'trashed' ? 'text-amber-300' : 'text-red-500' }}"></i>
+            <span>Terhapus (Arsip Rekap)</span>
+            <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $currentStatus === 'trashed' ? 'bg-white text-red-800 font-bold' : 'bg-red-100 text-red-700' }}">
+                {{ $trashedCount ?? \App\Models\Menu::onlyTrashed()->count() }}
+            </span>
+        </a>
+    </div>
+
+    @if(request('status') === 'trashed')
+        <div class="p-3 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-between gap-3 text-xs text-red-950">
+            <div class="flex items-center gap-2">
+                <i data-lucide="info" class="w-4 h-4 text-red-700 shrink-0"></i>
+                <span><strong>Menu Terhapus (Soft Delete):</strong> Menu pada daftar ini disembunyikan dari katalog pelanggan dan kasir sehingga tidak bisa dipesan lagi. Seluruh data historis transaksi tetap tersimpan untuk rekap laporan cafe.</span>
+            </div>
+            <a href="{{ route('admin.catalog.index', array_merge(request()->query(), ['status' => null, 'page' => 1])) }}" class="underline font-semibold hover:text-red-700 shrink-0">
+                Kembali ke Menu Aktif
+            </a>
+        </div>
+    @endif
+
     {{-- Toolbar --}}
     <div class="bg-cafe-card p-4 sm:p-5 rounded-2xl shadow-soft border border-cafe-beige/40 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         {{-- Search --}}
@@ -355,6 +442,7 @@
             <input type="hidden" name="tab" value="menu">
             <input type="hidden" name="view" value="{{ $viewMode }}">
             <input type="hidden" name="category_id" value="{{ request('category_id') }}">
+            <input type="hidden" name="status" value="{{ request('status') }}">
             <input type="hidden" name="sort" value="{{ request('sort') }}">
             <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu atau deskripsi..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
@@ -399,7 +487,10 @@
     @if($viewMode === 'grid')
         <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
             @forelse($menus as $menu)
-                <div class="bg-cafe-card rounded-2xl shadow-soft hover:shadow-soft-lg border border-cafe-beige/50 overflow-hidden flex flex-col justify-between transition-all group">
+                @php
+                    $isTrashed = $menu->trashed();
+                @endphp
+                <div class="bg-cafe-card rounded-2xl shadow-soft hover:shadow-soft-lg border border-cafe-beige/50 overflow-hidden flex flex-col justify-between transition-all group {{ $isTrashed ? 'opacity-80 bg-gray-50 border-dashed border-red-300' : '' }}">
                     <div>
                         <div class="relative h-32 sm:h-44 w-full bg-cafe-beige overflow-hidden">
                             <img src="{{ $menu->image }}" alt="{{ $menu->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -410,7 +501,14 @@
                                 </span>
                             </div>
 
-                            @if($menu->is_best_seller)
+                            @if($isTrashed)
+                                <div class="absolute top-3 right-3">
+                                    <span class="px-2.5 py-1 rounded-full bg-red-800 text-white text-[10px] font-bold shadow-sm flex items-center gap-1">
+                                        <i data-lucide="archive" class="w-3 h-3"></i>
+                                        <span>Terhapus</span>
+                                    </span>
+                                </div>
+                            @elseif($menu->is_best_seller)
                                 <div class="absolute top-3 right-3">
                                     <span class="px-2.5 py-1 rounded-full bg-cafe-gold text-cafe-dark text-[10px] font-bold shadow-sm flex items-center gap-1">
                                         <i data-lucide="star" class="w-3 h-3 fill-current"></i>
@@ -437,36 +535,47 @@
                     </div>
 
                     <div class="p-4 pt-2 border-t border-cafe-beige/40 flex items-center justify-between text-xs">
-                        <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="flex items-center gap-2 cursor-pointer select-none">
-                                <div class="w-8 h-4.5 rounded-full p-0.5 transition-colors {{ $menu->is_available ? 'bg-cafe-success' : 'bg-cafe-muted/40' }}">
-                                    <div class="w-3.5 h-3.5 rounded-full bg-beige transition-transform {{ $menu->is_available ? 'translate-x-3.5' : 'translate-x-0' }}"></div>
-                                </div>
-                                <span class="text-[11px] font-medium text-cafe-text">{{ $menu->is_available ? 'Tersedia' : 'Habis' }}</span>
-                            </button>
-                        </form>
+                        @if($isTrashed)
+                            <span class="text-[11px] font-medium text-red-700">Data Rekap</span>
+                            <form action="{{ route('admin.catalog.menu.restore', $menu->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="px-3 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors">
+                                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                                    <span>Pulihkan</span>
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="flex items-center gap-2 cursor-pointer select-none">
+                                    <div class="w-8 h-4.5 rounded-full p-0.5 transition-colors {{ $menu->is_available ? 'bg-cafe-success' : 'bg-cafe-muted/40' }}">
+                                        <div class="w-3.5 h-3.5 rounded-full bg-beige transition-transform {{ $menu->is_available ? 'translate-x-3.5' : 'translate-x-0' }}"></div>
+                                    </div>
+                                    <span class="text-[11px] font-medium text-cafe-text">{{ $menu->is_available ? 'Tersedia' : 'Habis' }}</span>
+                                </button>
+                            </form>
 
-                        <div class="flex items-center gap-1">
-                            <form action="{{ route('admin.catalog.menu.toggle.bestseller', $menu->id) }}" method="POST" class="inline">
-                                @csrf
-                                <button type="submit" class="p-1.5 rounded-full transition-colors {{ $menu->is_best_seller ? 'text-cafe-gold bg-cafe-gold/20' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/60' }}" title="{{ $menu->is_best_seller ? 'Hapus Best Seller' : 'Tandai Best Seller' }}">
-                                    <i data-lucide="star" class="w-3.5 h-3.5 {{ $menu->is_best_seller ? 'fill-current' : '' }}"></i>
+                            <div class="flex items-center gap-1">
+                                <form action="{{ route('admin.catalog.menu.toggle.bestseller', $menu->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="p-1.5 rounded-full transition-colors {{ $menu->is_best_seller ? 'text-cafe-gold bg-cafe-gold/20' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/60' }}" title="{{ $menu->is_best_seller ? 'Hapus Best Seller' : 'Tandai Best Seller' }}">
+                                        <i data-lucide="star" class="w-3.5 h-3.5 {{ $menu->is_best_seller ? 'fill-current' : '' }}"></i>
+                                    </button>
+                                </form>
+                                <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="p-1.5 rounded-full text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/60 transition-colors" title="Duplikasi Menu">
+                                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </form>
+                                <a href="{{ route('admin.catalog.menu.edit', $menu->id) }}" class="p-1.5 rounded-full text-cafe-brown hover:text-cafe-dark hover:bg-cafe-beige/60 transition-colors" title="Edit Menu">
+                                    <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+                                </a>
+                                <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-1.5 rounded-full text-cafe-danger hover:bg-cafe-danger/10 transition-colors" title="Hapus Menu">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                 </button>
-                            </form>
-                            <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST" class="inline">
-                                @csrf
-                                <button type="submit" class="p-1.5 rounded-full text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/60 transition-colors" title="Duplikasi Menu">
-                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                                </button>
-                            </form>
-                            <a href="{{ route('admin.catalog.menu.edit', $menu->id) }}" class="p-1.5 rounded-full text-cafe-brown hover:text-cafe-dark hover:bg-cafe-beige/60 transition-colors" title="Edit Menu">
-                                <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                            </a>
-                            <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-1.5 rounded-full text-cafe-danger hover:bg-cafe-danger/10 transition-colors" title="Hapus Menu">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                            </button>
-                        </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             @empty
@@ -503,17 +612,23 @@
                     </x-slot:title>
 
                     <x-slot:badge>
-                        @if($menu->is_best_seller)
-                            <span class="px-2 py-0.5 rounded-full bg-cafe-gold text-cafe-dark text-[10px] font-bold shadow-xs inline-flex items-center gap-0.5">
-                                <i data-lucide="star" class="w-3 h-3 fill-current"></i> Best
+                        @if($menu->trashed())
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold border bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30">
+                                Terhapus (Rekap)
                             </span>
+                        @else
+                            @if($menu->is_best_seller)
+                                <span class="px-2 py-0.5 rounded-full bg-cafe-gold text-cafe-dark text-[10px] font-bold shadow-xs inline-flex items-center gap-0.5">
+                                    <i data-lucide="star" class="w-3 h-3 fill-current"></i> Best
+                                </span>
+                            @endif
+                            <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold border transition-all {{ $menu->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
+                                    {{ $menu->is_available ? 'Tersedia' : 'Habis' }}
+                                </button>
+                            </form>
                         @endif
-                        <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold border transition-all {{ $menu->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
-                                {{ $menu->is_available ? 'Tersedia' : 'Habis' }}
-                            </button>
-                        </form>
                     </x-slot:badge>
 
                     <x-slot:fields>
@@ -534,18 +649,27 @@
 
                     <x-slot:actions>
                         <div class="flex items-center gap-1.5 w-full justify-end">
-                            <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST" class="inline">
-                                @csrf
-                                <button type="submit" class="p-2 rounded-full hover:bg-cafe-beige/60 text-cafe-muted hover:text-cafe-dark" title="Duplikasi">
-                                    <i data-lucide="copy" class="w-4 h-4"></i>
+                            @if($menu->trashed())
+                                <form action="{{ route('admin.catalog.menu.restore', $menu->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-cafe-success/10 text-cafe-success border border-cafe-success/30 hover:bg-cafe-success/20 transition-all">
+                                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Pulihkan
+                                    </button>
+                                </form>
+                            @else
+                                <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="p-2 rounded-full hover:bg-cafe-beige/60 text-cafe-muted hover:text-cafe-dark" title="Duplikasi">
+                                        <i data-lucide="copy" class="w-4 h-4"></i>
+                                    </button>
+                                </form>
+                                <a href="{{ route('admin.catalog.menu.edit', $menu->id) }}" class="p-2 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark inline-flex items-center justify-center" title="Edit">
+                                    <i data-lucide="edit" class="w-4 h-4"></i>
+                                </a>
+                                <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-2 rounded-full hover:bg-cafe-danger/10 text-cafe-danger" title="Hapus">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
                                 </button>
-                            </form>
-                            <a href="{{ route('admin.catalog.menu.edit', $menu->id) }}" class="p-2 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark inline-flex items-center justify-center" title="Edit">
-                                <i data-lucide="edit" class="w-4 h-4"></i>
-                            </a>
-                            <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-2 rounded-full hover:bg-cafe-danger/10 text-cafe-danger" title="Hapus">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </button>
+                            @endif
                         </div>
                     </x-slot:actions>
 
@@ -578,27 +702,42 @@
                             @endif
                         </td>
                         <td class="hidden md:table-cell py-3 px-3">
-                            <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="px-3 py-1 rounded-full text-[11px] font-semibold border transition-all {{ $menu->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
-                                    {{ $menu->is_available ? 'Tersedia' : 'Habis' }}
-                                </button>
-                            </form>
+                            @if($menu->trashed())
+                                <span class="px-3 py-1 rounded-full text-[11px] font-semibold border bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30">
+                                    Terhapus (Rekap)
+                                </span>
+                            @else
+                                <form action="{{ route('admin.catalog.menu.toggle.available', $menu->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="px-3 py-1 rounded-full text-[11px] font-semibold border transition-all {{ $menu->is_available ? 'bg-cafe-success/10 text-cafe-success border-cafe-success/30' : 'bg-cafe-danger/10 text-cafe-danger border-cafe-danger/30' }}">
+                                        {{ $menu->is_available ? 'Tersedia' : 'Habis' }}
+                                    </button>
+                                </form>
+                            @endif
                         </td>
                         <td class="hidden md:table-cell py-3 pr-6 text-right">
                             <div class="flex items-center justify-end gap-1.5">
-                                <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    <button type="submit" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-muted hover:text-cafe-dark" title="Duplikasi">
-                                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                @if($menu->trashed())
+                                    <form action="{{ route('admin.catalog.menu.restore', $menu->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-cafe-success/10 text-cafe-success border border-cafe-success/30 hover:bg-cafe-success/20 transition-all" title="Pulihkan Menu">
+                                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Pulihkan
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-muted hover:text-cafe-dark" title="Duplikasi">
+                                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                        </button>
+                                    </form>
+                                    <a href="{{ route('admin.catalog.menu.edit', $menu->id) }}" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark inline-flex items-center justify-center" title="Edit">
+                                        <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+                                    </a>
+                                    <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-1.5 rounded-full hover:bg-cafe-danger/10 text-cafe-danger" title="Hapus">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                                     </button>
-                                </form>
-                                <a href="{{ route('admin.catalog.menu.edit', $menu->id) }}" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark inline-flex items-center justify-center" title="Edit">
-                                    <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                                </a>
-                                <button onclick="openDeleteMenuModal({{ $menu->id }}, '{{ addslashes($menu->name) }}')" class="p-1.5 rounded-full hover:bg-cafe-danger/10 text-cafe-danger" title="Hapus">
-                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                </button>
+                                @endif
                             </div>
                         </td>
                     </x-slot:desktop>
@@ -621,13 +760,13 @@
      ========================================================= --}}
 
 {{-- MODAL KONFIRMASI HAPUS --}}
-<div id="delete-menu-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
+<div id="delete-menu-modal" class="fixed inset-0 z-[80] flex items-center justify-center p-4 sm:p-6 overflow-y-auto hidden">
     <div class="fixed inset-0 bg-[#290024]/40 backdrop-blur-sm" onclick="closeDeleteMenuModal()"></div>
 
     <div class="relative w-full max-w-md bg-cafe-card rounded-2xl shadow-soft-lg border border-cafe-beige/60 overflow-hidden z-10 my-8 p-6 space-y-4">
         <div class="flex items-start gap-3">
             <div class="w-10 h-10 rounded-2xl bg-cafe-danger/10 text-cafe-danger flex items-center justify-center shrink-0">
-                <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                <i data-lucide="trash-2" class="w-5 h-5"></i>
             </div>
             <div>
                 <h4 class="font-serif text-lg font-bold text-cafe-dark">Hapus Menu</h4>
@@ -635,12 +774,21 @@
             </div>
         </div>
 
+        <div class="p-3 bg-cafe-beige/40 rounded-xl border border-cafe-beige/60 flex items-start gap-2.5">
+            <i data-lucide="info" class="w-4 h-4 text-cafe-gold shrink-0 mt-0.5"></i>
+            <p class="text-[11px] text-cafe-muted leading-relaxed">
+                Menu yang dihapus tidak akan tampil di katalog pelanggan dan kasir, serta tidak bisa dipesan lagi. <strong class="text-cafe-dark">Data historis penjualan tetap tersimpan aman untuk rekap laporan cafe.</strong>
+            </p>
+        </div>
+
         <form id="delete-menu-form" method="POST" action="">
             @csrf
             @method('DELETE')
             <div class="flex items-center justify-end gap-3 pt-3 border-t border-cafe-beige/60">
                 <button type="button" onclick="closeDeleteMenuModal()" class="px-4 py-2 rounded-full text-xs font-semibold text-cafe-dark hover:bg-cafe-beige/60">Batal</button>
-                <button type="submit" class="px-5 py-2 rounded-full bg-cafe-danger hover:bg-cafe-danger/90 text-beige font-semibold text-xs shadow-sm">Hapus Permanen</button>
+                <button type="submit" class="px-5 py-2 rounded-full bg-cafe-danger hover:bg-cafe-danger/90 text-beige font-semibold text-xs shadow-sm inline-flex items-center gap-1.5">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Hapus Menu
+                </button>
             </div>
         </form>
     </div>
@@ -650,7 +798,7 @@
 
 <script>
     function openDeleteMenuModal(id, name) {
-        document.getElementById('delete-menu-message').innerText = `Apakah Anda yakin ingin menghapus "${name}"? Tindakan ini tidak dapat dibatalkan.`;
+        document.getElementById('delete-menu-message').innerText = `Apakah Anda yakin ingin menghapus "${name}"?`;
         document.getElementById('delete-menu-form').action = `/admin/katalog/menu/${id}`;
         document.getElementById('delete-menu-modal').classList.remove('hidden');
     }

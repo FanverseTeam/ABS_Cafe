@@ -91,7 +91,7 @@ class MenuTest extends TestCase
 
         $this->actingAsAdmin()->delete("/admin/menu/{$menu->id}")->assertRedirect();
 
-        $this->assertDatabaseMissing('menu', ['id' => $menu->id]);
+        $this->assertSoftDeleted('menu', ['id' => $menu->id]);
     }
 
     public function test_legacy_admin_can_create_menu_with_variants(): void

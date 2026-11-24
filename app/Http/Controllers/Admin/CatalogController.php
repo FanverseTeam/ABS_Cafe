@@ -18,7 +18,17 @@ class CatalogController extends Controller
         $activeCategories = Category::where('is_active', true)->orderBy('order', 'asc')->get();
         $categories = Category::withCount('menus')->orderBy('order', 'asc')->get();
 
-        $menuQuery = Menu::with('category');
+        $status = $request->input('status', 'all');
+        if ($status === 'trashed') {
+            $menuQuery = Menu::onlyTrashed()->with('category');
+        } else {
+            $menuQuery = Menu::with('category');
+            if ($status === 'available') {
+                $menuQuery->where('is_available', true);
+            } elseif ($status === 'unavailable') {
+                $menuQuery->where('is_available', false);
+            }
+        }
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -42,11 +52,21 @@ class CatalogController extends Controller
         $menus = $menuQuery->paginate(20)->withQueryString();
         $viewMode = $request->input('view', 'grid');
 
+        $totalActiveCount = Menu::count();
+        $availableCount = Menu::where('is_available', true)->count();
+        $unavailableCount = Menu::where('is_available', false)->count();
+        $trashedCount = Menu::onlyTrashed()->count();
+
         return view('admin.catalog.index', compact(
             'menus',
             'categories',
             'activeCategories',
-            'viewMode'
+            'viewMode',
+            'totalActiveCount',
+            'availableCount',
+            'unavailableCount',
+            'trashedCount',
+            'status'
         ));
     }
 
@@ -215,18 +235,43 @@ class CatalogController extends Controller
     {
         $menu = Menu::findOrFail($id);
         $name = $menu->name;
-        $menu->deleteImageFile();
+        // Soft delete: tandai deleted_at tanpa menghapus file gambar fisik agar data rekap historis tetap utuh
         $menu->delete();
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Menghapus menu: {$name}",
+            'activity' => "Menghapus menu: {$name} (Soft Delete)",
             'activity_type' => 'menu',
             'ip_address' => request()->ip(),
         ]);
 
-        return back()->with('success', "Menu {$name} telah berhasil dihapus.");
+        $fallback = route('admin.catalog.index', ['tab' => 'menu']);
+        $previous = url()->previous();
+        $target = ($previous && ! str_contains($previous, '/edit') && $previous !== url('/')) ? $previous : $fallback;
+
+        return redirect()->to($target)->with('success', "Menu \"{$name}\" berhasil dihapus. Menu tidak akan tampil di katalog dan tidak bisa dipesan, namun data historisnya tetap tersimpan untuk rekap transaksi cafe.");
+    }
+
+    public function restoreMenu($id)
+    {
+        $menu = Menu::onlyTrashed()->findOrFail($id);
+        $name = $menu->name;
+        $menu->restore();
+
+        ActivityLog::create([
+            'user_name' => Auth::user()->name,
+            'role' => Auth::user()->role,
+            'activity' => "Memulihkan menu: {$name}",
+            'activity_type' => 'menu',
+            'ip_address' => request()->ip(),
+        ]);
+
+        $fallback = route('admin.catalog.index', ['tab' => 'menu', 'status' => 'trashed']);
+        $previous = url()->previous();
+        $target = ($previous && $previous !== url('/')) ? $previous : $fallback;
+
+        return redirect()->to($target)->with('success', "Menu \"{$name}\" berhasil dipulihkan dan aktif kembali di katalog.");
     }
 
     public function mergeMenus(Request $request, MenuMergeService $merge)

@@ -152,7 +152,7 @@
             </div>
 
             <!-- Page Content -->
-            <div class="relative z-10 max-w-7xl mx-auto">
+            <div class="max-w-7xl mx-auto">
                 @yield('content')
             </div>
 

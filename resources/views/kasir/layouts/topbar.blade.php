@@ -1,11 +1,22 @@
 @php
     $backUrl = \App\Support\MobileNavigation::backUrlForCurrentRoute();
+<<<<<<< HEAD
     $activePenjagaName = session('active_penjaga_kasir') ?: \App\Models\CafeSetting::get('active_penjaga_kasir');
     $newWebOrdersCount = \App\Models\Order::forKasir()->today()->where('source', 'web')->where('order_status', 'diproses')->count();
     $unpaidOrdersCount = \App\Models\Order::forKasir()->today()->where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
     $totalNotif = $newWebOrdersCount + $unpaidOrdersCount;
     $newWebOrders = \App\Models\Order::forKasir()->today()->where('source', 'web')->where('order_status', 'diproses')->take(5)->get();
     $unpaidOrders = \App\Models\Order::forKasir()->today()->unpaid()->where('order_status', '!=', 'selesai')->take(5)->get();
+=======
+    $newWebOrdersCount = \App\Models\Order::forKasir()->where('source', 'web')->where('order_status', 'diproses')->count();
+    $unpaidOrdersCount = \App\Models\Order::forKasir()->where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
+    $totalNotif = $newWebOrdersCount + $unpaidOrdersCount;
+    $newWebOrders = \App\Models\Order::forKasir()->where('source', 'web')->where('order_status', 'diproses')->take(5)->get();
+    $unpaidOrders = \App\Models\Order::forKasir()->unpaid()->where('order_status', '!=', 'selesai')->take(5)->get();
+    // Kasir bertugas dari session (ganti tanpa logout)
+    $activeCashierName = session('active_cashier_name', Auth::user()->name ?? 'Kasir');
+    $staffCashierList = \App\Models\User::where('status', 'aktif')->whereIn('role', ['kasir', 'staf', 'admin'])->orderBy('name')->pluck('name');
+>>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
 @endphp
 
 <header class="sticky top-0 z-30 bg-[#F2F5E2]/95 backdrop-blur-md border-b border-cafe-beige/60 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">
@@ -35,10 +46,56 @@
         {{-- ═══ RIGHT: Action Pills & Icons ═══ --}}
         <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
 
+<<<<<<< HEAD
             {{-- Realtime Clock (Sesuai Komputer Pengguna) --}}
             <div class="hidden sm:flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#E3DEA4]/70 border border-[#D4954D]/40 text-[#290024] shadow-xs text-xs font-semibold select-none" title="Waktu Komputer Lokal Realtime">
                 <i data-lucide="clock" class="w-3.5 h-3.5 text-[#D4954D] shrink-0 animate-pulse"></i>
                 <span class="realtime-clock-display font-mono tracking-wide font-bold">--:--:--</span>
+=======
+            {{-- Kasir Bertugas Widget --}}
+            <div class="relative" id="cashier-switch-wrapper">
+                <button type="button"
+                        onclick="toggleCashierDropdown()"
+                        title="Kasir bertugas: {{ $activeCashierName }} — klik untuk ganti"
+                        class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border bg-cafe-success/15 text-cafe-success border-cafe-success/30 text-[11px] sm:text-xs font-semibold transition-all hover:scale-105 active:scale-95 shrink-0">
+                    <span class="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60 bg-cafe-success"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 bg-cafe-success"></span>
+                    </span>
+                    <span class="hidden sm:inline max-w-[90px] truncate">{{ $activeCashierName }}</span>
+                    <span class="text-[10px] sm:hidden">Kasir</span>
+                    <i data-lucide="chevron-down" class="w-3 h-3 hidden sm:block"></i>
+                </button>
+
+                {{-- Dropdown Ganti Kasir --}}
+                <div id="cashier-switch-dropdown"
+                     class="hidden absolute right-0 mt-2 w-64 bg-[#F2F5E2] rounded-2xl shadow-soft-lg border border-[#E3DEA4] z-50 overflow-hidden">
+                    <div class="px-4 py-3 border-b border-cafe-beige/40 bg-gradient-to-r from-cafe-dark/[0.03] to-transparent">
+                        <p class="text-xs font-bold text-cafe-dark flex items-center gap-2">
+                            <i data-lucide="user-check" class="w-4 h-4 text-cafe-gold"></i>
+                            Ganti Kasir Bertugas
+                        </p>
+                        <p class="text-[10px] text-cafe-muted mt-0.5">Pilih nama, tanpa perlu logout</p>
+                    </div>
+                    <form method="POST" action="{{ route('kasir.switch_cashier') }}" class="p-2 space-y-1 max-h-56 overflow-y-auto">
+                        @csrf
+                        @foreach($staffCashierList as $staffName)
+                            <button type="submit" name="cashier_name" value="{{ $staffName }}"
+                                    class="w-full text-left px-3 py-2.5 rounded-xl text-xs text-cafe-text hover:bg-cafe-cream transition-colors flex items-center gap-2 {{ $activeCashierName === $staffName ? 'bg-cafe-success/15 font-semibold text-cafe-success' : '' }}">
+                                @if($activeCashierName === $staffName)
+                                    <i data-lucide="check-circle" class="w-4 h-4 shrink-0"></i>
+                                @else
+                                    <i data-lucide="user" class="w-4 h-4 shrink-0 text-cafe-muted"></i>
+                                @endif
+                                {{ $staffName }}
+                            </button>
+                        @endforeach
+                        @if($staffCashierList->isEmpty())
+                            <p class="text-xs text-cafe-muted px-3 py-4 text-center">Belum ada staf aktif. Tambah di Admin → Manajemen Staf.</p>
+                        @endif
+                    </form>
+                </div>
+>>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
             </div>
 
             {{-- Notification Bell --}}
@@ -124,8 +181,13 @@
                         {{ substr(Auth::user()->name ?? 'K', 0, 1) }}
                     </div>
                     <div class="text-left hidden sm:block">
+<<<<<<< HEAD
                         <span class="text-xs font-bold text-cafe-dark block leading-tight">{{ $activePenjagaName ?: (Auth::user()->name ?? 'Kasir ABS') }}</span>
                         <span class="text-[10px] text-cafe-muted block">{{ $activePenjagaName ? 'Penjaga Kasir' : 'Kasir' }}</span>
+=======
+                        <span class="text-xs font-bold text-cafe-dark block leading-tight">{{ $activeCashierName }}</span>
+                        <span class="text-[10px] text-cafe-muted block">Kasir Bertugas</span>
+>>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
                     </div>
                     <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-cafe-muted ml-0.5"></i>
                 </button>
@@ -161,6 +223,7 @@
         if (!notif) return;
         notif.classList.toggle('hidden');
         setProfileOpen(false);
+        setCashierSwitchOpen(false);
     }
 
     function setProfileOpen(open) {
@@ -176,23 +239,43 @@
         }
     }
 
+    function setCashierSwitchOpen(open) {
+        const dd = document.getElementById('cashier-switch-dropdown');
+        if (!dd) return;
+        if (open) { dd.classList.remove('hidden'); } else { dd.classList.add('hidden'); }
+    }
+
     function toggleProfileDropdown() {
         const profile = document.getElementById('profile-dropdown');
         if (!profile) return;
         const willOpen = profile.classList.contains('hidden');
         document.getElementById('notif-dropdown')?.classList.add('hidden');
+        setCashierSwitchOpen(false);
         setProfileOpen(willOpen);
+    }
+
+    function toggleCashierDropdown() {
+        const dd = document.getElementById('cashier-switch-dropdown');
+        if (!dd) return;
+        const willOpen = dd.classList.contains('hidden');
+        document.getElementById('notif-dropdown')?.classList.add('hidden');
+        setProfileOpen(false);
+        setCashierSwitchOpen(willOpen);
     }
 
     // Close on click outside & Escape key
     document.addEventListener('click', function(e) {
         const notifWrapper = document.getElementById('notif-dropdown-wrapper');
         const profileWrapper = document.getElementById('profile-dropdown-wrapper');
+        const cashierWrapper = document.getElementById('cashier-switch-wrapper');
         if (notifWrapper && !notifWrapper.contains(e.target)) {
             document.getElementById('notif-dropdown')?.classList.add('hidden');
         }
         if (profileWrapper && !profileWrapper.contains(e.target)) {
             setProfileOpen(false);
+        }
+        if (cashierWrapper && !cashierWrapper.contains(e.target)) {
+            setCashierSwitchOpen(false);
         }
     });
 
@@ -207,6 +290,7 @@
             if (notif && !notif.classList.contains('hidden')) {
                 notif.classList.add('hidden');
             }
+            setCashierSwitchOpen(false);
         }
     });
 

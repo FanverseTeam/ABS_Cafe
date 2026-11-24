@@ -3,11 +3,19 @@
 namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
+<<<<<<< HEAD
 use App\Models\CafeSetting;
+=======
+>>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
 use App\Models\Order;
 use App\Models\PenjagaKasir;
 use App\Models\Reservation;
 use App\Models\Table;
+<<<<<<< HEAD
+=======
+use App\Models\User;
+use App\Services\ShiftService;
+>>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
@@ -96,6 +104,14 @@ class DashboardController extends Controller
             ->orderBy('reservation_time')
             ->get();
 
+        // Daftar nama kasir aktif untuk dropdown ganti kasir
+        $staffCashiers = User::where('status', 'aktif')
+            ->whereIn('role', ['kasir', 'staf', 'admin'])
+            ->orderBy('name')
+            ->pluck('name');
+
+        $currentCashierName = session('active_cashier_name', $user->name);
+
         return view('kasir.dashboard', compact(
             'penjagaList',
             'activePenjaga',
@@ -109,10 +125,13 @@ class DashboardController extends Controller
             'waitingOrders',
             'occupiedTables',
             'todayReservations',
+            'staffCashiers',
+            'currentCashierName',
         ));
     }
 
     /**
+<<<<<<< HEAD
      * Set atau ubah nama penjaga kasir yang sedang bertugas.
      */
     public function setPenjaga(Request $request)
@@ -157,6 +176,26 @@ class DashboardController extends Controller
         $unpaid = $request->user()
             ? Order::forKasir()->today()->unpaid()->where('order_status', '!=', 'selesai')->count()
             : 0;
+=======
+     * Ganti nama kasir bertugas di session — tanpa logout.
+     */
+    public function switchCashier(Request $request)
+    {
+        $request->validate(['cashier_name' => 'required|string|max:100']);
+
+        session(['active_cashier_name' => $request->input('cashier_name')]);
+
+        return back()->with('success', 'Kasir bertugas: '.$request->input('cashier_name'));
+    }
+
+    /**
+     * Polling ringan untuk notifikasi pesanan Web baru.
+     */
+    public function pendingCount(Request $request)
+    {
+        $count = Order::where('source', 'web')->where('order_status', 'baru')->count();
+        $unpaid = Order::unpaid()->where('order_status', '!=', 'selesai')->count();
+>>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
 
         return response()->json([
             'web_new' => $count,

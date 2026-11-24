@@ -35,6 +35,6 @@ class OrderItem extends Model
 
     public function menu(): BelongsTo
     {
-        return $this->belongsTo(Menu::class);
+        return $this->belongsTo(Menu::class)->withTrashed();
     }
 }

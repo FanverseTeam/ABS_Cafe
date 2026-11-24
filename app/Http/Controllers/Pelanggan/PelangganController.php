@@ -13,6 +13,7 @@ use App\Models\OrderTimeline;
 use App\Models\Promo;
 use App\Models\Reservation;
 use App\Models\Table;
+use App\Services\FavoriteMenuService;
 use App\Services\OrderService;
 use App\Support\LandingData;
 use Carbon\Carbon;
@@ -31,8 +32,11 @@ class PelangganController extends Controller
      */
     public function index(): View
     {
+        $topFavorites = FavoriteMenuService::getDailyTopFavorites(3);
+
         return view('pelanggan.beranda', [
             'landing' => LandingData::get(),
+            'topFavorites' => $topFavorites,
         ]);
     }
 
@@ -68,15 +72,19 @@ class PelangganController extends Controller
             ->whereNull('merged_into_menu_id')
             ->with(['category']);
 
+        // 3 Menu Terfavorit Otomatis (Penjualan Terbanyak, Diperbarui Harian)
+        $topFavorites = FavoriteMenuService::getDailyTopFavorites(3);
+        $topFavoriteIds = $topFavorites->pluck('id')->all();
+
         // Muat seluruh menu untuk payload Alpine.js (pencarian & filter instan client-side)
         $allMenus = (clone $baseMenuQuery)
-            ->orderByDesc('is_best_seller')
+            ->orderByDesc('sold_count')
             ->orderBy('name')
             ->get();
 
         $grouped = $allMenus->groupBy(fn ($m) => $m->variant_group ? 'group-'.$m->variant_group : 'single-'.$m->id);
 
-        $allMenusPayload = $grouped->map(function ($groupMembers) {
+        $allMenusPayload = $grouped->map(function ($groupMembers) use ($topFavoriteIds) {
             $primary = $groupMembers->first();
             $hasGroup = $groupMembers->count() > 1 || filled($primary->variant_group);
 
@@ -115,7 +123,7 @@ class PelangganController extends Controller
                 'price' => $minPrice,
                 'image' => $primary->imageUrl(),
                 'is_habis' => $allHabis,
-                'is_best_seller' => (bool) $groupMembers->contains('is_best_seller', true),
+                'is_best_seller' => (bool) $groupMembers->contains(fn ($m) => in_array($m->id, $topFavoriteIds, true)),
                 'price_label' => $priceLabel,
                 'variants' => $variants,
             ];
@@ -185,19 +193,9 @@ class PelangganController extends Controller
         if ($isCategoryFilter) {
             if ($categorySlug === 'rekomendasi') {
                 $menus = (clone $baseMenuQuery)
-                    ->where('is_best_seller', true)
-                    ->orderByDesc('sold_count')
-                    ->orderBy('name')
+                    ->whereIn('id', $topFavoriteIds)
                     ->paginate(20)
                     ->withQueryString();
-
-                if ($menus->isEmpty()) {
-                    $menus = (clone $baseMenuQuery)
-                        ->where('sold_count', '>', 0)
-                        ->orderByDesc('sold_count')
-                        ->paginate(20)
-                        ->withQueryString();
-                }
 
                 return view('pelanggan.menu', [
                     'landing' => LandingData::get(),

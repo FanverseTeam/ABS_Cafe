@@ -5,6 +5,7 @@
 
 @section('content')
 <div class="space-y-6">
+<<<<<<< HEAD
     <!-- Kartu Pilih Penjaga Kasir yang Bertugas -->
     <div class="w-full max-w-[900px] mx-auto lg:max-w-none bg-gradient-to-r from-[#290024] via-[#290024] to-[#775533] text-cafe-cream rounded-2xl lg:rounded-3xl p-5 md:p-6 lg:p-8 relative shadow-soft-lg">
         <div class="absolute inset-0 rounded-2xl lg:rounded-3xl overflow-hidden pointer-events-none z-0" aria-hidden="true">
@@ -69,6 +70,9 @@
             @endif
         </div>
     </div>
+=======
+    {{-- Banner Shift dihilangkan — shift berjalan otomatis tanpa perlu dibuka manual --}}
+>>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
 
     <!-- Quick Action: Pesan Manual untuk Customer -->
     <div class="bg-gradient-to-r from-[#290024] via-[#290024] to-[#775533] text-[#F2F5E2] rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-soft-lg flex flex-col sm:flex-row items-center justify-between gap-3 border border-[#D4954D]/30">

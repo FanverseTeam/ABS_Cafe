@@ -190,7 +190,11 @@ class OrderController extends Controller
             $order->update([
                 'order_status' => 'diproses',
                 'cashier_id' => $order->cashier_id ?: $user->id,
+<<<<<<< HEAD
                 'cashier_name' => $order->cashier_name ?: $penjagaName,
+=======
+                'cashier_name' => $order->cashier_name ?: (session('active_cashier_name') ?: $user->name),
+>>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
             ]);
 
             $this->orders->addTimeline(
