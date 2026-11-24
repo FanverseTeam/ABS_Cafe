@@ -17,6 +17,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
 
         // Data Penjaga Kasir yang terdaftar aktif oleh Admin
         $penjagaList = Schema::hasTable('penjaga_kasir') ? PenjagaKasir::active()->get() : collect();
@@ -103,8 +104,12 @@ class DashboardController extends Controller
             ->orderBy('name')
             ->pluck('name');
 
+<<<<<<< HEAD
         $user = Auth::user();
         $currentCashierName = session('active_cashier_name', $user?->name ?? 'Kasir');
+=======
+        $currentCashierName = session('active_cashier_name', $user?->name ?? 'Kasir ABS');
+>>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
 
         return view('kasir.dashboard', compact(
             'penjagaList',
@@ -143,7 +148,10 @@ class DashboardController extends Controller
             }
         }
 
-        session(['active_penjaga_kasir' => $name]);
+        session([
+            'active_penjaga_kasir' => $name,
+            'active_cashier_name' => $name,
+        ]);
         CafeSetting::set('active_penjaga_kasir', $name);
 
         if ($request->wantsJson()) {
@@ -163,10 +171,22 @@ class DashboardController extends Controller
     public function switchCashier(Request $request)
     {
         $request->validate(['cashier_name' => 'required|string|max:100']);
+<<<<<<< HEAD
 
         session(['active_cashier_name' => $request->input('cashier_name')]);
 
         return back()->with('success', 'Kasir bertugas: '.$request->input('cashier_name'));
+=======
+        $name = trim((string) $request->input('cashier_name'));
+
+        session([
+            'active_cashier_name' => $name,
+            'active_penjaga_kasir' => $name,
+        ]);
+        CafeSetting::set('active_penjaga_kasir', $name);
+
+        return back()->with('success', 'Kasir bertugas: '.$name);
+>>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
     }
 
     /**

@@ -58,7 +58,11 @@
         @endforeach
     </nav>
 
+<<<<<<< HEAD
     @php $sidebarPenjaga = session('active_penjaga_kasir') ?: session('active_cashier_name') ?: \App\Models\CafeSetting::get('active_penjaga_kasir') ?: (Auth::user()->name ?? 'Kasir'); @endphp
+=======
+    @php $sidebarPenjaga = session('active_penjaga_kasir') ?: session('active_cashier_name') ?: \App\Models\CafeSetting::get('active_penjaga_kasir'); @endphp
+>>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
     <!-- Footer Profile -->
     <div class="p-3 border-t border-white/[0.08] bg-black/20 relative z-10 shrink-0 space-y-2">
         <div class="flex items-center gap-2.5 p-2 rounded-2xl bg-white/[0.04] border border-[#D4954D]/20 backdrop-blur-sm shadow-xs">
@@ -66,6 +70,7 @@
                 {{ substr($sidebarPenjaga, 0, 1) }}
             </div>
             <div class="min-w-0 flex-1">
+<<<<<<< HEAD
                 <p class="text-xs font-bold text-[#F2F5E2] truncate">{{ $sidebarPenjaga }}</p>
                 <p class="text-[10px] text-[#D4954D] font-medium tracking-wide">Kasir Bertugas</p>
             </div>
@@ -98,6 +103,10 @@
             </div>
         </div>
     </div>
+=======
+                <p class="text-xs font-bold text-[#F2F5E2] truncate">{{ $sidebarPenjaga ?: (Auth::user()->name ?? 'Kasir ABS') }}</p>
+                <p class="text-[10px] text-[#D4954D] font-medium tracking-wide">{{ $sidebarPenjaga ? 'Penjaga Kasir' : ucfirst(Auth::user()->role ?? 'Kasir') }}</p>
+>>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
             </div>
         </div>
     </div>

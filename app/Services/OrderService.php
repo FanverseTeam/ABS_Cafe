@@ -224,7 +224,11 @@ class OrderService
                 'payment_method' => $data['payment_method'] ?? 'tunai',
                 'payment_status' => 'menunggu_pembayaran',
                 'order_status' => $data['order_status'] ?? 'diproses',
+<<<<<<< HEAD
                 'cashier_name' => $penjagaName,
+=======
+                'cashier_name' => $data['cashier_name'] ?? $penjagaName,
+>>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
                 'cashier_id' => $cashier->id,
             ]);
 

@@ -1,6 +1,9 @@
 @php
+<<<<<<< HEAD
     $activeCashierName = session('active_penjaga_kasir') ?: session('active_cashier_name', Auth::user()->name ?? 'Kasir');
     $staffCashierList = \App\Models\User::where('status', 'aktif')->whereIn('role', ['kasir', 'staf', 'admin'])->orderBy('name')->pluck('name');
+=======
+>>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
     $newWebOrdersCount = \App\Models\Order::forKasir()->today()->where('source', 'web')->where('order_status', 'diproses')->count();
     $unpaidOrdersCount = \App\Models\Order::forKasir()->today()->where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
     $todayReservationCount = \App\Models\Reservation::whereDate('reservation_date', today())->count();
@@ -37,6 +40,7 @@
             </button>
         </div>
 
+<<<<<<< HEAD
         <!-- Kasir Bertugas Widget -->
         <div class="p-3 mx-4 mt-3 rounded-2xl border bg-cafe-success/15 border-cafe-success/30 text-cafe-success">
             <div class="flex items-center gap-2 min-w-0 mb-2">
@@ -62,6 +66,8 @@
                 @endforeach
             </form>
         </div>
+=======
+>>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
         <!-- Navigation Menu -->
         <nav class="flex-1 overflow-y-auto px-4 py-3 space-y-1">
             <div class="px-3 py-1.5 text-[10px] font-semibold tracking-wider uppercase text-[#D4954D]/80">
@@ -100,11 +106,19 @@
         <div class="p-4 border-t border-beige/10 bg-[#290024]/50 shrink-0">
             <div class="flex items-center gap-2.5 p-2 rounded-2xl bg-beige/5">
                 <div class="w-9 h-9 rounded-full bg-[#D4954D] text-[#290024] font-serif font-bold flex items-center justify-center text-xs shrink-0 shadow">
+<<<<<<< HEAD
                     {{ substr($drawerPenjaga ?: $activeCashierName, 0, 1) }}
                 </div>
                 <div class="min-w-0 flex-1">
                     <p class="text-xs font-semibold text-[#F2F5E2] truncate">{{ $drawerPenjaga ?: $activeCashierName }}</p>
                     <p class="text-[10px] text-[#D4954D]">{{ $drawerPenjaga ? 'Penjaga Kasir' : 'Kasir Bertugas' }}</p>
+=======
+                    {{ substr($drawerPenjaga ?: (Auth::user()->name ?? 'K'), 0, 1) }}
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-xs font-semibold text-[#F2F5E2] truncate">{{ $drawerPenjaga ?: (Auth::user()->name ?? 'Kasir ABS') }}</p>
+                    <p class="text-[10px] text-[#D4954D]">{{ $drawerPenjaga ? 'Penjaga Kasir' : ucfirst(Auth::user()->role ?? 'Kasir') }}</p>
+>>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
                 </div>
             </div>
         </div>
