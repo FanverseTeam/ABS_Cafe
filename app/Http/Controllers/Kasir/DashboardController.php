@@ -3,19 +3,12 @@
 namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
-<<<<<<< HEAD
 use App\Models\CafeSetting;
-=======
->>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
 use App\Models\Order;
 use App\Models\PenjagaKasir;
 use App\Models\Reservation;
 use App\Models\Table;
-<<<<<<< HEAD
-=======
 use App\Models\User;
-use App\Services\ShiftService;
->>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
@@ -110,7 +103,8 @@ class DashboardController extends Controller
             ->orderBy('name')
             ->pluck('name');
 
-        $currentCashierName = session('active_cashier_name', $user->name);
+        $user = Auth::user();
+        $currentCashierName = session('active_cashier_name', $user?->name ?? 'Kasir');
 
         return view('kasir.dashboard', compact(
             'penjagaList',
@@ -131,7 +125,6 @@ class DashboardController extends Controller
     }
 
     /**
-<<<<<<< HEAD
      * Set atau ubah nama penjaga kasir yang sedang bertugas.
      */
     public function setPenjaga(Request $request)
@@ -165,18 +158,6 @@ class DashboardController extends Controller
     }
 
     /**
-     * Polling ringan untuk notifikasi pesanan Web baru hari ini.
-     */
-    public function pendingCount(Request $request)
-    {
-        $count = Order::where('source', 'web')
-            ->where('order_status', 'baru')
-            ->today()
-            ->count();
-        $unpaid = $request->user()
-            ? Order::forKasir()->today()->unpaid()->where('order_status', '!=', 'selesai')->count()
-            : 0;
-=======
      * Ganti nama kasir bertugas di session — tanpa logout.
      */
     public function switchCashier(Request $request)
@@ -189,13 +170,17 @@ class DashboardController extends Controller
     }
 
     /**
-     * Polling ringan untuk notifikasi pesanan Web baru.
+     * Polling ringan untuk notifikasi pesanan Web baru hari ini.
      */
     public function pendingCount(Request $request)
     {
-        $count = Order::where('source', 'web')->where('order_status', 'baru')->count();
-        $unpaid = Order::unpaid()->where('order_status', '!=', 'selesai')->count();
->>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
+        $count = Order::where('source', 'web')
+            ->where('order_status', 'baru')
+            ->today()
+            ->count();
+        $unpaid = $request->user()
+            ? Order::forKasir()->today()->unpaid()->where('order_status', '!=', 'selesai')->count()
+            : 0;
 
         return response()->json([
             'web_new' => $count,
