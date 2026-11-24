@@ -3,19 +3,12 @@
 namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
-<<<<<<< HEAD
 use App\Models\CafeSetting;
-=======
->>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
 use App\Models\Order;
 use App\Models\PenjagaKasir;
 use App\Models\Reservation;
 use App\Models\Table;
-<<<<<<< HEAD
-=======
 use App\Models\User;
-use App\Services\ShiftService;
->>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
@@ -24,6 +17,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
 
         // Data Penjaga Kasir yang terdaftar aktif oleh Admin
         $penjagaList = Schema::hasTable('penjaga_kasir') ? PenjagaKasir::active()->get() : collect();
@@ -110,7 +104,7 @@ class DashboardController extends Controller
             ->orderBy('name')
             ->pluck('name');
 
-        $currentCashierName = session('active_cashier_name', $user->name);
+        $currentCashierName = session('active_cashier_name', $user?->name ?? 'Kasir ABS');
 
         return view('kasir.dashboard', compact(
             'penjagaList',
@@ -131,7 +125,6 @@ class DashboardController extends Controller
     }
 
     /**
-<<<<<<< HEAD
      * Set atau ubah nama penjaga kasir yang sedang bertugas.
      */
     public function setPenjaga(Request $request)
@@ -150,7 +143,10 @@ class DashboardController extends Controller
             }
         }
 
-        session(['active_penjaga_kasir' => $name]);
+        session([
+            'active_penjaga_kasir' => $name,
+            'active_cashier_name' => $name,
+        ]);
         CafeSetting::set('active_penjaga_kasir', $name);
 
         if ($request->wantsJson()) {
@@ -165,6 +161,23 @@ class DashboardController extends Controller
     }
 
     /**
+     * Ganti nama kasir bertugas di session — tanpa logout.
+     */
+    public function switchCashier(Request $request)
+    {
+        $request->validate(['cashier_name' => 'required|string|max:100']);
+        $name = trim((string) $request->input('cashier_name'));
+
+        session([
+            'active_cashier_name' => $name,
+            'active_penjaga_kasir' => $name,
+        ]);
+        CafeSetting::set('active_penjaga_kasir', $name);
+
+        return back()->with('success', 'Kasir bertugas: '.$name);
+    }
+
+    /**
      * Polling ringan untuk notifikasi pesanan Web baru hari ini.
      */
     public function pendingCount(Request $request)
@@ -176,26 +189,6 @@ class DashboardController extends Controller
         $unpaid = $request->user()
             ? Order::forKasir()->today()->unpaid()->where('order_status', '!=', 'selesai')->count()
             : 0;
-=======
-     * Ganti nama kasir bertugas di session — tanpa logout.
-     */
-    public function switchCashier(Request $request)
-    {
-        $request->validate(['cashier_name' => 'required|string|max:100']);
-
-        session(['active_cashier_name' => $request->input('cashier_name')]);
-
-        return back()->with('success', 'Kasir bertugas: '.$request->input('cashier_name'));
-    }
-
-    /**
-     * Polling ringan untuk notifikasi pesanan Web baru.
-     */
-    public function pendingCount(Request $request)
-    {
-        $count = Order::where('source', 'web')->where('order_status', 'baru')->count();
-        $unpaid = Order::unpaid()->where('order_status', '!=', 'selesai')->count();
->>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
 
         return response()->json([
             'web_new' => $count,

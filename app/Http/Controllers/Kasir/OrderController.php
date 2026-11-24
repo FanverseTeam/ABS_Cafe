@@ -186,15 +186,14 @@ class OrderController extends Controller
 
         // Jika pesanan belum diproses (masih baru / diterima / menunggu), ubah ke diproses
         if (in_array($order->order_status, ['baru', 'diterima', 'menunggu'], true)) {
-            $penjagaName = session('active_penjaga_kasir') ?: CafeSetting::get('active_penjaga_kasir') ?: $user->name;
+            $penjagaName = session('active_penjaga_kasir')
+                ?: session('active_cashier_name')
+                ?: CafeSetting::get('active_penjaga_kasir')
+                ?: $user->name;
             $order->update([
                 'order_status' => 'diproses',
                 'cashier_id' => $order->cashier_id ?: $user->id,
-<<<<<<< HEAD
                 'cashier_name' => $order->cashier_name ?: $penjagaName,
-=======
-                'cashier_name' => $order->cashier_name ?: (session('active_cashier_name') ?: $user->name),
->>>>>>> 6ac93a624e631e5773e51745fdfc766f062753de
             ]);
 
             $this->orders->addTimeline(
