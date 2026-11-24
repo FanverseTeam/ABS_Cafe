@@ -52,7 +52,7 @@ flowchart LR
 > [!NOTE]
 > Desain antarmuka mengusung konsep **Warm Coffee Shop Aesthetic** dengan perpaduan warna coklat espresso, karamel emas, dan latar krem yang elegan, memberikan kenyamanan visual baik di layar smartphone pelanggan maupun monitor POS kasir.
 
-<div align="right"><a href="#top">⬆️ Kembali ke atas</a></div>
+<div align="right"><a href="#top">Kembali ke atas</a></div>
 
 <img src="assets/divider.svg" alt="" width="100%" height="3"/>
 
@@ -128,7 +128,7 @@ flowchart LR
 - 🔐 **Log Audit Keamanan:**
   - Rekaman jejak aktivitas sistem yang mencatat setiap tindakan penting staf untuk menjaga transparansi dan akuntabilitas.
 
-<div align="right"><a href="#top">⬆️ Kembali ke atas</a></div>
+<div align="right"><a href="#top">Kembali ke atas</a></div>
 
 <img src="assets/divider.svg" alt="" width="100%" height="3"/>
 
@@ -146,7 +146,7 @@ flowchart LR
 
 </div>
 
-<div align="right"><a href="#top">⬆️ Kembali ke atas</a></div>
+<div align="right"><a href="#top">Kembali ke atas</a></div>
 
 ---
 
