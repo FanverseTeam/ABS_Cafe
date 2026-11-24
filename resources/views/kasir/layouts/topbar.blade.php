@@ -7,9 +7,13 @@
     $totalNotif = $newWebOrdersCount + $unpaidOrdersCount;
     $newWebOrders = \App\Models\Order::forKasir()->today()->where('source', 'web')->where('order_status', 'diproses')->take(5)->get();
     $unpaidOrders = \App\Models\Order::forKasir()->today()->unpaid()->where('order_status', '!=', 'selesai')->take(5)->get();
+<<<<<<< HEAD
     $staffCashierList = \Illuminate\Support\Facades\Schema::hasTable('penjaga_kasir')
         ? \App\Models\PenjagaKasir::activeKasir()->pluck('name')
         : \App\Models\User::where('status', 'aktif')->whereIn('role', ['kasir'])->orderBy('name')->pluck('name');
+=======
+    $staffCashierList = \App\Models\User::where('status', 'aktif')->whereIn('role', ['kasir', 'staf', 'admin'])->orderBy('name')->pluck('name');
+>>>>>>> 537d7c749fd51ff20601c8adc6bf6b4196adfaac
 @endphp
 
 <header class="sticky top-0 z-30 bg-[#F2F5E2]/95 backdrop-blur-md border-b border-cafe-beige/60 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">
@@ -43,6 +47,11 @@
             <div class="hidden sm:flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#E3DEA4]/70 border border-[#D4954D]/40 text-[#290024] shadow-xs text-xs font-semibold select-none" title="Waktu Komputer Lokal Realtime">
                 <i data-lucide="clock" class="w-3.5 h-3.5 text-[#D4954D] shrink-0 animate-pulse"></i>
                 <span class="realtime-clock-display font-mono tracking-wide font-bold">--:--:--</span>
+<<<<<<< HEAD
+=======
+            </div>
+
+>>>>>>> 537d7c749fd51ff20601c8adc6bf6b4196adfaac
             {{-- Kasir Bertugas Widget --}}
             <div class="relative" id="cashier-switch-wrapper">
                 <button type="button"

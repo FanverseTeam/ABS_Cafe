@@ -1,8 +1,12 @@
 @php
     $activeCashierName = session('active_penjaga_kasir') ?: session('active_cashier_name', Auth::user()->name ?? 'Kasir');
+<<<<<<< HEAD
     $staffCashierList = \Illuminate\Support\Facades\Schema::hasTable('penjaga_kasir')
         ? \App\Models\PenjagaKasir::activeKasir()->pluck('name')
         : \App\Models\User::where('status', 'aktif')->whereIn('role', ['kasir'])->orderBy('name')->pluck('name');
+=======
+    $staffCashierList = \App\Models\User::where('status', 'aktif')->whereIn('role', ['kasir', 'staf', 'admin'])->orderBy('name')->pluck('name');
+>>>>>>> 537d7c749fd51ff20601c8adc6bf6b4196adfaac
     $newWebOrdersCount = \App\Models\Order::forKasir()->today()->where('source', 'web')->where('order_status', 'diproses')->count();
     $unpaidOrdersCount = \App\Models\Order::forKasir()->today()->where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
     $todayReservationCount = \App\Models\Reservation::whereDate('reservation_date', today())->count();

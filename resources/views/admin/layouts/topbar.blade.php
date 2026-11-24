@@ -10,7 +10,7 @@
     }
 @endphp
 
-<header class="sticky top-0 z-30 min-h-[4rem] sm:min-h-[5rem] bg-[#F2F5E2] border-b border-[#E3DEA4] px-4 sm:px-8 shadow-sm transition-all @if(View::hasSection('has_form_header') || request()->routeIs('*.create', '*.edit')) hidden lg:block @endif" style="padding-top: env(safe-area-inset-top, 0px);">
+<header class="sticky top-0 z-30 min-h-[4rem] sm:min-h-[5rem] bg-[#F2F5E2] border-b border-[#E3DEA4] px-4 sm:px-8 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">
     <div class="h-16 sm:h-20 flex items-center justify-between gap-3 sm:gap-4 w-full">
         <!-- Left: Mobile Logo & Title -->
         <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">

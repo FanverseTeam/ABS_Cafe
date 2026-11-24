@@ -78,7 +78,11 @@ class PaymentService
                 'order_status' => $targetOrderStatus,
                 'paid_at' => now(),
                 'cashier_id' => $lockedOrder->cashier_id ?: $cashier->id,
+<<<<<<< HEAD
                 'cashier_name' => $penjagaName ?: ($lockedOrder->cashier_name ?: $cashier->name),
+=======
+                'cashier_name' => $penjagaName,
+>>>>>>> 537d7c749fd51ff20601c8adc6bf6b4196adfaac
             ]);
 
             foreach ($lockedOrder->items as $item) {

@@ -20,7 +20,7 @@
     <div class="absolute -bottom-16 -right-16 w-44 h-44 bg-[#D4954D]/10 rounded-full blur-3xl pointer-events-none"></div>
 
     <!-- Header with Monogram Logo -->
-    <div class="h-20 px-6 flex items-center justify-between border-b border-white/[0.08] relative z-10 shrink-0">
+    <div class="h-20 px-6 flex items-center justify-between relative z-10 shrink-0">
         <a href="{{ route('owner.dashboard') }}" class="flex items-center gap-3 group">
             <x-logo on-dark size="md" subtitle="Owner Portal" loading="eager" class="transition-transform group-hover:scale-105" />
         </a>
@@ -75,7 +75,7 @@
     </nav>
 
     <!-- Footer Profile -->
-    <div class="p-3 border-t border-white/[0.08] bg-black/20 relative z-10 shrink-0">
+    <div class="p-3 bg-black/20 relative z-10 shrink-0">
         <div class="flex items-center gap-2.5 p-2 rounded-2xl bg-white/[0.04] border border-[#D4954D]/20 backdrop-blur-sm shadow-xs">
             <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-[#D4954D] to-[#ebd2a9] text-[#1a0e05] font-serif font-black flex items-center justify-center text-xs shrink-0 shadow-md ring-2 ring-[#D4954D]/30">
                 {{ Auth::user()->initials() ?? 'O' }}

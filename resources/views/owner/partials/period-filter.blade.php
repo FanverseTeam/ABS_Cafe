@@ -15,27 +15,50 @@
         <span>Periode: <strong class="text-cafe-dark">{{ $period->label }}</strong></span>
     </div>
 
-    <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-        <div class="flex items-center gap-1 p-1 rounded-full bg-cafe-beige/50 border border-cafe-beige overflow-x-auto no-scrollbar max-w-full">
-            @foreach($periods as $key => $label)
-                <a href="{{ $baseUrl . '?' . http_build_query(array_merge($preserve, ['periode' => $key])) }}"
-                   class="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all {{ $period->key === $key ? 'bg-cafe-dark text-cafe-cream shadow-sm font-semibold' : 'text-cafe-muted hover:bg-cafe-beige hover:text-cafe-dark' }}">
-                    {{ $label }}
-                </a>
-            @endforeach
+    <div class="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-4">
+        {{-- Dropdown Periode (Digeser agak ke kiri dengan margin kanan) --}}
+        <div class="relative flex items-center bg-cafe-beige/50 border border-cafe-beige rounded-full px-3 py-1.5 shadow-2xs sm:mr-1">
+            <i data-lucide="clock" class="w-3.5 h-3.5 text-cafe-gold mr-2 shrink-0"></i>
+            <select onchange="if(this.value) window.location.href=this.value"
+                    class="bg-transparent text-xs text-cafe-dark font-semibold focus:outline-none cursor-pointer pr-5 appearance-none">
+                @foreach($periods as $key => $label)
+                    <option value="{{ $baseUrl . '?' . http_build_query(array_merge($preserve, ['periode' => $key])) }}"
+                            {{ $period->key === $key ? 'selected' : '' }}
+                            class="bg-[#F2F5E2] text-cafe-dark py-1 font-medium">
+                        {{ $label }}
+                    </option>
+                @endforeach
+            </select>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-cafe-muted absolute right-2.5 pointer-events-none"></i>
         </div>
 
-        <form action="{{ $baseUrl }}" method="GET" class="flex items-center justify-between gap-1.5 bg-cafe-card border border-cafe-beige rounded-full px-3 py-1 text-xs">
+        {{-- Form Rentang Tanggal Terpisah --}}
+        <form action="{{ $baseUrl }}" method="GET" class="flex flex-wrap sm:flex-nowrap items-center gap-2 text-xs">
             @foreach($preserve as $k => $v)
                 <input type="hidden" name="{{ $k }}" value="{{ $v }}">
             @endforeach
             <input type="hidden" name="periode" value="kustom">
-            <input type="date" name="mulai" value="{{ $period->key === 'kustom' ? $period->start->toDateString() : now()->subDays(6)->toDateString() }}"
-                   class="bg-transparent text-[11px] text-cafe-text focus:outline-none cursor-pointer">
-            <span class="text-cafe-muted text-[11px]">&ndash;</span>
-            <input type="date" name="selesai" value="{{ $period->key === 'kustom' ? $period->end->toDateString() : now()->toDateString() }}"
-                   class="bg-transparent text-[11px] text-cafe-text focus:outline-none cursor-pointer">
-            <button type="submit" class="px-2.5 py-1 rounded-full bg-cafe-gold hover:bg-cafe-bronze text-[#290024] text-[11px] font-bold transition-colors">
+
+            {{-- Tanggal Awal Terpisah dengan Border --}}
+            <div class="flex items-center bg-cafe-card border border-cafe-beige rounded-full px-3 py-1.5 shadow-2xs">
+                <input type="date" name="mulai"
+                       value="{{ $period->key === 'kustom' ? $period->start->toDateString() : now()->subDays(6)->toDateString() }}"
+                       class="bg-transparent text-[11px] font-medium text-cafe-text focus:outline-none cursor-pointer">
+            </div>
+
+            {{-- Strip Terpisah --}}
+            <span class="text-cafe-muted font-bold text-xs px-0.5">&ndash;</span>
+
+            {{-- Tanggal Akhir Terpisah dengan Border yang sama --}}
+            <div class="flex items-center bg-cafe-card border border-cafe-beige rounded-full px-3 py-1.5 shadow-2xs">
+                <input type="date" name="selesai"
+                       value="{{ $period->key === 'kustom' ? $period->end->toDateString() : now()->toDateString() }}"
+                       class="bg-transparent text-[11px] font-medium text-cafe-text focus:outline-none cursor-pointer">
+            </div>
+
+            {{-- Tombol Terapkan Terpisah --}}
+            <button type="submit"
+                    class="px-3.5 py-1.5 rounded-full bg-cafe-gold hover:bg-cafe-bronze text-[#290024] text-xs font-bold shadow-2xs transition-all active:scale-95 shrink-0">
                 Terapkan
             </button>
         </form>

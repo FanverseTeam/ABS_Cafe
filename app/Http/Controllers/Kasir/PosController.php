@@ -112,10 +112,14 @@ class PosController extends Controller
             return back()->withInput()->with('error', 'Keranjang masih kosong.');
         }
 
+<<<<<<< HEAD
         $penjagaName = session('active_penjaga_kasir')
             ?: session('active_cashier_name')
             ?: CafeSetting::get('active_penjaga_kasir')
             ?: Auth::user()->name;
+=======
+        $penjagaName = session('active_penjaga_kasir') ?: session('active_cashier_name') ?: CafeSetting::get('active_penjaga_kasir') ?: Auth::user()->name;
+>>>>>>> 537d7c749fd51ff20601c8adc6bf6b4196adfaac
 
         if ($data['order_type'] === 'dine_in' && empty($data['table_number'])) {
             return back()->withInput()->with('error', 'Pilih nomor meja untuk pesanan Dine-in.');
