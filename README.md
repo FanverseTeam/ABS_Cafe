@@ -2,9 +2,7 @@
 
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&height=180&color=0:4B2E1E,100:C68B3E&text=ABS%20Cafe%20%26%20Accessories&fontColor=F5E6CC&fontSize=38&fontAlignY=38&animation=fadeIn&desc=Smart%20Point%20of%20Sale%20%26%20Customer%20Platform&descSize=16&descAlignY=60" alt="ABS Cafe Banner" width="100%"/>
-
-# ☕ ABS Cafe & Accessories — Smart Point of Sale & Customer Platform
+<img src="assets/banner.svg" alt="ABS Cafe &amp; Accessories — Smart Point of Sale &amp; Customer Platform" width="100%"/>
 
 <img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=500&size=17&pause=1800&color=C68B3E&center=true&vCenter=true&width=640&lines=Pesan+langsung+dari+meja+via+scan+QR;Kasir+cepat%2C+pergantian+shift+tanpa+logout;Omset+%26+laporan+bisnis+secara+real-time" alt="Typing animation"/>
 
@@ -56,7 +54,7 @@ flowchart LR
 
 <div align="right"><a href="#top">⬆️ Kembali ke atas</a></div>
 
-<img src="https://capsule-render.vercel.app/api?type=rect&height=2&color=0:4B2E1E,50:C68B3E,100:4B2E1E" width="100%" alt=""/>
+<img src="assets/divider.svg" alt="" width="100%" height="3"/>
 
 ## 🚀 Fitur Utama & Modul Sistem
 
@@ -132,7 +130,7 @@ flowchart LR
 
 <div align="right"><a href="#top">⬆️ Kembali ke atas</a></div>
 
-<img src="https://capsule-render.vercel.app/api?type=rect&height=2&color=0:4B2E1E,50:C68B3E,100:4B2E1E" width="100%" alt=""/>
+<img src="assets/divider.svg" alt="" width="100%" height="3"/>
 
 ## 🎨 Karakteristik Desain & Pengalaman Pengguna
 
@@ -176,6 +174,6 @@ Dikembangkan oleh **Fanverse Team**
 
 ![Made with coffee](https://img.shields.io/badge/Made%20with-%E2%98%95%20%26%20code-4B2E1E?style=for-the-badge) ![Fanverse](https://img.shields.io/badge/by-Fanverse%20Team-C68B3E?style=for-the-badge)
 
-<img src="https://capsule-render.vercel.app/api?type=waving&section=footer&reversed=true&height=110&color=0:4B2E1E,100:C68B3E" alt="" width="100%"/>
+<img src="assets/footer.svg" alt="" width="100%" height="70"/>
 
 </div>
