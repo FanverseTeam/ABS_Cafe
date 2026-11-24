@@ -28,6 +28,11 @@ class OrderController extends Controller
             });
         }
 
+        // Filter Tanggal (Admin dapat melihat rekap per tanggal maupun seluruh riwayat)
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->input('date'));
+        }
+
         // Filter Payment Status
         if ($request->filled('payment_status') && $request->input('payment_status') !== 'all') {
             $query->where('payment_status', $request->input('payment_status'));

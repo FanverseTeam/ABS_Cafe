@@ -15,6 +15,7 @@ use App\Models\Reservation;
 use App\Models\Table;
 use App\Services\OrderService;
 use App\Support\LandingData;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -762,46 +763,23 @@ class PelangganController extends Controller
             }
         }
 
-        // 2. Cek apakah meja sudah dipesan oleh reservasi lain pada jam yang berdekatan
-        $queryReservations = Reservation::where('table_id', $table->id)
-            ->whereDate('reservation_date', $date)
-            ->whereIn('status', ['menunggu', 'dikonfirmasi', 'datang']);
+        // 2. Cek apakah meja sedang dalam jendela reservasi aktif (1 jam sebelum s/d 1 jam setelah)
+        $targetDt = Carbon::parse("{$date} {$time}");
+        $reservations = Reservation::where('table_id', $table->id)
+            ->whereIn('status', ['menunggu', 'dikonfirmasi', 'datang'])
+            ->get();
 
-        if ($time) {
-            $targetTimestamp = strtotime($time);
-            $conflictingReservation = $queryReservations->get()->first(function (Reservation $r) use ($targetTimestamp) {
-                return abs(strtotime((string) $r->reservation_time) - $targetTimestamp) < 120 * 60;
-            });
+        $conflictingReservation = $reservations->first(function (Reservation $r) use ($targetDt) {
+            return $targetDt->between($r->occupiedWindowStart(), $r->occupiedWindowEnd());
+        });
 
-            if ($conflictingReservation) {
-                return [
-                    'status' => 'dipesan',
-                    'label' => 'Sudah Dipesan',
-                    'color' => 'warning',
-                    'is_available' => false,
-                    'active_reason' => 'Dipesan jam '.substr((string) $conflictingReservation->reservation_time, 0, 5),
-                ];
-            }
-        } else {
-            $anyReservation = $queryReservations->first();
-            if ($anyReservation && $table->status === 'dipesan') {
-                return [
-                    'status' => 'dipesan',
-                    'label' => 'Sudah Dipesan',
-                    'color' => 'warning',
-                    'is_available' => false,
-                    'active_reason' => 'Sudah dipesan untuk tanggal ini',
-                ];
-            }
-        }
-
-        if ($table->status === 'dipesan') {
+        if ($conflictingReservation) {
             return [
-                'status' => 'dipesan',
-                'label' => 'Sudah Dipesan',
-                'color' => 'warning',
+                'status' => 'terpakai',
+                'label' => 'Sedang Terisi',
+                'color' => 'danger',
                 'is_available' => false,
-                'active_reason' => 'Status meja ditandai dipesan',
+                'active_reason' => 'Dipesan '.$conflictingReservation->datetimeRangeLabel(),
             ];
         }
 
@@ -844,24 +822,28 @@ class PelangganController extends Controller
             ]);
         }
 
-        $newTime = strtotime((string) $data['reservation_time']);
+        $startDate = $data['reservation_date'];
+        $startTime = substr((string) $data['reservation_time'], 0, 5);
+        $newStart = Carbon::parse("{$startDate} {$startTime}");
+        $newEnd = $newStart->copy()->addHours(2);
+        $newWindowStart = $newStart->copy()->subHour();
+        $newWindowEnd = $newEnd->copy()->addHour();
 
-        $conflict = Reservation::where('table_id', $data['table_id'])
-            ->whereDate('reservation_date', $data['reservation_date'])
+        $reservations = Reservation::where('table_id', $data['table_id'])
             ->whereIn('status', ['menunggu', 'dikonfirmasi', 'datang'])
-            ->get()
-            ->contains(fn ($r) => abs(strtotime((string) $r->reservation_time) - $newTime) < 120 * 60);
+            ->get();
 
-        if ($conflict) {
-            throw ValidationException::withMessages([
-                'table_id' => "Meja #{$table->number} sudah dipesan oleh pelanggan lain pada jam yang berdekatan. Silakan pilih meja lain atau sesuaikan jam reservasi.",
-            ]);
+        foreach ($reservations as $r) {
+            if ($newWindowStart->lessThan($r->occupiedWindowEnd()) && $newWindowEnd->greaterThan($r->occupiedWindowStart())) {
+                throw ValidationException::withMessages([
+                    'table_id' => "Meja #{$table->number} sudah dipesan pada rentang tersebut ({$r->datetimeRangeLabel()}). Meja terisi 1 jam sebelum dan 1 jam setelah reservasi.",
+                ]);
+            }
         }
 
         // Jika reservasi untuk hari ini dan jam dekat dengan waktu sekarang, pastikan meja tidak sedang dipakai
         if ($data['reservation_date'] === today()->toDateString()) {
-            $isNearNow = abs($newTime - strtotime(now()->format('H:i'))) < 60 * 60;
-            if ($isNearNow) {
+            if (now()->between($newWindowStart, $newWindowEnd)) {
                 $isOccupied = $table->status === 'terpakai' || Order::where('table_number', $table->number)->active()->exists();
                 if ($isOccupied) {
                     throw ValidationException::withMessages([

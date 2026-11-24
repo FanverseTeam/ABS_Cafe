@@ -95,7 +95,8 @@
             <div class="w-16 h-16 mx-auto rounded-full bg-cafe-cream flex items-center justify-center text-cafe-muted">
                 <i data-lucide="inbox" class="w-7 h-7"></i>
             </div>
-            <p class="text-xs text-cafe-muted mt-4">Tidak ada pesanan pada tab ini.</p>
+            <p class="text-xs font-semibold text-cafe-dark mt-4">Tidak ada pesanan masuk untuk hari ini.</p>
+            <p class="text-[11px] text-cafe-muted mt-1 max-w-md mx-auto">Pesanan kasir ditampilkan khusus per hari. Jika berganti hari, daftar kasir otomatis bersih/kosong kembali dan seluruh transaksi sebelumnya tetap tercatat lengkap di rekap Admin dan Owner.</p>
             <a href="{{ route('kasir.pos.index') }}" class="mt-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-cafe-gold text-cafe-dark text-xs font-bold hover:bg-[#D4954D] transition-colors shadow-md">
                 <i data-lucide="plus-circle" class="w-4 h-4"></i>
                 Buat Pesanan Manual untuk Customer

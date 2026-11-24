@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,6 +29,8 @@ class Reservation extends Model
         'party_size',
         'reservation_date',
         'reservation_time',
+        'reservation_end_date',
+        'reservation_end_time',
         'table_id',
         'status',
         'notes',
@@ -37,7 +40,71 @@ class Reservation extends Model
     protected $casts = [
         'party_size' => 'integer',
         'reservation_date' => 'date',
+        'reservation_end_date' => 'date',
     ];
+
+    public function startDateTime(): Carbon
+    {
+        $dateStr = $this->reservation_date ? $this->reservation_date->format('Y-m-d') : today()->toDateString();
+        $timeStr = $this->reservation_time ? substr((string) $this->reservation_time, 0, 5) : '00:00';
+
+        return Carbon::parse("{$dateStr} {$timeStr}");
+    }
+
+    public function endDateTime(): Carbon
+    {
+        $startDate = $this->reservation_date ? $this->reservation_date->format('Y-m-d') : today()->toDateString();
+        $endDate = $this->reservation_end_date ? $this->reservation_end_date->format('Y-m-d') : $startDate;
+
+        if ($this->reservation_end_time) {
+            $endTime = substr((string) $this->reservation_end_time, 0, 5);
+            $end = Carbon::parse("{$endDate} {$endTime}");
+        } else {
+            return $this->startDateTime()->addHours(2);
+        }
+
+        return $end->greaterThanOrEqualTo($this->startDateTime()) ? $end : $this->startDateTime()->addHours(2);
+    }
+
+    /**
+     * Waktu mulai meja dianggap terisi (1 jam sebelum jam mulai reservasi).
+     */
+    public function occupiedWindowStart(): Carbon
+    {
+        return $this->startDateTime()->copy()->subHour();
+    }
+
+    /**
+     * Waktu selesai meja dianggap terisi (1 jam setelah jam selesai reservasi).
+     */
+    public function occupiedWindowEnd(): Carbon
+    {
+        return $this->endDateTime()->copy()->addHour();
+    }
+
+    /**
+     * Cek apakah saat ini meja terisi oleh reservasi ini (1 jam sebelum mulai s/d 1 jam setelah selesai).
+     */
+    public function isTableOccupiedNow(): bool
+    {
+        if (in_array($this->status, ['batal', 'tidak_datang', 'selesai'], true)) {
+            return false;
+        }
+
+        return now()->between($this->occupiedWindowStart(), $this->occupiedWindowEnd());
+    }
+
+    public function datetimeRangeLabel(): string
+    {
+        $start = $this->startDateTime();
+        $end = $this->endDateTime();
+
+        if ($start->isSameDay($end)) {
+            return $start->translatedFormat('d M Y').', '.$start->format('H:i').' - '.$end->format('H:i');
+        }
+
+        return $start->translatedFormat('d M Y H:i').' s/d '.$end->translatedFormat('d M Y H:i');
+    }
 
     public function table(): BelongsTo
     {

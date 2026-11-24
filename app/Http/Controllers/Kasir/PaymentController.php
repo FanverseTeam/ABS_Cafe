@@ -20,6 +20,7 @@ class PaymentController extends Controller
     {
         $unpaid = Order::with('items')
             ->forKasir()
+            ->today()
             ->unpaid()
             ->where('order_status', '!=', 'selesai')
             ->orderBy('created_at')
@@ -56,6 +57,11 @@ class PaymentController extends Controller
 
     public function pay(Request $request, Order $order)
     {
+        $penjagaName = session('active_penjaga_kasir') ?: CafeSetting::get('active_penjaga_kasir');
+        if (! $penjagaName) {
+            return back()->withInput()->with('error', 'Wajib memilih nama penjaga kasir yang bertugas di Dashboard sebelum memproses pembayaran!');
+        }
+
         $data = $request->validate([
             'method' => 'required|string|max:30',
             'cash_received' => 'nullable|numeric|min:0',

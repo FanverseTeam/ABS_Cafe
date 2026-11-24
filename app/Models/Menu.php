@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\HeicConverter;
 use App\Support\LogsActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -137,10 +138,11 @@ class Menu extends Model
      */
     public function updateImageFile(UploadedFile $file): string
     {
+        $file = HeicConverter::convertUploadedFile($file);
         $this->deleteImageFile();
 
         $slug = Str::slug($this->name) ?: 'menu';
-        $extension = $file->getClientOriginalExtension() ?: 'jpg';
+        $extension = strtolower($file->getClientOriginalExtension() ?: 'jpg');
         $filename = "{$slug}-".time().'-'.Str::random(6).".{$extension}";
 
         $path = $file->storeAs('menus', $filename, 'public');

@@ -317,13 +317,13 @@
                     <img id="menu-current-image" src="" alt="Foto saat ini" class="w-16 h-16 object-cover rounded-xl border border-cafe-beige shadow-sm">
                     <p class="text-[10px] text-cafe-muted">Foto saat ini. Upload foto baru untuk mengganti.</p>
                 </div>
-                <input type="file" name="image_file" id="menu-input-image" accept="image/*"
+                <input type="file" name="image_file" id="menu-input-image" accept="image/*,.heic,.heif,.HEIC,.HEIF,image/heic,image/heif"
                        class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cafe-gold/20 file:text-cafe-dark hover:file:bg-cafe-gold/30 cursor-pointer"
                        onchange="previewModalImage(this)">
                 <div id="menu-image-preview" class="mt-2 hidden">
                     <img id="menu-preview-img" src="" alt="Preview" class="w-16 h-16 object-cover rounded-xl border border-cafe-beige shadow-sm">
                 </div>
-                <p class="text-[10px] text-cafe-muted mt-1">JPG, PNG, WEBP. Maks 2MB.</p>
+                <p class="text-[10px] text-cafe-muted mt-1">Semua format foto didukung (JPG, PNG, WEBP, HEIC, dll). Maks 20MB.</p>
             </div>
 
             @include('admin.catalog.partials.variant-form')
@@ -385,16 +385,32 @@
         document.getElementById('menu-image-preview').classList.add('hidden');
     }
 
-    function previewModalImage(input) {
+    async function previewModalImage(input) {
         const preview = document.getElementById('menu-image-preview');
         const img = document.getElementById('menu-preview-img');
         if (input.files && input.files[0]) {
+            let file = input.files[0];
+            if (/\.(heic|heif)$/i.test(file.name) || file.type === 'image/heic' || file.type === 'image/heif') {
+                if (typeof window.heic2any === 'function') {
+                    try {
+                        const blob = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+                        const resBlob = Array.isArray(blob) ? blob[0] : blob;
+                        const newFile = new File([resBlob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
+                        const dt = new DataTransfer();
+                        dt.items.add(newFile);
+                        input.files = dt.files;
+                        file = newFile;
+                    } catch (e) {
+                        console.warn('HEIC preview modal error:', e);
+                    }
+                }
+            }
             const reader = new FileReader();
             reader.onload = function(e) {
                 img.src = e.target.result;
                 preview.classList.remove('hidden');
             };
-            reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(file);
         } else {
             preview.classList.add('hidden');
         }

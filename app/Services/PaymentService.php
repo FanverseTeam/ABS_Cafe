@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\ActivityLog;
+use App\Models\CafeSetting;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\Payment;
@@ -59,13 +60,23 @@ class PaymentService
                 ? 'diproses'
                 : $lockedOrder->order_status;
 
+            $penjagaName = session('active_penjaga_kasir')
+                ?: CafeSetting::get('active_penjaga_kasir')
+                ?: $lockedOrder->cashier_name;
+
+            if (empty($penjagaName)) {
+                throw ValidationException::withMessages([
+                    'penjaga' => 'Wajib memilih nama penjaga kasir yang bertugas sebelum memproses pembayaran.',
+                ]);
+            }
+
             $lockedOrder->update([
                 'payment_status' => 'lunas',
                 'payment_method' => $method,
                 'order_status' => $targetOrderStatus,
                 'paid_at' => now(),
                 'cashier_id' => $lockedOrder->cashier_id ?: $cashier->id,
-                'cashier_name' => $lockedOrder->cashier_name ?: $cashier->name,
+                'cashier_name' => $penjagaName,
             ]);
 
             foreach ($lockedOrder->items as $item) {
@@ -74,11 +85,11 @@ class PaymentService
                 }
             }
 
-            $this->orders->addTimeline($lockedOrder, 'LUNAS', $cashier->name,
+            $this->orders->addTimeline($lockedOrder, 'LUNAS', $penjagaName,
                 'Pembayaran '.strtoupper($method).' lunas diverifikasi kasir');
 
             if ($targetOrderStatus === 'diproses' && $lockedOrder->order_status !== 'diproses') {
-                $this->orders->addTimeline($lockedOrder, 'DIPROSES', $cashier->name,
+                $this->orders->addTimeline($lockedOrder, 'DIPROSES', $penjagaName,
                     'Pesanan mulai diproses oleh tim bar / dapur');
             }
 

@@ -32,6 +32,7 @@ class ReportController extends Controller
             'daily' => $this->dailyBreakdown($period, $sales),
             'perMenu' => $this->perMenu($period),
             'perCategory' => $this->perCategory($period),
+            'perCashier' => $this->perCashier($sales),
             'perMethod' => $this->perMethod($sales),
             'perType' => $this->perType($sales),
             'perHour' => $this->perHour($sales),
@@ -116,6 +117,7 @@ class ReportController extends Controller
             'daily' => $this->dailyBreakdown($period, $sales),
             'perMenu' => $this->perMenu($period),
             'perCategory' => $this->perCategory($period),
+            'perCashier' => $this->perCashier($sales),
             'perMethod' => $this->perMethod($sales),
             'finance' => [
                 'gross' => (float) $sales->sum('subtotal'),
@@ -191,6 +193,18 @@ class ReportController extends Controller
             ->orderByDesc('revenue')
             ->get()
             ->map(fn ($r) => ['name' => $r->name, 'quantity' => (int) $r->quantity, 'revenue' => (float) $r->revenue]);
+    }
+
+    /**
+     * Rekap penjualan per nama penjaga kasir (dari kolom cashier_name di pesanan).
+     */
+    private function perCashier($sales)
+    {
+        return $sales->groupBy('cashier_name')->map(fn ($rows, $name) => [
+            'name' => $name ?: 'Tidak diketahui',
+            'count' => $rows->count(),
+            'total' => (float) $rows->sum('total'),
+        ])->sortByDesc('total')->values();
     }
 
     private function perMethod($sales)

@@ -1,25 +1,18 @@
 @php
     $backUrl = \App\Support\MobileNavigation::backUrlForCurrentRoute();
-    $hasActiveShift = \App\Models\CashShift::where('status', 'buka')->exists();
-    $newWebOrdersCount = \App\Models\Order::forKasir()->where('source', 'web')->where('order_status', 'diproses')->count();
-    $unpaidOrdersCount = \App\Models\Order::forKasir()->where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
+    $activePenjagaName = session('active_penjaga_kasir') ?: \App\Models\CafeSetting::get('active_penjaga_kasir');
+    $newWebOrdersCount = \App\Models\Order::forKasir()->today()->where('source', 'web')->where('order_status', 'diproses')->count();
+    $unpaidOrdersCount = \App\Models\Order::forKasir()->today()->where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
     $totalNotif = $newWebOrdersCount + $unpaidOrdersCount;
-    $newWebOrders = \App\Models\Order::forKasir()->where('source', 'web')->where('order_status', 'diproses')->take(5)->get();
-    $unpaidOrders = \App\Models\Order::forKasir()->unpaid()->where('order_status', '!=', 'selesai')->take(5)->get();
+    $newWebOrders = \App\Models\Order::forKasir()->today()->where('source', 'web')->where('order_status', 'diproses')->take(5)->get();
+    $unpaidOrders = \App\Models\Order::forKasir()->today()->unpaid()->where('order_status', '!=', 'selesai')->take(5)->get();
 @endphp
 
 <header class="sticky top-0 z-30 bg-[#F2F5E2]/95 backdrop-blur-md border-b border-cafe-beige/60 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">
     <div class="h-14 sm:h-16 landscape:h-12 sm:landscape:h-14 flex items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 lg:px-8 w-full">
 
-        {{-- ═══ LEFT: Drawer Button / Back / Logo + Page Title ═══ --}}
+        {{-- ═══ LEFT: Back / Logo + Page Title ═══ --}}
         <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
-            <button type="button"
-                    onclick="toggleKasirDrawer()"
-                    aria-label="Buka Menu Kasir"
-                    class="lg:hidden flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl bg-cafe-beige/40 text-cafe-dark hover:bg-cafe-beige/70 active:scale-95 transition-all">
-                <i data-lucide="menu" class="h-4 w-4 sm:h-5 sm:w-5"></i>
-            </button>
-
             @if($backUrl)
                 <a href="{{ $backUrl }}"
                    class="lg:hidden flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl text-cafe-dark transition-colors hover:bg-cafe-beige/60 active:scale-95"
@@ -42,17 +35,11 @@
         {{-- ═══ RIGHT: Action Pills & Icons ═══ --}}
         <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
 
-            {{-- Shift Status Pill --}}
-            <a href="{{ $hasActiveShift ? route('kasir.shift.close') : route('kasir.shift.open') }}"
-               title="{{ $hasActiveShift ? 'Shift sedang berjalan — buka rekap tutup shift' : 'Shift belum dibuka — klik untuk membuka' }}"
-               class="{{ $hasActiveShift ? 'bg-cafe-success/15 text-cafe-success border-cafe-success/30' : 'bg-cafe-warning/15 text-cafe-warning border-cafe-warning/30' }} px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 sm:gap-2 shrink-0 transition-all hover:scale-105 active:scale-95">
-                <span class="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60 {{ $hasActiveShift ? 'bg-cafe-success' : 'bg-cafe-warning' }}"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 {{ $hasActiveShift ? 'bg-cafe-success' : 'bg-cafe-warning' }}"></span>
-                </span>
-                <span class="hidden sm:inline">{{ $hasActiveShift ? 'Shift Berjalan' : 'Shift Belum Dibuka' }}</span>
-                <span class="text-[10px] sm:hidden">{{ $hasActiveShift ? 'Shift' : 'Buka' }}</span>
-            </a>
+            {{-- Realtime Clock (Sesuai Komputer Pengguna) --}}
+            <div class="hidden sm:flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#E3DEA4]/70 border border-[#D4954D]/40 text-[#290024] shadow-xs text-xs font-semibold select-none" title="Waktu Komputer Lokal Realtime">
+                <i data-lucide="clock" class="w-3.5 h-3.5 text-[#D4954D] shrink-0 animate-pulse"></i>
+                <span class="realtime-clock-display font-mono tracking-wide font-bold">--:--:--</span>
+            </div>
 
             {{-- Notification Bell --}}
             <div class="relative" id="notif-dropdown-wrapper">
@@ -137,8 +124,8 @@
                         {{ substr(Auth::user()->name ?? 'K', 0, 1) }}
                     </div>
                     <div class="text-left hidden sm:block">
-                        <span class="text-xs font-bold text-cafe-dark block leading-tight">{{ Auth::user()->name ?? 'Kasir ABS' }}</span>
-                        <span class="text-[10px] text-cafe-muted block">Kasir</span>
+                        <span class="text-xs font-bold text-cafe-dark block leading-tight">{{ $activePenjagaName ?: (Auth::user()->name ?? 'Kasir ABS') }}</span>
+                        <span class="text-[10px] text-cafe-muted block">{{ $activePenjagaName ? 'Penjaga Kasir' : 'Kasir' }}</span>
                     </div>
                     <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-cafe-muted ml-0.5"></i>
                 </button>
@@ -150,10 +137,6 @@
                     </div>
 
                     <div class="py-1 space-y-0.5">
-                        <a href="{{ route('kasir.shift.index') }}" role="menuitem" class="w-full flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
-                            <i data-lucide="wallet" class="w-4 h-4 text-cafe-muted shrink-0"></i>
-                            <span>Riwayat Shift</span>
-                        </a>
                         <button type="button" onclick="alert('Penggantian kata sandi kasir dikelola oleh Administrator melalui menu Manajemen Staf.')" role="menuitem" class="w-full flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70 text-left">
                             <i data-lucide="key-round" class="w-4 h-4 text-cafe-muted shrink-0"></i>
                             <span>Ganti Password</span>
@@ -250,4 +233,26 @@
             })
             .catch(() => {});
     }, 10000);
+
+    // Realtime Computer Clock Script
+    (function () {
+        function updateClock() {
+            const now = new Date();
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            const dayName = days[now.getDay()];
+            const date = String(now.getDate()).padStart(2, '0');
+            const monthName = months[now.getMonth()];
+            const year = now.getFullYear();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            const str = `${dayName}, ${date} ${monthName} ${year} • ${h}:${m}:${s}`;
+            document.querySelectorAll('.realtime-clock-display').forEach(function (el) {
+                el.textContent = str;
+            });
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+    })();
 </script>

@@ -7,6 +7,7 @@ use App\Models\ActivityLog;
 use App\Models\Order;
 use App\Models\Reservation;
 use App\Models\Table;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -16,22 +17,44 @@ class ReservationController extends Controller
     public function index(Request $request)
     {
         $date = $request->filled('date') ? $request->date('date') : today();
+        $dateStr = $date->toDateString();
         $status = $request->get('status', 'semua');
 
-        $query = Reservation::with('table')->whereDate('reservation_date', $date);
+        // Reservasi yang mencakup tanggal yang dipilih (bisa single day maupun multi-hari)
+        $query = Reservation::with('table')
+            ->where(function ($q) use ($dateStr) {
+                $q->whereDate('reservation_date', '<=', $dateStr)
+                    ->where(function ($endQ) use ($dateStr) {
+                        $endQ->whereDate('reservation_end_date', '>=', $dateStr)
+                            ->orWhere(function ($nullQ) use ($dateStr) {
+                                $nullQ->whereNull('reservation_end_date')
+                                    ->whereDate('reservation_date', $dateStr);
+                            });
+                    });
+            });
 
         if ($status !== 'semua') {
             $query->where('status', $status);
         }
 
-        $reservations = $query->orderBy('reservation_time')->get();
+        $reservations = $query->orderBy('reservation_date')->orderBy('reservation_time')->get();
 
         $counts = [];
         foreach (array_keys(Reservation::STATUSES) as $s) {
-            $counts[$s] = Reservation::whereDate('reservation_date', $date)->where('status', $s)->count();
+            $counts[$s] = Reservation::where(function ($q) use ($dateStr) {
+                $q->whereDate('reservation_date', '<=', $dateStr)
+                    ->where(function ($endQ) use ($dateStr) {
+                        $endQ->whereDate('reservation_end_date', '>=', $dateStr)
+                            ->orWhere(function ($nullQ) use ($dateStr) {
+                                $nullQ->whereNull('reservation_end_date')
+                                    ->whereDate('reservation_date', $dateStr);
+                            });
+                    });
+            })->where('status', $s)->count();
         }
 
-        $tables = Table::withCount(['orders' => fn ($q) => $q->active()])
+        $tables = Table::with(['reservations' => fn ($q) => $q->whereIn('status', ['menunggu', 'dikonfirmasi', 'datang'])])
+            ->withCount(['orders' => fn ($q) => $q->active()])
             ->orderBy('number')
             ->get();
 
@@ -46,9 +69,18 @@ class ReservationController extends Controller
             'party_size' => 'required|integer|min:1|max:50',
             'reservation_date' => 'required|date',
             'reservation_time' => 'required|string|max:10',
+            'reservation_end_date' => 'nullable|date|after_or_equal:reservation_date',
+            'reservation_end_time' => 'nullable|string|max:10',
             'table_id' => 'nullable|integer|exists:meja,id',
             'notes' => 'nullable|string|max:500',
         ]);
+
+        if (empty($data['reservation_end_date'])) {
+            $data['reservation_end_date'] = $data['reservation_date'];
+        }
+        if (empty($data['reservation_end_time'])) {
+            $data['reservation_end_time'] = date('H:i', strtotime($data['reservation_time']) + 7200);
+        }
 
         $data['code'] = Reservation::generateCode();
         $data['status'] = 'menunggu';
@@ -77,9 +109,18 @@ class ReservationController extends Controller
             'party_size' => 'required|integer|min:1|max:50',
             'reservation_date' => 'required|date',
             'reservation_time' => 'required|string|max:10',
+            'reservation_end_date' => 'nullable|date|after_or_equal:reservation_date',
+            'reservation_end_time' => 'nullable|string|max:10',
             'table_id' => 'nullable|integer|exists:meja,id',
             'notes' => 'nullable|string|max:500',
         ]);
+
+        if (empty($data['reservation_end_date'])) {
+            $data['reservation_end_date'] = $data['reservation_date'];
+        }
+        if (empty($data['reservation_end_time'])) {
+            $data['reservation_end_time'] = date('H:i', strtotime($data['reservation_time']) + 7200);
+        }
 
         $this->assertTableReservation($data, $reservation->id);
 
@@ -130,8 +171,8 @@ class ReservationController extends Controller
     }
 
     /**
-     * Meja yang dipilih harus cukup kapasitasnya dan belum dipesan
-     * pada jam yang berdekatan (rentang 2 jam).
+     * Meja yang dipilih harus cukup kapasitasnya dan belum dipesan pada jendela waktu yang bertabrakan.
+     * Jendela terisi: 1 jam sebelum reservasi mulai sampai 1 jam setelah reservasi selesai.
      *
      * @param  array<string, mixed>  $data
      */
@@ -152,19 +193,43 @@ class ReservationController extends Controller
             ]);
         }
 
-        $newTime = strtotime((string) $data['reservation_time']);
+        $startDate = $data['reservation_date'];
+        $startTime = substr((string) $data['reservation_time'], 0, 5);
+        $newStart = Carbon::parse("{$startDate} {$startTime}");
 
-        $conflict = Reservation::where('table_id', $data['table_id'])
-            ->whereDate('reservation_date', $data['reservation_date'])
+        $endDate = ! empty($data['reservation_end_date']) ? $data['reservation_end_date'] : $startDate;
+        if (! empty($data['reservation_end_time'])) {
+            $endTime = substr((string) $data['reservation_end_time'], 0, 5);
+            $newEnd = Carbon::parse("{$endDate} {$endTime}");
+        } else {
+            $newEnd = $newStart->copy()->addHours(2);
+        }
+
+        if ($newEnd->lessThanOrEqualTo($newStart)) {
+            throw ValidationException::withMessages([
+                'reservation_end_time' => 'Waktu selesai reservasi harus setelah waktu mulai.',
+            ]);
+        }
+
+        $newWindowStart = $newStart->copy()->subHour();
+        $newWindowEnd = $newEnd->copy()->addHour();
+
+        $existingReservations = Reservation::where('table_id', $data['table_id'])
             ->whereIn('status', ['menunggu', 'dikonfirmasi', 'datang'])
             ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
-            ->get()
-            ->contains(fn ($r) => abs(strtotime((string) $r->reservation_time) - $newTime) < 120 * 60);
+            ->get();
 
-        if ($conflict) {
-            throw ValidationException::withMessages([
-                'table_id' => 'Meja ini sudah dipesan pada jam yang berdekatan.',
-            ]);
+        foreach ($existingReservations as $r) {
+            $existingWindowStart = $r->occupiedWindowStart();
+            $existingWindowEnd = $r->occupiedWindowEnd();
+
+            // Cek tabrakan rentang: startA < endB && endA > startB
+            if ($newWindowStart->lessThan($existingWindowEnd) && $newWindowEnd->greaterThan($existingWindowStart)) {
+                $range = $r->datetimeRangeLabel();
+                throw ValidationException::withMessages([
+                    'table_id' => "Meja #{$table->number} sudah dipesan pada rentang ({$range}). Meja terisi otomatis 1 jam sebelum jam mulai sampai 1 jam setelah jam selesai.",
+                ]);
+            }
         }
     }
 

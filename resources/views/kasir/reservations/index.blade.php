@@ -6,18 +6,18 @@
 @section('content')
 <div class="space-y-6">
     @php
-        $activeTab = request('view', request('status') ? 'list' : 'tables');
+        $activeTab = request('view', 'list');
     @endphp
 
-    <!-- Mobile Pill Switcher: Denah Meja | Reservasi (Sesuai Referensi Layar 9) -->
+    <!-- Mobile Pill Switcher: Reservasi | Denah Meja -->
     <div class="lg:hidden flex items-center p-1 bg-[#E3DEA4]/50 rounded-full border border-[#E3DEA4]">
-        <button type="button" onclick="switchReservationView('tables')" id="tab-btn-tables"
-                class="flex-1 py-2 rounded-full text-xs font-bold transition-all {{ $activeTab === 'tables' ? 'bg-[#290024] text-[#F2F5E2] shadow-sm' : 'text-[#775533] hover:text-[#290024]' }}">
-            <i data-lucide="grid-3x3" class="w-3.5 h-3.5 inline-block mr-1"></i> Denah Meja
-        </button>
         <button type="button" onclick="switchReservationView('list')" id="tab-btn-list"
                 class="flex-1 py-2 rounded-full text-xs font-bold transition-all {{ $activeTab === 'list' ? 'bg-[#290024] text-[#F2F5E2] shadow-sm' : 'text-[#775533] hover:text-[#290024]' }}">
             <i data-lucide="calendar-days" class="w-3.5 h-3.5 inline-block mr-1"></i> Reservasi ({{ $reservations->count() }})
+        </button>
+        <button type="button" onclick="switchReservationView('tables')" id="tab-btn-tables"
+                class="flex-1 py-2 rounded-full text-xs font-bold transition-all {{ $activeTab === 'tables' ? 'bg-[#290024] text-[#F2F5E2] shadow-sm' : 'text-[#775533] hover:text-[#290024]' }}">
+            <i data-lucide="grid-3x3" class="w-3.5 h-3.5 inline-block mr-1"></i> Denah Meja
         </button>
     </div>
 
@@ -43,42 +43,7 @@
         </button>
     </div>
 
-    <!-- Peta Meja -->
-    <div id="section-tables" class="{{ $activeTab === 'tables' ? '' : 'hidden lg:block' }} bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
-        <div class="px-6 py-4 border-b border-cafe-beige/50 flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-2xl bg-cafe-gold/15 text-cafe-gold flex items-center justify-center"><i data-lucide="grid-3x3" class="w-4 h-4"></i></div>
-            <div>
-                <h3 class="font-serif font-bold text-sm text-cafe-dark">Peta Meja</h3>
-                <p class="text-[10px] text-cafe-muted">kondisi real-time &bull; klik meja untuk ubah status</p>
-            </div>
-        </div>
-
-        <div class="p-5">
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 landscape:grid-cols-3 sm:landscape:grid-cols-4 gap-3">
-                @foreach($tables as $table)
-                    @php $badge = $table->statusBadge(); @endphp
-                    <div class="p-3 rounded-2xl border {{ $table->status === 'terpakai' ? 'bg-cafe-danger/10 border-cafe-danger/40' : ($table->status === 'nonaktif' ? 'bg-cafe-beige/30 border-cafe-beige' : 'bg-cafe-success/10 border-cafe-success/40') }}">
-                        <div class="flex items-center justify-between">
-                            <span class="font-serif font-bold text-cafe-dark text-sm">Meja {{ $table->number }}</span>
-                            <i data-lucide="armchair" class="w-4 h-4 {{ $table->status === 'terpakai' ? 'text-cafe-danger' : ($table->status === 'nonaktif' ? 'text-cafe-muted' : 'text-cafe-success') }}"></i>
-                        </div>
-                        <p class="text-[10px] text-cafe-muted mt-0.5">Kapasitas {{ $table->capacity }} {{ $table->orders_count > 0 ? '&bull; '.$table->orders_count.' pesanan' : '' }}</p>
-                        <span class="inline-block mt-1.5 text-[9px] font-bold px-2 py-0.5 rounded-full bg-cafe-{{ $badge['color'] }}/15 text-cafe-{{ $badge['color'] }}">{{ $badge['label'] }}</span>
-                        <form action="{{ route('kasir.tables.status', $table) }}" method="POST" class="mt-2">
-                            @csrf
-                            <select name="status" onchange="this.form.submit()" class="w-full text-[10px] bg-cafe-cream border border-cafe-beige/70 text-cafe-text px-2 py-1.5 rounded-xl focus:border-cafe-gold focus:outline-none">
-                                @foreach(['tersedia' => 'Kosong', 'terpakai' => 'Terisi', 'nonaktif' => 'Nonaktif'] as $val => $label)
-                                    <option value="{{ $val }}" {{ $table->status === $val ? 'selected' : '' }}>{{ $label }}</option>
-                                @endforeach
-                            </select>
-                        </form>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-
-    <!-- Daftar Reservasi -->
+    <!-- 1. Daftar Reservasi (Ditaruh di Atas) -->
     <div id="section-list" class="{{ $activeTab === 'list' ? '' : 'hidden lg:block' }} bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
         <div class="px-6 py-4 border-b border-[#E3DEA4]/50 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-2.5">
@@ -124,9 +89,27 @@
                             </div>
 
                             <div class="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[11px] text-[#775533]">
-                                <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3 text-[#D4954D]"></i>{{ substr($reservation->reservation_time, 0, 5) }}</span>
+                                <span class="flex items-center gap-1 font-bold text-[#290024]"><i data-lucide="calendar" class="w-3.5 h-3.5 text-[#D4954D]"></i>{{ $reservation->datetimeRangeLabel() }}</span>
                                 <span class="flex items-center gap-1"><i data-lucide="users" class="w-3 h-3 text-[#D4954D]"></i>{{ $reservation->party_size }} orang</span>
                                 <span class="flex items-center gap-1"><i data-lucide="armchair" class="w-3 h-3 text-[#D4954D]"></i>{{ $reservation->table ? 'Meja '.$reservation->table->number : 'Belum ditetapkan' }}</span>
+                            </div>
+
+                            {{-- Indikator Realtime Status Meja untuk Reservasi Ini --}}
+                            <div class="mt-2.5">
+                                @if($reservation->isTableOccupiedNow())
+                                    <span class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full bg-red-100 text-red-700 border border-red-300">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
+                                        Meja Terisi (Jendela Aktif Realtime)
+                                    </span>
+                                @elseif($reservation->occupiedWindowStart()->isFuture())
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300">
+                                        Meja Masih Kosong &bull; Terisi mulai {{ $reservation->occupiedWindowStart()->translatedFormat('d M H:i') }}
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-medium px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                                        Jendela Berakhir &bull; Meja Kembali Kosong
+                                    </span>
+                                @endif
                             </div>
 
                             @if($reservation->notes)
@@ -170,6 +153,61 @@
             @endif
         </div>
     </div>
+
+    <!-- 2. Peta Meja (Ditaruh di Bawah Reservasi) -->
+    <div id="section-tables" class="{{ $activeTab === 'tables' ? '' : 'hidden lg:block' }} bg-[#F2F5E2] rounded-3xl border border-[#E3DEA4]/80 shadow-soft overflow-hidden">
+        <div class="px-6 py-4 border-b border-cafe-beige/50 flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-2xl bg-cafe-gold/15 text-cafe-gold flex items-center justify-center"><i data-lucide="grid-3x3" class="w-4 h-4"></i></div>
+            <div>
+                <h3 class="font-serif font-bold text-sm text-cafe-dark">Peta Meja</h3>
+                <p class="text-[10px] text-cafe-muted">kondisi real-time &bull; klik meja untuk ubah status</p>
+            </div>
+        </div>
+
+        <div class="p-5">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 landscape:grid-cols-3 sm:landscape:grid-cols-4 gap-3">
+                @foreach($tables as $table)
+                    @php
+                        $realtimeStatus = $table->realtimeStatus();
+                        $badge = $table->statusBadge();
+                        $activeRes = $table->activeReservationNow();
+                        $upcomingRes = $table->upcomingReservation();
+                    @endphp
+                    <div class="p-3 rounded-2xl border {{ $realtimeStatus === 'terpakai' ? 'bg-cafe-danger/10 border-cafe-danger/40' : ($realtimeStatus === 'nonaktif' ? 'bg-cafe-beige/30 border-cafe-beige' : 'bg-cafe-success/10 border-cafe-success/40') }}">
+                        <div class="flex items-center justify-between">
+                            <span class="font-serif font-bold text-cafe-dark text-sm">Meja {{ $table->number }}</span>
+                            <i data-lucide="armchair" class="w-4 h-4 {{ $realtimeStatus === 'terpakai' ? 'text-cafe-danger' : ($realtimeStatus === 'nonaktif' ? 'text-cafe-muted' : 'text-cafe-success') }}"></i>
+                        </div>
+                        <p class="text-[10px] text-cafe-muted mt-0.5">Kapasitas {{ $table->capacity }} {{ $table->orders_count > 0 ? '&bull; '.$table->orders_count.' pesanan' : '' }}</p>
+                        
+                        <div class="mt-1.5 space-y-1">
+                            <span class="inline-block text-[9px] font-bold px-2 py-0.5 rounded-full bg-cafe-{{ $badge['color'] }}/15 text-cafe-{{ $badge['color'] }}">
+                                {{ $badge['label'] }}
+                            </span>
+                            @if($activeRes)
+                                <p class="text-[9px] font-bold text-cafe-danger truncate" title="Reservasi: {{ $activeRes->customer_name }} ({{ $activeRes->datetimeRangeLabel() }})">
+                                    &bull; Terisi: {{ $activeRes->customer_name }}
+                                </p>
+                            @elseif($upcomingRes)
+                                <p class="text-[9px] font-medium text-[#775533] truncate" title="Dipesan nanti: {{ $upcomingRes->startDateTime()->translatedFormat('d M H:i') }}">
+                                    &bull; Nanti: {{ $upcomingRes->startDateTime()->translatedFormat('d M H:i') }}
+                                </p>
+                            @endif
+                        </div>
+
+                        <form action="{{ route('kasir.tables.status', $table) }}" method="POST" class="mt-2">
+                            @csrf
+                            <select name="status" onchange="this.form.submit()" class="w-full text-[10px] bg-cafe-cream border border-cafe-beige/70 text-cafe-text px-2 py-1.5 rounded-xl focus:border-cafe-gold focus:outline-none">
+                                @foreach(['tersedia' => 'Kosong', 'terpakai' => 'Terisi', 'nonaktif' => 'Nonaktif'] as $val => $label)
+                                    <option value="{{ $val }}" {{ $realtimeStatus === $val ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal / Bottom Sheet Create Reservasi (Layar 9 Referensi) -->
@@ -205,12 +243,29 @@
                     <input type="number" name="party_size" value="2" min="1" max="50" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Tanggal *</label>
-                    <input type="date" name="reservation_date" value="{{ $date->format('Y-m-d') }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
+                    <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Tanggal Mulai *</label>
+                    <input type="date" name="reservation_date" id="create_reservation_date" value="{{ $date->format('Y-m-d') }}" required onchange="const end = document.getElementById('create_reservation_end_date'); end.min = this.value; if(end.value < this.value) end.value = this.value;" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Jam Datang *</label>
+                    <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Jam Mulai *</label>
                     <input type="time" name="reservation_time" value="19:00" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Tanggal Selesai (Bisa &gt; 1 Hari)</label>
+                    <input type="date" name="reservation_end_date" id="create_reservation_end_date" min="{{ $date->format('Y-m-d') }}" value="{{ $date->format('Y-m-d') }}" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Jam Selesai *</label>
+                    <input type="time" name="reservation_end_time" value="21:00" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-[#290024] px-3.5 py-2.5 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none">
+                </div>
+
+                <div class="sm:col-span-2 p-2.5 rounded-2xl bg-[#E3DEA4]/50 border border-[#D4954D]/40 text-[11px] text-[#290024]">
+                    <div class="flex items-start gap-2">
+                        <i data-lucide="info" class="w-4 h-4 text-[#D4954D] shrink-0 mt-0.5"></i>
+                        <p class="leading-relaxed">
+                            <b>Ketentuan Realtime Meja:</b> Meja tetap <b>kosong</b> sebelum jamnya tiba. Meja otomatis <b>terisi 1 jam sebelum jam mulai</b> dan kembali <b>kosong 1 jam setelah jam selesai</b>. Tanggal selesai dapat diatur lebih dari 1 hari.
+                        </p>
+                    </div>
                 </div>
                 <div class="sm:col-span-2">
                     <label class="block text-[10px] font-bold text-[#775533] uppercase tracking-wider mb-1">Pilih Meja</label>

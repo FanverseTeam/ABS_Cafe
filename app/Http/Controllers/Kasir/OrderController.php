@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Kasir;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use App\Models\CafeSetting;
 use App\Models\Order;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
@@ -18,9 +19,10 @@ class OrderController extends Controller
     {
         $tab = $request->get('tab', 'aktif');
 
-        // Pesanan web yang belum di-scan (order_status == 'baru') tidak masuk ke daftar pesanan kasir
+        // Pesanan masuk di kasir dibuat per hari ini saja. Jika beda hari, kasir mulai kosong kembali.
         $query = Order::with(['items', 'timelines' => fn ($q) => $q->latest('logged_at')])
-            ->forKasir();
+            ->forKasir()
+            ->today();
 
         if ($request->filled('source')) {
             $query->where('source', $request->get('source'));
@@ -29,16 +31,16 @@ class OrderController extends Controller
         $query = match ($tab) {
             'web' => $query->where('source', 'web')->whereIn('order_status', ['diproses', 'siap']),
             'belum_bayar' => $query->unpaid()->where('order_status', '!=', 'selesai'),
-            'selesai' => $query->whereDate('created_at', today())->whereIn('order_status', ['selesai', 'dibatalkan']),
+            'selesai' => $query->whereIn('order_status', ['selesai', 'dibatalkan']),
             default => $query->active(),
         };
 
         $orders = $query->latest()->paginate(12)->withQueryString();
 
         $counts = [
-            'aktif' => Order::forKasir()->active()->count(),
-            'web' => Order::forKasir()->where('source', 'web')->whereIn('order_status', ['diproses', 'siap'])->count(),
-            'belum_bayar' => Order::forKasir()->unpaid()->where('order_status', '!=', 'selesai')->count(),
+            'aktif' => Order::forKasir()->today()->active()->count(),
+            'web' => Order::forKasir()->today()->where('source', 'web')->whereIn('order_status', ['diproses', 'siap'])->count(),
+            'belum_bayar' => Order::forKasir()->today()->unpaid()->where('order_status', '!=', 'selesai')->count(),
         ];
 
         return view('kasir.orders.index', compact('orders', 'tab', 'counts'));
@@ -85,15 +87,23 @@ class OrderController extends Controller
 
     public function accept(Request $request, Order $order)
     {
+        $penjagaName = session('active_penjaga_kasir') ?: CafeSetting::get('active_penjaga_kasir');
+        if (! $penjagaName) {
+            return back()->with('error', 'Wajib memilih nama penjaga kasir yang bertugas di Dashboard sebelum menerima pesanan!');
+        }
+
         try {
             $this->orders->advanceStatus($order, Auth::user(), 'diterima');
+            if (empty($order->cashier_name)) {
+                $order->update(['cashier_name' => $penjagaName]);
+            }
         } catch (ValidationException $e) {
             return back()->with('error', collect($e->errors())->flatten()->first());
         }
 
-        $this->log($request, "Menerima pesanan Web {$order->order_code}");
+        $this->log($request, "Menerima pesanan Web {$order->order_code} oleh penjaga {$penjagaName}");
 
-        return back()->with('success', "Pesanan {$order->order_code} diterima.");
+        return back()->with('success', "Pesanan {$order->order_code} diterima oleh {$penjagaName}.");
     }
 
     public function status(Request $request, Order $order)
@@ -176,10 +186,11 @@ class OrderController extends Controller
 
         // Jika pesanan belum diproses (masih baru / diterima / menunggu), ubah ke diproses
         if (in_array($order->order_status, ['baru', 'diterima', 'menunggu'], true)) {
+            $penjagaName = session('active_penjaga_kasir') ?: CafeSetting::get('active_penjaga_kasir') ?: $user->name;
             $order->update([
                 'order_status' => 'diproses',
                 'cashier_id' => $order->cashier_id ?: $user->id,
-                'cashier_name' => $order->cashier_name ?: $user->name,
+                'cashier_name' => $order->cashier_name ?: $penjagaName,
             ]);
 
             $this->orders->addTimeline(

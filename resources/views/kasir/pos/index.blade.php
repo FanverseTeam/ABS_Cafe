@@ -43,6 +43,24 @@
     });
 @endphp
 
+@if(!$activePenjaga)
+    <div class="mb-4 p-4 rounded-2xl bg-cafe-warning/15 border border-cafe-warning/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-cafe-dark shadow-soft">
+        <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-cafe-warning/20 text-cafe-warning flex items-center justify-center shrink-0">
+                <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-cafe-dark">Penjaga Kasir Belum Dipilih!</p>
+                <p class="text-[11px] text-cafe-muted">Anda tidak dapat memproses pesanan atau pembayaran karena nama penjaga kasir wajib tercetak di struk &amp; rekap.</p>
+            </div>
+        </div>
+        <a href="{{ route('kasir.dashboard') }}" class="px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-bold shrink-0 transition-all shadow-sm">
+            <i data-lucide="user-check" class="w-3.5 h-3.5 inline-block -mt-0.5 mr-1"></i>
+            Pilih Penjaga di Dashboard
+        </a>
+    </div>
+@endif
+
 <!-- ==================== VIEW 1: KATALOG MENU & KERANJANG CEPAT ==================== -->
 <div id="pos-view-catalog" class="space-y-4">
     <div class="grid grid-cols-1 md:landscape:grid-cols-12 lg:grid-cols-12 xl:grid-cols-12 gap-4 lg:gap-6 relative">
@@ -1120,6 +1138,14 @@ document.getElementById('voucher-code')?.addEventListener('input', refreshTotals
 // ---------- Submit Pembayaran / Simpan Pesanan ----------
 function submitPosPayment(action, event) {
     if (event) event.preventDefault();
+
+    const activePenjaga = @json($activePenjaga);
+    if (! activePenjaga) {
+        showToast('Penjaga Belum Dipilih', 'Wajib memilih nama penjaga kasir di Dashboard sebelum memproses pesanan!', 'error');
+        alert('Perhatian: Anda belum memilih nama penjaga kasir yang bertugas!\nNama penjaga wajib tercantum di struk dan rekap penjualan.\nSilakan kembali ke Dashboard untuk memilih nama penjaga.');
+        window.location.href = "{{ route('kasir.dashboard') }}";
+        return;
+    }
 
     if (cart.length === 0) {
         showToast('Keranjang Kosong', 'Tambahkan minimal 1 item pesanan terlebih dahulu.', 'error');

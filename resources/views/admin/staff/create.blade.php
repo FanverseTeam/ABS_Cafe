@@ -9,7 +9,7 @@
     <x-breadcrumb
         :items="[
             ['label' => 'Admin', 'url' => route('admin.dashboard'), 'icon' => 'home'],
-            ['label' => 'Pengguna (Staf/Kasir)', 'url' => route('admin.staff.index')],
+            ['label' => 'Manajemen Staf', 'url' => route('admin.staff.index')],
             ['label' => 'Tambah Baru'],
         ]"
     />
@@ -133,10 +133,18 @@
                             <div class="relative">
                                 <i data-lucide="shield" class="w-4 h-4 text-cafe-muted/60 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                                 <select name="role" required class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark pl-10 pr-8 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm cursor-pointer appearance-none">
-                                    <option value="kasir" {{ old('role', 'kasir') === 'kasir' ? 'selected' : '' }}>Kasir (Kasir &amp; POS)</option>
-                                    <option value="staf" {{ old('role') === 'staf' ? 'selected' : '' }}>Staf (Barista &amp; Dapur)</option>
+                                    @if(!$hasKasirUser)
+                                        <option value="kasir" {{ old('role', 'kasir') === 'kasir' ? 'selected' : '' }}>Kasir (Kasir &amp; POS)</option>
+                                    @endif
+                                    <option value="staf" {{ old('role', $hasKasirUser ? 'staf' : '') === 'staf' ? 'selected' : '' }}>Staf (Barista &amp; Dapur)</option>
                                     <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Administrator (Akses Penuh)</option>
                                 </select>
+                                @if($hasKasirUser)
+                                    <p class="text-[10px] text-cafe-info mt-1.5 flex items-center gap-1">
+                                        <i data-lucide="info" class="w-3 h-3 shrink-0"></i>
+                                        Role Kasir hanya memiliki 1 akun login terpusat. Untuk menambah penjaga kasir, daftarkan di tab <a href="{{ route('admin.staff.index', ['tab' => 'penjaga']) }}" class="font-bold underline hover:text-cafe-dark">Penjaga Kasir</a>.
+                                    </p>
+                                @endif
                                 <i data-lucide="chevron-down" class="w-4 h-4 text-cafe-muted/60 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                             </div>
                         </div>

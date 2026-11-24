@@ -280,8 +280,8 @@ class LandingData
         $height = (int) ($slotConfig['height'] ?? 800);
         $preload = (bool) ($slotConfig['preload'] ?? false);
 
-        // 1. Cek file lokal
-        $extensions = ['webp', 'jpg', 'jpeg', 'png'];
+        // 1. Cek file lokal standar (format yang didukung browser)
+        $extensions = ['webp', 'jpg', 'jpeg', 'png', 'avif', 'gif', 'bmp', 'svg', 'tiff', 'tif', 'ico'];
         foreach ($extensions as $ext) {
             $relativePath = "images/pelanggan/{$slot}.{$ext}";
             $fullPath = public_path($relativePath);
@@ -294,6 +294,28 @@ class LandingData
                     'height' => $height,
                     'preload' => $preload,
                 ];
+            }
+        }
+
+        // Jika ada file HEIC/HEIF lokal, konversikan ke JPG agar dapat dirender browser
+        foreach (['heic', 'heif'] as $ext) {
+            $heicRelative = "images/pelanggan/{$slot}.{$ext}";
+            $heicFull = public_path($heicRelative);
+            if (File::exists($heicFull)) {
+                $jpgRelative = "images/pelanggan/{$slot}.jpg";
+                $jpgFull = public_path($jpgRelative);
+                if (HeicConverter::convertFile($heicFull, $jpgFull)) {
+                    @File::delete($heicFull);
+
+                    return [
+                        'src' => asset($jpgRelative),
+                        'is_local' => true,
+                        'alt' => $alt,
+                        'width' => $width,
+                        'height' => $height,
+                        'preload' => $preload,
+                    ];
+                }
             }
         }
 
@@ -367,6 +389,18 @@ class LandingData
         return array_map(function ($item) {
             $img = $item['image'] ?? '';
             if ($img !== '' && ! str_starts_with($img, 'http://') && ! str_starts_with($img, 'https://')) {
+                // Jika berkas adalah HEIC/HEIF, arahkan ke berkas JPG yang sudah dikonversi
+                if (preg_match('/\.(heic|heif)$/i', $img)) {
+                    $jpgCandidate = preg_replace('/\.(heic|heif)$/i', '.jpg', $img);
+                    if (File::exists(public_path($jpgCandidate))) {
+                        $img = $jpgCandidate;
+                    } elseif (File::exists(public_path($img))) {
+                        if (HeicConverter::convertFile(public_path($img), public_path($jpgCandidate))) {
+                            @File::delete(public_path($img));
+                            $img = $jpgCandidate;
+                        }
+                    }
+                }
                 $item['image'] = asset(ltrim($img, '/'));
             }
 

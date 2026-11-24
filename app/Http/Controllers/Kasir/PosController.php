@@ -12,7 +12,6 @@ use App\Models\Promo;
 use App\Models\Table;
 use App\Services\OrderService;
 use App\Services\PaymentService;
-use App\Services\ShiftService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -22,7 +21,6 @@ class PosController extends Controller
     public function __construct(
         private readonly OrderService $orders,
         private readonly PaymentService $payments,
-        private readonly ShiftService $shifts,
     ) {}
 
     public function index(Request $request)
@@ -36,17 +34,19 @@ class PosController extends Controller
         $paymentMethods = PaymentMethod::active()->get();
         $promos = Promo::running()->get();
 
-        // Pesanan yang ditahan: belum dibayar & belum selesai, dibuat shift berjalan
-        $shift = $this->shifts->activeFor(Auth::user());
-        $heldOrders = $shift
-            ? Order::with('items')->where('cash_shift_id', $shift->id)->unpaid()
-                ->where('order_status', '!=', 'selesai')->latest()->get()
-            : collect();
+        // Pesanan yang ditahan hari ini: belum dibayar & belum selesai
+        $heldOrders = Order::with('items')->unpaid()
+            ->where('order_status', '!=', 'selesai')
+            ->today()
+            ->latest()
+            ->get();
 
         $resume = null;
         if ($request->filled('resume')) {
             $resume = Order::with('items')->find($request->integer('resume'));
         }
+
+        $activePenjaga = session('active_penjaga_kasir') ?: CafeSetting::get('active_penjaga_kasir');
 
         return view('kasir.pos.index', compact(
             'categories',
@@ -55,6 +55,7 @@ class PosController extends Controller
             'promos',
             'heldOrders',
             'resume',
+            'activePenjaga',
         ));
     }
 
@@ -111,9 +112,9 @@ class PosController extends Controller
             return back()->withInput()->with('error', 'Keranjang masih kosong.');
         }
 
-        $shift = $this->shifts->activeFor(Auth::user());
-        if (! $shift) {
-            return redirect()->route('kasir.shift.open')->with('error', 'Buka shift terlebih dahulu.');
+        $penjagaName = session('active_penjaga_kasir') ?: CafeSetting::get('active_penjaga_kasir');
+        if (! $penjagaName) {
+            return back()->withInput()->with('error', 'Wajib memilih nama penjaga kasir yang bertugas di Dashboard sebelum membuat pesanan!');
         }
 
         if ($data['order_type'] === 'dine_in' && empty($data['table_number'])) {
@@ -132,7 +133,7 @@ class PosController extends Controller
                 'source' => 'offline',
                 'order_status' => 'baru',
                 'payment_method' => $data['payment_method'] ?? 'tunai',
-            ], Auth::user(), $shift);
+            ], Auth::user(), null);
 
             if ($data['order_type'] === 'dine_in' && ! empty($data['table_number'])) {
                 Table::where('number', $data['table_number'])->update(['status' => 'terpakai']);

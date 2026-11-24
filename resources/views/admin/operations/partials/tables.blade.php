@@ -16,17 +16,22 @@
     <!-- Page Header & Action (Desktop only) -->
     <div class="hidden lg:flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h2 class="font-serif text-2xl font-bold text-cafe-dark">Denah Meja &amp; QR Code Pemesanan</h2>
-            <p class="text-xs text-cafe-muted mt-0.5">Pantau status meja, atur kapasitas kursi, dan generate QR code scan pesan pelanggan</p>
+            <h2 class="font-serif text-2xl font-bold text-cafe-dark">Denah &amp; Kelola Meja</h2>
+            <p class="text-xs text-cafe-muted mt-0.5">Kelola kapasitas kursi, denah nomor meja, dan cetak stand QR code</p>
         </div>
 
         <div class="flex items-center gap-2.5">
+            <a href="{{ route('admin.website.index', ['tab' => 'qr_meja']) }}" class="px-4 py-2.5 rounded-full bg-cafe-card hover:bg-cafe-beige/60 text-cafe-dark border border-cafe-beige/80 font-semibold text-xs shadow-sm transition-all flex items-center gap-2">
+                <i data-lucide="settings" class="w-4 h-4 text-cafe-gold"></i>
+                <span>Pengaturan URL QR</span>
+            </a>
+
             <a href="{{ route('admin.operations.tables.print_all') }}" target="_blank" class="px-4 py-2.5 rounded-full bg-cafe-card hover:bg-cafe-beige/60 text-cafe-dark border border-cafe-beige/80 font-semibold text-xs shadow-sm transition-all flex items-center gap-2">
                 <i data-lucide="printer" class="w-4 h-4 text-cafe-gold"></i>
                 <span>Cetak Semua Stand Meja</span>
             </a>
 
-            <button onclick="openTableModal()" class="px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all flex items-center gap-2">
+            <button onclick="openTableModal()" class="px-5 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all flex items-center gap-2 cursor-pointer">
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 <span>Tambah Meja Baru</span>
             </button>
@@ -35,137 +40,16 @@
 
     {{-- Mobile Action Buttons --}}
     <div class="flex lg:hidden items-center gap-2">
+        <a href="{{ route('admin.website.index', ['tab' => 'qr_meja']) }}" class="flex-1 py-2 px-3 text-center rounded-xl bg-cafe-card text-cafe-dark border border-cafe-beige/80 font-semibold text-xs shadow-sm flex items-center justify-center gap-1.5">
+            <i data-lucide="settings" class="w-3.5 h-3.5 text-cafe-gold"></i>
+            <span>URL QR</span>
+        </a>
         <a href="{{ route('admin.operations.tables.print_all') }}" target="_blank" class="flex-1 py-2 px-3 text-center rounded-xl bg-cafe-card text-cafe-dark border border-cafe-beige/80 font-semibold text-xs shadow-sm flex items-center justify-center gap-1.5">
             <i data-lucide="printer" class="w-3.5 h-3.5 text-cafe-gold"></i>
-            <span>Cetak Stand Meja</span>
+            <span>Cetak Stand</span>
         </a>
     </div>
     <x-mobile.fab icon="plus" label="Tambah Meja" onclick="openTableModal()" />
-
-    {{-- ============================================================= --}}
-    {{-- CARD PENGATURAN URL & PANEL PENGUJIAN 2 CARA PEMESANAN        --}}
-    {{-- ============================================================= --}}
-    <div class="bg-cafe-card rounded-2xl p-5 sm:p-6 shadow-soft border border-cafe-beige/60 space-y-5">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-cafe-beige/50">
-            <div>
-                <h3 class="font-serif text-lg font-bold text-cafe-dark flex items-center gap-2">
-                    <i data-lucide="qr-code" class="w-5 h-5 text-cafe-gold"></i>
-                    <span>Pengaturan URL &amp; QR Pemesanan Per Meja</span>
-                </h3>
-                <p class="text-xs text-cafe-muted mt-0.5">
-                    Kelola Base URL yang dimasukkan ke dalam QR Code meja dan uji coba 2 alur pemesanan pelanggan.
-                </p>
-            </div>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-[#775533]/10 text-[#775533] border border-[#775533]/20 self-start md:self-auto">
-                {{ $tables->count() }} Meja Terdaftar
-            </span>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            <!-- Form Setting Base URL (5 Kolom) -->
-            <div class="lg:col-span-5 space-y-3">
-                <form action="{{ route('admin.operations.qr_setting.update') }}" method="POST" class="space-y-3">
-                    @csrf
-                    <div>
-                        <label for="order_base_url" class="block font-semibold text-cafe-dark text-xs mb-1">
-                            Link Hostingan / Tunnel (Cloudflare, Ngrok, dll.)
-                        </label>
-                        <div class="relative">
-                            <input type="text"
-                                   name="order_base_url"
-                                   id="order_base_url"
-                                   value="{{ $hostingUrl ?? preg_replace('~/menu$~i', '', rtrim($orderBaseUrl, '/')) }}"
-                                   placeholder="{{ url('/') }}"
-                                   class="w-full bg-[#E3DEA4]/30 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none font-mono text-cafe-dark">
-                        </div>
-                        <p class="text-[11px] text-cafe-muted mt-1 leading-relaxed">
-                            Cukup masukkan link hostingan saja (tanpa <code class="bg-beige px-1 rounded text-cafe-dark">/...</code> di belakang). Contoh: <code class="bg-beige px-1 rounded text-cafe-dark">https://xxxx.trycloudflare.com</code> atau <code class="bg-beige px-1 rounded text-cafe-dark">https://xxxx.ngrok-free.app</code>. Sistem akan otomatis menambahkan rute menu dan parameter per meja.
-                        </p>
-                    </div>
-
-                    <div class="flex items-center gap-2 pt-1">
-                        <button type="submit" class="px-4 py-2 rounded-xl bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-sm transition-all flex items-center gap-1.5">
-                            <i data-lucide="save" class="w-3.5 h-3.5"></i>
-                            <span>Simpan Link Hostingan</span>
-                        </button>
-                        <button type="button" onclick="document.getElementById('order_base_url').value = '{{ url('/') }}'" class="px-3 py-2 rounded-xl text-xs font-semibold text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/40">
-                            Reset Default
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Panel Pengujian 2 URL Pemesanan (7 Kolom) -->
-            <div class="lg:col-span-7 space-y-3 bg-beige/50 p-4 rounded-xl border border-cafe-beige/40">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold uppercase tracking-wider text-[#775533] flex items-center gap-1.5">
-                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                        <span>Panel Pengujian 2 Alur Pemesanan</span>
-                    </span>
-                    <span class="text-[10px] text-cafe-muted">Klik untuk tes di tab baru</span>
-                </div>
-
-                <!-- URL 1: Scan Meja (Dine-in dengan Nomor Meja) -->
-                @php
-                    $testTableNumber = $tables->first()?->number ?? 1;
-                    $testUrlScan = rtrim($orderBaseUrl, '/') . '?meja=' . $testTableNumber;
-                    $testUrlLanding = $hostingUrl ?? preg_replace('~/menu$~i', '', rtrim($orderBaseUrl, '/'));
-                @endphp
-                <div class="bg-white p-3 rounded-xl border border-cafe-beige/60 space-y-1.5 shadow-2xs">
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-2">
-                            <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold flex items-center justify-center shrink-0">1</span>
-                            <span class="text-xs font-bold text-cafe-dark">Alur 1: Scan QR di Meja (Otomatis Meja #{{ $testTableNumber }})</span>
-                        </div>
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Meja Terkunci</span>
-                    </div>
-                    <p class="text-[11px] text-cafe-muted">
-                        Simulasi pelanggan memindai QR code fisik di meja kafe. Halaman menu langsung terkoneksi ke nomor meja.
-                    </p>
-                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
-                        <input type="text" readonly value="{{ $testUrlScan }}" id="test-url-1" class="w-full sm:flex-1 bg-stone-50 text-[11px] font-mono text-cafe-dark p-2 rounded-lg border border-stone-200 truncate select-all">
-                        <div class="flex items-center gap-2 shrink-0">
-                            <button type="button" onclick="copyText('{{ $testUrlScan }}', 'URL Scan Meja berhasil disalin!')" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-cafe-card hover:bg-cafe-beige text-cafe-dark text-xs font-semibold border border-cafe-beige flex items-center justify-center gap-1" title="Salin URL">
-                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                                <span>Salin</span>
-                            </button>
-                            <a href="{{ $testUrlScan }}" target="_blank" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold flex items-center justify-center gap-1" title="Buka URL">
-                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                                <span>Buka Tes</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- URL 2: Link dari Landing Page (Online / Pilih Meja / Takeaway) -->
-                <div class="bg-white p-3 rounded-xl border border-cafe-beige/60 space-y-1.5 shadow-2xs">
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-2">
-                            <span class="w-5 h-5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold flex items-center justify-center shrink-0">2</span>
-                            <span class="text-xs font-bold text-cafe-dark">Alur 2: Dari Landing Page ("Pesan Sekarang")</span>
-                        </div>
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">Bebas Pilih</span>
-                    </div>
-                    <p class="text-[11px] text-cafe-muted">
-                        Simulasi pelanggan membuka menu dari tombol beranda. Pelanggan bisa memilih nomor meja atau memilih pesan bawa pulang (takeaway).
-                    </p>
-                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
-                        <input type="text" readonly value="{{ $testUrlLanding }}" id="test-url-2" class="w-full sm:flex-1 bg-stone-50 text-[11px] font-mono text-cafe-dark p-2 rounded-lg border border-stone-200 truncate select-all">
-                        <div class="flex items-center gap-2 shrink-0">
-                            <button type="button" onclick="copyText('{{ $testUrlLanding }}', 'URL Menu Landing Page berhasil disalin!')" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-cafe-card hover:bg-cafe-beige text-cafe-dark text-xs font-semibold border border-cafe-beige flex items-center justify-center gap-1" title="Salin URL">
-                                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                                <span>Salin</span>
-                            </button>
-                            <a href="{{ $testUrlLanding }}" target="_blank" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold flex items-center justify-center gap-1" title="Buka URL">
-                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                                <span>Buka Tes</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Tables Grid Cards (1 col on narrow mobile, 2 cols on mobile, 3 on tablet, 5 on desktop) -->
     <div class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">

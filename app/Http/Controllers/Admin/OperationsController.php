@@ -92,7 +92,7 @@ class OperationsController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return back()->with('success', 'Link hostingan QR meja berhasil disimpan! Rute /menu otomatis diterapkan.');
+        return redirect()->route('admin.website.index', ['tab' => 'qr_meja'])->with('success', 'Link hostingan QR meja berhasil disimpan! Rute /menu otomatis diterapkan.');
     }
 
     /**

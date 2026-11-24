@@ -26,6 +26,7 @@
             $tabOptions = [
                 ['label' => 'Profil', 'val' => 'profil'],
                 ['label' => 'Landing Page', 'val' => 'landing'],
+                ['label' => 'URL QR Meja', 'val' => 'qr_meja'],
                 ['label' => 'Pajak & Biaya', 'val' => 'pajak'],
                 ['label' => 'Akun Saya', 'val' => 'akun'],
             ];
@@ -48,6 +49,9 @@
         </a>
         <a href="{{ route('admin.website.index', ['tab' => 'landing']) }}" class="px-4 py-2 rounded-full whitespace-nowrap transition-all {{ $tab === 'landing' ? 'bg-cafe-dark text-cafe-cream shadow-xs' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/50' }}">
             Landing Page
+        </a>
+        <a href="{{ route('admin.website.index', ['tab' => 'qr_meja']) }}" class="px-4 py-2 rounded-full whitespace-nowrap transition-all {{ $tab === 'qr_meja' ? 'bg-cafe-dark text-cafe-cream shadow-xs' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/50' }}">
+            URL QR Meja
         </a>
         <a href="{{ route('admin.website.index', ['tab' => 'pajak']) }}" class="px-4 py-2 rounded-full whitespace-nowrap transition-all {{ $tab === 'pajak' ? 'bg-cafe-dark text-cafe-cream shadow-xs' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/50' }}">
             Pajak &amp; Biaya
@@ -264,6 +268,140 @@
         </div>
     @endif
 
+    <!-- TAB: URL QR MEJA -->
+    @if($tab === 'qr_meja')
+        <div class="space-y-6 max-w-5xl">
+            <!-- Header Kartu Info & Shortcut ke Denah Meja -->
+            <div class="bg-cafe-card rounded-2xl p-5 sm:p-6 shadow-soft border border-cafe-beige/60 space-y-5">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-cafe-beige/50">
+                    <div>
+                        <h3 class="font-serif text-lg font-bold text-cafe-dark flex items-center gap-2">
+                            <i data-lucide="qr-code" class="w-5 h-5 text-cafe-gold"></i>
+                            <span>Pengaturan URL &amp; QR Pemesanan Per Meja</span>
+                        </h3>
+                        <p class="text-xs text-cafe-muted mt-0.5">
+                            Kelola Base URL yang dimasukkan ke dalam QR Code meja dan uji coba 2 alur pemesanan pelanggan.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2 self-start md:self-auto">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-[#775533]/10 text-[#775533] border border-[#775533]/20">
+                            {{ $tables->count() }} Meja Terdaftar
+                        </span>
+                        <a href="{{ route('admin.operations.index') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-cafe-dark hover:bg-cafe-brown text-cafe-cream shadow-xs transition-all">
+                            <i data-lucide="grid-3x3" class="w-3.5 h-3.5"></i>
+                            <span>Buka Kelola Meja</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    <!-- Form Setting Base URL (5 Kolom) -->
+                    <div class="lg:col-span-5 space-y-3">
+                        <form action="{{ route('admin.website.qr_setting') }}" method="POST" class="space-y-3">
+                            @csrf
+                            <div>
+                                <label for="order_base_url" class="block font-semibold text-cafe-dark text-xs mb-1">
+                                    Link Hostingan / Tunnel (Cloudflare, Ngrok, dll.)
+                                </label>
+                                <div class="relative">
+                                    <input type="text"
+                                           name="order_base_url"
+                                           id="order_base_url"
+                                           value="{{ $hostingUrl ?? preg_replace('~/menu$~i', '', rtrim($orderBaseUrl, '/')) }}"
+                                           placeholder="{{ url('/') }}"
+                                           class="w-full bg-[#E3DEA4]/30 focus:bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none font-mono text-cafe-dark">
+                                </div>
+                                <p class="text-[11px] text-cafe-muted mt-1 leading-relaxed">
+                                    Cukup masukkan link hostingan saja (tanpa <code class="bg-beige px-1 rounded text-cafe-dark">/...</code> di belakang). Contoh: <code class="bg-beige px-1 rounded text-cafe-dark">https://xxxx.trycloudflare.com</code> atau <code class="bg-beige px-1 rounded text-cafe-dark">https://xxxx.ngrok-free.app</code>. Sistem akan otomatis menambahkan rute menu dan parameter per meja.
+                                </p>
+                            </div>
+
+                            <div class="flex items-center gap-2 pt-1">
+                                <button type="submit" class="px-4 py-2 rounded-xl bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer">
+                                    <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                                    <span>Simpan Link Hostingan</span>
+                                </button>
+                                <button type="button" onclick="document.getElementById('order_base_url').value = '{{ url('/') }}'" class="px-3 py-2 rounded-xl text-xs font-semibold text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/40 cursor-pointer">
+                                    Reset Default
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Panel Pengujian 2 URL Pemesanan (7 Kolom) -->
+                    <div class="lg:col-span-7 space-y-3 bg-beige/50 p-4 rounded-xl border border-cafe-beige/40">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase tracking-wider text-[#775533] flex items-center gap-1.5">
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                <span>Panel Pengujian 2 Alur Pemesanan</span>
+                            </span>
+                            <span class="text-[10px] text-cafe-muted">Klik untuk tes di tab baru</span>
+                        </div>
+
+                        <!-- URL 1: Scan Meja (Dine-in dengan Nomor Meja) -->
+                        @php
+                            $testTableNumber = $tables->first()?->number ?? 1;
+                            $testUrlScan = rtrim($orderBaseUrl, '/') . '?meja=' . $testTableNumber;
+                            $testUrlLanding = $hostingUrl ?? preg_replace('~/menu$~i', '', rtrim($orderBaseUrl, '/'));
+                        @endphp
+                        <div class="bg-white p-3 rounded-xl border border-cafe-beige/60 space-y-1.5 shadow-2xs">
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold flex items-center justify-center shrink-0">1</span>
+                                    <span class="text-xs font-bold text-cafe-dark">Alur 1: Scan QR di Meja (Otomatis Meja #{{ $testTableNumber }})</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Meja Terkunci</span>
+                            </div>
+                            <p class="text-[11px] text-cafe-muted">
+                                Simulasi pelanggan memindai QR code fisik di meja kafe. Halaman menu langsung terkoneksi ke nomor meja.
+                            </p>
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
+                                <input type="text" readonly value="{{ $testUrlScan }}" id="test-url-1" class="w-full sm:flex-1 bg-stone-50 text-[11px] font-mono text-cafe-dark p-2 rounded-lg border border-stone-200 truncate select-all">
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <button type="button" onclick="copyWebText('{{ $testUrlScan }}', 'URL Scan Meja berhasil disalin!')" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-cafe-card hover:bg-cafe-beige text-cafe-dark text-xs font-semibold border border-cafe-beige flex items-center justify-center gap-1 cursor-pointer" title="Salin URL">
+                                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                        <span>Salin</span>
+                                    </button>
+                                    <a href="{{ $testUrlScan }}" target="_blank" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold flex items-center justify-center gap-1" title="Buka URL">
+                                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                        <span>Buka Tes</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- URL 2: Link dari Landing Page (Online / Pilih Meja / Takeaway) -->
+                        <div class="bg-white p-3 rounded-xl border border-cafe-beige/60 space-y-1.5 shadow-2xs">
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-5 h-5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold flex items-center justify-center shrink-0">2</span>
+                                    <span class="text-xs font-bold text-cafe-dark">Alur 2: Dari Landing Page (&quot;Pesan Sekarang&quot;)</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">Bebas Pilih</span>
+                            </div>
+                            <p class="text-[11px] text-cafe-muted">
+                                Simulasi pelanggan membuka menu dari tombol beranda. Pelanggan bisa memilih nomor meja atau memilih pesan bawa pulang (takeaway).
+                            </p>
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
+                                <input type="text" readonly value="{{ $testUrlLanding }}" id="test-url-2" class="w-full sm:flex-1 bg-stone-50 text-[11px] font-mono text-cafe-dark p-2 rounded-lg border border-stone-200 truncate select-all">
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <button type="button" onclick="copyWebText('{{ $testUrlLanding }}', 'URL Menu Landing Page berhasil disalin!')" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-cafe-card hover:bg-cafe-beige text-cafe-dark text-xs font-semibold border border-cafe-beige flex items-center justify-center gap-1 cursor-pointer" title="Salin URL">
+                                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                        <span>Salin</span>
+                                    </button>
+                                    <a href="{{ $testUrlLanding }}" target="_blank" class="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold flex items-center justify-center gap-1" title="Buka URL">
+                                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                        <span>Buka Tes</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- TAB 4: LANDING PAGE -->
     @if($tab === 'landing')
         <div class="space-y-6 max-w-5xl">
@@ -362,7 +500,7 @@
                                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                                         <input type="file"
                                                name="photo"
-                                               accept="image/jpeg,image/png,image/webp"
+                                               accept="image/*,.heic,.heif,.HEIC,.HEIF,image/heic,image/heif"
                                                required
                                                class="block w-full text-[11px] text-cafe-muted file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-cafe-dark file:text-cafe-cream hover:file:bg-cafe-brown cursor-pointer bg-beige/40 rounded-xl border border-cafe-beige p-1">
                                         <button type="submit" class="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-1.5 px-4 py-2 sm:py-1.5 rounded-xl bg-[#D4954D] hover:bg-[#c2843e] text-[#290024] font-bold text-[11px] transition-all active:scale-95 shadow-xs cursor-pointer">
@@ -424,13 +562,13 @@
                         <i data-lucide="plus-circle" class="w-4 h-4 text-cafe-gold"></i>
                         <span>Tambah Foto Baru ke Galeri Carousel</span>
                     </h5>
-                    <p class="text-[11px] text-cafe-muted mb-4">Upload foto berorientasi portrait/tegak (rekomendasi rasio 4:5 atau 960x1200 px). Maksimal 5 MB.</p>
+                    <p class="text-[11px] text-cafe-muted mb-4">Upload foto (rekomendasi rasio 4:5 atau 960x1200 px). Semua format didukung (JPG, PNG, WebP, HEIC, dll. Maks 20 MB).</p>
 
                     <form action="{{ route('admin.website.landing.gallery.add') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
                         @csrf
                         <div class="sm:col-span-5 space-y-1">
                             <label class="block text-[11px] font-semibold text-cafe-dark">Pilih Berkas Foto</label>
-                            <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" required
+                            <input type="file" name="photo" accept="image/*,.heic,.heif,.HEIC,.HEIF,image/heic,image/heif" required
                                    class="w-full text-xs text-cafe-dark file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-cafe-dark file:text-cafe-cream hover:file:bg-cafe-brown cursor-pointer border border-cafe-beige bg-white rounded-xl p-1">
                         </div>
                         <div class="sm:col-span-4 space-y-1">
@@ -754,9 +892,9 @@
                     </div>
                     <div class="space-y-1">
                         <label class="font-semibold text-cafe-dark">Ganti Berkas Foto (Opsional)</label>
-                        <input type="file" name="photo" accept="image/jpeg,image/png,image/webp"
+                        <input type="file" name="photo" accept="image/*,.heic,.heif,.HEIC,.HEIF,image/heic,image/heif"
                                class="w-full text-xs text-cafe-dark file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-cafe-dark file:text-cafe-cream border border-cafe-beige bg-white rounded-xl p-1">
-                        <p class="text-[10px] text-cafe-muted">Kosongkan jika hanya ingin mengubah judul/keterangan.</p>
+                        <p class="text-[10px] text-cafe-muted">Kosongkan jika hanya ingin mengubah judul/keterangan. Semua format foto didukung (JPG, PNG, WebP, HEIC, dll).</p>
                     </div>
                     <div class="flex items-center justify-end gap-2 pt-2">
                         <button type="button" onclick="closeEditGalleryModal()" class="px-4 py-2 rounded-xl bg-cafe-beige/60 text-cafe-dark font-semibold text-xs">
@@ -770,11 +908,34 @@
             </div>
         </div>
     @endif
+    <!-- Toast Notifikasi Copy -->
+    <div id="copy-web-toast" class="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-xl bg-cafe-dark text-cafe-cream text-xs font-semibold shadow-soft-lg border border-cafe-gold/30 flex items-center gap-2 transform translate-y-10 opacity-0 transition-all duration-200 pointer-events-none">
+        <i data-lucide="check" class="w-4 h-4 text-cafe-gold"></i>
+        <span id="copy-web-toast-msg">Link berhasil disalin!</span>
+    </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
+    function copyWebText(text, msg = 'Link berhasil disalin ke clipboard!') {
+        navigator.clipboard.writeText(text).then(() => {
+            const toast = document.getElementById('copy-web-toast');
+            const toastMsg = document.getElementById('copy-web-toast-msg');
+            if (toast && toastMsg) {
+                toastMsg.innerText = msg;
+                toast.classList.remove('translate-y-10', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+                setTimeout(() => {
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                    toast.classList.add('translate-y-10', 'opacity-0');
+                }, 2500);
+            }
+        }).catch(() => {
+            alert('URL: ' + text);
+        });
+    }
+
     function openEditGalleryModal(id, title) {
         const modal = document.getElementById('editGalleryModal');
         const form = document.getElementById('editGalleryForm');

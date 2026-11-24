@@ -21,7 +21,6 @@ use App\Http\Controllers\Kasir\OrderController as KasirOrderController;
 use App\Http\Controllers\Kasir\PaymentController as KasirPaymentController;
 use App\Http\Controllers\Kasir\PosController as KasirPosController;
 use App\Http\Controllers\Kasir\ReservationController as KasirReservationController;
-use App\Http\Controllers\Kasir\ShiftController as KasirShiftController;
 use App\Http\Controllers\Kasir\TableController as KasirTableController;
 use App\Http\Controllers\Owner\CashAdjustmentController as OwnerCashAdjustmentController;
 use App\Http\Controllers\Owner\CashierController as OwnerCashierController;
@@ -97,6 +96,12 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
         Route::post('/{id}/toggle-status', [StaffController::class, 'toggleStatus'])->name('toggle.status');
         Route::post('/{id}/reset-password', [StaffController::class, 'resetPassword'])->name('reset_password');
         Route::delete('/{id}', [StaffController::class, 'destroy'])->name('destroy');
+
+        // Orang yang Jaga Kasir (Penjaga Kasir - Tanpa Login)
+        Route::post('/penjaga/store', [StaffController::class, 'storePenjaga'])->name('penjaga.store');
+        Route::post('/penjaga/{id}/update', [StaffController::class, 'updatePenjaga'])->name('penjaga.update');
+        Route::post('/penjaga/{id}/toggle-status', [StaffController::class, 'toggleStatusPenjaga'])->name('penjaga.toggle.status');
+        Route::delete('/penjaga/{id}', [StaffController::class, 'destroyPenjaga'])->name('penjaga.destroy');
     });
 
     // 2. Manajemen Menu (Menu & Kategori)
@@ -164,6 +169,7 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.auth', 'reject.emoji'
         Route::post('/receipt', [WebsiteController::class, 'updateReceipt'])->name('receipt');
         Route::post('/display', [WebsiteController::class, 'updateDisplay'])->name('display');
         Route::post('/account', [WebsiteController::class, 'updateAccount'])->name('account');
+        Route::post('/qr-meja', [WebsiteController::class, 'updateQrSetting'])->name('qr_setting');
         Route::post('/landing', [WebsiteController::class, 'updateLanding'])->name('landing');
         Route::post('/landing/foto', [WebsiteController::class, 'updateLandingPhoto'])->name('landing.photo');
         Route::delete('/landing/foto/{slot}', [WebsiteController::class, 'deleteLandingPhoto'])->name('landing.photo.delete');
@@ -317,29 +323,16 @@ Route::prefix('owner')->name('owner.')->middleware(['auth', 'role:owner', 'noind
 |--------------------------------------------------------------------------
 | Portal Kasir (Operasional Harian)
 |--------------------------------------------------------------------------
-| Kasir menangani shift, POS, pesanan, pembayaran, reservasi & meja.
-| Rute transaksi (POS, pembayaran, ubah status, catat kas) mengharuskan
-| shift aktif melalui middleware 'kasir.shift'.
+| Kasir menangani POS, pesanan, pembayaran, reservasi & meja.
 */
 Route::prefix('kasir')->name('kasir.')->middleware(['auth', 'role:kasir', 'noindex.staf'])->group(function () {
-    // 1. Dashboard Shift
+    // 1. Dashboard Kasir & Pemilihan Penjaga
     Route::get('/', [KasirDashboardController::class, 'index'])->name('dashboard');
+    Route::post('/pilih-penjaga', [KasirDashboardController::class, 'setPenjaga'])->name('set_penjaga');
     Route::get('/notifikasi/pending', [KasirDashboardController::class, 'pendingCount'])->name('notifications.pending');
 
-    // 2. Shift & Rekap Kas
-    Route::prefix('shift')->name('shift.')->group(function () {
-        Route::get('/', [KasirShiftController::class, 'index'])->name('index');
-        Route::get('/buka', [KasirShiftController::class, 'showOpen'])->name('open');
-        Route::post('/buka', [KasirShiftController::class, 'open'])->name('open.store');
-        Route::get('/tutup', [KasirShiftController::class, 'showClose'])->name('close')->middleware('kasir.shift');
-        Route::post('/tutup', [KasirShiftController::class, 'close'])->name('close.store')->middleware('kasir.shift');
-        Route::post('/kas', [KasirShiftController::class, 'movement'])->name('movement')->middleware('kasir.shift');
-        Route::get('/{shift}/struk', [KasirShiftController::class, 'receipt'])->name('receipt');
-        Route::get('/{shift}', [KasirShiftController::class, 'history'])->name('show');
-    });
-
-    // 3. POS / Input Pesanan
-    Route::prefix('pos')->name('pos.')->middleware('kasir.shift')->group(function () {
+    // 2. POS / Input Pesanan
+    Route::prefix('pos')->name('pos.')->group(function () {
         Route::get('/', [KasirPosController::class, 'index'])->name('index');
         Route::post('/totals', [KasirPosController::class, 'totals'])->name('totals');
         Route::post('/store', [KasirPosController::class, 'store'])->name('store');
@@ -348,16 +341,16 @@ Route::prefix('kasir')->name('kasir.')->middleware(['auth', 'role:kasir', 'noind
     // 4. Pesanan Masuk & Status
     Route::prefix('pesanan')->name('orders.')->group(function () {
         Route::get('/', [KasirOrderController::class, 'index'])->name('index');
-        Route::get('/scan/{code}', [KasirOrderController::class, 'scan'])->name('scan')->middleware('kasir.shift');
-        Route::post('/scan', [KasirOrderController::class, 'scanSubmit'])->name('scan.submit')->middleware('kasir.shift');
+        Route::get('/scan/{code}', [KasirOrderController::class, 'scan'])->name('scan');
+        Route::post('/scan', [KasirOrderController::class, 'scanSubmit'])->name('scan.submit');
         Route::get('/{order}/data', [KasirOrderController::class, 'show'])->name('data');
-        Route::post('/{order}/terima', [KasirOrderController::class, 'accept'])->name('accept')->middleware('kasir.shift');
-        Route::post('/{order}/status', [KasirOrderController::class, 'status'])->name('status')->middleware('kasir.shift');
-        Route::post('/{order}/batal', [KasirOrderController::class, 'cancel'])->name('cancel')->middleware('kasir.shift');
+        Route::post('/{order}/terima', [KasirOrderController::class, 'accept'])->name('accept');
+        Route::post('/{order}/status', [KasirOrderController::class, 'status'])->name('status');
+        Route::post('/{order}/batal', [KasirOrderController::class, 'cancel'])->name('cancel');
     });
 
     // 5. Pembayaran & Cetak Struk
-    Route::prefix('pembayaran')->name('payments.')->middleware('kasir.shift')->group(function () {
+    Route::prefix('pembayaran')->name('payments.')->group(function () {
         Route::get('/', [KasirPaymentController::class, 'index'])->name('index');
         Route::get('/{order}/bayar', [KasirPaymentController::class, 'checkout'])->name('checkout');
         Route::post('/{order}/bayar', [KasirPaymentController::class, 'pay'])->name('pay');

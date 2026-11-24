@@ -31,11 +31,16 @@
 
     <!-- Filters & Search Toolbar -->
     <div class="bg-cafe-card p-4 sm:p-5 rounded-2xl shadow-soft border border-cafe-beige/40">
-        <form method="GET" action="{{ route('admin.orders.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <form method="GET" action="{{ route('admin.orders.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             <!-- Search Input -->
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 text-cafe-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kode (#AB...) atau nama..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text placeholder:text-cafe-muted/70 pl-9 pr-3.5 py-2.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
+            </div>
+
+            <!-- Filter Tanggal (Rekap Per Hari / Semua) -->
+            <div class="relative">
+                <input type="date" name="date" value="{{ request('date') }}" onchange="this.form.submit()" title="Filter per tanggal pesanan" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs text-cafe-text py-2 px-3.5 rounded-full border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer">
             </div>
 
             <!-- Filter Status Bayar -->

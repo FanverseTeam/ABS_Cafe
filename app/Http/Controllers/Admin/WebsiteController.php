@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
 use App\Models\CafeSetting;
+use App\Models\Table;
+use App\Support\HeicConverter;
 use App\Support\LandingData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -75,7 +77,70 @@ class WebsiteController extends Controller
             $isCustomGallery = CafeSetting::get('landing_gallery') !== null;
         }
 
-        return view('admin.website.index', compact('settings', 'tab', 'landingSettings', 'landingPhotos', 'galleryItems', 'isCustomGallery'));
+        $hostingUrl = $this->normalizeHostUrl(CafeSetting::get('order_base_url'));
+        $orderBaseUrl = $hostingUrl.'/menu';
+        $tables = Table::orderBy('number', 'asc')->get();
+
+        return view('admin.website.index', compact(
+            'settings',
+            'tab',
+            'landingSettings',
+            'landingPhotos',
+            'galleryItems',
+            'isCustomGallery',
+            'hostingUrl',
+            'orderBaseUrl',
+            'tables'
+        ));
+    }
+
+    /**
+     * Normalisasi link hostingan (Cloudflare, Ngrok, domain custom, IP, dll.).
+     * Menghapus slash dan rute /menu di belakang secara otomatis.
+     */
+    private function normalizeHostUrl(?string $input): string
+    {
+        $url = trim((string) $input);
+        if (empty($url)) {
+            return rtrim(url('/'), '/');
+        }
+
+        // Jika tidak diawali scheme (http:// atau https://), tambahkan https://
+        if (! preg_match('~^https?://~i', $url)) {
+            $url = 'https://'.$url;
+        }
+
+        // Hapus trailing slash
+        $url = rtrim($url, '/');
+
+        // Jika user secara manual memasukkan /menu di akhir, hapus agar base url tetap bersih
+        $url = preg_replace('~/menu$~i', '', $url);
+
+        return $url;
+    }
+
+    /**
+     * Update Pengaturan Base URL QR Pemesanan Meja.
+     */
+    public function updateQrSetting(Request $request)
+    {
+        $request->validate([
+            'order_base_url' => 'nullable|string|max:255',
+        ]);
+
+        $hostingUrl = $this->normalizeHostUrl($request->input('order_base_url'));
+
+        CafeSetting::set('order_base_url', $hostingUrl);
+
+        ActivityLog::create([
+            'user_name' => Auth::user()->name,
+            'role' => Auth::user()->role,
+            'activity' => "Memperbarui Link Hostingan QR Pemesanan Meja menjadi {$hostingUrl} (Menu: {$hostingUrl}/menu)",
+            'activity_type' => 'website',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()->route('admin.website.index', ['tab' => 'qr_meja'])->with('success', 'Link hostingan QR meja berhasil disimpan! Rute /menu otomatis diterapkan.');
     }
 
     public function updateProfile(Request $request)
@@ -354,17 +419,17 @@ class WebsiteController extends Controller
 
         $request->validate([
             'slot' => 'required|string|in:'.implode(',', $allowedSlots),
-            'photo' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'photo' => 'required|file|max:20480|extensions:jpg,jpeg,png,webp,gif,svg,bmp,avif,heic,heif,tiff,tif,ico',
         ], [
             'photo.required' => 'Pilih file foto untuk diupload.',
-            'photo.image' => 'File harus berupa gambar.',
-            'photo.mimes' => 'Format yang diperbolehkan: JPG, PNG, atau WebP.',
-            'photo.max' => 'Ukuran foto maksimal 5 MB.',
+            'photo.file' => 'File harus berupa gambar.',
+            'photo.extensions' => 'Format foto harus berupa file gambar (JPG, PNG, WebP, HEIC, HEIF, AVIF, dll).',
+            'photo.max' => 'Ukuran foto maksimal 20 MB.',
         ]);
 
         $slot = $request->input('slot');
-        $file = $request->file('photo');
-        $extension = $file->getClientOriginalExtension();
+        $file = HeicConverter::convertUploadedFile($request->file('photo'));
+        $extension = strtolower($file->getClientOriginalExtension() ?: 'jpg');
 
         $targetDir = public_path('images/pelanggan');
         if (! File::isDirectory($targetDir)) {
@@ -372,7 +437,7 @@ class WebsiteController extends Controller
         }
 
         // Hapus file lama dengan ekstensi berbeda
-        $extensions = ['webp', 'jpg', 'jpeg', 'png'];
+        $extensions = ['webp', 'jpg', 'jpeg', 'png', 'heic', 'heif', 'avif', 'gif', 'bmp', 'svg', 'tiff', 'tif', 'ico'];
         foreach ($extensions as $ext) {
             $oldFile = $targetDir.DIRECTORY_SEPARATOR."{$slot}.{$ext}";
             if (File::exists($oldFile)) {
@@ -414,7 +479,7 @@ class WebsiteController extends Controller
         }
 
         $targetDir = public_path('images/pelanggan');
-        $extensions = ['webp', 'jpg', 'jpeg', 'png'];
+        $extensions = ['webp', 'jpg', 'jpeg', 'png', 'heic', 'heif', 'avif', 'gif', 'bmp', 'svg', 'tiff', 'tif', 'ico'];
         $deleted = false;
 
         foreach ($extensions as $ext) {
@@ -453,17 +518,17 @@ class WebsiteController extends Controller
     public function addGalleryPhoto(Request $request)
     {
         $request->validate([
-            'photo' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'photo' => 'required|file|max:20480|extensions:jpg,jpeg,png,webp,gif,svg,bmp,avif,heic,heif,tiff,tif,ico',
             'title' => 'nullable|string|max:100',
         ], [
             'photo.required' => 'Pilih file foto galeri untuk diupload.',
-            'photo.image' => 'File harus berupa gambar.',
-            'photo.mimes' => 'Format foto yang didukung: JPG, PNG, atau WebP.',
-            'photo.max' => 'Ukuran foto maksimal 5 MB.',
+            'photo.file' => 'File harus berupa gambar.',
+            'photo.extensions' => 'Format foto harus berupa file gambar (JPG, PNG, WebP, HEIC, HEIF, AVIF, dll).',
+            'photo.max' => 'Ukuran foto maksimal 20 MB.',
         ]);
 
-        $file = $request->file('photo');
-        $extension = $file->getClientOriginalExtension();
+        $file = HeicConverter::convertUploadedFile($request->file('photo'));
+        $extension = strtolower($file->getClientOriginalExtension() ?: 'jpg');
         $filename = 'gallery_'.time().'_'.substr(md5(uniqid()), 0, 8).'.'.$extension;
 
         $targetDir = public_path('images/pelanggan/gallery');
@@ -504,7 +569,11 @@ class WebsiteController extends Controller
     {
         $request->validate([
             'title' => 'nullable|string|max:100',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'photo' => 'nullable|file|max:20480|extensions:jpg,jpeg,png,webp,gif,svg,bmp,avif,heic,heif,tiff,tif,ico',
+        ], [
+            'photo.file' => 'File harus berupa gambar.',
+            'photo.extensions' => 'Format foto harus berupa file gambar (JPG, PNG, WebP, HEIC, HEIF, AVIF, dll).',
+            'photo.max' => 'Ukuran foto maksimal 20 MB.',
         ]);
 
         $items = LandingData::rawGallery();
@@ -518,8 +587,8 @@ class WebsiteController extends Controller
                 }
 
                 if ($request->hasFile('photo')) {
-                    $file = $request->file('photo');
-                    $extension = $file->getClientOriginalExtension();
+                    $file = HeicConverter::convertUploadedFile($request->file('photo'));
+                    $extension = strtolower($file->getClientOriginalExtension() ?: 'jpg');
                     $filename = 'gallery_'.time().'_'.substr(md5(uniqid()), 0, 8).'.'.$extension;
                     $targetDir = public_path('images/pelanggan/gallery');
                     if (! File::isDirectory($targetDir)) {

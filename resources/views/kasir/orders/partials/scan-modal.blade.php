@@ -44,7 +44,7 @@
                 {{-- 100% Selalu bisa di HP tanpa hambatan izin HTTPS/HTTP --}}
                 <input type="file"
                        id="native-camera-input"
-                       accept="image/*"
+                       accept="image/*,.heic,.heif,.HEIC,.HEIF,image/heic,image/heif"
                        capture="environment"
                        class="hidden"
                        onchange="handleNativeCameraFile(this)">

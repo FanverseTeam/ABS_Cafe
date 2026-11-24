@@ -1,16 +1,14 @@
 @php
-    $newWebOrdersCount = \App\Models\Order::forKasir()->where('source', 'web')->where('order_status', 'diproses')->count();
-    $unpaidOrdersCount = \App\Models\Order::forKasir()->where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
+    $newWebOrdersCount = \App\Models\Order::forKasir()->today()->where('source', 'web')->where('order_status', 'diproses')->count();
+    $unpaidOrdersCount = \App\Models\Order::forKasir()->today()->where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
     $todayReservationCount = \App\Models\Reservation::whereDate('reservation_date', today())->count();
-    $hasActiveShift = \App\Models\CashShift::where('status', 'buka')->exists();
 
     $drawerMenus = [
-        ['route' => 'kasir.dashboard', 'label' => 'Dashboard Shift', 'icon' => 'layout-dashboard', 'badge' => null],
+        ['route' => 'kasir.dashboard', 'label' => 'Dashboard Kasir', 'icon' => 'layout-dashboard', 'badge' => null],
         ['route' => 'kasir.pos.index', 'label' => 'POS / Input Pesanan', 'icon' => 'calculator', 'badge' => null],
         ['route' => 'kasir.orders.index', 'label' => 'Pesanan Masuk', 'icon' => 'inbox', 'badge' => $newWebOrdersCount],
         ['route' => 'kasir.payments.index', 'label' => 'Pembayaran & Struk', 'icon' => 'receipt', 'badge' => $unpaidOrdersCount],
         ['route' => 'kasir.reservations.index', 'label' => 'Reservasi & Meja', 'icon' => 'calendar-days', 'badge' => $todayReservationCount],
-        ['route' => 'kasir.shift.index', 'label' => 'Buka/Tutup Shift & Rekap', 'icon' => 'wallet', 'badge' => null],
     ];
 @endphp
 
@@ -35,23 +33,6 @@
                     class="flex h-10 w-10 items-center justify-center rounded-xl text-[#F2F5E2]/80 hover:text-[#F2F5E2] hover:bg-beige/10 transition-colors">
                 <i data-lucide="x" class="h-5 w-5"></i>
             </button>
-        </div>
-
-        <!-- Shift Quick Status Badge -->
-        <div class="p-3 mx-4 mt-3 rounded-2xl border {{ $hasActiveShift ? 'bg-cafe-success/15 border-cafe-success/30 text-cafe-success' : 'bg-cafe-warning/15 border-cafe-warning/30 text-cafe-warning' }}">
-            <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2 min-w-0">
-                    <span class="relative flex h-2.5 w-2.5 shrink-0">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60 {{ $hasActiveShift ? 'bg-cafe-success' : 'bg-cafe-warning' }}"></span>
-                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 {{ $hasActiveShift ? 'bg-cafe-success' : 'bg-cafe-warning' }}"></span>
-                    </span>
-                    <span class="text-xs font-semibold truncate">{{ $hasActiveShift ? 'Shift Sedang Berjalan' : 'Shift Belum Dibuka' }}</span>
-                </div>
-                <a href="{{ $hasActiveShift ? route('kasir.shift.close') : route('kasir.shift.open') }}"
-                   class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#D4954D] text-[#290024] hover:brightness-105 shrink-0">
-                    {{ $hasActiveShift ? 'Tutup' : 'Buka' }}
-                </a>
-            </div>
         </div>
 
         <!-- Navigation Menu -->
@@ -87,15 +68,16 @@
             @endforeach
         </nav>
 
+        @php $drawerPenjaga = session('active_penjaga_kasir') ?: \App\Models\CafeSetting::get('active_penjaga_kasir'); @endphp
         <!-- Footer Profile -->
         <div class="p-4 border-t border-beige/10 bg-[#290024]/50 shrink-0">
             <div class="flex items-center gap-2.5 p-2 rounded-2xl bg-beige/5">
                 <div class="w-9 h-9 rounded-full bg-[#D4954D] text-[#290024] font-serif font-bold flex items-center justify-center text-xs shrink-0 shadow">
-                    {{ substr(Auth::user()->name ?? 'K', 0, 1) }}
+                    {{ substr($drawerPenjaga ?: (Auth::user()->name ?? 'K'), 0, 1) }}
                 </div>
                 <div class="min-w-0 flex-1">
-                    <p class="text-xs font-semibold text-[#F2F5E2] truncate">{{ Auth::user()->name ?? 'Kasir ABS' }}</p>
-                    <p class="text-[10px] text-[#D4954D] capitalize">{{ Auth::user()->role ?? 'Kasir' }}</p>
+                    <p class="text-xs font-semibold text-[#F2F5E2] truncate">{{ $drawerPenjaga ?: (Auth::user()->name ?? 'Kasir ABS') }}</p>
+                    <p class="text-[10px] text-[#D4954D]">{{ $drawerPenjaga ? 'Penjaga Kasir' : ucfirst(Auth::user()->role ?? 'Kasir') }}</p>
                 </div>
             </div>
         </div>

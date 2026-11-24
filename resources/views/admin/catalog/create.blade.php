@@ -132,7 +132,7 @@
                             <input type="file"
                                    name="image_file"
                                    id="create-image-file"
-                                   accept="image/*"
+                                   accept="image/*,.heic,.heif,.HEIC,.HEIF,image/heic,image/heif"
                                    class="w-full bg-[#F2F5E2] focus:bg-beige text-xs sm:text-sm text-cafe-dark px-3.5 py-2.5 sm:py-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:ring-1 focus:ring-cafe-gold/40 focus:outline-none transition-all shadow-sm file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cafe-gold/20 file:text-cafe-dark hover:file:bg-cafe-gold/30 cursor-pointer"
                                    onchange="previewCreateImage(this)">
                         </div>
@@ -140,7 +140,7 @@
                             <img id="create-preview-img" src="" alt="Preview" class="w-24 h-24 object-cover rounded-xl border border-cafe-beige shadow-sm">
                             <p class="text-[10px] text-cafe-muted mt-1">Preview foto yang akan diupload</p>
                         </div>
-                        <p class="text-[10px] text-cafe-muted">Format: JPG, PNG, WEBP. Maks 2MB. Nama file otomatis disesuaikan dengan nama menu.</p>
+                        <p class="text-[10px] text-cafe-muted">Semua format foto didukung (JPG, PNG, WEBP, HEIC, HEIF, dll). Maks 20MB. Nama file otomatis disesuaikan dengan nama menu.</p>
                     </div>
                 </div>
             </div>
@@ -212,16 +212,32 @@
 
 @push('scripts')
 <script>
-    function previewCreateImage(input) {
+    async function previewCreateImage(input) {
         const preview = document.getElementById('create-image-preview');
         const img = document.getElementById('create-preview-img');
         if (input.files && input.files[0]) {
+            let file = input.files[0];
+            if (/\.(heic|heif)$/i.test(file.name) || file.type === 'image/heic' || file.type === 'image/heif') {
+                if (typeof window.heic2any === 'function') {
+                    try {
+                        const blob = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+                        const resBlob = Array.isArray(blob) ? blob[0] : blob;
+                        const newFile = new File([resBlob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
+                        const dt = new DataTransfer();
+                        dt.items.add(newFile);
+                        input.files = dt.files;
+                        file = newFile;
+                    } catch (e) {
+                        console.warn('HEIC client preview error:', e);
+                    }
+                }
+            }
             const reader = new FileReader();
             reader.onload = function(e) {
                 img.src = e.target.result;
                 preview.classList.remove('hidden');
             };
-            reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(file);
         } else {
             preview.classList.add('hidden');
         }

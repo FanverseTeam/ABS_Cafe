@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\CafeSetting;
-use App\Models\CashShift;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -181,9 +180,9 @@ class OrderService
     /**
      * @param  array<string, mixed>  $data
      */
-    public function createOrder(array $data, User $cashier, ?CashShift $shift): Order
+    public function createOrder(array $data, User $cashier): Order
     {
-        return DB::transaction(function () use ($data, $cashier, $shift) {
+        return DB::transaction(function () use ($data, $cashier) {
             $built = $this->buildLines($data['items']);
             $promo = $this->findPromo($data['voucher'] ?? null);
             ['discount' => $discount] = $this->calculateDiscount($promo, $built['items'], $built['subtotal']);
@@ -195,6 +194,18 @@ class OrderService
             $tax = round(($built['subtotal'] - $discount) * $taxPercent / 100, 2);
             $service = round(($built['subtotal'] - $discount) * $servicePercent / 100, 2);
             $total = round($built['subtotal'] + $tax + $service - $discount, 2);
+
+            $penjagaName = $data['cashier_name']
+                ?? session('active_penjaga_kasir')
+                ?? CafeSetting::get('active_penjaga_kasir');
+
+            if (empty($penjagaName) && ($data['source'] ?? 'offline') !== 'web') {
+                throw ValidationException::withMessages([
+                    'penjaga' => 'Wajib memilih nama penjaga kasir yang bertugas sebelum membuat pesanan.',
+                ]);
+            }
+
+            $penjagaName = $penjagaName ?: $cashier->name;
 
             $order = Order::create([
                 'order_code' => $this->generateCode(),
@@ -213,9 +224,8 @@ class OrderService
                 'payment_method' => $data['payment_method'] ?? 'tunai',
                 'payment_status' => 'menunggu_pembayaran',
                 'order_status' => $data['order_status'] ?? 'diproses',
-                'cashier_name' => $cashier->name,
+                'cashier_name' => $penjagaName,
                 'cashier_id' => $cashier->id,
-                'cash_shift_id' => $shift?->id,
             ]);
 
             foreach ($built['items'] as $item) {
@@ -230,7 +240,7 @@ class OrderService
                 ]);
             }
 
-            $this->addTimeline($order, 'DIBUAT', $cashier->name,
+            $this->addTimeline($order, 'DIBUAT', $penjagaName,
                 'Pesanan dibuat oleh kasir ('.($order->source === 'web' ? 'Web' : 'Offline').')');
 
             return $order->fresh(['items', 'timelines']);

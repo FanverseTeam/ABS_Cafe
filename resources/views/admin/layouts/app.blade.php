@@ -86,6 +86,9 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- HEIC/HEIF Image Converter (Client-side support) -->
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+
     <!-- Custom JS (ABS Cafe Admin) -->
     <script src="{{ asset('js/admin-app.js') }}"></script>
 

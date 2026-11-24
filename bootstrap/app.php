@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Middleware\AdminAuth;
-use App\Http\Middleware\EnsureActiveShift;
 use App\Http\Middleware\EnsureUserHasRole;
 use App\Http\Middleware\NoIndexStaf;
 use App\Http\Middleware\RejectEmojiInput;
@@ -22,7 +21,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin.auth' => AdminAuth::class,
             'role' => EnsureUserHasRole::class,
-            'kasir.shift' => EnsureActiveShift::class,
             'reject.emoji' => RejectEmojiInput::class,
             'noindex.staf' => NoIndexStaf::class,
         ]);

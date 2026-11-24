@@ -4,41 +4,48 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use App\Models\PenjagaKasir;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\ValidationException;
 
 class StaffController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::orderBy('created_at', 'desc');
+        // Query Data Orang Yang Jaga Kasir (Penjaga Kasir)
+        if (Schema::hasTable('penjaga_kasir')) {
+            $penjagaQuery = PenjagaKasir::orderBy('name');
 
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('username', 'like', "%{$search}%");
-            });
+            if ($request->filled('search')) {
+                $search = $request->input('search');
+                $penjagaQuery->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
+                });
+            }
+
+            if ($request->filled('status') && $request->input('status') !== 'all') {
+                $penjagaQuery->where('status', $request->input('status'));
+            }
+
+            $penjagaList = $penjagaQuery->paginate(15)->withQueryString();
+        } else {
+            $penjagaList = new LengthAwarePaginator([], 0, 15, 1, ['path' => $request->url()]);
         }
 
-        if ($request->filled('role') && $request->input('role') !== 'all') {
-            $query->where('role', $request->input('role'));
-        }
-
-        if ($request->filled('status') && $request->input('status') !== 'all') {
-            $query->where('status', $request->input('status'));
-        }
-
-        $users = $query->paginate(10)->withQueryString();
-
-        return view('admin.staff.index', compact('users'));
+        return view('admin.staff.index', compact('penjagaList'));
     }
 
     public function create()
     {
-        return view('admin.staff.create');
+        $hasKasirUser = User::where('role', 'kasir')->exists();
+
+        return view('admin.staff.create', compact('hasKasirUser'));
     }
 
     public function store(Request $request)
@@ -57,6 +64,13 @@ class StaffController extends Controller
             'username.regex' => 'Username hanya boleh mengandung huruf kecil, angka, titik, dan garis bawah.',
             'password.min' => 'Password minimal 6 karakter.',
         ]);
+
+        // Role kasir hanya boleh 1 akun login
+        if ($request->input('role') === 'kasir' && User::where('role', 'kasir')->exists()) {
+            throw ValidationException::withMessages([
+                'role' => 'Role Kasir hanya menggunakan 1 akun login terpusat. Untuk menambah orang yang jaga kasir, daftarkan namanya di tab Penjaga Kasir.',
+            ]);
+        }
 
         $user = User::create([
             'name' => $request->input('name'),
@@ -77,14 +91,15 @@ class StaffController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.staff.index')->with('success', "Pengguna {$user->name} berhasil ditambahkan!");
+        return redirect()->route('admin.staff.index', ['tab' => 'akun'])->with('success', "Pengguna {$user->name} berhasil ditambahkan!");
     }
 
     public function edit($id)
     {
         $user = User::findOrFail($id);
+        $hasKasirUser = User::where('role', 'kasir')->where('id', '!=', $user->id)->exists();
 
-        return view('admin.staff.edit', compact('user'));
+        return view('admin.staff.edit', compact('user', 'hasKasirUser'));
     }
 
     public function update(Request $request, $id)
@@ -103,6 +118,13 @@ class StaffController extends Controller
             'username.max' => 'Username maksimal 30 karakter.',
             'username.regex' => 'Username hanya boleh mengandung huruf kecil, angka, titik, dan garis bawah.',
         ]);
+
+        // Jika mengubah role ke kasir, pastikan belum ada kasir lain
+        if ($request->input('role') === 'kasir' && User::where('role', 'kasir')->where('id', '!=', $user->id)->exists()) {
+            throw ValidationException::withMessages([
+                'role' => 'Role Kasir hanya boleh memiliki 1 akun login terpusat.',
+            ]);
+        }
 
         $user->update([
             'name' => $request->input('name'),
@@ -124,7 +146,7 @@ class StaffController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.staff.index')->with('success', "Data pengguna {$user->name} berhasil disimpan.");
+        return redirect()->route('admin.staff.index', ['tab' => 'akun'])->with('success', "Data pengguna {$user->name} berhasil disimpan.");
     }
 
     public function toggleStatus($id)
@@ -194,5 +216,97 @@ class StaffController extends Controller
         ]);
 
         return back()->with('success', "Pengguna {$name} telah berhasil dihapus.");
+    }
+
+    // ═══ MANAJEMEN PENJAGA KASIR (Orang yang jaga kasir / tanpa akun login) ═══
+
+    public function storePenjaga(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'phone' => 'nullable|string|max:20',
+            'status' => 'required|in:aktif,nonaktif',
+        ], [
+            'name.required' => 'Nama orang yang jaga kasir wajib diisi.',
+        ]);
+
+        $penjaga = PenjagaKasir::create([
+            'name' => trim((string) $request->input('name')),
+            'phone' => $request->input('phone'),
+            'status' => $request->input('status', 'aktif'),
+        ]);
+
+        ActivityLog::create([
+            'user_name' => Auth::user()->name,
+            'role' => Auth::user()->role,
+            'activity' => "Menambahkan data penjaga kasir: {$penjaga->name}",
+            'activity_type' => 'pengguna',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()->route('admin.staff.index')->with('success', "Penjaga kasir {$penjaga->name} berhasil didaftarkan!");
+    }
+
+    public function updatePenjaga(Request $request, $id)
+    {
+        $penjaga = PenjagaKasir::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'phone' => 'nullable|string|max:20',
+            'status' => 'required|in:aktif,nonaktif',
+        ], [
+            'name.required' => 'Nama penjaga kasir wajib diisi.',
+        ]);
+
+        $penjaga->update([
+            'name' => trim((string) $request->input('name')),
+            'phone' => $request->input('phone'),
+            'status' => $request->input('status'),
+        ]);
+
+        ActivityLog::create([
+            'user_name' => Auth::user()->name,
+            'role' => Auth::user()->role,
+            'activity' => "Memperbarui data penjaga kasir: {$penjaga->name}",
+            'activity_type' => 'pengguna',
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()->route('admin.staff.index')->with('success', "Data penjaga kasir {$penjaga->name} berhasil diperbarui.");
+    }
+
+    public function toggleStatusPenjaga($id)
+    {
+        $penjaga = PenjagaKasir::findOrFail($id);
+        $penjaga->status = ($penjaga->status === 'aktif') ? 'nonaktif' : 'aktif';
+        $penjaga->save();
+
+        ActivityLog::create([
+            'user_name' => Auth::user()->name,
+            'role' => Auth::user()->role,
+            'activity' => "Mengubah status penjaga kasir {$penjaga->name} menjadi {$penjaga->status}",
+            'activity_type' => 'pengguna',
+            'ip_address' => request()->ip(),
+        ]);
+
+        return back()->with('success', "Status penjaga kasir {$penjaga->name} diubah menjadi {$penjaga->status}.");
+    }
+
+    public function destroyPenjaga($id)
+    {
+        $penjaga = PenjagaKasir::findOrFail($id);
+        $name = $penjaga->name;
+        $penjaga->delete();
+
+        ActivityLog::create([
+            'user_name' => Auth::user()->name,
+            'role' => Auth::user()->role,
+            'activity' => "Menghapus data penjaga kasir: {$name}",
+            'activity_type' => 'pengguna',
+            'ip_address' => request()->ip(),
+        ]);
+
+        return redirect()->route('admin.staff.index')->with('success', "Data penjaga kasir {$name} berhasil dihapus.");
     }
 }

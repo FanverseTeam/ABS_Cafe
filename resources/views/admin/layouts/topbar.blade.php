@@ -42,6 +42,12 @@
 
         <!-- Right: Notification Bell & Profile Dropdown -->
         <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+            <!-- Realtime Clock (Sesuai Komputer Pengguna) -->
+            <div class="hidden sm:flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#E3DEA4]/70 border border-[#D4954D]/40 text-[#290024] shadow-xs text-xs font-semibold select-none" title="Waktu Komputer Lokal Realtime">
+                <i data-lucide="clock" class="w-3.5 h-3.5 text-[#D4954D] shrink-0 animate-pulse"></i>
+                <span class="realtime-clock-display font-mono tracking-wide font-bold">--:--:--</span>
+            </div>
+
             <!-- Notif Bell -->
             <div class="relative" id="notif-dropdown-wrapper">
                 <button onclick="toggleNotifDropdown()" class="relative p-2.5 rounded-full bg-cafe-beige/50 hover:bg-cafe-beige text-cafe-dark transition-colors" title="Notifikasi">
@@ -142,6 +148,12 @@
     @else
         <!-- Active admin mode: no order widgets from the legacy dashboard. -->
         <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+            <!-- Realtime Clock (Sesuai Komputer Pengguna) -->
+            <div class="hidden sm:flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#E3DEA4]/70 border border-[#D4954D]/40 text-[#290024] shadow-xs text-xs font-semibold select-none" title="Waktu Komputer Lokal Realtime">
+                <i data-lucide="clock" class="w-3.5 h-3.5 text-[#D4954D] shrink-0 animate-pulse"></i>
+                <span class="realtime-clock-display font-mono tracking-wide font-bold">--:--:--</span>
+            </div>
+
             <a href="{{ route('admin.activity.index') }}" class="relative p-2.5 rounded-full bg-[#E3DEA4] hover:bg-[#E3DEA4]/80 text-cafe-dark transition-colors" title="Notifikasi Aktivitas" aria-label="Notifikasi Aktivitas">
                 <i data-lucide="bell" class="w-4 h-4"></i>
             </a>
@@ -250,4 +262,26 @@
             }
         }
     });
+
+    // Realtime Computer Clock Script
+    (function () {
+        function updateClock() {
+            const now = new Date();
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            const dayName = days[now.getDay()];
+            const date = String(now.getDate()).padStart(2, '0');
+            const monthName = months[now.getMonth()];
+            const year = now.getFullYear();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            const str = `${dayName}, ${date} ${monthName} ${year} • ${h}:${m}:${s}`;
+            document.querySelectorAll('.realtime-clock-display').forEach(function (el) {
+                el.textContent = str;
+            });
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+    })();
 </script>

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('menu_variants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('menu_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('menu_id')->constrained('menu')->cascadeOnDelete();
             $table->string('name');
             $table->decimal('price', 12, 2)->default(0);
             $table->boolean('is_default')->default(false);

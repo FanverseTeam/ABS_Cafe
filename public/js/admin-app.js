@@ -111,4 +111,59 @@ document.addEventListener('DOMContentLoaded', () => {
   if (flashError) {
     showToast(flashError.getAttribute('data-flash-error'), 'error');
   }
+
+  // Intercept file inputs with HEIC/HEIF to auto-convert them to JPEG in the browser
+  document.addEventListener('change', async (e) => {
+    const input = e.target;
+    if (!input || input.type !== 'file' || !input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    const isHeic = file && (
+      /\.(heic|heif)$/i.test(file.name) ||
+      file.type === 'image/heic' ||
+      file.type === 'image/heif'
+    );
+
+    if (!isHeic) return;
+
+    if (typeof window.heic2any === 'function') {
+      showToast('Mengonversi foto HEIC ke format JPG...', 'warning');
+      try {
+        const convertedBlob = await window.heic2any({
+          blob: file,
+          toType: 'image/jpeg',
+          quality: 0.9
+        });
+
+        const blobResult = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+        const newName = file.name.replace(/\.(heic|heif)$/i, '.jpg');
+        const convertedFile = new File([blobResult], newName, { type: 'image/jpeg' });
+
+        const dt = new DataTransfer();
+        dt.items.add(convertedFile);
+        input.files = dt.files;
+
+        showToast('Foto HEIC berhasil dikonversi ke JPG!', 'success');
+
+        // Panggil preview jika ada elemen preview terkait
+        const previewImg = input.closest('form, div')?.querySelector('img[id*="preview"]') ||
+                           document.getElementById('create-preview-img') ||
+                           document.getElementById('edit-preview-img');
+        const previewContainer = input.closest('form, div')?.querySelector('[id*="preview"]') ||
+                                document.getElementById('create-image-preview') ||
+                                document.getElementById('edit-image-preview');
+
+        if (previewImg && previewContainer) {
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            previewImg.src = evt.target.result;
+            previewContainer.classList.remove('hidden');
+          };
+          reader.readAsDataURL(convertedFile);
+        }
+      } catch (err) {
+        console.warn('Konversi client-side dilewati, file akan diproses oleh server:', err);
+      }
+    }
+  });
 });

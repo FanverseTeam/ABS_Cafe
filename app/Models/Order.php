@@ -85,11 +85,11 @@ class Order extends Model
     }
 
     /**
-     * Nama kasir efektif (relasi user atau kolom teks lama).
+     * Nama kasir efektif (nama penjaga kasir atau nama user kasir).
      */
     public function cashierLabel(): string
     {
-        return $this->cashier?->name ?: ($this->cashier_name ?: 'Belum ditugaskan');
+        return $this->cashier_name ?: ($this->cashier?->name ?: 'Kasir');
     }
 
     public function isPaid(): bool
@@ -167,6 +167,14 @@ class Order extends Model
     {
         return $query->where('order_status', '!=', 'dibatalkan')
             ->where('order_status', '!=', 'selesai');
+    }
+
+    /**
+     * Scope untuk membatasi pesanan khusus pada hari ini saja (tanggal saat ini).
+     */
+    public function scopeToday($query)
+    {
+        return $query->whereDate('created_at', today());
     }
 
     /**
