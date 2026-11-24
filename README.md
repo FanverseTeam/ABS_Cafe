@@ -117,6 +117,12 @@ Desain antarmuka mengusung konsep **Warm Coffee Shop Aesthetic** dengan perpadua
 
 <div align="center">
 
+### 👥 Tim Pengembang
+Dikembangkan oleh **Fanverse Team**  
+*(XI RPL 1 — SMKN 1 Boyolangu)*
+
+---
+
 © 2026 **ABS Cafe (Accessories & Cafe), Tulungagung**  
 *Menciptakan Pengalaman Bersantap yang Lebih Mudah, Cepat, dan Menyenangkan.*
 
