@@ -1,232 +1,189 @@
-# ABS Cafe — Web App (Customer & Back-Office)
+<div align="center">
 
-Aplikasi web administrasi dan manajemen operasional **ABS Cafe** (*Accessories & Cafe*), Kabupaten Tulungagung. Dikembangkan menggunakan **Laravel (PHP, Blade, CSS Tailwind, dan JavaScript)** dengan nuansa hangat ala coffee shop premium (palet coklat dan krem).
+# ☕ ABS Cafe & Accessories — Enterprise Point of Sale & Customer Platform
 
-- **Alamat:** Jl. Letjend Suprapto No.44, Kepatihan, Kec. Tulungagung, Kabupaten Tulungagung, Jawa Timur 66219
-- **Telepon:** 0896-2010-2010
-- **Jam Operasional:** Setiap Hari 09.00 - 23.00 WIB (Last Order: 22.00 WIB)
+**Platform Web Manajemen Kafe Terintegrasi (Self-Order Pelanggan, POS Kasir Cerdas, & Back-Office Analytics)**  
+*Modern, Cepat, Responsif Mobile & Desktop, dan Dirancang Khusus untuk Operasional Kafe Profesional.*
 
----
-
-## Tema & Desain Visual
-
-- **Nuansa:** Hangat, elegan, clean ala coffee shop modern.
-- **Palet Warna:**
-  - Coklat Tua (Primer, Header, Sidebar Aktif): `#4A1F14`
-  - Coklat Sedang (Hover, Aksen): `#7A4A2B`
-  - Emas / Karamel (Aksen, Badge, Highlight): `#D4A76A`
-  - Krem Terang (Latar Belakang): `#F6EDE0`
-  - Beige (Panel & Input): `#EFE0CC`
-  - Putih Krem (Kartu Utama): `#FBF6EE`
-  - Teks Utama: `#3B1E14`
-  - Teks Sekunder: `#8A6A55`
-  - Status Sukses: `#4F7A4A`
-  - Status Peringatan: `#C98A2B`
-  - Status Bahaya: `#B03A2E`
-  - Status Info: `#5B7C99`
-- **Tipografi:**
-  - Judul / Heading: *Noto Serif* (serif elegan, self-hosted).
-  - Isi / Tabel / Form: *Poppins* (sans-serif bersih, self-hosted).
-- **Komponen:** Sudut membulat besar (`rounded-2xl` dan `rounded-full`), soft shadow, responsif untuk desktop dan mobile drawer.
+[![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com)
+[![Status](https://img.shields.io/badge/Production-Ready-2E7D32?style=for-the-badge)](#)
 
 ---
 
-## Kredensial Akun Awal (Administrator)
+### 📍 Profil Kafe
+**ABS Cafe (Accessories & Cafe)**  
+Jl. Letjend Suprapto No.44, Kepatihan, Kec. Tulungagung, Kabupaten Tulungagung, Jawa Timur 66219  
+📞 **Kontak / WhatsApp:** 0896-2010-2010  
+⏰ **Jam Operasional:** Setiap Hari, 09.00 - 23.00 WIB (*Last Order: 22.00 WIB*)
 
-| Peran | Username | Password |
-|---|---|---|
-| Admin Utama | `admin` | `admin123` |
-| Owner | `owner` | `owner123` |
-| Kasir Demo | `kasir` | `password` |
-
-> **Catatan:** Login sekarang menggunakan **username** saja (tidak pakai email). Hak akses dashboard back-office dilindungi oleh middleware `admin.auth`. Hanya akun dengan peran **Admin** yang diizinkan mengakses menu administrator.
+</div>
 
 ---
 
-## Fitur & Halaman yang Dibuat
+## 🌟 Gambaran Umum Sistem
 
-### 1. Login Admin (`/admin/login`)
+**ABS Cafe Web App** adalah ekosistem digital *all-in-one* yang menggabungkan kemudahan pemesanan mandiri oleh pelanggan (*Customer Web Ordering & Dine-In Table QR*) dengan keandalan operasional kasir (*Cashier POS & Shift Management*) serta ketajaman laporan bisnis untuk pemilik kafe (*Owner & Admin Management*).
 
-- Layout dua kolom estetis dengan foto kafe dan tagline *Good Coffee, Good Mood*.
-- **Login menggunakan username saja** (tidak ada field email).
-- Label "Username", placeholder "username", autocomplete="username", autocapitalize="none", spellcheck="false".
-- Toggle sembunyikan/tampilkan kata sandi.
-- Fitur *Remember Me*.
-- Teks bantuan: "Lupa kata sandi? Hubungi admin." (tidak ada alur reset via email).
-
-### 2. Dashboard (`/admin`)
-
-- Salam personalisasi dan tanggal dalam bahasa Indonesia.
-- Empat kartu statistik:
-  - Pesanan Hari Ini.
-  - Pendapatan Hari Ini.
-  - Menunggu Pembayaran.
-  - Menu Habis.
-- Grafik interaktif tren pendapatan tujuh hari menggunakan Chart.js.
-- Grafik donat penjualan per kategori.
-- Daftar lima menu terlaris dan tabel pesanan terbaru.
-
-### 3. Pesanan (`/admin/pesanan`)
-
-- Tabel pesanan lengkap dengan kode order, customer, meja/tipe, status pembayaran, dan alur sajian.
-- Filter status pembayaran, status pesanan, tipe dine-in/take-away, serta pencarian.
-- Modal detail pesanan berisi daftar item, catatan, pajak, diskon, timeline alur sajian, dan informasi kasir.
-- Aksi mengubah status pesanan menjadi Diproses, Siap, atau Selesai.
-- Pembatalan pesanan dengan alasan wajib.
-- Cetak nota menggunakan printer struk termal.
-- Ekspor data pesanan ke format CSV.
-
-### 4. Katalog Menu (`/admin/menu`)
-
-- Toggle tampilan grid kartu foto dan tabel rincian.
-- Filter 14 kategori makanan dan minuman, seperti Coffee Base, Speciality, Milk, Tea, Snacks, dan Main Course.
-- Pengurutan berdasarkan terlaris, nama, dan harga.
-- Switch status ketersediaan Tersedia/Habis dan tanda Best Seller.
-- Modal form tambah dan edit menu dengan URL foto, deskripsi, harga, dan ketersediaan.
-- Aksi duplikasi menu dan hapus permanen dengan dialog konfirmasi.
-
-### 5. Kategori Menu (`/admin/kategori`)
-
-- Daftar 14 kategori kafe lengkap dengan ikon visual Lucide dan urutan tampil di POS.
-- Proteksi integritas: kategori yang masih memiliki menu tidak dapat dihapus dan akan menampilkan peringatan.
-
-### 6. Promo & Diskon (`/admin/promo`)
-
-- Kartu banner promo, seperti Buy 2 Get 1, diskon persentase, dan potongan nominal.
-- Status promo berjalan, terjadwal, atau berakhir berdasarkan tanggal.
-- Switch untuk mengaktifkan atau menonaktifkan promo.
-
-### 7. Pengguna & Staf (`/admin/staf`)
-
-- Tabel akun staf dengan peran Admin, Kasir, dan Staf Barista/Dapur.
-- Tambah dan edit data staf **hanya dengan username** (field email dihapus).
-- Username wajib, unik, 3-30 karakter (huruf kecil, angka, titik, garis bawah).
-- Pencarian berdasarkan nama dan username.
-- Mengaktifkan atau menonaktifkan akun.
-- Fitur reset password (oleh admin, tanpa email).
-
-### 8. Denah & Meja (`/admin/meja`)
-
-- Grid kartu nomor meja dengan status Tersedia, Terpakai, dan Nonaktif.
-- Informasi kapasitas kursi dan catatan lokasi, seperti Indoor, Outdoor, dan Lantai 2.
-- Modal QR Code pemesanan meja dan tombol unduh gambar QR.
-
-### 9. Pengaturan Cafe (`/admin/pengaturan`)
-
-- **Tab Profil Cafe:** Nama, tagline, alamat Tulungagung, dan jam buka hari kerja serta akhir pekan.
-- **Tab Pajak & Biaya:** Persentase pajak PB1 (10%) dan switch Service Charge.
-- **Tab Pembayaran & QRIS:** Pilihan metode pembayaran kasir berupa Tunai, QRIS, dan Debit, serta preview QRIS.
-- **Tab Format Nota:** Pengaturan teks header dan footer nota dengan pratinjau langsung (*Live Preview*) struk kasir.
-- **Tab Tampilan:** Pengaturan banner headline beranda.
-- **Tab Akun Saya:** Mengganti nama, username, nomor telepon, dan password admin.
-
-### 10. Log Aktivitas (`/admin/log`)
-
-- Catatan audit sistem meliputi waktu, nama staf, peran, aksi, dan alamat IP.
-- Filter kategori aktivitas dan ekspor data ke CSV.
+Didesain dengan pendekatan visual **Warm Coffee Shop Aesthetic** (kombinasi warna coklat espresso, karamel emas, dan latar krem hangat), aplikasi ini memberikan pengalaman pengguna yang sangat ramah pengguna (*user-friendly*), cepat, serta optimal diakses lewat smartphone maupun desktop monitor POS.
 
 ---
 
-## Cara Menjalankan Proyek di Laragon
+## 🚀 Fitur-Fitur Utama & Pembaruan Terkini
 
-1. Buka aplikasi **Laragon**, lalu klik **Start All** agar Apache/Nginx dan MySQL aktif.
-2. Buka terminal di folder proyek:
+### 1. 📱 Portal Pelanggan (Customer Web & QR Self-Order)
+- **Menu Favorit Otomatis (Penjualan Terbanyak Harian):**
+  - Pelanggan langsung disajikan **Top 3 Menu Favorit** yang diperbarui otomatis secara real-time berdasarkan penjualan riil (`sold_count` tertinggi) — **100% tanpa manipulasi input manual**.
+- **Pemesanan QR Meja (Dine-In) & Take-Away:**
+  - Pelanggan cukup scan QR meja untuk langsung membuka katalog digital dan memasukkan pesanan.
+  - Ringkasan keranjang belanja instan dengan penghitungan pajak otomatis (PB1 10%).
+- **Sistem Reservasi Meja Online:**
+  - Booking meja lengkap dengan pemilihan jam, tanggal, jumlah tamu, dan area (*Indoor / Outdoor / Lantai 2*).
+- **Pembayaran Tunai Kasir (Cash Only):**
+  - Alur transaksi ringkas: setelah pesan di web, pelanggan menerima kode QR tiket pesanan untuk langsung diverifikasi dan dibayar di meja kasir.
 
+### 2. ⚡ Portal Kasir Cerdas (Modern POS & Cashier Portal)
+- **Pergantian Shift Tanpa Logout (Seamless Cashier Switching):**
+  - **Tidak ada lagi blokir "Shift Belum Dibuka" atau keharusan logout:** Shift laci kas kini berjalan otomatis terus menerus di latar belakang (*continuous background shift*).
+  - Kasir cukup mengganti **Nama Pemegang Akun Kasir** melalui dropdown di Topbar atau Drawer navigasi samping.
+  - Daftar nama kasir diambil langsung dari master staf aktif yang didaftarkan oleh Administrator.
+  - Struk pembayaran, log transaksi, dan timeline pesanan otomatis mencatat nama kasir yang sedang bertugas saat itu.
+- **POS Cepat & Scan QR Tiket:**
+  - Kasir dapat membuat pesanan manual langsung untuk customer yang datang langsung ke meja bar.
+  - Fitur **Scan QR Pesanan Pelanggan** untuk verifikasi instan status pesanan menjadi *"Sedang Diproses"* dapur/bar.
+- **Pencetakan Nota Termal:**
+  - Cetak struk kasir (*thermal receipt*) standar 58mm/80mm dengan pratinjau langsung.
+- **Catatan Kas Laci (Cash In / Cash Out):**
+  - Kasir dapat mencatat penyesuaian uang modal kas kecil tanpa mengganggu kelancaran transaksi.
+
+### 3. 📊 Portal Owner (Eksekutif & Analisis Finansial)
+- **Executive Dashboard:**
+  - Pantau total omset kotor (*Gross Revenue*), total pesanan, rata-rata nilai transaksi (*Average Order Value*), dan tingkat okupansi meja hari ini.
+- **Laporan Penjualan & Laba/Rugi:**
+  - Grafik tren pendapatan 7 hari & bulanan.
+  - Pemecahan penjualan per kategori makanan/minuman dan kinerja staf kasir.
+- **Ekspor Laporan:**
+  - Ekspor riwayat transaksi kasir ke format CSV / Excel / PDF untuk pembukuan akuntansi kafe.
+
+### 4. ⚙️ Portal Administrator (Manajemen & Konfigurasi Penuh)
+- **Manajemen Katalog Menu Dinamis:**
+  - Tambah, edit, upload foto, set harga, kelola varian, dan duplikasi menu dalam hitungan detik.
+  - Switch ketersediaan cepat (*Tersedia / Habis*) dan label *Best Seller*.
+  - Mekanisme **Soft-Delete** yang aman: menu yang dihapus tidak merusak riwayat transaksi lampau.
+- **Kategori & Denah Meja (QR Generator):**
+  - Pengelompokan kategori (Coffee Base, Milk Based, Snack, Main Course, dll.).
+  - Denah nomor meja lengkap dengan kapasitas, area, dan generator QR code meja otomatis yang siap cetak.
+- **Manajemen Staf & Hak Akses:**
+  - Kelola pengguna dengan login berbasis *Username* (aman & praktis tanpa email).
+  - Reset kata sandi staf instan oleh Admin.
+- **Pengaturan Bisnis Terpusat:**
+  - Konfigurasi profil kafe, persentase pajak PB1, format teks header/footer nota struk, dan banner beranda.
+- **Audit Log Aktivitas:**
+  - Rekaman jejak audit sistem: mencatat siapa, waktu, IP address, dan aktivitas operasional penting.
+
+---
+
+## 🔐 Kredensial Akun Resmi Operasional
+
+Aplikasi telah dibersihkan dari seluruh data dummy uji coba dan disiapkan akun resmi siap pakai:
+
+| Peran | Username | Kata Sandi | Hak Akses Utama |
+|---|---|---|---|
+| **Administrator** | `admin` | `admin123` | Konfigurasi penuh, staf, katalog menu, meja, log sistem |
+| **Owner** | `owner` | `owner123` | Laporan finansial, analitik omset, evaluasi operasional |
+| **Kasir** | `kasir` | `kasir123` | POS transaksi, bayar tunai, scan tiket QR, pilih nama staf bertugas |
+
+> 💡 **Alur Pergantian Shift Kasir:** Kasir login satu kali dengan akun `kasir / kasir123`. Ketika pergantian shift tiba, kasir berikutnya tidak perlu keluar (*logout*) — cukup klik dropdown kasir di bagian atas layar dan pilih nama kasir yang bertugas!
+
+---
+
+## 🛠️ Arsitektur & Teknologi
+
+- **Backend Framework:** [Laravel 11](https://laravel.com) dengan arsitektur Service-Repository pattern untuk skalabilitas transaksi tinggi.
+- **Database Engine:** MySQL 8.0+ / MariaDB dengan dukungan relasi InnoDB, foreign key constraints, dan soft-delete.
+- **Frontend & Styling:** Blade Templating Engine, [Tailwind CSS 3](https://tailwindcss.com), Alpine.js, dan Lucide Icons.
+- **Visual & Charts:** [Chart.js](https://www.chartjs.org/) untuk visualisasi performa penjualan.
+- **Font Stack:** *Noto Serif* (heading kafe mewah) & *Poppins* (antarmuka bersih & mudah dibaca).
+
+---
+
+## 📦 Panduan Instalasi & Menjalankan Proyek
+
+### 1. Kebutuhan Sistem
+- PHP >= 8.2 (Ekstensi: `pdo_mysql`, `mbstring`, `gd`, `bcmath`, `curl`)
+- MySQL >= 8.0 atau MariaDB >= 10.4
+- Composer 2.x
+- Node.js >= 18.x & NPM
+
+### 2. Langkah Pemasangan (Localhost / Laragon / XAMPP)
+
+1. **Clone repository:**
    ```bash
-   cd /d/laragon/www/ABS_Cafe
+   git clone https://github.com/username/ABS_Cafe.git
+   cd ABS_Cafe
    ```
 
-3. Jalankan migrasi dan seeder awal:
+2. **Pasang dependensi PHP & JavaScript:**
+   ```bash
+   composer install
+   npm install && npm run build
+   ```
 
+3. **Konfigurasi Environment (`.env`):**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   Pastikan pengaturan database di file `.env` sudah sesuai:
+   ```ini
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=abs_cafe
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+4. **Migrasi Database & Data Master Resmi:**
    ```bash
    php artisan migrate --seed
    ```
+   *Atau import langsung file basis data resmi:*
+   ```bash
+   mysql -u root abs_cafe < db_abscafe.sql
+   ```
 
-   Data migrasi dan seeder awal akan diisi sesuai konfigurasi proyek.
-
-4. Jalankan server lokal:
-
+5. **Jalankan Aplikasi:**
    ```bash
    php artisan serve
    ```
-
-5. Buka browser dan akses salah satu alamat berikut:
-   - Halaman login admin: `http://127.0.0.1:8000/admin/login`
-   - Jika virtual host Laragon sudah dikonfigurasi: `http://abscafe.test/admin/login`
-
-6. Gunakan akun awal administrator:
-   - Username: `admin`
-   - Password: `admin123`
+   Aplikasi dapat langsung diakses di peramban:
+   - **Pelanggan (Katalog & Reservasi):** `http://127.0.0.1:8000`
+   - **Portal Kasir:** `http://127.0.0.1:8000/kasir`
+   - **Portal Admin:** `http://127.0.0.1:8000/admin`
+   - **Portal Owner:** `http://127.0.0.1:8000/owner`
 
 ---
 
-## Foto Latar Landing Staf
+## 🧪 Jaminan Kualitas & Pengujian Otomatis
 
-Halaman `/staf` menggunakan foto lokal `landing.jpg` di root proyek sebagai file master. **Jangan mengubah atau menghapus file master tersebut.**
-
-Untuk menghindari penyajian file master berukuran 6,7 MB, buat versi optimasi menggunakan perintah berikut setiap kali foto master diganti:
-
-```bash
-php artisan landing:optimize
-```
-
-Perintah tersebut membutuhkan **ImageMagick** dan menghasilkan:
-
-- `public/images/landing-bg-768.webp` — versi mobile.
-- `public/images/landing-bg-1280.webp` — versi tablet.
-- `public/images/landing-bg-1920.webp` — versi desktop.
-- `public/images/landing-bg-1920.jpg` — fallback untuk browser lama.
-
-Setiap file ditargetkan berukuran di bawah 400 KB. Jika file optimasi tidak tersedia, halaman otomatis menggunakan gradasi Beige → Vanilla Custard → Apricot.
-
----
-
-## Pengujian Otomatis
-
-Proyek ini memiliki suite pengujian PHPUnit yang mencakup fitur tiga peran (Admin, Owner, dan Kasir), logika service (unit), alur lintas-fitur (integrasi), serta audit paritas skema `db_abscafe.sql` dengan migrasi.
-
-**Berdasarkan dokumentasi proyek, suite pengujian mencakup 242 tes dan 699 assertion.** Jumlah ini perlu diverifikasi kembali jika pengujian atau kode berubah.
-
-### Prasyarat
-
-Buat database pengujian satu kali:
-
-```sql
-CREATE DATABASE IF NOT EXISTS abs_cafe_test
-  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-Konfigurasi database pengujian tersedia di `phpunit.xml`.
-
-Jalankan pengujian dengan:
+Aplikasi ini dilengkapi pengujian otomatis (*automated testing*) menyeluruh menggunakan PHPUnit untuk menjamin keandalan transaksi kasir, kalkulasi pajak, dan integritas database:
 
 ```bash
 php artisan test
 ```
 
-Alternatif:
-
-```bash
-composer test
-```
-
-Tes menggunakan `RefreshDatabase` untuk mengelola data pengujian dan memiliki pengaman agar tidak menimpa database pengembangan.
-
-Laporan lengkap mengenai cakupan, cara menjalankan pengujian, dan bug yang ditemukan atau diperbaiki tersedia di [`docs/TEST_REPORT.md`](docs/TEST_REPORT.md).
-
-### Import Data Contoh (Opsional)
-
-```bash
-mysql -u root abs_cafe < db_abscafe.sql
-```
-
-Pastikan database tujuan sudah sesuai dan memiliki konfigurasi yang benar sebelum melakukan import.
+- **Feature Tests:** POS Kasir, Alur Pembayaran Tunai, Validasi Menu Soft-Delete, dan Algoritma Menu Terfavorit.
+- **Database Parity Tests:** Menjamin skema tabel migrasi 100% konsisten dengan `db_abscafe.sql`.
 
 ---
 
-## Pengembang
+## 👥 Pengembang & Hak Cipta
 
-Dikembangkan untuk kerja sama proyek sekolah bersama **ABS Cafe Tulungagung** oleh **Fanverse Team, XI RPL 1, SMKN 1 Boyolangu**.
+Dikembangkan dengan dedikasi penuh untuk kemajuan digitalisasi **ABS Cafe Tulungagung** oleh:  
+**Tim Pengembang Fanverse (XI RPL 1, SMKN 1 Boyolangu)**  
+*Bekerja sama secara profesional untuk menghadirkan solusi teknologi F&B modern.*
 
-
-ppp
+© 2026 ABS Cafe & Accessories. All Rights Reserved.
