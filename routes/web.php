@@ -56,6 +56,15 @@ Route::middleware('noindex.staf')->group(function () {
     Route::post('/kasir/logout', [LoginController::class, 'logout'])->name('kasir.logout');
 });
 
+// Ping route untuk memperbarui sesi (keep-alive) — digunakan oleh skrip deteksi idle timeout
+Route::post('/session/ping', function () {
+    if (auth()->check()) {
+        session()->put('last_activity_time', now()->timestamp);
+    }
+
+    return response()->json(['status' => 'ok']);
+})->middleware('auth')->name('session.ping');
+
 // Halaman Publik Customer
 Route::get('/', [PelangganController::class, 'index'])->name('pelanggan.beranda');
 Route::get('/menu', [PelangganController::class, 'menu'])->name('pelanggan.menu');

@@ -68,6 +68,12 @@ class LoginController extends Controller
         $recallerName = Auth::guard()->getRecallerName();
         $hadRememberCookie = $request->cookies->has($recallerName);
 
+        // Kasir: tidak ada batas waktu time out. Otomatis aktifkan remember agar sesi tetap ada.
+        $targetUser = User::where('username', $loginLower)->first();
+        if ($targetUser && $targetUser->primaryRole() === 'kasir') {
+            $remember = true;
+        }
+
         if (! Auth::attempt($credentials, $remember)) {
             return back()->withInput()
                 ->with('error', 'Username atau kata sandi salah.');
@@ -88,6 +94,10 @@ class LoginController extends Controller
 
             return back()->withInput()
                 ->with('error', 'Modul untuk peran ini belum tersedia. Fitur ini akan segera hadir.');
+        }
+
+        if ($user->primaryRole() === 'kasir') {
+            $remember = true;
         }
 
         if (! $remember) {
@@ -112,6 +122,7 @@ class LoginController extends Controller
         ]);
 
         $request->session()->regenerate();
+        $request->session()->put('last_activity_time', now()->timestamp);
 
         return redirect($this->dashboardFor($user))
             ->with('success', 'Selamat datang kembali di ABS Cafe!');

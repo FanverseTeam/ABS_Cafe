@@ -29,12 +29,12 @@ class SingleLogoutButtonTest extends TestCase
         $this->assertStringNotContainsString('{{ Auth::user()', $content);
         $this->assertStringNotContainsString('{{', $content);
 
-        // 2. Tepat satu form logout di seluruh halaman
+        // 2. Tepat satu form logout di profile dropdown + satu form hidden dari session-timeout
         $logoutAction = route('admin.logout');
         $this->assertSame(
-            1,
+            2,
             substr_count($content, 'action="'.$logoutAction.'"'),
-            'Halaman Admin harus memuat tepat SATU form logout.'
+            'Halaman Admin harus memuat tepat DUA form logout (dropdown + session-timeout).'
         );
 
         // 3. Form logout berada di dalam profile dropdown
@@ -87,12 +87,12 @@ class SingleLogoutButtonTest extends TestCase
         $this->assertStringNotContainsString('{{ Auth::user()', $content);
         $this->assertStringNotContainsString('{{', $content);
 
-        // 2. Tepat satu form logout di seluruh halaman
+        // 2. Tepat satu form logout di profile dropdown + satu form hidden dari session-timeout
         $logoutAction = route('owner.logout');
         $this->assertSame(
-            1,
+            2,
             substr_count($content, 'action="'.$logoutAction.'"'),
-            'Halaman Owner harus memuat tepat SATU form logout.'
+            'Halaman Owner harus memuat tepat DUA form logout (dropdown + session-timeout).'
         );
 
         // 3. Form logout berada di dalam profile dropdown

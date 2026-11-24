@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AdminAuth;
+use App\Http\Middleware\EnforceRoleSessionTimeout;
 use App\Http\Middleware\EnsureUserHasRole;
 use App\Http\Middleware\NoIndexStaf;
 use App\Http\Middleware\RejectEmojiInput;
@@ -18,11 +19,16 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
 
+        $middleware->web(append: [
+            EnforceRoleSessionTimeout::class,
+        ]);
+
         $middleware->alias([
             'admin.auth' => AdminAuth::class,
             'role' => EnsureUserHasRole::class,
             'reject.emoji' => RejectEmojiInput::class,
             'noindex.staf' => NoIndexStaf::class,
+            'role.timeout' => EnforceRoleSessionTimeout::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

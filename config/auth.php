@@ -115,4 +115,17 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Role-Based Session Inactivity Timeout (Minutes)
+    |--------------------------------------------------------------------------
+    |
+    | Batas waktu ketidakaktifan (idle timeout) dalam menit.
+    | Peran 'admin' dan 'owner' diberikan batas waktu time out demi keamanan data.
+    | Peran 'kasir' dikecualikan (tidak ada batas waktu time out) agar operasional lancar.
+    |
+    */
+
+    'admin_timeout' => (int) env('AUTH_ADMIN_TIMEOUT', 15),
+
 ];

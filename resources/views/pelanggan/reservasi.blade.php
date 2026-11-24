@@ -37,7 +37,7 @@
 
 @section('content')
 <div class="min-h-screen bg-[#F2F5E2] text-[#290024] pb-36 pt-4 sm:pt-6" style="background-color: #F2F5E2 !important;">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-6">
+    <div class="max-w-4xl lg:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 lg:space-y-10">
 
         <!-- ============================================================== -->
         <!-- 1. HERO BANNER FOTO KAFE & SUBTITLE (SESUAI FIGMA SCREEN 5)     -->
@@ -196,7 +196,7 @@
             </div>
 
             <!-- Grid Kartu Meja Interaktif -->
-            <div id="table-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+            <div id="table-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5 pt-2">
                 @forelse($tableStatusList as $t)
                     @php
                         $isAvailable = $t['is_available'];

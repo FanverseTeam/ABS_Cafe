@@ -83,7 +83,7 @@
      style="background-color: #F2F5E2 !important;"
      class="min-h-screen bg-[#F2F5E2] pb-32">
 
-    <div class="mx-auto max-w-3xl px-4 sm:px-6 space-y-6 pt-4 sm:pt-6">
+        <div class="mx-auto max-w-3xl lg:max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6 pt-4 sm:pt-6 lg:pt-10 lg:space-y-10">
 
         {{-- ============================================================= --}}
         {{-- STATE KETIKA KERANJANG KOSONG                                 --}}
@@ -381,12 +381,63 @@
 
     </div>
 
+    {{-- DESKTOP ACTION BAR (HANYA TAMPIL DI DESKTOP, TIDAK MENGAUHI MOBILE/TABLET) --}}
+    <div class="hidden lg:block border-t border-[#E3DEA4] bg-[#F2F5E2]/90 backdrop-blur-sm px-4 sm:px-6 lg:px-8 py-4">
+        <div class="mx-auto max-w-3xl lg:max-w-7xl">
+            <div class="flex items-center justify-between gap-4 mb-3 lg:mb-0">
+                <div>
+                    <span class="text-[11px] text-[#775533] leading-none block">Total Pesanan</span>
+                    <span class="font-serif font-bold text-base sm:text-lg text-[#290024]" x-text="formatRupiah(total)"></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <template x-if="step === 1">
+                        <button type="button"
+                                @click="goToStep(2)"
+                                class="px-6 py-2.5 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] text-xs font-bold tracking-wide transition-all shadow-md flex items-center gap-2">
+                            <span>Lanjut ke Data Pelanggan</span>
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </template>
+                    <template x-if="step === 2">
+                        <button type="button"
+                                @click="submitOrder()"
+                                :disabled="isSubmitting || !customerName.trim()"
+                                :class="(!customerName.trim()) ? 'opacity-50 cursor-not-allowed bg-[#E3DEA4] text-[#775533]' : 'bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] shadow-md'"
+                                class="px-6 py-2.5 rounded-full text-xs font-bold tracking-wide transition-all flex items-center justify-center gap-2">
+                            <template x-if="isSubmitting">
+                                <span class="flex items-center gap-2">
+                                    <svg class="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                    </svg>
+                                    <span>Memproses...</span>
+                                </span>
+                            </template>
+                            <template x-if="!isSubmitting">
+                                <span class="flex items-center gap-2">
+                                    <span>Pesan Sekarang</span>
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        <polyline points="12 5 19 12 12 19"></polyline>
+                                    </svg>
+                                </span>
+                            </template>
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- ============================================================= --}}
     {{-- FLOATING BOTTOM BAR (DENGAN TOMBOL PANAH KECIL UNTUK RINCIAN)  --}}
     {{-- ============================================================= --}}
     <div x-show="cart.length > 0"
          x-cloak
-         class="fixed bottom-0 inset-x-0 z-40 bg-[#F2F5E2]/95 backdrop-blur-md border-t border-[#E3DEA4] px-4 py-3 sm:py-3.5 shadow-[0_-8px_30px_rgba(41,0,36,0.08)]">
+         class="fixed bottom-0 inset-x-0 z-40 bg-[#F2F5E2]/95 backdrop-blur-md border-t border-[#E3DEA4] px-4 py-3 sm:py-3.5 shadow-[0_-8px_30px_rgba(41,0,36,0.08)] lg:hidden">
         <div class="max-w-3xl mx-auto flex items-center justify-between gap-3">
 
             <!-- Kiri: Total Pesanan + Tombol Panah Kecil untuk Perlebar Halaman / Rincian -->

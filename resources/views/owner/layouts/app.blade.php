@@ -215,6 +215,7 @@
 
     @include('partials.confirm-modal')
     @include('components.mobile.confirm-sheet')
+    @include('partials.session-timeout')
 
     @stack('scripts')
 </body>
