@@ -459,7 +459,7 @@ INSERT INTO `pengaturan` (`id`, `key`, `value`, `group`, `created_at`, `updated_
 (25, 'notif_daily_report', '1', NULL, '2026-10-12 09:43:05', '2026-10-12 09:43:05'),
 (26, 'notif_weekly_report', '0', NULL, '2026-10-12 09:43:05', '2026-10-12 09:43:05'),
 (27, 'cafe_logo', 'images/logo.png', NULL, '2026-10-19 00:00:00', '2026-10-19 00:00:00'),
-(28, 'landing_bg_url', 'https://www.google.com/url?sa=t&source=web&rct=j&url=https%3A%2F%2Finterbox.id%2Farticle%2Ffurniture-cafe&ved=0CBcQjRxqGAoTCIDHjb-wx5cDFQAAAAAdAAAAABCHAg&opi=89978449', NULL, '2026-10-20 00:54:48', '2026-10-20 00:54:48'),
+(28, 'landing_bg_url', NULL, NULL, '2026-10-20 00:54:48', '2026-10-20 00:54:48'),
 (29, 'cafe_hours', 'Buka Setiap Hari 09.00 - 23.00 WIB', NULL, '2026-10-25 12:00:00', '2026-10-25 14:30:00'),
 (30, 'cafe_maps_url', 'https://maps.app.goo.gl/mvEr6sWCacKH5j677', NULL, '2026-10-25 12:00:00', '2026-10-26 11:12:00'),
 (31, 'cafe_instagram', 'abs_tulungagung_24', NULL, '2026-10-25 12:00:00', '2026-10-25 12:00:00'),
@@ -487,7 +487,7 @@ INSERT INTO `pengaturan` (`id`, `key`, `value`, `group`, `created_at`, `updated_
 (53, 'last_order', '22.00 WIB', NULL, '2026-10-25 14:30:00', '2026-10-25 14:30:00'),
 (54, 'whatsapp_nomor', '6289620102010', NULL, '2026-10-26 11:21:00', '2026-10-26 11:21:00'),
 (55, 'whatsapp_pesan', 'Halo ABS Cafe, saya ingin bertanya.', NULL, '2026-10-26 11:21:00', '2026-10-26 11:21:00'),
-(56, 'order_base_url', 'https://pieces-completed-cosmetics-poster.trycloudflare.com', NULL, '2026-11-09 04:51:20', '2026-11-09 04:51:20');
+(56, 'order_base_url', 'http://localhost:8000', NULL, '2026-11-09 04:51:20', '2026-11-09 04:51:20');
 
 -- --------------------------------------------------------
 
@@ -519,13 +519,9 @@ CREATE TABLE `pengguna` (
 --
 
 INSERT INTO `pengguna` (`id`, `name`, `username`, `email`, `role`, `phone`, `photo_path`, `status`, `avatar`, `last_login_at`, `email_verified_at`, `password`, `remember_token`, `is_active`, `created_at`, `updated_at`) VALUES
-(1, 'Admin Utama ABS Cafe', 'admin', 'admin@abscafe.com', 'admin', '081234567890', NULL, 'aktif', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80', '2026-11-09 04:39:23', NULL, '$2y$12$UZBi.muML8SGayBP0E4v8OeyL4Hmp.mVTooJ9x85mMN8FfHAx3WXa', 'niNUg0sE7NfoAFcchTZcppcI98RAc74z1yMl9ybpqpFI4MMvmOWNLn2gJRCA', 1, '2026-10-11 23:40:51', '2026-11-09 04:39:23'),
-(2, 'Siti Rahma', 'siti_kasir', 'siti.kasir@abscafe.com', 'kasir', '082198765432', NULL, 'aktif', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&auto=format&fit=crop&q=80', '2026-10-12 08:28:55', NULL, '$2y$12$CoJbuFzwccyDME.KloAGmeVHq2KFDw7yVfiWUiq8HjGq9fqjTGu8G', NULL, 1, '2026-10-11 23:40:51', '2026-10-12 10:28:55'),
-(3, 'Budi Santoso', 'budi_kasir', 'budi.kasir@abscafe.com', 'kasir', '081377889900', NULL, 'aktif', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80', '2026-11-02 07:59:28', NULL, '$2y$12$9Du1IPOvJpdRAzFIbPMNwu6Tlv1PrL0GnPwP7XsONa20U1d6zD4TG', NULL, 1, '2026-10-11 23:40:52', '2026-11-02 07:59:28'),
-(4, 'Wahyu Hidayat', 'wahyu_barista', 'wahyu.barista@abscafe.com', 'staf', '085712345678', NULL, 'aktif', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80', '2026-10-12 04:28:55', NULL, '$2y$12$xH7Mp6MnNXB6n.HeBpvig.mM1EBsPyvl1HfU8b0cX.tC0BruCcwrS', NULL, 1, '2026-10-11 23:40:52', '2026-10-12 10:28:55'),
-(5, 'Dewi Lestari', 'dewi_kitchen', 'dewi.kitchen@abscafe.com', 'staf', '089633445566', NULL, 'nonaktif', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&auto=format&fit=crop&q=80', '2026-10-09 10:28:56', NULL, '$2y$12$tgSoZeswRc04m215waBxdOzuhemWuwdg2GZsF.0ZIv7rud1HWiVke', NULL, 1, '2026-10-11 23:40:52', '2026-10-12 10:28:56'),
-(6, 'Owner ABS Cafe', 'owner', 'owner@abscafe.com', 'owner', '081100112233', NULL, 'aktif', 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&auto=format&fit=crop&q=80', '2026-10-17 14:02:56', NULL, '$2y$12$ps78oxU2WP44jCYOPpIAC.1dpr8.2HJvrgYBZ8yu0lNlBG5Gr8/Hu', 'nFdGD3QFPKN2eahFaVvkyTgwe2cN1vX1jYWVCJQ8P9B6D7QDiSwfXCwrCKjB', 1, '2026-10-12 09:41:10', '2026-10-17 14:02:56'),
-(7, 'Kasir Demo ABS Cafe', 'kasir', 'kasir@abscafe.com', 'kasir', '081255667788', NULL, 'aktif', 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=80', '2026-10-17 14:40:06', NULL, '$2y$12$kGxF/EsiCMwT7KSLnhXEDOgFRCmPVED6VkJcBnY9VUoOlM1UIEarC', 'MGBFQ8exXI87pGpWcwdQ6ksbSoZqDtFzWOqIfwmVd5Hf3yPVbduhmYrfxVxq', 1, '2026-10-12 10:28:30', '2026-10-17 14:40:06');
+(1, 'Admin Utama ABS Cafe', 'admin', 'admin@abscafe.com', 'admin', '089620102010', NULL, 'aktif', NULL, NULL, NULL, '$2y$12$UZBi.muML8SGayBP0E4v8OeyL4Hmp.mVTooJ9x85mMN8FfHAx3WXa', NULL, 1, '2026-10-11 23:40:51', '2026-10-11 23:40:51'),
+(2, 'Owner ABS Cafe', 'owner', 'owner@abscafe.com', 'owner', '089620102010', NULL, 'aktif', NULL, NULL, NULL, '$2y$12$ps78oxU2WP44jCYOPpIAC.1dpr8.2HJvrgYBZ8yu0lNlBG5Gr8/Hu', NULL, 1, '2026-10-12 09:41:10', '2026-10-12 09:41:10'),
+(3, 'Kasir ABS Cafe', 'kasir', 'kasir@abscafe.com', 'kasir', '089620102010', NULL, 'aktif', NULL, NULL, NULL, '$2y$12$kGxF/EsiCMwT7KSLnhXEDOgFRCmPVED6VkJcBnY9VUoOlM1UIEarC', NULL, 1, '2026-10-12 10:28:30', '2026-10-12 10:28:30');
 
 -- --------------------------------------------------------
 
@@ -676,14 +672,6 @@ CREATE TABLE `promo` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `promo`
---
-
-INSERT INTO `promo` (`id`, `title`, `code`, `description`, `type`, `value`, `applies_to`, `target_category_id`, `target_menu_id`, `start_date`, `end_date`, `banner`, `is_active`, `min_spend`, `quota`, `created_at`, `updated_at`) VALUES
-(1, 'Buy 2 Get 1 Free All Coffee', 'BELI2G1', 'Beli 2 cup menu coffee apa saja, dapatkan gratis 1 Americano atau Latte setiap hari!', 'buy_x_get_y', 100.00, 'kategori', 1, NULL, '2026-10-01', '2026-10-31', 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&auto=format&fit=crop&q=80', 1, 0.00, NULL, '2026-10-11 23:41:00', '2026-10-12 10:28:56'),
-(2, 'Diskon 20% Pelajar & Mahasiswa Tulungagung', 'PELAJAR20', 'Tunjukkan kartu pelajar atau KTM kampus Boyolangu/Tulungagung untuk diskon seluruh menu minuman.', 'persen', 20.00, 'semua', NULL, NULL, '2026-10-07', '2026-11-06', 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80', 1, 30000.00, NULL, '2026-10-11 23:41:00', '2026-10-12 10:28:56'),
-(3, 'Cashback Rp 10.000 Paket Ngemil Hemat', 'NGEMIL10', 'Potongan langsung Rp 10.000 untuk pembelian bundling 1 Makanan + 1 Minuman apa saja.', 'nominal', 10000.00, 'semua', NULL, NULL, '2026-10-10', '2026-10-26', 'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=800&auto=format&fit=crop&q=80', 1, 45000.00, NULL, '2026-10-11 23:41:00', '2026-10-12 10:28:56');
 
 -- --------------------------------------------------------
 
@@ -978,7 +966,7 @@ ALTER TABLE `pengaturan`
 -- AUTO_INCREMENT for table `pengguna`
 --
 ALTER TABLE `pengguna`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `peran`
@@ -1008,7 +996,7 @@ ALTER TABLE `pesanan_riwayat`
 -- AUTO_INCREMENT for table `promo`
 --
 ALTER TABLE `promo`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `reservasi`

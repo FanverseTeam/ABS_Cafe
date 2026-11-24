@@ -379,6 +379,9 @@ Route::prefix('kasir')->name('kasir.')->middleware(['auth', 'role:kasir', 'noind
     // Meja: ubah status meja
     Route::post('/meja/{table}/status', [KasirTableController::class, 'update'])->name('tables.status');
 
+    // Ganti nama kasir bertugas (tanpa logout)
+    Route::post('/ganti-kasir', [KasirDashboardController::class, 'switchCashier'])->name('switch_cashier');
+
     // Logout (nama route khusus kasir agar view mudah dipakai)
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });

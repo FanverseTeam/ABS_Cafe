@@ -213,7 +213,7 @@ class OrderService
                 'payment_method' => $data['payment_method'] ?? 'tunai',
                 'payment_status' => 'menunggu_pembayaran',
                 'order_status' => $data['order_status'] ?? 'diproses',
-                'cashier_name' => $cashier->name,
+                'cashier_name' => $data['cashier_name'] ?? (session('active_cashier_name') ?: $cashier->name),
                 'cashier_id' => $cashier->id,
                 'cash_shift_id' => $shift?->id,
             ]);

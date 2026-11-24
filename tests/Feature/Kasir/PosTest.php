@@ -26,10 +26,11 @@ class PosTest extends TestCase
         $this->get('/kasir/pos')->assertOk();
     }
 
-    public function test_pos_requires_active_shift(): void
+    public function test_pos_accessible_without_explicit_shift(): void
     {
+        // Shift sekarang auto-dibuat oleh ShiftService::activeDrawerShift(), kasir tidak perlu buka manual
         $this->actingAsKasir()->get('/kasir/pos')
-            ->assertRedirect(route('kasir.shift.open'));
+            ->assertOk();
     }
 
     public function test_totals_endpoint_computes_tax(): void

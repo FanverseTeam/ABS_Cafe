@@ -65,7 +65,7 @@ class PaymentService
                 'order_status' => $targetOrderStatus,
                 'paid_at' => now(),
                 'cashier_id' => $lockedOrder->cashier_id ?: $cashier->id,
-                'cashier_name' => $lockedOrder->cashier_name ?: $cashier->name,
+                'cashier_name' => $lockedOrder->cashier_name ?: (session('active_cashier_name') ?: $cashier->name),
             ]);
 
             foreach ($lockedOrder->items as $item) {

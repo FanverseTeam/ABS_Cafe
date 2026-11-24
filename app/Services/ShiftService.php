@@ -15,25 +15,40 @@ use Illuminate\Validation\ValidationException;
 class ShiftService
 {
     /**
-     * Dapatkan shift aktif di laci saat ini (satu laci kas bersama untuk semua kasir).
+     * Dapatkan shift aktif di laci saat ini.
+     * Jika belum ada shift buka, buat satu otomatis agar transaksi tidak terblokir.
      */
-    public function activeDrawerShift(): ?CashShift
+    public function activeDrawerShift(): CashShift
     {
-        return CashShift::with('user')
+        $shift = CashShift::with('user')
             ->where('status', 'buka')
             ->latest('opened_at')
             ->first();
+
+        if (! $shift) {
+            // Auto-create shift background agar cash_shift_id pada Order selalu terisi valid
+            $kasir = User::where('username', 'kasir')->first()
+                ?? User::where('role', 'kasir')->first()
+                ?? User::first();
+
+            $shift = CashShift::create([
+                'user_id' => $kasir?->id,
+                'status' => 'buka',
+                'opening_cash' => 0,
+                'opened_at' => now(),
+                'notes' => 'Shift otomatis — sistem',
+            ]);
+        }
+
+        return $shift;
     }
 
     /**
-     * Shift aktif untuk user saat ini atau laci aktif.
+     * Shift aktif untuk user: selalu kembalikan shift laci aktif (auto-create jika perlu).
      */
-    public function activeFor(User $user): ?CashShift
+    public function activeFor(User $user): CashShift
     {
-        return CashShift::where('status', 'buka')
-            ->where('user_id', $user->id)
-            ->latest('opened_at')
-            ->first() ?? $this->activeDrawerShift();
+        return $this->activeDrawerShift();
     }
 
     /**

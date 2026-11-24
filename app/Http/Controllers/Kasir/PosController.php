@@ -112,9 +112,6 @@ class PosController extends Controller
         }
 
         $shift = $this->shifts->activeFor(Auth::user());
-        if (! $shift) {
-            return redirect()->route('kasir.shift.open')->with('error', 'Buka shift terlebih dahulu.');
-        }
 
         if ($data['order_type'] === 'dine_in' && empty($data['table_number'])) {
             return back()->withInput()->with('error', 'Pilih nomor meja untuk pesanan Dine-in.');
