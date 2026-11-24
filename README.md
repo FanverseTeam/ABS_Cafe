@@ -155,24 +155,7 @@ flowchart LR
 1. 🔒 **Keamanan Transaksi & Integritas Data:**  
    Setiap transaksi terhubung dengan audit trail yang mencatat tanggal, jam, status pembayaran, dan identitas staf yang bertanggung jawab.
 2. 🏠 **Kemandirian Operasional:**  
-   Sistem tetap dapat mencatat pesanan kasir dengan cepat tanpa bergantung git add db_abscafe.sql
-             git rebase --continue
-resources/views/kasir/layouts/sidebar.blade.php: needs merge
-You must edit all merge conflicts and then
-mark them as resolved using git add
-rill@cachy > git add .
-rill@cachy > git commit -m "Update tampilan"
-[detached HEAD 19f0785] Update tampilan
- 13 files changed, 93 insertions(+), 108 deletions(-)
-rill@cachy > git push origin main
-To https://github.com/FanverseTeam/ABS_Cafe.git
- ! [rejected]        main -> main (non-fast-forward)
-error: failed to push some refs to 'https://github.com/FanverseTeam/ABS_Cafe.git'
-hint: Updates were rejected because a pushed branch tip is behind its remote
-hint: counterpart. If you want to integrate the remote changes, use 'git pull'
-hint: before pushing again.
-hint: See the 'Note about fast-forwards' in 'git push --help' for details.
-rill@cachy > pada koneksi internet eksternal saat berjalan di jaringan lokal kafe.
+   Sistem tetap dapat mencatat pesanan kasir dengan cepat tanpa bergantung pada koneksi internet eksternal saat berjalan di jaringan lokal kafe.
 3. 🌱 **Skalabilitas Bisnis:**  
    Struktur database terstandarisasi yang siap dikembangkan jika kafe menambah cabang atau memperluas area layanan meja di masa mendatang.
 
