@@ -16,13 +16,20 @@
     </div>
 
     <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-        <div class="flex items-center gap-1 p-1 rounded-full bg-cafe-beige/50 border border-cafe-beige overflow-x-auto no-scrollbar max-w-full">
-            @foreach($periods as $key => $label)
-                <a href="{{ $baseUrl . '?' . http_build_query(array_merge($preserve, ['periode' => $key])) }}"
-                   class="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all {{ $period->key === $key ? 'bg-cafe-dark text-cafe-cream shadow-sm font-semibold' : 'text-cafe-muted hover:bg-cafe-beige hover:text-cafe-dark' }}">
-                    {{ $label }}
-                </a>
-            @endforeach
+        {{-- Dropdown Periode --}}
+        <div class="relative flex items-center bg-cafe-beige/50 border border-cafe-beige rounded-full px-3 py-1.5 shadow-2xs">
+            <i data-lucide="clock" class="w-3.5 h-3.5 text-cafe-gold mr-2 shrink-0"></i>
+            <select onchange="if(this.value) window.location.href=this.value"
+                    class="bg-transparent text-xs text-cafe-dark font-semibold focus:outline-none cursor-pointer pr-4 appearance-none">
+                @foreach($periods as $key => $label)
+                    <option value="{{ $baseUrl . '?' . http_build_query(array_merge($preserve, ['periode' => $key])) }}"
+                            {{ $period->key === $key ? 'selected' : '' }}
+                            class="bg-[#F2F5E2] text-cafe-dark py-1 font-medium">
+                        {{ $label }}
+                    </option>
+                @endforeach
+            </select>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-cafe-muted absolute right-2.5 pointer-events-none"></i>
         </div>
 
         <form action="{{ $baseUrl }}" method="GET" class="flex items-center justify-between gap-1.5 bg-cafe-card border border-cafe-beige rounded-full px-3 py-1 text-xs">

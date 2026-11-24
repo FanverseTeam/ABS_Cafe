@@ -5,15 +5,6 @@
 
 @section('content')
 <div class="space-y-4 lg:space-y-6">
-    <!-- Breadcrumb (Desktop only) -->
-    <x-breadcrumb
-        :items="[
-            ['label' => 'Admin', 'url' => route('admin.vouchers.index'), 'icon' => 'home'],
-            ['label' => 'Promo & Diskon'],
-        ]"
-        class="mb-3"
-    />
-
     <!-- Page Header & Action (Desktop only) -->
     <div class="hidden lg:flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

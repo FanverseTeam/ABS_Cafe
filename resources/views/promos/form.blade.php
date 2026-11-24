@@ -2,12 +2,23 @@
 
 @section('title', $isEdit ? 'Ubah Promo' : 'Buat Promo Baru')
 @section('page_title', $isEdit ? 'Ubah Promo' : 'Buat Promo Baru')
-@section('has_form_header', true)
 
 @section('content')
-<div class="max-w-[800px] mx-auto pb-28 lg:pb-10">
-    <!-- Bilah Header Ringkas Reusable -->
-    <x-form-header :title="$isEdit ? 'Ubah Promo' : 'Buat Promo Baru'" :back-url="$backUrl" />
+<div class="max-w-3xl mx-auto space-y-5 sm:space-y-6 pb-28 lg:pb-10">
+    <!-- Header with Back Button (Konsisten dengan form admin/owner lainnya) -->
+    <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+            <a href="{{ $backUrl }}"
+               class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl bg-cafe-beige/60 text-cafe-dark hover:bg-cafe-beige transition-all active:scale-95 shrink-0"
+               title="Kembali ke Daftar Promo">
+                <i data-lucide="arrow-left" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+            </a>
+            <div class="min-w-0">
+                <h2 class="font-serif text-lg sm:text-2xl font-bold text-cafe-dark truncate">{{ $isEdit ? 'Ubah Promo' : 'Buat Promo Baru' }}</h2>
+                <p class="text-[11px] sm:text-xs text-cafe-muted truncate">Konfigurasi diskon, periode berlaku, dan syarat ketentuan voucher</p>
+            </div>
+        </div>
+    </div>
 
     <!-- Error Summary (Tampil bila ada kegagalan validasi) -->
     @if($errors->any())

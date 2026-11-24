@@ -51,79 +51,91 @@
     </div>
     <x-mobile.fab icon="plus" label="Tambah Meja" onclick="openTableModal()" />
 
-    <!-- Tables Grid Cards (1 col on narrow mobile, 2 cols on mobile, 3 on tablet, 5 on desktop) -->
-    <div class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
+    <!-- Tables Grid Cards (1 col on narrow mobile, 2 cols on mobile, 3 on tablet/laptop, 4-5 on large desktop) -->
+    <div class="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-5">
         @forelse($tables as $table)
             @php
                 $tableOrderUrl = rtrim($orderBaseUrl, '/') . '?meja=' . $table->number;
             @endphp
-            <div class="bg-cafe-card rounded-2xl p-4 sm:p-5 shadow-soft hover:shadow-soft-lg border border-cafe-beige/50 flex flex-col justify-between transition-all relative overflow-hidden group">
+            <div class="bg-cafe-card rounded-2xl shadow-soft hover:shadow-soft-lg border border-cafe-beige/50 flex flex-col justify-between transition-all relative overflow-hidden group min-h-[310px] sm:min-h-[340px]">
                 <!-- Status Top Border Indicator -->
                 <div class="absolute top-0 left-0 right-0 h-1.5 {{ $table->status === 'tersedia' ? 'bg-cafe-success' : ($table->status === 'terpakai' ? 'bg-cafe-warning' : 'bg-cafe-muted') }}"></div>
 
-                <div>
-                    <!-- Header Card: Nomor & Status -->
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="w-12 h-12 rounded-2xl bg-cafe-beige/70 flex flex-col items-center justify-center text-cafe-dark shadow-inner">
-                            <span class="text-[9px] uppercase tracking-wider text-cafe-muted font-bold">Meja</span>
-                            <span class="font-serif font-black text-lg leading-none text-cafe-dark">{{ $table->number }}</span>
+                <div class="p-5 sm:p-6 flex-1 flex flex-col">
+                    <!-- Header Card: Nomor & Status Badge -->
+                    <div class="flex items-start justify-between mb-5">
+                        <div class="w-16 h-16 rounded-2xl bg-[#290024] text-[#F2F5E2] flex flex-col items-center justify-center shadow-md border border-[#D4954D]/30 shrink-0">
+                            <span class="text-[9px] uppercase tracking-widest text-[#D4954D] font-bold">Meja</span>
+                            <span class="font-serif font-black text-2xl leading-none text-[#F2F5E2] mt-0.5">{{ $table->number }}</span>
                         </div>
 
                         <div>
                             @if($table->status === 'tersedia')
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#775533]/15 text-[#775533] border border-[#775533]/30">Tersedia</span>
+                                <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-[#775533]/15 text-[#775533] border border-[#775533]/30 shadow-xs flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                    <span>Tersedia</span>
+                                </span>
                             @elseif($table->status === 'terpakai')
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#D4954D]/15 text-[#D4954D] border border-[#D4954D]/30 animate-pulse">Terpakai</span>
+                                <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-[#D4954D]/15 text-[#D4954D] border border-[#D4954D]/30 shadow-xs flex items-center gap-1.5 animate-pulse">
+                                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                    <span>Terpakai</span>
+                                </span>
                             @else
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cafe-muted/15 text-cafe-muted border border-cafe-beige">Nonaktif</span>
+                                <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-cafe-muted/15 text-cafe-muted border border-cafe-beige shadow-xs">Nonaktif</span>
                             @endif
                         </div>
                     </div>
 
-                    <!-- Details -->
-                    <div class="space-y-1 mb-3 text-xs">
-                        <p class="text-cafe-muted flex items-center gap-1.5">
-                            <i data-lucide="users" class="w-3.5 h-3.5 text-cafe-gold"></i>
-                            <span>Kapasitas: <strong class="text-cafe-dark">{{ $table->capacity }} Orang</strong></span>
-                        </p>
-                        <p class="text-cafe-muted flex items-center gap-1.5">
-                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-cafe-gold"></i>
-                            <span class="truncate">{{ $table->location_notes ?? 'Area Utama' }}</span>
-                        </p>
+                    <!-- Details: Kapasitas & Lokasi -->
+                    <div class="space-y-2.5 my-4 text-xs">
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-cafe-card border border-cafe-beige/40">
+                            <span class="text-cafe-muted flex items-center gap-2">
+                                <i data-lucide="users" class="w-4 h-4 text-cafe-gold shrink-0"></i>
+                                <span>Kapasitas Kursi</span>
+                            </span>
+                            <strong class="text-cafe-dark text-xs">{{ $table->capacity }} Orang</strong>
+                        </div>
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-cafe-card border border-cafe-beige/40">
+                            <span class="text-cafe-muted flex items-center gap-2">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-cafe-gold shrink-0"></i>
+                                <span>Lokasi</span>
+                            </span>
+                            <span class="truncate font-semibold text-cafe-dark text-xs max-w-[140px] text-right">{{ $table->location_notes ?? 'Lantai 1' }}</span>
+                        </div>
                     </div>
 
                     <!-- Direct URL Snippet with Quick Copy -->
-                    <div class="bg-beige/70 p-1.5 rounded-lg border border-cafe-beige/60 flex items-center justify-between gap-1 mb-3">
-                        <span class="text-[10px] font-mono text-cafe-muted truncate select-all pl-1">
+                    <div class="bg-beige/80 p-2 rounded-xl border border-cafe-beige/70 flex items-center justify-between gap-1.5 mb-1 mt-auto">
+                        <span class="text-[10px] font-mono text-cafe-muted truncate select-all pl-1.5">
                             ?meja={{ $table->number }}
                         </span>
-                        <button type="button" onclick="copyText('{{ $tableOrderUrl }}', 'Link Meja #{{ $table->number }} disalin!')" class="p-1 rounded hover:bg-cafe-beige text-cafe-dark transition-colors" title="Salin link lengkap">
-                            <i data-lucide="copy" class="w-3 h-3"></i>
+                        <button type="button" onclick="copyText('{{ $tableOrderUrl }}', 'Link Meja #{{ $table->number }} disalin!')" class="p-1.5 rounded-lg hover:bg-cafe-beige text-cafe-dark transition-colors shrink-0 bg-cafe-card shadow-xs" title="Salin link lengkap">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- Footer Action Buttons -->
-                <div class="pt-3 border-t border-cafe-beige/50 flex flex-wrap items-center justify-between gap-1.5">
+                <div class="p-4 sm:px-6 bg-cafe-card border-t border-cafe-beige/50 flex items-center justify-between gap-2">
                     <!-- QR Code Button -->
-                    <button onclick="openQrModal({{ $table->number }}, {{ $table->id }})" class="inline-flex items-center gap-1 text-[11px] font-bold text-cafe-brown hover:text-cafe-dark px-2.5 py-1.5 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige transition-colors">
-                        <i data-lucide="qr-code" class="w-3.5 h-3.5"></i>
+                    <button onclick="openQrModal({{ $table->number }}, {{ $table->id }})" class="inline-flex items-center gap-1.5 text-xs font-bold text-cafe-dark hover:text-[#D4954D] px-3 py-1.5 rounded-full bg-cafe-beige/60 hover:bg-cafe-beige transition-all shadow-2xs">
+                        <i data-lucide="qr-code" class="w-3.5 h-3.5 text-cafe-gold"></i>
                         <span>QR Code</span>
                     </button>
 
                     <!-- Edit, Print & Delete -->
                     <div class="flex items-center gap-1 shrink-0">
-                        <a href="{{ route('admin.operations.tables.print_single', $table->id) }}" target="_blank" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-muted hover:text-cafe-dark transition-colors" title="Cetak Stand Meja Ini">
-                            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                        <a href="{{ route('admin.operations.tables.print_single', $table->id) }}" target="_blank" class="p-2 rounded-xl hover:bg-cafe-beige/60 text-cafe-muted hover:text-cafe-dark transition-colors" title="Cetak Stand Meja Ini">
+                            <i data-lucide="printer" class="w-4 h-4"></i>
                         </a>
-                        <button onclick="editTableModal({{ json_encode($table) }})" class="p-1.5 rounded-full hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark transition-colors" title="Edit Meja">
-                            <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+                        <button onclick="editTableModal({{ json_encode($table) }})" class="p-2 rounded-xl hover:bg-cafe-beige/60 text-cafe-brown hover:text-cafe-dark transition-colors" title="Edit Meja">
+                            <i data-lucide="edit" class="w-4 h-4"></i>
                         </button>
                         <form action="{{ route('admin.operations.tables.destroy', $table->id) }}" method="POST" onsubmit="return confirm('Hapus meja #{{ $table->number }}?');" class="inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="p-1.5 rounded-full hover:bg-cafe-danger/10 text-cafe-danger transition-colors" title="Hapus Meja">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            <button type="submit" class="p-2 rounded-xl hover:bg-cafe-danger/10 text-cafe-danger transition-colors" title="Hapus Meja">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         </form>
                     </div>
