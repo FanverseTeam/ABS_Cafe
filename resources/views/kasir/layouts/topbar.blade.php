@@ -1,19 +1,15 @@
 @php
     $backUrl = \App\Support\MobileNavigation::backUrlForCurrentRoute();
     $activePenjagaName = session('active_penjaga_kasir') ?: session('active_cashier_name') ?: \App\Models\CafeSetting::get('active_penjaga_kasir');
-<<<<<<< HEAD
     $activeCashierName = $activePenjagaName ?: (Auth::user()->name ?? 'Kasir');
-=======
->>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
     $newWebOrdersCount = \App\Models\Order::forKasir()->today()->where('source', 'web')->where('order_status', 'diproses')->count();
     $unpaidOrdersCount = \App\Models\Order::forKasir()->today()->where('payment_status', 'menunggu_pembayaran')->where('order_status', '!=', 'selesai')->count();
     $totalNotif = $newWebOrdersCount + $unpaidOrdersCount;
     $newWebOrders = \App\Models\Order::forKasir()->today()->where('source', 'web')->where('order_status', 'diproses')->take(5)->get();
     $unpaidOrders = \App\Models\Order::forKasir()->today()->unpaid()->where('order_status', '!=', 'selesai')->take(5)->get();
-<<<<<<< HEAD
-    $staffCashierList = \App\Models\User::where('status', 'aktif')->whereIn('role', ['kasir', 'staf', 'admin'])->orderBy('name')->pluck('name');
-=======
->>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
+    $staffCashierList = \Illuminate\Support\Facades\Schema::hasTable('penjaga_kasir')
+        ? \App\Models\PenjagaKasir::activeKasir()->pluck('name')
+        : \App\Models\User::where('status', 'aktif')->whereIn('role', ['kasir'])->orderBy('name')->pluck('name');
 @endphp
 
 <header class="sticky top-0 z-30 bg-[#F2F5E2]/95 backdrop-blur-md border-b border-cafe-beige/60 shadow-sm transition-all" style="padding-top: env(safe-area-inset-top, 0px);">
@@ -47,8 +43,6 @@
             <div class="hidden sm:flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#E3DEA4]/70 border border-[#D4954D]/40 text-[#290024] shadow-xs text-xs font-semibold select-none" title="Waktu Komputer Lokal Realtime">
                 <i data-lucide="clock" class="w-3.5 h-3.5 text-[#D4954D] shrink-0 animate-pulse"></i>
                 <span class="realtime-clock-display font-mono tracking-wide font-bold">--:--:--</span>
-<<<<<<< HEAD
-
             {{-- Kasir Bertugas Widget --}}
             <div class="relative" id="cashier-switch-wrapper">
                 <button type="button"
@@ -92,8 +86,6 @@
                         @endif
                     </form>
                 </div>
-=======
->>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
             </div>
 
             {{-- Notification Bell --}}
@@ -179,13 +171,8 @@
                         {{ substr(Auth::user()->name ?? 'K', 0, 1) }}
                     </div>
                     <div class="text-left hidden sm:block">
-<<<<<<< HEAD
                         <span class="text-xs font-bold text-cafe-dark block leading-tight">{{ $activeCashierName }}</span>
                         <span class="text-[10px] text-cafe-muted block">Kasir Bertugas</span>
-=======
-                        <span class="text-xs font-bold text-cafe-dark block leading-tight">{{ $activePenjagaName ?: (Auth::user()->name ?? 'Kasir ABS') }}</span>
-                        <span class="text-[10px] text-cafe-muted block">{{ $activePenjagaName ? 'Penjaga Kasir' : 'Kasir' }}</span>
->>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
                     </div>
                     <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-cafe-muted ml-0.5"></i>
                 </button>

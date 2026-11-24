@@ -51,6 +51,10 @@
         ? $configuredLogo
         : asset(ltrim($configuredLogo, '/'));
 
+    if (! $isRemoteLogo && is_file(public_path(ltrim($configuredLogo, '/')))) {
+        $logoSrc .= '?v=' . filemtime(public_path(ltrim($configuredLogo, '/')));
+    }
+
     $badgeBackground = $thermal ? '#000000' : '#290024';
 
     $badgeStyle = $onDark

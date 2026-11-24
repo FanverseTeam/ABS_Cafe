@@ -25,7 +25,7 @@
     @endif
 
     <!-- Form Utama Promo (Mulai langsung 16px di bawah bilah) -->
-    <form id="promo-form" method="POST" action="{{ $action }}" class="space-y-6 mt-4">
+    <form id="promo-form" method="POST" action="{{ $action }}" enctype="multipart/form-data" class="space-y-6 mt-4">
         @csrf
 
         <div class="bg-cafe-card rounded-2xl shadow-soft border border-cafe-beige/60 p-5 sm:p-7 space-y-6">
@@ -248,20 +248,19 @@
             <!-- 4. Tampilan -->
             <div class="space-y-4">
                 <div class="border-b border-cafe-beige/50 pb-2">
-                    <h3 class="font-serif font-bold text-sm sm:text-base text-cafe-dark">Tampilan</h3>
-                    <p class="text-[11px] text-cafe-muted">Gambar banner untuk kartu dan halaman promo</p>
+                    <h3 class="font-serif font-bold text-sm sm:text-base text-cafe-dark">Tampilan Banner Promo</h3>
+                    <p class="text-[11px] text-cafe-muted">Upload gambar banner untuk kartu dan halaman promo (JPG, PNG, WebP, HEIC, dll)</p>
                 </div>
 
                 <div class="space-y-3">
                     <div class="space-y-1.5">
-                        <label for="banner" class="block text-xs font-semibold text-cafe-text">URL Gambar Banner <span class="text-cafe-muted font-normal">(opsional)</span></label>
-                        <input type="url"
+                        <label for="banner" class="block text-xs font-semibold text-cafe-text">Pilih Berkas Foto Banner <span class="text-cafe-muted font-normal">(opsional)</span></label>
+                        <input type="file"
                                name="banner"
                                id="banner"
-                               value="{{ old('banner', $promo->banner ?: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&auto=format&fit=crop&q=80') }}"
-                               oninput="updateBannerPreview()"
-                               placeholder="https://images.unsplash.com/..."
-                               class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none focus:ring-2 focus:ring-cafe-gold/20 transition-all min-h-[44px]">
+                               accept="image/*,.heic,.heif"
+                               onchange="previewBannerFile(this)"
+                               class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs sm:text-sm text-cafe-text px-4 py-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all cursor-pointer file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cafe-dark file:text-cafe-cream">
                         @error('banner')
                             <p class="text-[11px] text-cafe-danger mt-1">{{ $message }}</p>
                         @enderror
@@ -278,7 +277,7 @@
                         </div>
                         <div class="min-w-0 flex-1">
                             <p class="text-xs font-semibold text-cafe-dark">Pratinjau Banner</p>
-                            <p class="text-[10px] text-cafe-muted mt-0.5">Gambar banner akan ditampilkan pada kartu daftar promo dan aplikasi kasir.</p>
+                            <p class="text-[10px] text-cafe-muted mt-0.5">Semua format didukung (JPG, PNG, WebP, HEIC, dll). Banner akan ditampilkan pada kartu daftar promo dan aplikasi kasir.</p>
                         </div>
                     </div>
                 </div>
@@ -391,12 +390,15 @@
         }
     }
 
-    function updateBannerPreview() {
-        const bannerInput = document.getElementById('banner');
+    function previewBannerFile(input) {
         const preview = document.getElementById('banner-preview');
-        if (!bannerInput || !preview) return;
-        const url = bannerInput.value.trim();
-        preview.src = url || 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&auto=format&fit=crop&q=80';
+        if (!input || !preview || !input.files || !input.files[0]) return;
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
     }
 
     document.addEventListener('DOMContentLoaded', function () {

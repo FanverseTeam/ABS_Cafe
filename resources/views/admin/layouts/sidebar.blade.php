@@ -4,7 +4,7 @@
     // ACTIVE ADMIN: Dashboard is always first, followed by the six active modules.
     $menus = [
         ['route' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'layout-dashboard', 'badge' => null],
-        ['route' => 'admin.staff.index', 'label' => 'Manajemen Staf', 'icon' => 'users', 'badge' => null],
+        ['route' => 'admin.staff.index', 'label' => 'Manajemen Staf dan Akun', 'icon' => 'users', 'badge' => null],
         ['route' => 'admin.catalog.index', 'label' => 'Manajemen Menu', 'icon' => 'coffee', 'badge' => null],
         ['route' => 'admin.operations.index', 'label' => 'Meja', 'icon' => 'grid-3x3', 'badge' => null],
         ['route' => 'admin.vouchers.index', 'label' => 'Promo / Voucher', 'icon' => 'percent', 'badge' => null],

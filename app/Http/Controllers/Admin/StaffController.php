@@ -29,6 +29,10 @@ class StaffController extends Controller
                 });
             }
 
+            if ($request->filled('bagian') && $request->input('bagian') !== 'all') {
+                $penjagaQuery->where('bagian', $request->input('bagian'));
+            }
+
             if ($request->filled('status') && $request->input('status') !== 'all') {
                 $penjagaQuery->where('status', $request->input('status'));
             }
@@ -38,7 +42,23 @@ class StaffController extends Controller
             $penjagaList = new LengthAwarePaginator([], 0, 15, 1, ['path' => $request->url()]);
         }
 
-        return view('admin.staff.index', compact('penjagaList'));
+        $roles = ['admin', 'owner', 'kasir'];
+        $roleAccounts = collect();
+        foreach ($roles as $r) {
+            $user = User::where('role', $r)->first();
+            if (! $user) {
+                $user = User::create([
+                    'name' => ucfirst($r).' ABS Cafe',
+                    'username' => $r,
+                    'password' => Hash::make($r.'123'),
+                    'role' => $r,
+                    'status' => 'aktif',
+                ]);
+            }
+            $roleAccounts->push($user);
+        }
+
+        return view('admin.staff.index', compact('penjagaList', 'roleAccounts'));
     }
 
     public function create()
@@ -54,7 +74,7 @@ class StaffController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:30|min:3|regex:/^[a-z0-9._]+$/|unique:pengguna,username',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:admin,kasir,staf',
+            'role' => 'required|in:admin,kasir,staf,owner',
             'phone' => 'nullable|string|max:20',
             'status' => 'required|in:aktif,nonaktif',
         ], [
@@ -91,7 +111,7 @@ class StaffController extends Controller
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.staff.index', ['tab' => 'akun'])->with('success', "Pengguna {$user->name} berhasil ditambahkan!");
+        return redirect()->route('admin.staff.index')->with('success', "Pengguna {$user->name} berhasil ditambahkan!");
     }
 
     public function edit($id)
@@ -107,46 +127,34 @@ class StaffController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|string|max:255',
             'username' => 'required|string|max:30|min:3|regex:/^[a-z0-9._]+$/|unique:pengguna,username,'.$user->id,
-            'role' => 'required|in:admin,kasir,staf',
-            'phone' => 'nullable|string|max:20',
-            'status' => 'required|in:aktif,nonaktif',
+            'password' => 'nullable|string|min:6',
         ], [
-            'username.unique' => 'Username ini sudah dipakai oleh pengguna lain.',
+            'username.required' => 'Username wajib diisi.',
+            'username.unique' => 'Username ini sudah dipakai oleh akun lain.',
             'username.min' => 'Username minimal 3 karakter.',
             'username.max' => 'Username maksimal 30 karakter.',
             'username.regex' => 'Username hanya boleh mengandung huruf kecil, angka, titik, dan garis bawah.',
+            'password.min' => 'Password minimal 6 karakter.',
         ]);
 
-        // Jika mengubah role ke kasir, pastikan belum ada kasir lain
-        if ($request->input('role') === 'kasir' && User::where('role', 'kasir')->where('id', '!=', $user->id)->exists()) {
-            throw ValidationException::withMessages([
-                'role' => 'Role Kasir hanya boleh memiliki 1 akun login terpusat.',
-            ]);
-        }
-
-        $user->update([
-            'name' => $request->input('name'),
-            'username' => $request->input('username'),
-            'role' => $request->input('role'),
-            'phone' => $request->input('phone'),
-            'status' => $request->input('status'),
-        ]);
+        $user->username = trim((string) $request->input('username'));
 
         if ($request->filled('password')) {
-            $user->update(['password' => Hash::make($request->input('password'))]);
+            $user->password = Hash::make($request->input('password'));
         }
+
+        $user->save();
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Memperbarui data pengguna: {$user->name}",
+            'activity' => "Memperbarui username/password akun role: {$user->role}",
             'activity_type' => 'pengguna',
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.staff.index', ['tab' => 'akun'])->with('success', "Data pengguna {$user->name} berhasil disimpan.");
+        return redirect()->route('admin.staff.index')->with('success', 'Akun role '.ucfirst($user->role).' berhasil diperbarui.');
     }
 
     public function toggleStatus($id)
@@ -224,14 +232,18 @@ class StaffController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:100',
+            'bagian' => 'required|in:kitchen,barista,kasir',
             'phone' => 'nullable|string|max:20',
             'status' => 'required|in:aktif,nonaktif',
         ], [
-            'name.required' => 'Nama orang yang jaga kasir wajib diisi.',
+            'name.required' => 'Nama staf wajib diisi.',
+            'bagian.required' => 'Bagian kerja staf wajib dipilih.',
+            'bagian.in' => 'Pilihan bagian kerja harus Kitchen, Barista, atau Kasir.',
         ]);
 
         $penjaga = PenjagaKasir::create([
             'name' => trim((string) $request->input('name')),
+            'bagian' => $request->input('bagian', 'kasir'),
             'phone' => $request->input('phone'),
             'status' => $request->input('status', 'aktif'),
         ]);
@@ -239,12 +251,12 @@ class StaffController extends Controller
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Menambahkan data penjaga kasir: {$penjaga->name}",
+            'activity' => "Menambahkan data staf: {$penjaga->name} ({$penjaga->bagianLabel()})",
             'activity_type' => 'pengguna',
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.staff.index')->with('success', "Penjaga kasir {$penjaga->name} berhasil didaftarkan!");
+        return redirect()->route('admin.staff.index')->with('success', "Staf {$penjaga->name} ({$penjaga->bagianLabel()}) berhasil didaftarkan!");
     }
 
     public function updatePenjaga(Request $request, $id)
@@ -253,14 +265,18 @@ class StaffController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:100',
+            'bagian' => 'required|in:kitchen,barista,kasir',
             'phone' => 'nullable|string|max:20',
             'status' => 'required|in:aktif,nonaktif',
         ], [
-            'name.required' => 'Nama penjaga kasir wajib diisi.',
+            'name.required' => 'Nama staf wajib diisi.',
+            'bagian.required' => 'Bagian kerja staf wajib dipilih.',
+            'bagian.in' => 'Pilihan bagian kerja harus Kitchen, Barista, atau Kasir.',
         ]);
 
         $penjaga->update([
             'name' => trim((string) $request->input('name')),
+            'bagian' => $request->input('bagian', 'kasir'),
             'phone' => $request->input('phone'),
             'status' => $request->input('status'),
         ]);
@@ -268,12 +284,12 @@ class StaffController extends Controller
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => "Memperbarui data penjaga kasir: {$penjaga->name}",
+            'activity' => "Memperbarui data staf: {$penjaga->name} ({$penjaga->bagianLabel()})",
             'activity_type' => 'pengguna',
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.staff.index')->with('success', "Data penjaga kasir {$penjaga->name} berhasil diperbarui.");
+        return redirect()->route('admin.staff.index')->with('success', "Data staf {$penjaga->name} berhasil diperbarui.");
     }
 
     public function toggleStatusPenjaga($id)

@@ -246,8 +246,8 @@
                         <p class="text-xs text-cafe-muted">Belum ada aktivitas kasir.</p>
                     @endforelse
                 </div>
-                <a href="{{ route('owner.cashiers.index', $period->queryParams()) }}" class="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-cafe-brown hover:text-cafe-dark transition-colors">
-                    Detail Kinerja <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                <a href="{{ route('owner.staff.index') }}" class="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-cafe-brown hover:text-cafe-dark transition-colors">
+                    Manajemen Staf <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
                 </a>
             </div>
         </div>

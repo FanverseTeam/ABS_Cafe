@@ -148,14 +148,6 @@
                         </form>
 
                         <div class="flex items-center gap-1 shrink-0">
-                            <!-- Toggle Best Seller -->
-                            <form action="{{ route('admin.menu.toggle.bestseller', $menu->id) }}" method="POST" class="inline">
-                                @csrf
-                                <button type="submit" class="p-1.5 rounded-full transition-colors {{ $menu->is_best_seller ? 'text-cafe-gold bg-cafe-gold/20' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/60' }}" title="{{ $menu->is_best_seller ? 'Hapus Best Seller' : 'Tandai Best Seller' }}">
-                                    <i data-lucide="star" class="w-3.5 h-3.5 {{ $menu->is_best_seller ? 'fill-current' : '' }}"></i>
-                                </button>
-                            </form>
-
                             <!-- Duplicate -->
                             <form action="{{ route('admin.menu.duplicate', $menu->id) }}" method="POST" class="inline">
                                 @csrf
@@ -332,14 +324,6 @@
                 <label class="flex items-center gap-2 cursor-pointer select-none">
                     <input type="checkbox" name="is_available" id="menu-input-available" value="1" checked class="w-4 h-4 rounded text-cafe-dark accent-[#290024]">
                     <span class="font-semibold text-cafe-dark">Status Tersedia (Bisa Dipesan)</span>
-                </label>
-
-                <label class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" name="is_best_seller" id="menu-input-bestseller" value="1" class="w-4 h-4 rounded text-cafe-gold accent-[#D4954D]">
-                    <span class="font-semibold text-cafe-dark flex items-center gap-1">
-                        <i data-lucide="star" class="w-3.5 h-3.5 fill-current text-cafe-gold"></i>
-                        <span>Tandai sebagai Best Seller</span>
-                    </span>
                 </label>
             </div>
 

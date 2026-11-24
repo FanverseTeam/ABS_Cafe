@@ -16,13 +16,17 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="@yield('title', ($landing['cafe']['name'] ?? 'ABS Cafe') . ' - ' . ($landing['cafe']['tagline'] ?? 'Good Coffee, Better Moments.'))">
     <meta property="og:description" content="@yield('meta_description', 'Nikmati kopi berkualitas, menu lezat, dan suasana nyaman di ABS Cafe Tulungagung.')">
-    <meta property="og:image" content="{{ asset('images/logo.png') }}">
+    @php
+        $siteLogo = \App\Models\CafeSetting::get('cafe_logo', 'images/logo.png');
+        $siteLogoUrl = \Illuminate\Support\Str::startsWith($siteLogo, ['http://', 'https://']) ? $siteLogo : asset(ltrim($siteLogo, '/'));
+    @endphp
+    <meta property="og:image" content="{{ $siteLogoUrl }}">
     <meta property="og:locale" content="id_ID">
     <meta property="og:site_name" content="{{ $landing['cafe']['name'] ?? 'ABS Cafe' }}">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ $siteLogoUrl }}">
+    <link rel="apple-touch-icon" href="{{ $siteLogoUrl }}">
     <meta name="theme-color" content="#000000">
 
     <!-- Preload Font Lokal -->

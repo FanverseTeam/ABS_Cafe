@@ -139,7 +139,7 @@
             </button>
         </div>
 
-        <form id="promo-form" method="POST" action="{{ route('admin.promo.store') }}" class="p-6 space-y-4 text-xs">
+        <form id="promo-form" method="POST" action="{{ route('admin.promo.store') }}" enctype="multipart/form-data" class="p-6 space-y-4 text-xs">
             @csrf
             <div class="space-y-1">
                 <label class="font-semibold text-cafe-dark">Judul Promo *</label>
@@ -207,8 +207,12 @@
             </div>
 
             <div class="space-y-1">
-                <label class="font-semibold text-cafe-dark">URL Gambar Banner</label>
-                <input type="url" name="banner" id="prm-banner" placeholder="https://images.unsplash.com/..." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                <label class="font-semibold text-cafe-dark">Upload Foto Banner</label>
+                <input type="file" name="banner" id="prm-banner" accept="image/*,.heic,.heif" onchange="previewPromoBannerFile(this)" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-2 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none file:mr-3 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cafe-dark file:text-cafe-cream">
+                <div id="prm-banner-preview-box" class="flex items-center gap-3 p-2.5 rounded-xl bg-[#E3DEA4]/30 border border-cafe-beige/60 mt-1">
+                    <img id="prm-banner-preview" src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&auto=format&fit=crop&q=80" alt="Preview" class="w-16 h-10 object-cover rounded-lg border border-cafe-beige shrink-0">
+                    <span class="text-[10px] text-cafe-muted leading-tight">Semua format foto didukung (JPG, PNG, WebP, HEIC, dll).</span>
+                </div>
             </div>
 
             <div class="pt-1">
@@ -227,6 +231,16 @@
 </div>
 
 <script>
+    function previewPromoBannerFile(input) {
+        const preview = document.getElementById('prm-banner-preview');
+        if (!input || !preview || !input.files || !input.files[0]) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+
     function openPromoModal() {
         document.getElementById('promo-modal-title').innerText = 'Buat Promo Baru';
         document.getElementById('promo-form').action = "{{ route('admin.promo.store') }}";
@@ -237,7 +251,8 @@
         document.getElementById('prm-applies').value = 'semua';
         document.getElementById('prm-cat').value = '';
         document.getElementById('prm-menu').value = '';
-        document.getElementById('prm-banner').value = 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&auto=format&fit=crop&q=80';
+        document.getElementById('prm-banner').value = '';
+        document.getElementById('prm-banner-preview').src = 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&auto=format&fit=crop&q=80';
         document.getElementById('prm-start').value = new Date().toISOString().split('T')[0];
         document.getElementById('prm-end').value = new Date(Date.now() + 30*24*60*60*1000).toISOString().split('T')[0];
         document.getElementById('prm-active').checked = true;
@@ -254,7 +269,8 @@
         document.getElementById('prm-applies').value = promo.applies_to;
         document.getElementById('prm-cat').value = promo.target_category_id || '';
         document.getElementById('prm-menu').value = promo.target_menu_id || '';
-        document.getElementById('prm-banner').value = promo.banner || '';
+        document.getElementById('prm-banner').value = '';
+        document.getElementById('prm-banner-preview').src = promo.banner || 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&auto=format&fit=crop&q=80';
         document.getElementById('prm-start').value = promo.start_date.split('T')[0];
         document.getElementById('prm-end').value = promo.end_date.split('T')[0];
         document.getElementById('prm-active').checked = Boolean(promo.is_active);

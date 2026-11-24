@@ -127,10 +127,10 @@
                 </div>
 
                 <div class="py-1 space-y-0.5">
-                    <a href="{{ route('owner.settings.index') }}#password" role="menuitem" class="flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70">
+                    <button type="button" onclick="alert('Penggantian kata sandi dikelola oleh Administrator.')" role="menuitem" class="w-full flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs text-cafe-text hover:bg-cafe-cream rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-gold/70 text-left">
                         <i data-lucide="key-round" class="w-4 h-4 text-cafe-muted shrink-0"></i>
                         <span>Ganti Password</span>
-                    </a>
+                    </button>
                     <form action="{{ route('owner.logout') }}" method="POST" data-cafe-confirm class="pt-1 border-t border-cafe-beige/40">
                         @csrf
                         <button type="submit" role="menuitem" class="w-full flex min-h-[44px] items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-cafe-danger hover:bg-cafe-danger/10 rounded-xl transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cafe-danger/40">

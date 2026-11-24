@@ -556,12 +556,6 @@
                             </form>
 
                             <div class="flex items-center gap-1">
-                                <form action="{{ route('admin.catalog.menu.toggle.bestseller', $menu->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    <button type="submit" class="p-1.5 rounded-full transition-colors {{ $menu->is_best_seller ? 'text-cafe-gold bg-cafe-gold/20' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/60' }}" title="{{ $menu->is_best_seller ? 'Hapus Best Seller' : 'Tandai Best Seller' }}">
-                                        <i data-lucide="star" class="w-3.5 h-3.5 {{ $menu->is_best_seller ? 'fill-current' : '' }}"></i>
-                                    </button>
-                                </form>
                                 <form action="{{ route('admin.catalog.menu.duplicate', $menu->id) }}" method="POST" class="inline">
                                     @csrf
                                     <button type="submit" class="p-1.5 rounded-full text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/60 transition-colors" title="Duplikasi Menu">

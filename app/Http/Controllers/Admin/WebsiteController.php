@@ -196,7 +196,29 @@ class WebsiteController extends Controller
 
         CafeSetting::set('cafe_name', $request->input('cafe_name'));
         CafeSetting::set('cafe_tagline', $request->input('cafe_tagline'));
-        CafeSetting::set('cafe_logo', $request->input('cafe_logo') ?: 'images/logo.png');
+
+        if ($request->hasFile('cafe_logo')) {
+            $file = HeicConverter::convertUploadedFile($request->file('cafe_logo'));
+            $ext = strtolower($file->getClientOriginalExtension() ?: 'png');
+            $filename = 'logo_'.time().'.'.$ext;
+            $targetDir = public_path('images/logo');
+            if (! File::isDirectory($targetDir)) {
+                File::makeDirectory($targetDir, 0755, true);
+            }
+            $file->move($targetDir, $filename);
+            $logoPath = 'images/logo/'.$filename;
+            CafeSetting::set('cafe_logo', $logoPath);
+
+            try {
+                @copy(public_path($logoPath), public_path('images/logo.png'));
+                @copy(public_path($logoPath), public_path('images/logo-badge.png'));
+            } catch (\Throwable $e) {
+                // Ignore copy errors
+            }
+        } elseif ($request->filled('cafe_logo') && is_string($request->input('cafe_logo'))) {
+            CafeSetting::set('cafe_logo', $request->input('cafe_logo'));
+        }
+
         CafeSetting::set('cafe_address', $request->input('cafe_address'));
         CafeSetting::set('cafe_phone', $request->input('cafe_phone'));
         CafeSetting::set('cafe_email', $request->input('cafe_email'));

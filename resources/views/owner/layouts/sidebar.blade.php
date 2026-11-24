@@ -9,9 +9,8 @@
     $menus = [
         ['route' => 'owner.dashboard', 'label' => 'Dashboard Bisnis', 'icon' => 'layout-dashboard', 'badge' => null, 'match' => 'owner.dashboard'],
         ['route' => 'owner.reports.index', 'label' => 'Laporan', 'icon' => 'bar-chart-3', 'badge' => null, 'match' => 'owner.reports'],
-        ['route' => 'owner.cashiers.index', 'label' => 'Kinerja Kasir', 'icon' => 'users', 'badge' => null, 'match' => 'owner.cashiers'],
+        ['route' => 'owner.staff.index', 'label' => 'Manajemen Staf', 'icon' => 'users', 'badge' => null, 'match' => 'owner.staff'],
         ['route' => 'owner.promos.index', 'label' => 'Promo & Diskon', 'icon' => 'percent', 'badge' => $activePromoCount, 'match' => 'owner.promos'],
-        ['route' => 'owner.settings.index', 'label' => 'Pengaturan Bisnis', 'icon' => 'briefcase', 'badge' => null, 'match' => 'owner.settings'],
     ];
 @endphp
 

@@ -178,18 +178,6 @@
                                    class="w-4 h-4 rounded text-cafe-dark accent-[#290024]">
                             <span class="font-semibold text-cafe-dark">Status Tersedia (Bisa Dipesan)</span>
                         </label>
-
-                        <label class="flex items-center gap-2 cursor-pointer select-none">
-                            <input type="checkbox"
-                                   name="is_best_seller"
-                                   value="1"
-                                   {{ old('is_best_seller') == '1' ? 'checked' : '' }}
-                                   class="w-4 h-4 rounded text-cafe-gold accent-[#D4954D]">
-                            <span class="font-semibold text-cafe-dark flex items-center gap-1">
-                                <i data-lucide="star" class="w-3.5 h-3.5 fill-current text-cafe-gold"></i>
-                                <span>Tandai sebagai Best Seller</span>
-                            </span>
-                        </label>
                     </div>
                 </div>
             </div>

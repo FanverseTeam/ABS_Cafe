@@ -19,8 +19,8 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Data Penjaga Kasir yang terdaftar aktif oleh Admin
-        $penjagaList = Schema::hasTable('penjaga_kasir') ? PenjagaKasir::active()->get() : collect();
+        // Data Penjaga Kasir yang terdaftar aktif oleh Admin (khusus staf bagian kasir)
+        $penjagaList = Schema::hasTable('penjaga_kasir') ? PenjagaKasir::activeKasir()->get() : collect();
         $validNames = $penjagaList->pluck('name')->all();
 
         // Ambil nama penjaga yang sedang aktif (prioritaskan session, lalu CafeSetting)
@@ -104,12 +104,8 @@ class DashboardController extends Controller
             ->orderBy('name')
             ->pluck('name');
 
-<<<<<<< HEAD
         $user = Auth::user();
         $currentCashierName = session('active_cashier_name', $user?->name ?? 'Kasir');
-=======
-        $currentCashierName = session('active_cashier_name', $user?->name ?? 'Kasir ABS');
->>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
 
         return view('kasir.dashboard', compact(
             'penjagaList',
@@ -140,11 +136,11 @@ class DashboardController extends Controller
 
         $name = trim((string) $request->input('penjaga_kasir_name'));
 
-        // Pastikan nama yang dipilih terdaftar dan aktif di data yang diatur admin
+        // Pastikan nama yang dipilih terdaftar dan aktif di data yang diatur admin (khusus staf bagian kasir)
         if (Schema::hasTable('penjaga_kasir')) {
-            $exists = PenjagaKasir::active()->where('name', $name)->exists();
+            $exists = PenjagaKasir::activeKasir()->where('name', $name)->exists();
             if (! $exists) {
-                return back()->with('error', 'Penjaga kasir tidak valid atau sedang dinonaktifkan oleh Admin.');
+                return back()->with('error', 'Penjaga kasir tidak valid, bukan bagian kasir, atau sedang dinonaktifkan.');
             }
         }
 
@@ -171,13 +167,14 @@ class DashboardController extends Controller
     public function switchCashier(Request $request)
     {
         $request->validate(['cashier_name' => 'required|string|max:100']);
-<<<<<<< HEAD
-
-        session(['active_cashier_name' => $request->input('cashier_name')]);
-
-        return back()->with('success', 'Kasir bertugas: '.$request->input('cashier_name'));
-=======
         $name = trim((string) $request->input('cashier_name'));
+
+        if (Schema::hasTable('penjaga_kasir')) {
+            $exists = PenjagaKasir::activeKasir()->where('name', $name)->exists();
+            if (! $exists && ! User::where('status', 'aktif')->where('role', 'kasir')->where('name', $name)->exists()) {
+                return back()->with('error', 'Nama kasir tidak valid atau bukan staf bagian kasir.');
+            }
+        }
 
         session([
             'active_cashier_name' => $name,
@@ -186,7 +183,6 @@ class DashboardController extends Controller
         CafeSetting::set('active_penjaga_kasir', $name);
 
         return back()->with('success', 'Kasir bertugas: '.$name);
->>>>>>> 6ebee46b65a42102454bfc65150cba0c5d1831b5
     }
 
     /**

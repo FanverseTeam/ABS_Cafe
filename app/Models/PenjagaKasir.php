@@ -14,9 +14,19 @@ class PenjagaKasir extends Model
 
     protected $fillable = [
         'name',
+        'bagian',
         'phone',
         'status',
     ];
+
+    public function bagianLabel(): string
+    {
+        return match (strtolower((string) $this->bagian)) {
+            'kitchen' => 'Kitchen',
+            'barista' => 'Barista',
+            default => 'Kasir',
+        };
+    }
 
     /**
      * Scope untuk mengambil penjaga kasir dengan status aktif.
@@ -27,6 +37,21 @@ class PenjagaKasir extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', 'aktif')->orderBy('name');
+    }
+
+    /**
+     * Scope untuk mengambil staf kasir aktif (bagian kasir).
+     *
+     * @param  Builder<PenjagaKasir>  $query
+     * @return Builder<PenjagaKasir>
+     */
+    public function scopeActiveKasir(Builder $query): Builder
+    {
+        return $query->where('status', 'aktif')
+            ->where(function ($q) {
+                $q->where('bagian', 'kasir')->orWhereNull('bagian');
+            })
+            ->orderBy('name');
     }
 
     public function isActive(): bool

@@ -23,11 +23,10 @@ use App\Http\Controllers\Kasir\PosController as KasirPosController;
 use App\Http\Controllers\Kasir\ReservationController as KasirReservationController;
 use App\Http\Controllers\Kasir\TableController as KasirTableController;
 use App\Http\Controllers\Owner\CashAdjustmentController as OwnerCashAdjustmentController;
-use App\Http\Controllers\Owner\CashierController as OwnerCashierController;
 use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
 use App\Http\Controllers\Owner\PromoController as OwnerPromoController;
 use App\Http\Controllers\Owner\ReportController as OwnerReportController;
-use App\Http\Controllers\Owner\SettingController as OwnerSettingController;
+use App\Http\Controllers\Owner\StaffController as OwnerStaffController;
 use App\Http\Controllers\Pelanggan\PelangganController;
 use Illuminate\Support\Facades\Route;
 
@@ -292,9 +291,17 @@ Route::prefix('owner')->name('owner.')->middleware(['auth', 'role:owner', 'noind
         Route::get('/cetak', [OwnerReportController::class, 'print'])->name('print');
     });
 
-    // 3. Kinerja Kasir
-    Route::get('/kinerja-kasir', [OwnerCashierController::class, 'index'])->name('cashiers.index');
-    Route::get('/kinerja-kasir/{id}', [OwnerCashierController::class, 'show'])->name('cashiers.show');
+    // 3. Manajemen Staf
+    Route::prefix('staf')->name('staff.')->group(function () {
+        Route::get('/', [OwnerStaffController::class, 'index'])->name('index');
+        Route::post('/store', [OwnerStaffController::class, 'store'])->name('store');
+        Route::post('/{id}/update', [OwnerStaffController::class, 'update'])->name('update');
+        Route::post('/{id}/toggle-status', [OwnerStaffController::class, 'toggleStatus'])->name('toggle.status');
+        Route::delete('/{id}', [OwnerStaffController::class, 'destroy'])->name('destroy');
+    });
+
+    // Alias redirect lama kinerja kasir ke manajemen staf
+    Route::get('/kinerja-kasir', fn () => redirect()->route('owner.staff.index'))->name('cashiers.index');
 
     // 4. Promo & Diskon
     Route::prefix('promo')->name('promos.')->group(function () {
@@ -307,13 +314,7 @@ Route::prefix('owner')->name('owner.')->middleware(['auth', 'role:owner', 'noind
         Route::delete('/{id}', [OwnerPromoController::class, 'destroy'])->name('destroy');
     });
 
-    // 5. Pengaturan Bisnis
-    Route::get('/pengaturan', [OwnerSettingController::class, 'index'])->name('settings.index');
-    Route::post('/pengaturan', [OwnerSettingController::class, 'update'])->name('settings.update');
-    Route::post('/pengaturan/akun', [OwnerSettingController::class, 'updateAccount'])->name('settings.account');
-    Route::post('/pengaturan/akun/password', [OwnerSettingController::class, 'updatePassword'])->name('settings.account.password');
-
-    // 6. Penyesuaian Kas Laci
+    // 5. Penyesuaian Kas Laci
     Route::get('/penyesuaian-kas', [OwnerCashAdjustmentController::class, 'index'])->name('cash_adjustments.index');
     Route::post('/penyesuaian-kas', [OwnerCashAdjustmentController::class, 'store'])->name('cash_adjustments.store');
 

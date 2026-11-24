@@ -148,9 +148,9 @@
                     <span class="w-8 h-8 rounded-xl bg-cafe-gold/20 text-cafe-brown flex items-center justify-center shrink-0">
                         <i data-lucide="award" class="w-4 h-4 text-cafe-gold"></i>
                     </span>
-                    <h3 class="font-serif text-lg sm:text-xl font-bold text-cafe-dark">5 Menu Bestseller</h3>
+                    <h3 class="font-serif text-lg sm:text-xl font-bold text-cafe-dark">3 Menu Terlaris (Bestseller)</h3>
                 </div>
-                <p class="text-xs text-cafe-muted mt-1">Daftar menu terlaris dan produk unggulan paling diminati di ABS Cafe</p>
+                <p class="text-xs text-cafe-muted mt-1">3 menu dengan penjualan terbanyak secara otomatis berdasarkan transaksi ABS Cafe</p>
             </div>
             <div class="flex items-center gap-2 self-start sm:self-auto">
                 <a href="{{ route('admin.catalog.menu.create') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-cafe-gold text-cafe-dark hover:bg-[#D4954D] font-semibold text-xs shadow-xs transition-all">
@@ -164,7 +164,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-3.5 sm:gap-4">
             @forelse ($bestSellerMenus as $index => $bMenu)
                 <div class="p-3.5 rounded-2xl bg-cafe-cream/60 hover:bg-cafe-cream border border-cafe-beige/50 transition-all flex flex-col justify-between group relative shadow-xs hover:shadow-soft">
                     <!-- Top row: Rank & Badge -->
@@ -172,12 +172,10 @@
                         <span class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black {{ $index === 0 ? 'bg-apricot text-midnight shadow-xs' : ($index === 1 ? 'bg-custard text-olive' : ($index === 2 ? 'bg-apricot/25 text-midnight' : 'bg-cafe-beige/80 text-cafe-muted')) }}">
                             #{{ $index + 1 }}
                         </span>
-                        @if($bMenu->is_best_seller)
-                            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-cafe-gold/20 text-cafe-brown flex items-center gap-1">
-                                <i data-lucide="star" class="w-3 h-3 fill-current text-cafe-gold"></i>
-                                <span>Bestseller</span>
-                            </span>
-                        @endif
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-cafe-gold/20 text-cafe-brown flex items-center gap-1">
+                            <i data-lucide="star" class="w-3 h-3 fill-current text-cafe-gold"></i>
+                            <span>Bestseller #{{ $index + 1 }}</span>
+                        </span>
                     </div>
 
                     <!-- Image & Titles -->

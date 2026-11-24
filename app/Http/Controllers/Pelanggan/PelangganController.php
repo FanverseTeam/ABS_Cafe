@@ -249,13 +249,10 @@ class PelangganController extends Controller
         // Kelompokkan berdasarkan kategori (tanpa query ulang)
         $menusGroupedByCategory = $allMenus->groupBy('category_id');
 
-        // Rekomendasi: Menu best seller; jika kosong, 4-6 menu terlaris dari pesanan; jika masih kosong disembunyikan
-        $recommendedMenus = $allMenus->where('is_best_seller', true)->take(4)->values();
+        // Rekomendasi: 3 menu terlaris otomatis berdasarkan penjualan terbanyak (sold_count)
+        $recommendedMenus = $topFavorites->take(3)->values();
         if ($recommendedMenus->isEmpty()) {
-            $recommendedMenus = $allMenus->where('sold_count', '>', 0)
-                ->sortByDesc('sold_count')
-                ->take(4)
-                ->values();
+            $recommendedMenus = $allMenus->sortByDesc('sold_count')->take(3)->values();
         }
 
         // Siapkan kategori yang memiliki menu dengan maksimal 4 menu per bagian

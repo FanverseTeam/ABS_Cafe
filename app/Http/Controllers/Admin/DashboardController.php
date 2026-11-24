@@ -23,12 +23,12 @@ class DashboardController extends Controller
         // ACTIVE ADMIN DASHBOARD: only query modules that are active while the
         // legacy switch is off. This keeps the dashboard usable without Orders.
         $totalMenus = Menu::count();
-        $bestSellerCount = Menu::where('is_best_seller', true)->count();
         $bestSellerMenus = Menu::with('category')
-            ->orderBy('is_best_seller', 'desc')
+            ->where('is_available', true)
             ->orderBy('sold_count', 'desc')
-            ->take(5)
+            ->take(3)
             ->get();
+        $bestSellerCount = $bestSellerMenus->count();
 
         $menuHabis = Menu::where('is_available', false)->orderBy('name', 'asc')->get();
         $menuHabisCount = $menuHabis->count();

@@ -27,8 +27,6 @@
                 ['label' => 'Profil', 'val' => 'profil'],
                 ['label' => 'Landing Page', 'val' => 'landing'],
                 ['label' => 'URL QR Meja', 'val' => 'qr_meja'],
-                ['label' => 'Pajak & Biaya', 'val' => 'pajak'],
-                ['label' => 'Akun Saya', 'val' => 'akun'],
             ];
             $currentWebTab = $tab ?? 'profil';
             $webChips = array_map(function($opt) use ($currentWebTab) {
@@ -53,12 +51,6 @@
         <a href="{{ route('admin.website.index', ['tab' => 'qr_meja']) }}" class="px-4 py-2 rounded-full whitespace-nowrap transition-all {{ $tab === 'qr_meja' ? 'bg-cafe-dark text-cafe-cream shadow-xs' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/50' }}">
             URL QR Meja
         </a>
-        <a href="{{ route('admin.website.index', ['tab' => 'pajak']) }}" class="px-4 py-2 rounded-full whitespace-nowrap transition-all {{ $tab === 'pajak' ? 'bg-cafe-dark text-cafe-cream shadow-xs' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/50' }}">
-            Pajak &amp; Biaya
-        </a>
-        <a href="{{ route('admin.website.index', ['tab' => 'akun']) }}" class="px-4 py-2 rounded-full whitespace-nowrap transition-all {{ $tab === 'akun' ? 'bg-cafe-dark text-cafe-cream shadow-xs' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/50' }}">
-            Akun Saya
-        </a>
     </div>
 
     <!-- TAB 1: PROFIL CAFE -->
@@ -67,7 +59,7 @@
             <h3 class="font-serif font-bold text-lg text-cafe-dark mb-1">Identitas &amp; Jam Operasional ABS Cafe</h3>
             <p class="text-xs text-cafe-muted mb-6">Informasi ini akan tertera pada struk pembelian, website katalog, dan dokumen resmi.</p>
 
-            <form action="{{ route('admin.website.profile') }}" method="POST" class="space-y-4 text-xs">
+            <form action="{{ route('admin.website.profile') }}" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs">
                 @csrf
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1">
@@ -81,12 +73,16 @@
                 </div>
 
                 <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Logo Website</label>
+                    <label class="font-semibold text-cafe-dark">Upload Logo Website dari Galeri</label>
                     <div class="flex flex-col gap-3 rounded-xl border border-cafe-beige bg-[#F2F5E2]/60 p-3 sm:flex-row sm:items-center">
-                        <x-logo size="sm" :show-text="false" />
-                        <input type="text" name="cafe_logo" value="{{ $settings['cafe_logo'] }}" placeholder="images/logo.png" class="w-full bg-beige focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <div id="website-logo-preview" class="shrink-0 flex items-center justify-center">
+                            <x-logo size="sm" :show-text="false" />
+                        </div>
+                        <div class="flex-1 space-y-1">
+                            <input type="file" name="cafe_logo" id="cafe_logo_input" accept="image/*,.heic,.heif" onchange="previewWebsiteLogo(this)" class="w-full bg-beige focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none cursor-pointer file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cafe-dark file:text-cafe-cream">
+                            <p class="text-[10px] text-cafe-muted">Pilih gambar logo dari galeri (JPG, PNG, WebP, HEIC, SVG). Logo di seluruh website dan header akan otomatis diperbarui.</p>
+                        </div>
                     </div>
-                    <p class="text-[10px] text-cafe-muted">Path lokal atau URL gambar. Default: <span class="font-mono">images/logo.png</span>.</p>
                 </div>
 
                 <div class="space-y-1">
@@ -176,92 +172,6 @@
                     <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 sm:py-2.5 rounded-xl sm:rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer">
                         <i data-lucide="check" class="w-4 h-4 text-cafe-gold"></i>
                         <span>Simpan Profil Cafe</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    @endif
-
-    <!-- TAB 2: PAJAK & BIAYA -->
-    @if($tab === 'pajak')
-        <div class="bg-cafe-card rounded-2xl p-6 sm:p-8 shadow-soft border border-cafe-beige/40 max-w-2xl">
-            <h3 class="font-serif font-bold text-lg text-cafe-dark mb-1">Pengaturan Pajak Daerah &amp; Layanan</h3>
-            <p class="text-xs text-cafe-muted mb-6">Atur persentase PB1 resto dan biaya pelayanan kafe.</p>
-
-            <form action="{{ route('admin.website.tax') }}" method="POST" class="space-y-4 text-xs">
-                @csrf
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Pajak Restoran / PB1 (%)</label>
-                    <div class="relative w-48">
-                        <input type="number" name="tax_percent" value="{{ $settings['tax_percent'] }}" min="0" max="100" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 pr-8 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                        <span class="absolute right-3 top-1/2 -translate-y-1/2 font-bold text-cafe-muted">%</span>
-                    </div>
-                    <p class="text-[10px] text-cafe-muted">Standar pajak restoran daerah Kabupaten Tulungagung adalah 10%.</p>
-                </div>
-
-                <div class="pt-2 border-t border-cafe-beige/40 space-y-3">
-                    <label class="flex items-center gap-2 cursor-pointer select-none">
-                        <input type="checkbox" name="service_charge_active" value="1" {{ $settings['service_charge_active'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded text-cafe-dark accent-[#290024]">
-                        <span class="font-semibold text-cafe-dark">Aktifkan Service Charge (Biaya Layanan)</span>
-                    </label>
-
-                    <div class="space-y-1 w-48 pl-6">
-                        <label class="font-semibold text-cafe-muted">Persentase Service Charge (%)</label>
-                        <div class="relative">
-                            <input type="number" name="service_charge_percent" value="{{ $settings['service_charge_percent'] }}" min="0" max="100" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 pr-8 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                            <span class="absolute right-3 top-1/2 -translate-y-1/2 font-bold text-cafe-muted">%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-4 border-t border-cafe-beige/60 flex justify-end">
-                    <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 sm:py-2.5 rounded-xl sm:rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer">
-                        <i data-lucide="check" class="w-4 h-4 text-cafe-gold"></i>
-                        <span>Simpan Pengaturan Pajak</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    @endif
-
-    <!-- TAB 3: AKUN SAYA -->
-    @if($tab === 'akun')
-        <div class="bg-cafe-card rounded-2xl p-6 sm:p-8 shadow-soft border border-cafe-beige/40 max-w-2xl">
-            <h3 class="font-serif font-bold text-lg text-cafe-dark mb-1">Akun Administrator Saya</h3>
-            <p class="text-xs text-cafe-muted mb-6">Ubah nama, username login, dan perbarui kata sandi akun administrator.</p>
-
-            <form action="{{ route('admin.website.account') }}" method="POST" class="space-y-4 text-xs">
-                @csrf
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                        <label class="font-semibold text-cafe-dark">Nama Admin *</label>
-                        <input type="text" name="name" value="{{ Auth::user()->name }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="font-semibold text-cafe-dark">Username Admin *</label>
-                        <input type="text" name="username" value="{{ Auth::user()->username }}" required class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                    </div>
-                </div>
-
-                <div class="pt-2 border-t border-cafe-beige/40 space-y-4">
-                    <h4 class="font-semibold text-cafe-dark">Ganti Kata Sandi (Opsional)</h4>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="space-y-1">
-                            <label class="font-semibold text-cafe-muted">Password Baru</label>
-                            <input type="password" name="password" placeholder="Minimal 6 karakter" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="font-semibold text-cafe-muted">Ulangi Password Baru</label>
-                            <input type="password" name="password_confirmation" placeholder="Ulangi password baru" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-4 border-t border-cafe-beige/60 flex justify-end">
-                    <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 sm:py-2.5 rounded-xl sm:rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer">
-                        <i data-lucide="check" class="w-4 h-4 text-cafe-gold"></i>
-                        <span>Simpan Akun Saya</span>
                     </button>
                 </div>
             </form>
@@ -1005,6 +915,32 @@
         } else {
             preview.classList.add('hidden');
         }
+    }
+
+    async function previewWebsiteLogo(input) {
+        if (!input || !input.files || !input.files[0]) return;
+        let file = input.files[0];
+
+        if (/\.(heic|heif)$/i.test(file.name) || file.type === 'image/heic' || file.type === 'image/heif') {
+            if (typeof window.heic2any === 'function') {
+                try {
+                    const blob = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+                    const resBlob = Array.isArray(blob) ? blob[0] : blob;
+                    file = new File([resBlob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
+                } catch (e) {
+                    console.warn('HEIC preview error:', e);
+                }
+            }
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const container = document.getElementById('website-logo-preview');
+            if (container) {
+                container.innerHTML = '<span style="display:inline-flex;width:36px;height:36px;flex-shrink:0;align-items:center;justify-content:center;border-radius:9999px;background-color:#290024;padding:4px;"><img src="' + e.target.result + '" style="display:block;width:100%;height:100%;object-fit:contain;border-radius:9999px;"></span>';
+            }
+        };
+        reader.readAsDataURL(file);
     }
 </script>
 @endpush
