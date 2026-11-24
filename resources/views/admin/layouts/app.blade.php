@@ -193,6 +193,23 @@
                 </button>
             </div>
         @endif
+
+        @if($errors->any())
+            <div class="toast-item pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-soft-lg border bg-rose-50 border-rose-300 text-rose-950 animate-in slide-in-from-bottom-5 transition-all">
+                <i data-lucide="alert-octagon" class="w-5 h-5 text-rose-600 shrink-0 mt-0.5"></i>
+                <div class="flex-1 min-w-0">
+                    <h5 class="font-semibold text-xs text-rose-800">Gagal Memproses Data</h5>
+                    <ul class="text-xs text-rose-700 mt-1 list-disc list-inside space-y-0.5">
+                        @foreach($errors->all() as $err)
+                            <li>{{ $err }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                <button onclick="this.closest('.toast-item').remove()" class="text-rose-500 hover:text-rose-800">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        @endif
     </div>
 
     <!-- Scripts -->

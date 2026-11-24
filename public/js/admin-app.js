@@ -127,7 +127,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!isHeic) return;
 
     if (typeof window.heic2any === 'function') {
-      showToast('Mengonversi foto HEIC ke format JPG...', 'warning');
+      const form = input.closest('form');
+      const submitBtn = form?.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+        submitBtn.innerHTML = '<span>Mengonversi HEIC...</span>';
+      }
+
       try {
         const convertedBlob = await window.heic2any({
           blob: file,
@@ -142,8 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const dt = new DataTransfer();
         dt.items.add(convertedFile);
         input.files = dt.files;
-
-        showToast('Foto HEIC berhasil dikonversi ke JPG!', 'success');
 
         // Panggil preview jika ada elemen preview terkait
         const previewImg = input.closest('form, div')?.querySelector('img[id*="preview"]') ||
@@ -163,6 +170,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (err) {
         console.warn('Konversi client-side dilewati, file akan diproses oleh server:', err);
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '1';
+          submitBtn.innerHTML = originalBtnText;
+        }
       }
     }
   });

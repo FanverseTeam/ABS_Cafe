@@ -562,25 +562,38 @@
                         <i data-lucide="plus-circle" class="w-4 h-4 text-cafe-gold"></i>
                         <span>Tambah Foto Baru ke Galeri Carousel</span>
                     </h5>
-                    <p class="text-[11px] text-cafe-muted mb-4">Upload foto (rekomendasi rasio 4:5 atau 960x1200 px). Semua format didukung (JPG, PNG, WebP, HEIC, dll. Maks 20 MB).</p>
+                    <p class="text-[11px] text-cafe-muted mb-4">Upload foto (rekomendasi rasio 4:5 atau 960x1200 px). Semua format didukung (JPG, PNG, WebP, HEIC, dll. Maks 50 MB).</p>
 
-                    <form action="{{ route('admin.website.landing.gallery.add') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+                    <form id="gallery-add-form" action="{{ route('admin.website.landing.gallery.add') }}" method="POST" enctype="multipart/form-data"
+                          onsubmit="const btn = this.querySelector('button[type=submit]'); btn.disabled=true; btn.classList.add('opacity-75'); btn.innerHTML='<span>Mengunggah...</span>';">
                         @csrf
-                        <div class="sm:col-span-5 space-y-1">
-                            <label class="block text-[11px] font-semibold text-cafe-dark">Pilih Berkas Foto</label>
-                            <input type="file" name="photo" accept="image/*,.heic,.heif,.HEIC,.HEIF,image/heic,image/heif" required
-                                   class="w-full text-xs text-cafe-dark file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-cafe-dark file:text-cafe-cream hover:file:bg-cafe-brown cursor-pointer border border-cafe-beige bg-white rounded-xl p-1">
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+                            <div class="sm:col-span-5 space-y-1">
+                                <label class="block text-[11px] font-semibold text-cafe-dark">Pilih Berkas Foto</label>
+                                <input type="file" name="photo" id="gallery-add-input" accept="image/*,.heic,.heif,.HEIC,.HEIF,image/heic,image/heif" required
+                                       onchange="previewGalleryAdd(this)"
+                                       class="w-full text-xs text-cafe-dark file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-cafe-dark file:text-cafe-cream hover:file:bg-cafe-brown cursor-pointer border border-cafe-beige bg-white rounded-xl p-1">
+                            </div>
+                            <div class="sm:col-span-4 space-y-1">
+                                <label class="block text-[11px] font-semibold text-cafe-dark">Keterangan / Judul Foto (Opsional)</label>
+                                <input type="text" name="title" placeholder="Contoh: Foto 6 (opsional)"
+                                       class="w-full bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                            </div>
+                            <div class="sm:col-span-3">
+                                <button type="submit" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer">
+                                    <i data-lucide="upload" class="w-3.5 h-3.5 text-cafe-gold"></i>
+                                    <span>Unggah ke Galeri</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="sm:col-span-4 space-y-1">
-                            <label class="block text-[11px] font-semibold text-cafe-dark">Keterangan / Judul Foto (Opsional)</label>
-                            <input type="text" name="title" placeholder="Contoh: Suasana Malam Outdoor"
-                                   class="w-full bg-white text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                        </div>
-                        <div class="sm:col-span-3">
-                            <button type="submit" class="w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-cafe-dark hover:bg-cafe-brown text-cafe-cream text-xs font-semibold shadow-xs transition-all active:scale-95">
-                                <i data-lucide="upload" class="w-3.5 h-3.5 text-cafe-gold"></i>
-                                <span>Unggah ke Galeri</span>
-                            </button>
+
+                        <!-- Mini Preview saat file dipilih -->
+                        <div id="gallery-add-preview" class="hidden mt-3 pt-3 border-t border-[#D4954D]/30 flex items-center gap-3">
+                            <img id="gallery-add-preview-img" src="" alt="Preview" class="w-14 h-14 object-cover rounded-xl border border-cafe-beige shadow-xs">
+                            <div class="text-[11px]">
+                                <p id="gallery-add-preview-name" class="font-semibold text-cafe-dark truncate max-w-xs"></p>
+                                <p id="gallery-add-preview-size" class="text-cafe-muted text-[10px]"></p>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -953,6 +966,45 @@
         if (!modal) return;
         modal.classList.add('hidden');
         modal.classList.remove('flex');
+    }
+
+    async function previewGalleryAdd(input) {
+        const preview = document.getElementById('gallery-add-preview');
+        const img = document.getElementById('gallery-add-preview-img');
+        const nameEl = document.getElementById('gallery-add-preview-name');
+        const sizeEl = document.getElementById('gallery-add-preview-size');
+        if (!preview || !img || !nameEl || !sizeEl) return;
+
+        if (input.files && input.files[0]) {
+            let file = input.files[0];
+            nameEl.innerText = file.name;
+            sizeEl.innerText = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+
+            if (/\.(heic|heif)$/i.test(file.name) || file.type === 'image/heic' || file.type === 'image/heif') {
+                if (typeof window.heic2any === 'function') {
+                    try {
+                        const blob = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+                        const resBlob = Array.isArray(blob) ? blob[0] : blob;
+                        const newFile = new File([resBlob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
+                        const dt = new DataTransfer();
+                        dt.items.add(newFile);
+                        input.files = dt.files;
+                        file = newFile;
+                    } catch (e) {
+                        console.warn('HEIC client preview error:', e);
+                    }
+                }
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                preview.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.classList.add('hidden');
+        }
     }
 </script>
 @endpush

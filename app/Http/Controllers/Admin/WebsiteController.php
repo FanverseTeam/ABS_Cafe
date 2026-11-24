@@ -419,12 +419,12 @@ class WebsiteController extends Controller
 
         $request->validate([
             'slot' => 'required|string|in:'.implode(',', $allowedSlots),
-            'photo' => 'required|file|max:20480|extensions:jpg,jpeg,png,webp,gif,svg,bmp,avif,heic,heif,tiff,tif,ico',
+            'photo' => 'required|file|max:51200|extensions:jpg,jpeg,png,webp,gif,svg,bmp,avif,heic,heif,tiff,tif,ico',
         ], [
             'photo.required' => 'Pilih file foto untuk diupload.',
             'photo.file' => 'File harus berupa gambar.',
             'photo.extensions' => 'Format foto harus berupa file gambar (JPG, PNG, WebP, HEIC, HEIF, AVIF, dll).',
-            'photo.max' => 'Ukuran foto maksimal 20 MB.',
+            'photo.max' => 'Ukuran foto maksimal 50 MB.',
         ]);
 
         $slot = $request->input('slot');
@@ -518,13 +518,13 @@ class WebsiteController extends Controller
     public function addGalleryPhoto(Request $request)
     {
         $request->validate([
-            'photo' => 'required|file|max:20480|extensions:jpg,jpeg,png,webp,gif,svg,bmp,avif,heic,heif,tiff,tif,ico',
+            'photo' => 'required|file|max:51200|extensions:jpg,jpeg,png,webp,gif,svg,bmp,avif,heic,heif,tiff,tif,ico',
             'title' => 'nullable|string|max:100',
         ], [
             'photo.required' => 'Pilih file foto galeri untuk diupload.',
             'photo.file' => 'File harus berupa gambar.',
             'photo.extensions' => 'Format foto harus berupa file gambar (JPG, PNG, WebP, HEIC, HEIF, AVIF, dll).',
-            'photo.max' => 'Ukuran foto maksimal 20 MB.',
+            'photo.max' => 'Ukuran foto maksimal 50 MB.',
         ]);
 
         $file = HeicConverter::convertUploadedFile($request->file('photo'));
@@ -540,11 +540,15 @@ class WebsiteController extends Controller
 
         $items = LandingData::rawGallery();
         $title = trim((string) $request->input('title', ''));
+        if ($title === '') {
+            $title = 'Foto '.(count($items) + 1);
+        }
+
         $newItem = [
             'id' => 'gal_'.uniqid(),
             'image' => 'images/pelanggan/gallery/'.$filename,
             'title' => $title,
-            'alt' => $title !== '' ? $title : 'Suasana Kafe ABS Cafe',
+            'alt' => $title,
         ];
 
         $items[] = $newItem;
@@ -554,12 +558,12 @@ class WebsiteController extends Controller
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => 'Menambahkan foto baru ke Galeri Suasana Landing Page',
+            'activity' => 'Menambahkan foto baru ke Galeri Suasana Landing Page: '.$title,
             'activity_type' => 'sistem',
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('success', 'Foto berhasil ditambahkan ke galeri carousel.');
+        return redirect()->route('admin.website.index', ['tab' => 'landing'])->with('success', 'Foto "'.$title.'" berhasil ditambahkan ke galeri carousel.');
     }
 
     /**
@@ -569,11 +573,11 @@ class WebsiteController extends Controller
     {
         $request->validate([
             'title' => 'nullable|string|max:100',
-            'photo' => 'nullable|file|max:20480|extensions:jpg,jpeg,png,webp,gif,svg,bmp,avif,heic,heif,tiff,tif,ico',
+            'photo' => 'nullable|file|max:51200|extensions:jpg,jpeg,png,webp,gif,svg,bmp,avif,heic,heif,tiff,tif,ico',
         ], [
             'photo.file' => 'File harus berupa gambar.',
             'photo.extensions' => 'Format foto harus berupa file gambar (JPG, PNG, WebP, HEIC, HEIF, AVIF, dll).',
-            'photo.max' => 'Ukuran foto maksimal 20 MB.',
+            'photo.max' => 'Ukuran foto maksimal 50 MB.',
         ]);
 
         $items = LandingData::rawGallery();

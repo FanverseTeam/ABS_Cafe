@@ -301,7 +301,7 @@ class CatalogController extends Controller
             'category_id' => 'required|exists:kategori,id',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
-            'image_file' => 'nullable|file|max:20480|extensions:jpg,jpeg,png,webp,gif,svg,bmp,avif,heic,heif,tiff,tif,ico',
+            'image_file' => 'nullable|file|max:51200|extensions:jpg,jpeg,png,webp,gif,svg,bmp,avif,heic,heif,tiff,tif,ico',
             'variants' => 'nullable|array',
         ]);
     }
