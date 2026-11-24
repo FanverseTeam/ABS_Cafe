@@ -113,17 +113,30 @@
             background: rgba(41, 0, 36, 0.5);
         }
         @media print {
+            @page {
+                size: auto;
+                margin: 0mm;
+            }
+            body {
+                background: #ffffff !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
             body * { visibility: hidden; }
             #printable-receipt, #printable-receipt * { visibility: visible; }
             #printable-receipt {
                 position: absolute;
                 left: 0;
                 top: 0;
-                width: 80mm;
+                width: 100% !important;
+                max-width: 80mm;
                 margin: 0 auto;
-                padding: 10px;
-                background: white;
-                color: black;
+                padding: 3mm 4mm !important;
+                background: white !important;
+                color: #000000 !important;
+                box-sizing: border-box;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
         }
     </style>

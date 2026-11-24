@@ -7,7 +7,7 @@
 
     $menus = [
         ['route' => 'kasir.dashboard', 'label' => 'Dashboard Kasir', 'icon' => 'layout-dashboard', 'badge' => $newWebOrdersCount],
-        ['route' => 'kasir.pos.index', 'label' => 'POS / Input Pesanan', 'icon' => 'calculator', 'badge' => null],
+        ['route' => 'kasir.pos.index', 'label' => 'Input Pesanan', 'icon' => 'calculator', 'badge' => null],
         ['route' => 'kasir.orders.index', 'label' => 'Pesanan Masuk', 'icon' => 'inbox', 'badge' => $newWebOrdersCount],
         ['route' => 'kasir.payments.index', 'label' => 'Pembayaran & Struk', 'icon' => 'receipt', 'badge' => $unpaidOrdersCount],
         ['route' => 'kasir.reservations.index', 'label' => 'Reservasi & Meja', 'icon' => 'calendar-days', 'badge' => $todayReservationCount],
@@ -103,12 +103,6 @@
             </div>
         </div>
     </div>
-<<<<<<< HEAD
-=======
-            </div>
-        </div>
-    </div>
->>>>>>> 537d7c749fd51ff20601c8adc6bf6b4196adfaac
 </aside>
 
 <script>

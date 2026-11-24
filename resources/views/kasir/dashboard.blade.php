@@ -112,7 +112,7 @@
                     <i data-lucide="calculator" class="w-4 h-4"></i>
                 </div>
                 <div class="min-w-0">
-                    <p class="text-xs font-bold text-cafe-dark truncate">POS / Pesan</p>
+                    <p class="text-xs font-bold text-cafe-dark truncate">Input Pesanan</p>
                     <p class="text-[10px] text-cafe-muted truncate">Input order kasir</p>
                 </div>
             </a>

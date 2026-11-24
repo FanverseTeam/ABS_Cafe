@@ -163,7 +163,6 @@ class DashboardController extends Controller
     public function switchCashier(Request $request)
     {
         $request->validate(['cashier_name' => 'required|string|max:100']);
-<<<<<<< HEAD
         $name = trim((string) $request->input('cashier_name'));
 
         if (Schema::hasTable('penjaga_kasir')) {
@@ -180,12 +179,6 @@ class DashboardController extends Controller
         CafeSetting::set('active_penjaga_kasir', $name);
 
         return back()->with('success', 'Kasir bertugas: '.$name);
-=======
-
-        session(['active_cashier_name' => $request->input('cashier_name')]);
-
-        return back()->with('success', 'Kasir bertugas: '.$request->input('cashier_name'));
->>>>>>> 537d7c749fd51ff20601c8adc6bf6b4196adfaac
     }
 
     /**

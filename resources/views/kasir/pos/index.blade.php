@@ -1,7 +1,7 @@
 @extends('kasir.layouts.app')
 
-@section('title', 'Pesan Manual (POS) - Kasir')
-@section('page_title', 'Pesan Manual / POS')
+@section('title', 'Input Pesanan - Kasir')
+@section('page_title', 'Input Pesanan')
 
 @section('content')
 <style>
@@ -191,7 +191,7 @@
                         <span class="w-2 h-2 rounded-full bg-[#D4954D] animate-pulse shrink-0"></span>
                         <span class="text-xs font-bold tracking-wide truncate">Pesan Manual Customer</span>
                     </div>
-                    <span class="text-[9px] bg-[#D4954D] text-[#290024] px-2 py-0.5 rounded-full font-bold uppercase shrink-0">Kasir POS</span>
+                    <span class="text-[9px] bg-[#D4954D] text-[#290024] px-2 py-0.5 rounded-full font-bold uppercase shrink-0">Input Pesanan</span>
                 </div>
 
                 <div class="px-4 sm:px-5 py-3 border-b border-[#E3DEA4]/60 flex items-center justify-between bg-[#F2F5E2]/60">
@@ -317,21 +317,21 @@
                         </div>
                     </div>
 
-                    <!-- Nomor Meja (Wajib jika Dine In) -->
+                    <!-- Nomor Meja (Opsional) -->
                     <div id="checkout-table-wrapper" class="transition-all">
                         <label class="block text-xs font-bold text-[#290024] mb-1.5 flex items-center justify-between">
-                            <span>Nomor Meja <span class="text-[#775533]" id="table-star">*</span></span>
-                            <span class="text-[10px] font-semibold text-[#775533]" id="table-badge-req">Wajib untuk Dine In</span>
+                            <span>Nomor Meja <span class="text-[10px] font-normal text-[#775533]/70">(Opsional)</span></span>
+                            <span class="text-[10px] font-semibold text-[#775533]" id="table-badge-req">Opsional</span>
                         </label>
                         <select id="table-number" name="table_number" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs font-medium text-[#290024] px-3.5 py-2.5 sm:py-3 rounded-2xl border border-[#E3DEA4] focus:border-[#D4954D] focus:outline-none transition-all">
-                            <option value="">— Pilih Nomor Meja —</option>
+                            <option value="">— Pilih Nomor Meja (Opsional) —</option>
                             @foreach($tables as $table)
                                 <option value="{{ $table->number }}" {{ $table->status === 'nonaktif' ? 'disabled' : '' }}>
                                     Meja {{ $table->number }} ({{ $table->statusBadge()['label'] }})
                                 </option>
                             @endforeach
                         </select>
-                        <p id="table-hint" class="text-[10px] text-[#775533] mt-1">* Wajib dipilih untuk pesanan Dine In agar meja tercatat terpakai.</p>
+                        <p id="table-hint" class="text-[10px] text-[#775533] mt-1">Pilih nomor meja jika pelanggan menempati meja tertentu (bisa dikosongkan).</p>
                     </div>
 
                     <!-- Nama Pelanggan (Wajib) -->
@@ -580,7 +580,7 @@
         <div class="shrink-0 p-3 sm:p-4 bg-[#F2F5E2] border-t border-[#E3DEA4]/60 pb-[max(0.85rem,env(safe-area-inset-bottom))]">
             <button type="button" id="sheet-add-btn" class="w-full py-3.5 px-4 rounded-full bg-[#290024] hover:bg-[#775533] text-[#F2F5E2] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98]">
                 <i data-lucide="plus" class="w-4 h-4 text-[#D4954D]"></i>
-                <span id="sheet-add-btn-text">Tambah ke Keranjang &amp; Bayar</span>
+                <span id="sheet-add-btn-text">Tambah ke Keranjang</span>
             </button>
         </div>
     </div>
@@ -970,9 +970,6 @@ function handleMenuClick(id) {
         addToCartWithOptions(targetMenuId, finalName, finalPrice, currentSheetQty, notes);
         closeMenuDetailSheet();
         showToast('Ditambahkan', `${currentSheetQty}x ${finalName} masuk ke keranjang`);
-
-        // Langsung masuk menu bayar secara full (bukan popup)!
-        goToCheckout();
     };
 
     openMenuDetailSheet();
@@ -1056,7 +1053,6 @@ function clearCart() {
 function handleOrderTypeChange(type) {
     const tableSelect = document.getElementById('table-number');
     const tableWrap = document.getElementById('checkout-table-wrapper');
-    const tableStar = document.getElementById('table-star');
     const tableReq = document.getElementById('table-badge-req');
     const tableHint = document.getElementById('table-hint');
 
@@ -1064,15 +1060,13 @@ function handleOrderTypeChange(type) {
         tableSelect.disabled = true;
         tableSelect.value = '';
         tableWrap.classList.add('opacity-40');
-        if (tableStar) tableStar.classList.add('hidden');
         if (tableReq) tableReq.textContent = 'Tidak Perlu Meja';
         if (tableHint) tableHint.textContent = 'Pesanan Take Away (bawa pulang) tidak memerlukan nomor meja.';
     } else {
         tableSelect.disabled = false;
         tableWrap.classList.remove('opacity-40');
-        if (tableStar) tableStar.classList.remove('hidden');
-        if (tableReq) tableReq.textContent = 'Wajib untuk Dine In';
-        if (tableHint) tableHint.textContent = '* Wajib dipilih untuk pesanan Dine In agar meja tercatat terpakai.';
+        if (tableReq) tableReq.textContent = 'Opsional';
+        if (tableHint) tableHint.textContent = 'Pilih nomor meja jika pelanggan menempati meja tertentu (bisa dikosongkan).';
     }
 }
 
@@ -1158,15 +1152,6 @@ function submitPosPayment(action, event) {
     if (! custName) {
         showToast('Nama Wajib Diisi', 'Silakan masukkan nama pelanggan.', 'error');
         document.getElementById('customer-name')?.focus();
-        return;
-    }
-
-    // Validasi Nomor Meja jika Dine In (Wajib)
-    const orderType = document.querySelector('input[name="order_type"]:checked')?.value || 'dine_in';
-    const tableNum = document.getElementById('table-number')?.value;
-    if (orderType === 'dine_in' && ! tableNum) {
-        showToast('Meja Wajib Dipilih', 'Pilih nomor meja untuk pesanan Dine In.', 'error');
-        document.getElementById('table-number')?.focus();
         return;
     }
 
