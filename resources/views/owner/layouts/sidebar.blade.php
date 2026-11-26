@@ -9,7 +9,7 @@
     $menus = [
         ['route' => 'owner.dashboard', 'label' => 'Dashboard Bisnis', 'icon' => 'layout-dashboard', 'badge' => null, 'match' => 'owner.dashboard'],
         ['route' => 'owner.reports.index', 'label' => 'Laporan', 'icon' => 'bar-chart-3', 'badge' => null, 'match' => 'owner.reports'],
-        ['route' => 'owner.staff.index', 'label' => 'Manajemen Staf', 'icon' => 'users', 'badge' => null, 'match' => 'owner.staff'],
+        ['route' => 'owner.staff.index', 'label' => 'Staff', 'icon' => 'users', 'badge' => null, 'match' => 'owner.staff'],
         ['route' => 'owner.promos.index', 'label' => 'Promo & Diskon', 'icon' => 'percent', 'badge' => $activePromoCount, 'match' => 'owner.promos'],
     ];
 @endphp

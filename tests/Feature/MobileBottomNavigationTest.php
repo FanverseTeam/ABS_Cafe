@@ -89,14 +89,17 @@ class MobileBottomNavigationTest extends TestCase
         $html = $this->load(route('owner.dashboard'));
 
         $this->assertSame(
-            ['Beranda', 'Laporan', 'Kasir', 'Promo', 'Lainnya'],
+            ['Beranda', 'Laporan', 'Staff', 'Promo'],
             $this->labelsWithin($html, 'mobile-bottom-nav'),
         );
-        $this->assertCount(5, $this->itemsWithin($html, 'mobile-bottom-nav'));
+        $this->assertCount(4, $this->itemsWithin($html, 'mobile-bottom-nav'));
+
+        $navHtml = $this->regionHtml($html, 'mobile-bottom-nav');
+        $this->assertStringContainsString('grid-template-columns: repeat(4, minmax(0, 1fr))', $navHtml);
 
         $labels = $this->labelsWithin($html, 'mobile-bottom-nav');
         $this->assertNotContains('Menu', $labels);
-        $this->assertNotContains('Staf', $labels);
+        $this->assertNotContains('Kasir', $labels);
         $this->assertNotContains('POS', $labels);
         $this->assertNotContains('Pesanan', $labels);
         $this->assertNotContains('Profil Saya', $labels);
@@ -104,16 +107,6 @@ class MobileBottomNavigationTest extends TestCase
         $promo = $this->navItemByLabel($html, 'Promo');
         $this->assertNotNull($promo);
         $this->assertSame('1', $this->badgeWithin($promo));
-
-        $sheet = $this->regionHtml($html, 'mobile-more-sheet');
-        $sheetLabels = $this->labelsWithin($html, 'mobile-more-sheet');
-
-        $this->assertContains('Pengaturan Bisnis', $sheetLabels);
-        $this->assertNotContains('Keluar', $sheetLabels);
-        $this->assertNotContains('Profil Saya', $sheetLabels);
-
-        $this->assertStringNotContainsString('Manajemen User Staf', $sheet);
-        $this->assertStringNotContainsString('Log Aktivitas', $sheet);
     }
 
     public function test_owner_active_item_tracks_dashboard_and_subpages(): void
@@ -128,9 +121,13 @@ class MobileBottomNavigationTest extends TestCase
         $this->assertNotNull($reports);
         $this->assertSame(route('owner.reports.index'), $reports->getAttribute('href'));
 
-        $settings = $this->activeNavItem($this->load(route('owner.settings.index')));
-        $this->assertNotNull($settings);
-        $this->assertSame('mobile-more-button', $settings->getAttribute('id'));
+        $staff = $this->activeNavItem($this->load(route('owner.staff.index')));
+        $this->assertNotNull($staff);
+        $this->assertSame(route('owner.staff.index'), $staff->getAttribute('href'));
+
+        $promo = $this->activeNavItem($this->load(route('owner.promos.index')));
+        $this->assertNotNull($promo);
+        $this->assertSame(route('owner.promos.index'), $promo->getAttribute('href'));
     }
 
     public function test_owner_navigation_links_are_reachable(): void
@@ -168,7 +165,7 @@ class MobileBottomNavigationTest extends TestCase
 
         foreach ([
             'Pembayaran & Struk',
-            'Buka/Tutup Shift & Rekap Kas',
+            'Reservasi & Meja',
         ] as $label) {
             $this->assertContains($label, $sheetLabels);
         }

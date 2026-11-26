@@ -119,6 +119,27 @@
                     </div>
                 </div>
 
+                {{-- Status Manual Buka/Tutup Kafe --}}
+                <div class="pt-3 mt-2 border-t border-cafe-beige/60 space-y-3">
+                    <h4 class="font-semibold text-cafe-dark text-sm">Kontrol Buka / Tutup Kafe</h4>
+                    <p class="text-[10px] text-cafe-muted -mt-2">Override status kafe secara manual. Pilih "Otomatis" agar mengikuti jam operasional di atas.</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="font-semibold text-cafe-dark">Status Kafe</label>
+                            <select name="cafe_manual_status" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                                <option value="otomatis" {{ ($settings['cafe_manual_status'] ?? 'otomatis') === 'otomatis' ? 'selected' : '' }}>⏰ Otomatis (Ikuti Jam Operasional)</option>
+                                <option value="buka_paksa" {{ ($settings['cafe_manual_status'] ?? '') === 'buka_paksa' ? 'selected' : '' }}>✅ Buka Paksa (Selalu Buka)</option>
+                                <option value="tutup_sementara" {{ ($settings['cafe_manual_status'] ?? '') === 'tutup_sementara' ? 'selected' : '' }}>🔴 Tutup Sementara (Selalu Tutup)</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="font-semibold text-cafe-dark">Pesan Khusus Saat Tutup <span class="font-normal text-cafe-muted text-[10px]">(Opsional)</span></label>
+                            <input type="text" name="cafe_closed_message" value="{{ $settings['cafe_closed_message'] ?? '' }}" placeholder="Contoh: Mohon maaf, kami tutup karena renovasi." class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="pt-4 border-t border-cafe-beige/60 flex justify-end">
                     <button type="submit" class="px-6 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all">Simpan Profil Cafe</button>
                 </div>

@@ -99,12 +99,18 @@ class Promo extends Model
         return max(0, $this->quota - $this->usedCount());
     }
 
+    public function hasDiscount(): bool
+    {
+        return $this->type !== 'non_diskon';
+    }
+
     public function typeLabel(): string
     {
         return match ($this->type) {
             'persen' => $this->value.'%',
             'nominal' => 'Rp '.number_format((float) $this->value, 0, ',', '.'),
             'buy_x_get_y' => 'Beli 2 Gratis 1',
+            'non_diskon' => 'Promo Spesial',
             default => ucfirst((string) $this->type),
         };
     }

@@ -66,7 +66,12 @@ class PosController extends Controller
 
         try {
             $built = $this->orders->buildLines($cart);
-            $promo = $this->orders->findPromo(trim($request->input('voucher', '')) ?: null);
+            $voucherInput = trim($request->input('voucher', '')) ?: null;
+            if ($voucherInput) {
+                $promo = $this->orders->findPromo($voucherInput);
+            } else {
+                $promo = $this->orders->resolveBestAutoPromo($built['items'], $built['subtotal']);
+            }
             ['discount' => $discount] = $this->orders->calculateDiscount($promo, $built['items'], $built['subtotal']);
 
             $tax = round(($built['subtotal'] - $discount) * (float) CafeSetting::get('tax_percent', 10) / 100, 2);
@@ -81,7 +86,9 @@ class PosController extends Controller
                 'tax' => $tax,
                 'service' => $service,
                 'total' => $total,
-                'voucher' => $promo?->title,
+                'voucher' => $promo?->code ?: $promo?->title,
+                'promo_title' => $promo?->title,
+                'is_auto_promo' => empty($voucherInput) && $promo !== null,
             ]);
         } catch (ValidationException $e) {
             return response()->json(['ok' => false, 'message' => collect($e->errors())->flatten()->first()], 422);
@@ -107,6 +114,10 @@ class PosController extends Controller
             'table_number.exists' => 'Nomor meja yang dipilih tidak valid.',
         ]);
 
+        if ($data['order_type'] === 'dine_in' && empty($data['table_number'])) {
+            return back()->withInput()->with('error', 'Nomor meja wajib dipilih untuk pesanan makan di tempat (Dine In).');
+        }
+
         $cart = json_decode($data['cart'], true);
         if (! is_array($cart) || empty($cart)) {
             return back()->withInput()->with('error', 'Keranjang masih kosong.');
@@ -129,6 +140,7 @@ class PosController extends Controller
                 'source' => 'offline',
                 'order_status' => 'baru',
                 'payment_method' => $data['payment_method'] ?? 'tunai',
+                'cashier_name' => $penjagaName,
             ], Auth::user(), null);
 
             if ($data['order_type'] === 'dine_in' && ! empty($data['table_number'])) {

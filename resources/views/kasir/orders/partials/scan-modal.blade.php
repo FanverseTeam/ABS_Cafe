@@ -90,12 +90,18 @@
                         </p>
                     </div>
 
-                    <div id="qr-camera-reader" class="w-full rounded-2xl overflow-hidden bg-black/90 aspect-square max-h-64 flex items-center justify-center text-center p-4 border-2 border-[#E3DEA4]">
-                        <div id="qr-camera-placeholder" class="text-white/80 space-y-2">
+                    <!-- Area Kamera Video Langsung (Kotak Persegi Proporsional untuk QR Code) -->
+                    <div class="relative w-full rounded-2xl overflow-hidden bg-black/95 border-2 border-[#E3DEA4] shadow-inner">
+                        <div id="qr-camera-reader" class="w-full"></div>
+                        <div id="qr-camera-placeholder" class="text-white/80 p-8 text-center space-y-2 flex flex-col items-center justify-center min-h-[240px]">
                             <i data-lucide="camera" class="w-10 h-10 mx-auto text-[#D4954D]"></i>
                             <p class="text-xs">Klik "Nyalakan Kamera Langsung" di bawah untuk memulai stream video.</p>
                         </div>
                     </div>
+
+                    <p class="text-[11px] text-[#775533] text-center">
+                        Posisikan QR Code di dalam kotak target persegi agar terbaca otomatis.
+                    </p>
 
                     <div class="flex items-center justify-between gap-2">
                         <button type="button" onclick="toggleCameraScanning()" id="btn-camera-toggle" class="flex-1 py-2 px-3 rounded-full bg-[#290024] text-[#F2F5E2] text-xs font-bold hover:bg-[#775533] transition-colors flex items-center justify-center gap-1.5">
@@ -175,12 +181,61 @@
 {{-- Script HTML5 QR Code library dari CDN --}}
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
+<style>
+    #qr-camera-reader {
+        width: 100% !important;
+        border: none !important;
+        background: transparent !important;
+        position: relative;
+    }
+    #qr-camera-reader video {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 360px !important;
+        object-fit: cover !important;
+        border-radius: 0.875rem !important;
+        display: block !important;
+        margin: 0 auto !important;
+    }
+    #qr-camera-reader canvas {
+        border-radius: 0.875rem !important;
+    }
+    #qr-camera-reader__scan_region {
+        min-height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #qr-camera-reader__dashboard,
+    #qr-camera-reader__status_span {
+        display: none !important;
+    }
+</style>
+
 <script>
 let html5QrScanner = null;
 let isCameraActive = false;
 let currentFacingMode = "environment";
 let availableCameras = [];
 let currentCameraIndex = 0;
+
+function getCameraConfig() {
+    return {
+        fps: 15,
+        qrbox: function(viewfinderWidth, viewfinderHeight) {
+            // Selalu bujur sangkar (persegi kotak) 1:1 sempurna
+            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+            const boxSize = Math.max(180, Math.floor(minEdge * 0.72));
+            return {
+                width: boxSize,
+                height: boxSize
+            };
+        },
+        experimentalFeatures: {
+            useBarCodeDetectorIfSupported: true
+        }
+    };
+}
 
 function openScanModal() {
     const modal = document.getElementById('scan-qr-modal');
@@ -441,11 +496,7 @@ function startCameraScanner(forcePrompt = false) {
         html5QrScanner = new Html5Qrcode("qr-camera-reader");
     }
 
-    const config = {
-        fps: 10,
-        qrbox: { width: 220, height: 220 },
-        aspectRatio: 1.0,
-    };
+    const config = getCameraConfig();
 
     const onScanSuccess = (decodedText) => {
         processScanCode(decodedText);
@@ -497,6 +548,10 @@ function startCameraFallback(config, onScanSuccess) {
 function onCameraStarted() {
     isCameraActive = true;
     resetScanResult();
+
+    const placeholder = document.getElementById('qr-camera-placeholder');
+    if (placeholder) placeholder.classList.add('hidden');
+
     const btnText = document.getElementById('btn-camera-toggle-text');
     if (btnText) btnText.textContent = 'Hentikan Kamera Langsung';
     lucide.createIcons();
@@ -504,6 +559,10 @@ function onCameraStarted() {
 
 function handleCameraError(err) {
     isCameraActive = false;
+
+    const placeholder = document.getElementById('qr-camera-placeholder');
+    if (placeholder) placeholder.classList.remove('hidden');
+
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const isSecure = window.isSecureContext || window.location.protocol === 'https:' || isLocalhost;
 
@@ -521,6 +580,9 @@ function stopCameraScanner() {
     if (html5QrScanner && isCameraActive) {
         html5QrScanner.stop().then(() => {
             isCameraActive = false;
+            const placeholder = document.getElementById('qr-camera-placeholder');
+            if (placeholder) placeholder.classList.remove('hidden');
+
             const btnText = document.getElementById('btn-camera-toggle-text');
             if (btnText) btnText.textContent = 'Nyalakan Kamera Langsung';
         }).catch(() => {
@@ -544,7 +606,7 @@ function switchCameraFacing() {
         if (isCameraActive) {
             stopCameraScanner();
             setTimeout(() => {
-                const config = { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1.0 };
+                const config = getCameraConfig();
                 html5QrScanner.start(cameraId, config, (decodedText) => processScanCode(decodedText), () => {})
                     .then(() => onCameraStarted())
                     .catch(err => handleCameraError(err));

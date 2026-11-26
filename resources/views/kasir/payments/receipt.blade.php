@@ -31,6 +31,12 @@
                 <span>Metode Pembayaran</span>
                 <span class="font-semibold text-[#290024] uppercase">{{ $order->paymentMethodLabel() }}</span>
             </div>
+            @if((float)$order->discount > 0)
+                <div class="flex items-center justify-between text-green-700">
+                    <span>Diskon{{ $order->promo ? ' ('.($order->promo->title ?: $order->promo->code).')' : '' }}</span>
+                    <span class="font-bold">-Rp {{ number_format($order->discount, 0, ',', '.') }}</span>
+                </div>
+            @endif
             <div class="pt-2 border-t border-[#E3DEA4]/60 flex items-center justify-between">
                 <span class="font-semibold text-[#290024]">Total Pembayaran</span>
                 <span class="font-serif font-bold text-base text-[#290024]">Rp {{ number_format($order->total, 0, ',', '.') }}</span>

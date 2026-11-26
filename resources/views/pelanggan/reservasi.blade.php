@@ -293,6 +293,22 @@
                 </h2>
             </div>
 
+            {{-- Banner Kafe Tutup --}}
+            @if(!($cafeSchedule['is_open'] ?? true))
+                <div class="rounded-xl border-2 border-red-300/60 bg-red-50/80 p-4 text-center space-y-1.5">
+                    <div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto">
+                        <svg class="w-5 h-5 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h3 class="font-serif text-sm font-bold text-red-800">Kafe Sedang Tutup</h3>
+                    <p class="text-xs text-red-700/80">{{ $cafeSchedule['message'] }}</p>
+                    <p class="text-[10px] text-red-600/60">Jam operasional hari ini: {{ $cafeSchedule['today_hours'] }}</p>
+                </div>
+            @endif
+
             <!-- Pesan Error Validasi -->
             @if($errors->any())
                 <div class="p-3.5 rounded-xl bg-[#290024]/10 border border-[#290024]/20 text-xs text-[#290024]">
@@ -422,12 +438,15 @@
                 <!-- Tombol Desktop (Di mobile akan ada sticky bottom bar sesuai Figma) -->
                 <div class="hidden sm:block pt-3">
                     <button type="submit"
-                            class="w-full py-3.5 px-6 rounded-full bg-[#290024] hover:bg-[#290024]/90 text-[#F2F5E2] font-bold text-sm tracking-wide transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
-                        <span>Pesan Sekarang</span>
+                            @if(!($cafeSchedule['is_open'] ?? true)) disabled @endif
+                            class="w-full py-3.5 px-6 rounded-full {{ ($cafeSchedule['is_open'] ?? true) ? 'bg-[#290024] hover:bg-[#290024]/90 text-[#F2F5E2]' : 'bg-[#E3DEA4] text-[#775533] opacity-50 cursor-not-allowed' }} font-bold text-sm tracking-wide transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                        <span>{{ ($cafeSchedule['is_open'] ?? true) ? 'Pesan Sekarang' : 'Kafe Sedang Tutup' }}</span>
+                        @if($cafeSchedule['is_open'] ?? true)
                         <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
                         </svg>
+                        @endif
                     </button>
                 </div>
             </form>
@@ -478,13 +497,16 @@
     <!-- ============================================================== -->
     <div class="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-[#F2F5E2]/95 backdrop-blur-md border-t border-[#E3DEA4] p-4 shadow-[0_-4px_15px_rgba(41,0,36,0.08)]" style="background-color: rgba(242, 245, 226, 0.95) !important;">
         <button type="button"
+                @if(!($cafeSchedule['is_open'] ?? true)) disabled @endif
                 onclick="const f = document.getElementById('form-reservasi'); if (f.checkValidity()) { f.submit(); } else { f.reportValidity(); }"
-                class="w-full py-3.5 px-6 rounded-full bg-[#290024] active:bg-[#290024]/90 text-[#F2F5E2] font-bold text-sm tracking-wide shadow-md flex items-center justify-center gap-2">
-            <span>Pesan Sekarang</span>
+                class="w-full py-3.5 px-6 rounded-full {{ ($cafeSchedule['is_open'] ?? true) ? 'bg-[#290024] active:bg-[#290024]/90 text-[#F2F5E2]' : 'bg-[#E3DEA4] text-[#775533] opacity-50 cursor-not-allowed' }} font-bold text-sm tracking-wide shadow-md flex items-center justify-center gap-2">
+            <span>{{ ($cafeSchedule['is_open'] ?? true) ? 'Pesan Sekarang' : 'Kafe Sedang Tutup' }}</span>
+            @if($cafeSchedule['is_open'] ?? true)
             <svg class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
+            @endif
         </button>
     </div>
 </div>

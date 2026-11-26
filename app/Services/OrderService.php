@@ -101,6 +101,62 @@ class OrderService
         return $promo;
     }
 
+    public function findPromoById(?int $promoId): ?Promo
+    {
+        if (! $promoId) {
+            return null;
+        }
+
+        $promo = Promo::find($promoId);
+
+        if (! $promo) {
+            throw ValidationException::withMessages(['voucher' => 'Promo tidak ditemukan.']);
+        }
+        if (! $promo->isRunning()) {
+            throw ValidationException::withMessages(['voucher' => 'Promo belum aktif atau sudah berakhir.']);
+        }
+        if ($promo->remainingQuota() !== null && $promo->remainingQuota() <= 0) {
+            throw ValidationException::withMessages(['voucher' => 'Kuota promo sudah habis.']);
+        }
+
+        return $promo;
+    }
+
+    /**
+     * Cari promo diskon aktif terbaik yang memenuhi syarat untuk keranjang saat ini.
+     *
+     * @param  array<int, array<string, mixed>>  $items
+     */
+    public function resolveBestAutoPromo(array $items, float $subtotal): ?Promo
+    {
+        $candidates = Promo::running()
+            ->where('type', '!=', 'non_diskon')
+            ->get();
+
+        $bestPromo = null;
+        $bestDiscount = 0.0;
+
+        foreach ($candidates as $candidate) {
+            if ($candidate->remainingQuota() !== null && $candidate->remainingQuota() <= 0) {
+                continue;
+            }
+            if ($subtotal < (float) $candidate->min_spend) {
+                continue;
+            }
+            if ($this->eligibleSubtotal($candidate, $items) <= 0) {
+                continue;
+            }
+
+            $discount = $this->computeDiscountAmount($candidate, $items, $subtotal);
+            if ($discount > $bestDiscount) {
+                $bestDiscount = $discount;
+                $bestPromo = $candidate;
+            }
+        }
+
+        return $bestPromo;
+    }
+
     /**
      * @param  array<int, array<string, mixed>>  $items
      * @return array{promo: Promo|null, discount: float}
@@ -111,13 +167,25 @@ class OrderService
             return ['promo' => null, 'discount' => 0.0];
         }
 
-        $eligible = $this->eligibleSubtotal($promo, $items);
+        if (! $promo->hasDiscount()) {
+            return ['promo' => $promo, 'discount' => 0.0];
+        }
 
         if ($subtotal < (float) $promo->min_spend) {
             throw ValidationException::withMessages([
                 'voucher' => 'Minimal belanja Rp '.number_format((float) $promo->min_spend, 0, ',', '.').' untuk memakai voucher ini.',
             ]);
         }
+
+        return ['promo' => $promo, 'discount' => $this->computeDiscountAmount($promo, $items, $subtotal)];
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $items
+     */
+    private function computeDiscountAmount(Promo $promo, array $items, float $subtotal): float
+    {
+        $eligible = $this->eligibleSubtotal($promo, $items);
 
         $discount = match ($promo->type) {
             'persen' => round($eligible * (float) $promo->value / 100, 2),
@@ -126,7 +194,7 @@ class OrderService
             default => 0.0,
         };
 
-        return ['promo' => $promo, 'discount' => round(min($discount, $subtotal), 2)];
+        return round(min($discount, $subtotal), 2);
     }
 
     /**
@@ -184,7 +252,14 @@ class OrderService
     {
         return DB::transaction(function () use ($data, $cashier) {
             $built = $this->buildLines($data['items']);
-            $promo = $this->findPromo($data['voucher'] ?? null);
+            $promo = null;
+            if (! empty($data['voucher'])) {
+                $promo = $this->findPromo((string) $data['voucher']);
+            } elseif (! empty($data['promo_id'])) {
+                $promo = $this->findPromoById((int) $data['promo_id']);
+            } elseif (empty($data['no_promo'])) {
+                $promo = $this->resolveBestAutoPromo($built['items'], $built['subtotal']);
+            }
             ['discount' => $discount] = $this->calculateDiscount($promo, $built['items'], $built['subtotal']);
 
             $taxPercent = (float) CafeSetting::get('tax_percent', 10);
@@ -197,7 +272,8 @@ class OrderService
 
             $penjagaName = $data['cashier_name']
                 ?? session('active_penjaga_kasir')
-                ?? CafeSetting::get('active_penjaga_kasir');
+                ?? CafeSetting::get('active_penjaga_kasir')
+                ?? $cashier?->name;
 
             if (empty($penjagaName) && ($data['source'] ?? 'offline') !== 'web') {
                 throw ValidationException::withMessages([
@@ -209,6 +285,7 @@ class OrderService
 
             $order = Order::create([
                 'order_code' => $this->generateCode(),
+                'cash_shift_id' => $data['cash_shift_id'] ?? app(ShiftService::class)->activeDrawerShift()?->id,
                 'customer_name' => $data['customer_name'] ?: 'Pelanggan',
                 'customer_phone' => $data['customer_phone'] ?? null,
                 'customer_email' => $data['customer_email'] ?? null,

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Models\CafeSetting;
-use App\Models\Menu;
 use App\Models\Order;
 use App\Models\Promo;
 use App\Support\MenuSalesReport;
@@ -13,41 +12,31 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
         $period = PeriodFilter::fromRequest($request);
+        $chartRange = in_array($request->query('chart_range'), ['hari', 'bulan', 'tahun'], true)
+            ? (string) $request->query('chart_range')
+            : 'hari';
         $margin = (float) CafeSetting::get('profit_margin_percent', '40');
-        $dailyTarget = (float) CafeSetting::get('target_daily_sales', '2000000');
-        $monthlyTarget = (float) CafeSetting::get('target_monthly_sales', '45000000');
 
         $summary = $this->summary($period, $margin);
 
-        // Target harian & bulanan
-        $salesToday = (float) $this->paidOrders(Carbon::today()->startOfDay(), Carbon::today()->endOfDay())->sum('total');
-        $salesMonth = (float) $this->paidOrders(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth())->sum('total');
-
-        $targets = [
-            'daily' => [
-                'label' => 'Target Hari Ini',
-                'target' => $dailyTarget,
-                'actual' => $salesToday,
-                'percent' => $dailyTarget > 0 ? min(100, round($salesToday / $dailyTarget * 100, 1)) : 0,
-            ],
-            'monthly' => [
-                'label' => 'Target Bulan Ini',
-                'target' => $monthlyTarget,
-                'actual' => $salesMonth,
-                'percent' => $monthlyTarget > 0 ? min(100, round($salesMonth / $monthlyTarget * 100, 1)) : 0,
-            ],
+        // Total penjualan hari ini
+        $todayOrders = $this->paidOrders(Carbon::today()->startOfDay(), Carbon::today()->endOfDay());
+        $todaySales = [
+            'total' => (float) $todayOrders->sum('total'),
+            'orders' => (int) $todayOrders->count(),
         ];
 
-        // Grafik tren penjualan sesuai periode
-        $chart = $this->salesChart($period);
+        // Grafik tren persentase penjualan (pilihan jangka waktu: hari / bulan / tahun)
+        $chart = $this->salesPercentageChart($period, $chartRange);
 
-        // Komposisi metode pembayaran & tipe pesanan
+        // Komposisi metode pembayaran
         $paid = $this->paidOrders($period->start, $period->end);
         $paymentComposition = $paid
             ->groupBy('payment_method')
@@ -58,25 +47,8 @@ class DashboardController extends Controller
             ])
             ->values();
 
-        $orderTypeSplit = [
-            'dine_in' => (float) $paid->where('order_type', 'dine_in')->sum('total'),
-            'take_away' => (float) $paid->where('order_type', 'take_away')->sum('total'),
-        ];
-
-        // Top menu & kategori (dari item pesanan, bukan counter statis)
+        // Top menu (dari item pesanan, bukan counter statis)
         $topMenus = $this->topMenus($period, 5);
-        $topCategories = $this->topCategories($period, 5);
-
-        // Kinerja kasir ringkas
-        $cashierPerformance = $this->cashierPerformance($period, 5);
-
-        // Menu habis
-        $unavailableMenus = Menu::with('category')
-            ->where('is_available', false)
-            ->orderBy('name', 'asc')
-            ->take(6)
-            ->get();
-        $menuHabis = $unavailableMenus;
 
         // Promo aktif
         $activePromos = Promo::where('is_active', true)
@@ -86,32 +58,73 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Pesanan terbaru dalam periode
-        $recentOrders = Order::with('items')
-            ->whereBetween('created_at', [$period->start, $period->end])
-            ->orderBy('created_at', 'desc')
-            ->take(6)
-            ->get();
-
         return view('owner.dashboard', compact(
             'period',
+            'chartRange',
             'summary',
-            'targets',
+            'todaySales',
             'chart',
             'paymentComposition',
-            'orderTypeSplit',
             'topMenus',
-            'topCategories',
-            'cashierPerformance',
-            'unavailableMenus',
-            'menuHabis',
             'activePromos',
-            'recentOrders',
         ));
     }
 
     /**
-     * @return array<string, array{value: float, change: ?float}>
+     * Ekspor rekap penjualan harian berdasarkan rentang tanggal pilihan (bisa banyak hari sekaligus).
+     */
+    public function exportDailyRecap(Request $request): StreamedResponse
+    {
+        $now = Carbon::now();
+        $start = Carbon::parse($request->query('mulai', $now->copy()->subDays(6)->toDateString()))->startOfDay();
+        $end = Carbon::parse($request->query('selesai', $now->toDateString()))->endOfDay();
+
+        if ($end->lt($start)) {
+            [$start, $end] = [$end->copy()->startOfDay(), $start->copy()->endOfDay()];
+        }
+
+        $recap = $this->buildDailyRecap($start, $end);
+        $fileName = 'Rekap_Penjualan_Harian_ABS_Cafe_'.$start->format('Ymd').'-'.$end->format('Ymd').'.csv';
+
+        $headers = [
+            'Content-type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename={$fileName}",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        return response()->stream(function () use ($recap): void {
+            $file = fopen('php://output', 'w');
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            fputcsv($file, ['Tanggal', 'Hari', 'Jumlah Pesanan', 'Penjualan Kotor (Rp)', 'Diskon (Rp)', 'Total Penjualan (Rp)']);
+
+            foreach ($recap['rows'] as $row) {
+                fputcsv($file, [
+                    $row['date'],
+                    $row['day_name'],
+                    $row['orders'],
+                    (int) round($row['gross']),
+                    (int) round($row['discount']),
+                    (int) round($row['total']),
+                ]);
+            }
+
+            fputcsv($file, [
+                'TOTAL',
+                '',
+                $recap['totals']['orders'],
+                (int) round($recap['totals']['gross']),
+                (int) round($recap['totals']['discount']),
+                (int) round($recap['totals']['total']),
+            ]);
+
+            fclose($file);
+        }, 200, $headers);
+    }
+
+    /**
+     * @return array<string, array{value: float, change: ?float}|float>
      */
     private function summary(PeriodFilter $period, float $margin): array
     {
@@ -145,70 +158,152 @@ class DashboardController extends Controller
     }
 
     /**
-     * @return array{labels: array<int, string>, sales: array<int, float>, orders: array<int, int>, group: string}
+     * Membangun rekap penjualan per hari dalam rentang tanggal.
+     *
+     * @return array{
+     *     rows: array<int, array{date: string, label: string, day_name: string, orders: int, gross: float, discount: float, total: float}>,
+     *     totals: array{orders: int, gross: float, discount: float, total: float}
+     * }
      */
-    private function salesChart(PeriodFilter $period): array
+    private function buildDailyRecap(Carbon $start, Carbon $end): array
     {
-        $orders = $this->paidOrders($period->start, $period->end);
-        $grouping = $period->chartGrouping()['group'];
+        $orders = Order::where('payment_status', 'lunas')
+            ->whereBetween('created_at', [$start->copy()->startOfDay(), $end->copy()->endOfDay()])
+            ->get(['id', 'created_at', 'subtotal', 'discount', 'total']);
 
+        $grouped = $orders->groupBy(fn (Order $order) => $order->created_at->toDateString());
+
+        $rows = [];
+        $totalOrders = 0;
+        $totalGross = 0.0;
+        $totalDiscount = 0.0;
+        $totalSales = 0.0;
+
+        $cursor = $start->copy()->startOfDay();
+        $endDay = $end->copy()->startOfDay();
+
+        while ($cursor->lte($endDay)) {
+            $dateKey = $cursor->toDateString();
+            $dayOrders = $grouped->get($dateKey, collect());
+
+            $count = $dayOrders->count();
+            $gross = (float) $dayOrders->sum('subtotal');
+            $discount = (float) $dayOrders->sum('discount');
+            $total = (float) $dayOrders->sum('total');
+
+            $rows[] = [
+                'date' => $dateKey,
+                'label' => $cursor->translatedFormat('d M Y'),
+                'day_name' => $cursor->translatedFormat('l'),
+                'orders' => $count,
+                'gross' => $gross,
+                'discount' => $discount,
+                'total' => $total,
+            ];
+
+            $totalOrders += $count;
+            $totalGross += $gross;
+            $totalDiscount += $discount;
+            $totalSales += $total;
+
+            $cursor->addDay();
+        }
+
+        // Urutkan terbaru di atas untuk tampilan tabel beranda
+        $rows = array_reverse($rows);
+
+        return [
+            'rows' => $rows,
+            'totals' => [
+                'orders' => $totalOrders,
+                'gross' => $totalGross,
+                'discount' => $totalDiscount,
+                'total' => $totalSales,
+            ],
+        ];
+    }
+
+    /**
+     * Grafik tren persentase penjualan berdasarkan jangka waktu (hari, bulan, tahun).
+     *
+     * @return array{labels: array<int, string>, percentages: array<int, float>, sales: array<int, float>, range: string, total_sales: float}
+     */
+    private function salesPercentageChart(PeriodFilter $period, string $range): array
+    {
         $labels = [];
         $sales = [];
-        $counts = [];
 
-        if ($grouping === 'hari') {
-            $cursor = $period->start->copy();
-            while ($cursor->lte($period->end)) {
+        if ($range === 'bulan') {
+            $yearStart = $period->end->copy()->startOfYear();
+            $yearEnd = $period->end->copy()->endOfYear();
+            $orders = $this->paidOrders($yearStart, $yearEnd);
+
+            for ($m = 1; $m <= 12; $m++) {
+                $labels[] = Carbon::create($period->end->year, $m, 1)->translatedFormat('M Y');
+                $sales[] = 0.0;
+            }
+
+            foreach ($orders as $order) {
+                $idx = $order->created_at->month - 1;
+                if (isset($sales[$idx])) {
+                    $sales[$idx] += (float) $order->total;
+                }
+            }
+        } elseif ($range === 'tahun') {
+            $endYear = $period->end->year;
+            $startYear = $endYear - 4;
+            $rangeStart = Carbon::create($startYear, 1, 1)->startOfDay();
+            $rangeEnd = Carbon::create($endYear, 12, 31)->endOfDay();
+            $orders = $this->paidOrders($rangeStart, $rangeEnd);
+
+            for ($y = $startYear; $y <= $endYear; $y++) {
+                $labels[] = (string) $y;
+                $sales[] = 0.0;
+            }
+
+            foreach ($orders as $order) {
+                $idx = $order->created_at->year - $startYear;
+                if (isset($sales[$idx])) {
+                    $sales[$idx] += (float) $order->total;
+                }
+            }
+        } else {
+            // Default: harian — jika periode hanya 1 hari (Hari Ini), tampilkan 7 hari terakhir agar tren harian terlihat
+            $chartStart = $period->days() > 1
+                ? $period->start->copy()->startOfDay()
+                : $period->end->copy()->subDays(6)->startOfDay();
+            $chartEnd = $period->end->copy()->endOfDay();
+
+            $orders = $this->paidOrders($chartStart, $chartEnd);
+
+            $cursor = $chartStart->copy();
+            while ($cursor->lte($chartEnd)) {
                 $labels[] = $cursor->translatedFormat('d M');
                 $sales[] = 0.0;
-                $counts[] = 0;
                 $cursor->addDay();
             }
 
             foreach ($orders as $order) {
-                $idx = $period->start->diffInDays($order->created_at->copy()->startOfDay());
+                $idx = $chartStart->diffInDays($order->created_at->copy()->startOfDay());
                 if (isset($sales[$idx])) {
                     $sales[$idx] += (float) $order->total;
-                    $counts[$idx]++;
-                }
-            }
-        } elseif ($grouping === 'minggu') {
-            $cursor = $period->start->copy()->startOfDay();
-            $index = 1;
-            while ($cursor->lte($period->end)) {
-                $labels[] = 'Minggu '.$index;
-                $sales[] = 0.0;
-                $counts[] = 0;
-                $cursor->addWeek();
-                $index++;
-            }
-
-            foreach ($orders as $order) {
-                $idx = intdiv($period->start->diffInDays($order->created_at->copy()->startOfDay()), 7);
-                if (isset($sales[$idx])) {
-                    $sales[$idx] += (float) $order->total;
-                    $counts[$idx]++;
-                }
-            }
-        } else {
-            $cursor = $period->start->copy()->startOfMonth();
-            while ($cursor->lte($period->end)) {
-                $labels[] = $cursor->translatedFormat('M Y');
-                $sales[] = 0.0;
-                $counts[] = 0;
-                $cursor->addMonth();
-            }
-
-            foreach ($orders as $order) {
-                $idx = $order->created_at->copy()->startOfMonth()->diffInMonths($period->start->copy()->startOfMonth());
-                if (isset($sales[$idx])) {
-                    $sales[$idx] += (float) $order->total;
-                    $counts[$idx]++;
                 }
             }
         }
 
-        return ['labels' => $labels, 'sales' => $sales, 'orders' => $counts, 'group' => $grouping];
+        $totalSales = array_sum($sales);
+        $percentages = array_map(
+            fn (float $val): float => $totalSales > 0 ? round(($val / $totalSales) * 100, 1) : 0.0,
+            $sales
+        );
+
+        return [
+            'labels' => $labels,
+            'percentages' => $percentages,
+            'sales' => $sales,
+            'range' => $range,
+            'total_sales' => (float) $totalSales,
+        ];
     }
 
     /**
@@ -246,36 +341,12 @@ class DashboardController extends Controller
     }
 
     /**
-     * @return Collection<int, array{name: string, orders: int, sales: float}>
-     */
-    private function cashierPerformance(PeriodFilter $period, int $limit)
-    {
-        $orders = $this->paidOrders($period->start, $period->end);
-
-        return $orders
-            ->groupBy(fn ($order) => $order->cashier_id ?: ('nama:'.($order->cashier_name ?: 'Tanpa Kasir')))
-            ->map(function ($rows) {
-                $first = $rows->first();
-
-                return [
-                    'name' => $first->cashier?->name ?? ($first->cashier_name ?: 'Tanpa Kasir'),
-                    'orders' => $rows->count(),
-                    'sales' => (float) $rows->sum('total'),
-                ];
-            })
-            ->sortByDesc('sales')
-            ->take($limit)
-            ->values();
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Collection<int, Order>
      */
     private function paidOrders(Carbon $start, Carbon $end)
     {
-        return Order::with('cashier')
-            ->where('payment_status', 'lunas')
+        return Order::where('payment_status', 'lunas')
             ->whereBetween('created_at', [$start, $end])
-            ->get(['id', 'created_at', 'total', 'discount', 'payment_method', 'order_type', 'cashier_id', 'cashier_name']);
+            ->get(['id', 'created_at', 'total', 'discount', 'payment_method', 'order_type']);
     }
 }

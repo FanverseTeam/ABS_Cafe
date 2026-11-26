@@ -148,11 +148,11 @@ return [
                     'active' => ['owner.reports.*'],
                 ],
                 [
-                    'key' => 'cashiers',
-                    'label' => 'Kasir',
-                    'route' => 'owner.cashiers.index',
+                    'key' => 'staff',
+                    'label' => 'Staff',
+                    'route' => 'owner.staff.index',
                     'icon' => 'users',
-                    'active' => ['owner.cashiers.*'],
+                    'active' => ['owner.staff.*', 'owner.cashiers.*'],
                 ],
                 [
                     'key' => 'promos',

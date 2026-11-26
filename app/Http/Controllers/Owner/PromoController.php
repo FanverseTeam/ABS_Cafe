@@ -125,6 +125,43 @@ class PromoController extends Controller
             $request->merge(['code' => strtoupper(trim((string) $request->input('code')))]);
         }
 
+        $hasDiscount = $request->has('has_discount')
+            ? $request->boolean('has_discount')
+            : $request->input('type') !== 'non_diskon';
+
+        if (! $hasDiscount) {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'code' => 'nullable|string|max:50|unique:promo,code'.($ignoreId ? ','.$ignoreId : ''),
+                'description' => 'required|string',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
+                'banner' => 'nullable|string',
+                'quota' => 'nullable|integer|min:0',
+            ], [
+                'title.required' => 'Judul promo wajib diisi.',
+                'title.max' => 'Judul promo maksimal 255 karakter.',
+                'code.unique' => 'Kode promo sudah digunakan.',
+                'description.required' => 'Deskripsi promo wajib diisi.',
+                'start_date.required' => 'Tanggal mulai wajib diisi.',
+                'start_date.date' => 'Format tanggal mulai tidak valid.',
+                'end_date.required' => 'Tanggal selesai wajib diisi.',
+                'end_date.date' => 'Format tanggal selesai tidak valid.',
+                'end_date.after_or_equal' => 'Tanggal selesai harus sama atau setelah tanggal mulai.',
+            ]);
+
+            $validated['code'] = $request->filled('code') ? strtoupper((string) $request->input('code')) : null;
+            $validated['type'] = 'non_diskon';
+            $validated['value'] = 0;
+            $validated['applies_to'] = 'semua';
+            $validated['target_category_id'] = null;
+            $validated['is_active'] = $request->boolean('is_active');
+            $validated['min_spend'] = 0;
+            $validated['banner'] = $validated['banner'] ?? null;
+
+            return $validated;
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'code' => 'nullable|string|max:50|unique:promo,code'.($ignoreId ? ','.$ignoreId : ''),

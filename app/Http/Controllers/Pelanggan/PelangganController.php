@@ -13,6 +13,7 @@ use App\Models\OrderTimeline;
 use App\Models\Promo;
 use App\Models\Reservation;
 use App\Models\Table;
+use App\Services\CafeScheduleService;
 use App\Services\FavoriteMenuService;
 use App\Services\OrderService;
 use App\Support\LandingData;
@@ -131,6 +132,16 @@ class PelangganController extends Controller
 
         try {
             $promos = Promo::where('is_active', true)->orderByDesc('id')->get();
+        } catch (ValidationException $e) {
+            $msg = collect($e->errors())->flatten()->first() ?: 'Validasi promo gagal.';
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $msg,
+                ], 422);
+            }
+
+            return back()->with('error', $msg);
         } catch (\Throwable $e) {
             $promos = collect();
         }
@@ -297,11 +308,34 @@ class PelangganController extends Controller
 
         $allTables = Table::orderBy('number', 'asc')->get();
 
+        $activePromos = Promo::running()
+            ->where('type', '!=', 'non_diskon')
+            ->get()
+            ->filter(fn (Promo $p) => $p->remainingQuota() === null || $p->remainingQuota() > 0)
+            ->map(fn (Promo $p) => [
+                'id' => $p->id,
+                'title' => $p->title,
+                'code' => $p->code,
+                'description' => $p->description,
+                'type' => $p->type,
+                'value' => (float) $p->value,
+                'min_spend' => (float) $p->min_spend,
+                'applies_to' => $p->applies_to,
+                'target_category_id' => $p->target_category_id,
+                'target_menu_id' => $p->target_menu_id,
+                'type_label' => $p->typeLabel(),
+            ])
+            ->values();
+
         return view('pelanggan.keranjang', [
             'landing' => LandingData::get(),
             'tableNumber' => $tableNumber,
             'activeTable' => $activeTable,
             'allTables' => $allTables,
+            'activePromos' => $activePromos,
+            'menuCategories' => Menu::pluck('category_id', 'id'),
+            'taxPercent' => (float) CafeSetting::get('tax_percent', 10),
+            'cafeSchedule' => CafeScheduleService::getSchedule(),
         ]);
     }
 
@@ -310,12 +344,30 @@ class PelangganController extends Controller
      */
     public function storePesanan(Request $request): JsonResponse|RedirectResponse
     {
+        // Guard: tolak pesanan saat kafe tutup
+        if (! CafeScheduleService::isOpen()) {
+            $schedule = CafeScheduleService::getSchedule();
+            $message = $schedule['message'];
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 422);
+            }
+
+            return redirect()->back()->with('error', $message);
+        }
+
         $validated = $request->validate([
             'customer_name' => 'required|string|max:100',
             'customer_phone' => 'required|string|max:20',
             'order_type' => 'required|in:dine_in,take_away',
             'table_number' => 'nullable|integer',
             'notes' => 'nullable|string|max:500',
+            'promo_id' => 'nullable|integer',
+            'voucher_code' => 'nullable|string|max:50',
+            'no_promo' => 'nullable|boolean',
             'items' => 'required|array|min:1',
             'items.*.menu_id' => 'required|integer',
             'items.*.varian_id' => 'nullable|integer',
@@ -355,11 +407,23 @@ class PelangganController extends Controller
                     throw new \Exception('Keranjang belanja kosong atau menu tidak valid.');
                 }
 
-                $taxPercent = (float) CafeSetting::get('tax_percent', 10);
-                $tax = round($subtotal * $taxPercent / 100, 2);
-                $total = round($subtotal + $tax, 2);
-
                 $orderService = app(OrderService::class);
+                $promo = null;
+                if (! empty($validated['voucher_code'])) {
+                    $promo = $orderService->findPromo((string) $validated['voucher_code']);
+                } elseif (! empty($validated['promo_id'])) {
+                    $promo = $orderService->findPromoById((int) $validated['promo_id']);
+                } elseif (empty($validated['no_promo'])) {
+                    $promo = $orderService->resolveBestAutoPromo($builtItems, $subtotal);
+                }
+
+                ['discount' => $discount] = $orderService->calculateDiscount($promo, $builtItems, $subtotal);
+
+                $taxPercent = (float) CafeSetting::get('tax_percent', 10);
+                $taxableBase = max(0, $subtotal - $discount);
+                $tax = round($taxableBase * $taxPercent / 100, 2);
+                $total = round($taxableBase + $tax, 2);
+
                 $orderCode = $orderService->generateCode();
 
                 $order = Order::create([
@@ -372,7 +436,8 @@ class PelangganController extends Controller
                     'subtotal' => $subtotal,
                     'tax' => $tax,
                     'service_charge' => 0,
-                    'discount' => 0,
+                    'discount' => $discount,
+                    'promo_id' => $promo?->id,
                     'total' => $total,
                     'payment_method' => 'kasir',
                     'payment_status' => 'menunggu_pembayaran',
@@ -407,6 +472,16 @@ class PelangganController extends Controller
 
                 return $order;
             });
+        } catch (ValidationException $e) {
+            $msg = collect($e->errors())->flatten()->first() ?: 'Validasi promo gagal.';
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $msg,
+                ], 422);
+            }
+
+            return back()->with('error', $msg);
         } catch (\Throwable $e) {
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json([
@@ -435,7 +510,7 @@ class PelangganController extends Controller
      */
     public function orderSukses(string $code): View
     {
-        $order = Order::where('order_code', $code)->with(['items', 'timelines'])->firstOrFail();
+        $order = Order::where('order_code', $code)->with(['items', 'timelines', 'promo'])->firstOrFail();
 
         return view('pelanggan.pesanan-sukses', [
             'landing' => LandingData::get(),
@@ -529,16 +604,16 @@ class PelangganController extends Controller
                 ->first();
         }
 
-        // Slot waktu operasional (09:00 sampai 22:00)
+        // Slot waktu operasional berdasarkan jam kafe (09:00 s.d tutup, tiap 30 menit)
+        $schedule = CafeScheduleService::getSchedule();
+        $openHour = (int) substr($schedule['open_time'], 0, 2);
+        $closeHour = (int) substr($schedule['close_time'], 0, 2);
+
         $timeSlots = [];
-        $start = 9;
-        $end = 22;
-        for ($hour = $start; $hour <= $end; $hour++) {
+        for ($hour = $openHour; $hour < $closeHour; $hour++) {
             $h = str_pad((string) $hour, 2, '0', STR_PAD_LEFT);
             $timeSlots[] = "{$h}:00";
-            if ($hour < $end) {
-                $timeSlots[] = "{$h}:30";
-            }
+            $timeSlots[] = "{$h}:30";
         }
 
         return view('pelanggan.reservasi', [
@@ -551,6 +626,7 @@ class PelangganController extends Controller
             'selectedTime' => $selectedTime,
             'searchCode' => $searchCode,
             'foundReservation' => $foundReservation,
+            'cafeSchedule' => CafeScheduleService::getSchedule(),
         ]);
     }
 
@@ -608,6 +684,27 @@ class PelangganController extends Controller
      */
     public function storeReservasi(Request $request): RedirectResponse
     {
+        // Guard: tolak reservasi saat kafe tutup
+        if (! CafeScheduleService::isOpen()) {
+            $schedule = CafeScheduleService::getSchedule();
+
+            throw ValidationException::withMessages([
+                'reservation_date' => $schedule['message'],
+            ]);
+        }
+
+        // Validasi jam reservasi harus dalam jendela operasi kafe (hari itu)
+        if (! CafeScheduleService::isReservationTimeValid(
+            (string) $request->input('reservation_date'),
+            (string) $request->input('reservation_time')
+        )) {
+            $schedule = CafeScheduleService::getSchedule();
+
+            throw ValidationException::withMessages([
+                'reservation_time' => 'Jam reservasi di luar jam operasional kafe. Jam operasional hari ini adalah '.$schedule['today_hours'].'.',
+            ]);
+        }
+
         $data = $request->validate([
             'customer_name' => 'required|string|max:100',
             'phone' => 'required|string|min:8|max:25',

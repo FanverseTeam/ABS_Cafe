@@ -14,6 +14,7 @@
         $icon = $up ? 'trending-up' : 'trending-down';
         return '<span class="inline-flex items-center gap-0.5 text-[10px] font-semibold ' . $color . ' px-2 py-0.5 rounded-full"><i data-lucide="' . $icon . '" class="w-3 h-3"></i>' . ($up ? '+' : '') . $change . '%</span>';
     };
+    $chartQueryBase = collect(request()->query())->except(['chart_range'])->all();
 @endphp
 
 @section('content')
@@ -38,8 +39,8 @@
             @include('owner.partials.period-filter', ['period' => $period])
         </div>
 
-        <!-- Summary Cards (2 Kolom di Mobile Sesuai Panduan) -->
-        <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+        <!-- Summary Cards (2 Kolom) -->
+        <div class="grid grid-cols-2 gap-3 sm:gap-4">
             <div class="bg-cafe-card rounded-2xl sm:rounded-3xl border border-cafe-beige/60 shadow-soft p-4 sm:p-5 relative overflow-hidden flex flex-col justify-between">
                 <div class="absolute -right-6 -top-6 w-20 h-20 rounded-full bg-cafe-gold/10 pointer-events-none"></div>
                 <div class="relative">
@@ -67,58 +68,29 @@
                     <p class="font-serif text-base sm:text-2xl font-bold text-cafe-dark mt-0.5 truncate">{{ number_format($summary['orders']['value'], 0, ',', '.') }}</p>
                 </div>
             </div>
-
-            <div class="bg-cafe-card rounded-2xl sm:rounded-3xl border border-cafe-beige/60 shadow-soft p-4 sm:p-5 relative overflow-hidden flex flex-col justify-between">
-                <div class="absolute -right-6 -top-6 w-20 h-20 rounded-full bg-cafe-info/10 pointer-events-none"></div>
-                <div class="relative">
-                    <div class="flex items-center justify-between gap-1">
-                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-cafe-info/15 text-cafe-info flex items-center justify-center">
-                            <i data-lucide="receipt" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-                        </div>
-                        {!! $changeBadge($summary['avg']['change']) !!}
-                    </div>
-                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wide text-cafe-muted font-semibold mt-3">Rata-rata Order</p>
-                    <p class="font-serif text-base sm:text-2xl font-bold text-cafe-dark mt-0.5 truncate">{{ $rp($summary['avg']['value']) }}</p>
-                </div>
-            </div>
-
-            <div class="bg-cafe-card rounded-2xl sm:rounded-3xl border border-cafe-beige/60 shadow-soft p-4 sm:p-5 relative overflow-hidden flex flex-col justify-between">
-                <div class="absolute -right-6 -top-6 w-20 h-20 rounded-full bg-cafe-warning/10 pointer-events-none"></div>
-                <div class="relative">
-                    <div class="flex items-center justify-between gap-1">
-                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-cafe-warning/15 text-cafe-warning flex items-center justify-center">
-                            <i data-lucide="trending-up" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-                        </div>
-                        {!! $changeBadge($summary['profit']['change']) !!}
-                    </div>
-                    <p class="text-[10px] sm:text-[11px] uppercase tracking-wide text-cafe-muted font-semibold mt-3">Laba ({{ $summary['margin'] }}%)</p>
-                    <p class="font-serif text-base sm:text-2xl font-bold text-cafe-dark mt-0.5 truncate">{{ $rp($summary['profit']['value']) }}</p>
-                </div>
-            </div>
         </div>
 
-        <!-- Target + Discount -->
+        <!-- Total Penjualan Hari Ini + Promo Diberikan -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div class="lg:col-span-2 bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 space-y-4">
-                <div class="flex items-center justify-between">
-                    <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2">
-                        <i data-lucide="target" class="w-4 h-4 text-cafe-gold"></i> Pencapaian Target
-                    </h3>
-                </div>
-
-                @foreach($targets as $key => $target)
+            <div class="lg:col-span-2 bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 flex flex-col justify-between">
+                <div class="flex items-start justify-between gap-3">
                     <div>
-                        <div class="flex items-center justify-between text-xs mb-1.5">
-                            <span class="font-semibold text-cafe-text">{{ $target['label'] }}</span>
-                            <span class="text-cafe-muted">{{ $rp($target['actual']) }} / <strong class="text-cafe-dark">{{ $rp($target['target']) }}</strong></span>
-                        </div>
-                        <div class="h-2.5 rounded-full bg-cafe-beige/60 overflow-hidden">
-                            <div class="h-full rounded-full {{ $target['percent'] >= 100 ? 'bg-cafe-success' : ($target['percent'] >= 60 ? 'bg-cafe-gold' : 'bg-cafe-bronze') }} transition-all"
-                                 style="width: {{ max(2, $target['percent']) }}%"></div>
-                        </div>
-                        <p class="text-[10px] text-cafe-muted mt-1">{{ $target['percent'] }}% tercapai</p>
+                        <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2">
+                            <i data-lucide="calendar-check" class="w-4 h-4 text-cafe-gold"></i> Total Penjualan Hari Ini
+                        </h3>
+                        <p class="text-xs text-cafe-muted mt-1">{{ now()->translatedFormat('l, d F Y') }}</p>
                     </div>
-                @endforeach
+                    <span class="px-3 py-1 rounded-full bg-cafe-gold/15 text-cafe-bronze text-[11px] font-bold">
+                        {{ number_format($todaySales['orders'], 0, ',', '.') }} transaksi lunas
+                    </span>
+                </div>
+                <div class="my-4">
+                    <p class="font-serif text-3xl sm:text-4xl font-bold text-cafe-dark">{{ $rp($todaySales['total']) }}</p>
+                    <p class="text-xs text-cafe-muted mt-1">Akumulasi seluruh pesanan berstatus lunas hari ini.</p>
+                </div>
+                <a href="{{ route('owner.reports.index') }}" class="text-xs font-semibold text-cafe-brown hover:text-cafe-dark transition-colors inline-flex items-center gap-1">
+                    Lihat Rekap Harian &amp; Ekspor <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </a>
             </div>
 
             <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 flex flex-col justify-between">
@@ -141,11 +113,23 @@
         <!-- Charts -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div class="lg:col-span-2 bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2">
-                        <i data-lucide="line-chart" class="w-4 h-4 text-cafe-gold"></i> Tren Penjualan
-                    </h3>
-                    <span class="text-[10px] uppercase tracking-wide text-cafe-muted font-semibold">Per {{ $chart['group'] }}</span>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                    <div>
+                        <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2">
+                            <i data-lucide="line-chart" class="w-4 h-4 text-cafe-gold"></i> Tren Persentase Penjualan
+                        </h3>
+                        <p class="text-[11px] text-cafe-muted mt-0.5">
+                            Distribusi persentase penjualan per {{ $chart['range'] }}
+                        </p>
+                    </div>
+                    <div class="inline-flex items-center bg-cafe-beige/50 border border-cafe-beige rounded-full p-1 text-xs self-start sm:self-auto">
+                        @foreach(['hari' => 'Hari', 'bulan' => 'Bulan', 'tahun' => 'Tahun'] as $rangeKey => $rangeLabel)
+                            <a href="{{ route('owner.dashboard', array_merge($chartQueryBase, ['chart_range' => $rangeKey])) }}"
+                               class="px-3 py-1 rounded-full font-semibold transition-all {{ $chart['range'] === $rangeKey ? 'bg-cafe-dark text-cafe-cream shadow-2xs' : 'text-cafe-muted hover:text-cafe-dark' }}">
+                                {{ $rangeLabel }}
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
                 <div class="h-72">
                     <canvas id="salesTrendChart"></canvas>
@@ -170,8 +154,8 @@
             </div>
         </div>
 
-        <!-- Top Menus / Categories / Cashier -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- Top Menus + Active Promos -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
                 <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2 mb-4">
                     <i data-lucide="flame" class="w-4 h-4 text-cafe-gold"></i> Menu Terlaris
@@ -206,77 +190,6 @@
 
             <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
                 <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2 mb-4">
-                    <i data-lucide="tags" class="w-4 h-4 text-cafe-gold"></i> Kategori Teratas
-                </h3>
-                <div class="space-y-3">
-                    @forelse($topCategories as $cat)
-                        @php $max = $topCategories->max('revenue') ?: 1; @endphp
-                        <div>
-                            <div class="flex items-center justify-between text-xs mb-1">
-                                <span class="font-medium text-cafe-text truncate">{{ $cat['name'] }}</span>
-                                <span class="text-cafe-muted">{{ $rp($cat['revenue']) }}</span>
-                            </div>
-                            <div class="h-2 rounded-full bg-cafe-beige/60 overflow-hidden">
-                                <div class="h-full rounded-full bg-cafe-gold" style="width: {{ max(3, round($cat['revenue'] / $max * 100)) }}%"></div>
-                            </div>
-                        </div>
-                    @empty
-                        <p class="text-xs text-cafe-muted">Belum ada data.</p>
-                    @endforelse
-                </div>
-            </div>
-
-            <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
-                <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2 mb-4">
-                    <i data-lucide="users" class="w-4 h-4 text-cafe-gold"></i> Kinerja Kasir
-                </h3>
-                <div class="space-y-3">
-                    @forelse($cashierPerformance as $cs)
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-cafe-dark text-cafe-gold text-[11px] font-bold flex items-center justify-center shrink-0">
-                                {{ mb_substr($cs['name'], 0, 1) }}
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="text-xs font-semibold text-cafe-dark truncate">{{ $cs['name'] }}</p>
-                                <p class="text-[10px] text-cafe-muted">{{ $cs['orders'] }} pesanan</p>
-                            </div>
-                            <span class="text-xs font-semibold text-cafe-bronze whitespace-nowrap">{{ $rp($cs['sales']) }}</span>
-                        </div>
-                    @empty
-                        <p class="text-xs text-cafe-muted">Belum ada aktivitas kasir.</p>
-                    @endforelse
-                </div>
-                <a href="{{ route('owner.staff.index') }}" class="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-cafe-brown hover:text-cafe-dark transition-colors">
-                    Manajemen Staf <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                </a>
-            </div>
-        </div>
-
-        <!-- Menu Habis + Active Promos + Recent Orders -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
-                <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2 mb-4">
-                    <i data-lucide="slash" class="w-4 h-4 text-cafe-danger"></i> Menu Habis
-                </h3>
-                <div class="space-y-2.5">
-                    @forelse($unavailableMenus as $menu)
-                        <div class="flex items-center justify-between gap-2">
-                            <div class="min-w-0">
-                                <p class="text-xs font-semibold text-cafe-dark truncate">{{ $menu->name }}</p>
-                                <p class="text-[10px] text-cafe-muted">{{ $menu->category?->name ?? '-' }}</p>
-                            </div>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cafe-danger/15 text-cafe-danger">
-                                Habis
-                            </span>
-                        </div>
-                    @empty
-                        <p class="text-xs text-cafe-muted">Semua menu aktif dan dapat dipesan.</p>
-                    @endforelse
-                </div>
-            </div>
-
-            <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
-                <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2 mb-4">
                     <i data-lucide="gift" class="w-4 h-4 text-cafe-gold"></i> Promo Aktif
                 </h3>
                 <div class="space-y-2.5">
@@ -287,25 +200,6 @@
                         </div>
                     @empty
                         <p class="text-xs text-cafe-muted">Tidak ada promo aktif.</p>
-                    @endforelse
-                </div>
-            </div>
-
-            <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5">
-                <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2 mb-4">
-                    <i data-lucide="clock" class="w-4 h-4 text-cafe-gold"></i> Pesanan Terbaru
-                </h3>
-                <div class="space-y-2.5">
-                    @forelse($recentOrders as $order)
-                        <div class="flex items-center justify-between gap-2">
-                            <div class="min-w-0">
-                                <p class="text-xs font-semibold text-cafe-dark truncate">{{ $order->order_code }}</p>
-                                <p class="text-[10px] text-cafe-muted">{{ $order->created_at->translatedFormat('d M, H:i') }} &bull; {{ $order->customer_name }}</p>
-                            </div>
-                            <span class="text-xs font-semibold text-cafe-bronze whitespace-nowrap">{{ $rp($order->total) }}</span>
-                        </div>
-                    @empty
-                        <p class="text-xs text-cafe-muted">Belum ada pesanan pada periode ini.</p>
                     @endforelse
                 </div>
             </div>
@@ -320,32 +214,22 @@
     Chart.defaults.color = '#775533';
 
     const salesCtx = document.getElementById('salesTrendChart');
+    const chartSalesValues = @json($chart['sales']);
     new Chart(salesCtx, {
         type: 'line',
         data: {
             labels: @json($chart['labels']),
             datasets: [
                 {
-                    label: 'Penjualan (Rp)',
-                    data: @json($chart['sales']),
+                    label: 'Persentase Penjualan (%)',
+                    data: @json($chart['percentages']),
                     borderColor: '#D4954D',
-                    backgroundColor: 'rgba(212, 149, 77, 0.15)',
+                    backgroundColor: 'rgba(212, 149, 77, 0.18)',
                     fill: true,
                     tension: 0.4,
                     borderWidth: 2.5,
                     pointBackgroundColor: '#290024',
-                    pointRadius: 3,
-                    yAxisID: 'y',
-                },
-                {
-                    label: 'Jumlah Pesanan',
-                    data: @json($chart['orders']),
-                    borderColor: '#775533',
-                    borderDash: [5, 4],
-                    tension: 0.4,
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    yAxisID: 'y1',
+                    pointRadius: 3.5,
                 },
             ],
         },
@@ -357,23 +241,19 @@
                 legend: { position: 'bottom', labels: { boxWidth: 12, boxHeight: 12, usePointStyle: true, font: { size: 11 } } },
                 tooltip: {
                     callbacks: {
-                        label: (ctx) => ctx.dataset.yAxisID === 'y'
-                            ? ' ' + ctx.dataset.label + ': Rp ' + new Intl.NumberFormat('id-ID').format(ctx.parsed.y)
-                            : ' ' + ctx.dataset.label + ': ' + ctx.parsed.y,
+                        label: (ctx) => {
+                            const amount = chartSalesValues[ctx.dataIndex] || 0;
+                            return ' ' + ctx.parsed.y + '% (Rp ' + new Intl.NumberFormat('id-ID').format(amount) + ')';
+                        },
                     },
                 },
             },
             scales: {
                 y: {
                     beginAtZero: true,
-                    ticks: { callback: (v) => 'Rp ' + new Intl.NumberFormat('id-ID').format(v), font: { size: 10 } },
+                    suggestedMax: 100,
+                    ticks: { callback: (v) => v + '%', font: { size: 10 } },
                     grid: { color: 'rgba(227, 222, 164, 0.5)' },
-                },
-                y1: {
-                    beginAtZero: true,
-                    position: 'right',
-                    ticks: { font: { size: 10 } },
-                    grid: { display: false },
                 },
                 x: { grid: { display: false }, ticks: { font: { size: 10 } } },
             },

@@ -9,6 +9,7 @@ use App\Models\CashShift;
 use App\Models\Order;
 use App\Support\MenuSalesReport;
 use App\Support\PeriodFilter;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -43,6 +44,8 @@ class ReportController extends Controller
                 ->withQueryString(),
         ];
 
+        $dailyRecap = $this->buildDailyRecap($period->start, $period->end, $sales);
+
         $finance = [
             'gross' => (float) $sales->sum('subtotal'),
             'discount' => (float) $sales->sum('discount'),
@@ -65,16 +68,31 @@ class ReportController extends Controller
             'margin' => (float) CafeSetting::get('profit_margin_percent', '40'),
         ];
 
-        return view('owner.reports.index', compact('tab', 'period', 'sales', 'data', 'finance'));
+        return view('owner.reports.index', compact('tab', 'period', 'sales', 'data', 'dailyRecap', 'finance'));
     }
 
     public function exportCsv(Request $request)
     {
-        $tab = array_key_exists($request->query('tab', 'penjualan'), self::TABS) ? $request->query('tab', 'penjualan') : 'penjualan';
-        $period = PeriodFilter::fromRequest($request);
-        $sales = $this->paidOrders($period);
+        if ($request->filled('mulai') || $request->filled('selesai')) {
+            $now = Carbon::now();
+            $start = Carbon::parse($request->query('mulai', $now->copy()->subDays(6)->toDateString()))->startOfDay();
+            $end = Carbon::parse($request->query('selesai', $now->toDateString()))->endOfDay();
 
-        $fileName = 'Laporan_'.ucfirst($tab).'_ABS_Cafe_'.$period->start->format('Ymd').'-'.$period->end->format('Ymd').'.csv';
+            if ($end->lt($start)) {
+                [$start, $end] = [$end->copy()->startOfDay(), $start->copy()->endOfDay()];
+            }
+        } else {
+            $period = PeriodFilter::fromRequest($request);
+            $start = $period->start;
+            $end = $period->end;
+        }
+
+        $sales = Order::where('payment_status', 'lunas')
+            ->whereBetween('created_at', [$start, $end])
+            ->get(['id', 'created_at', 'subtotal', 'discount', 'total']);
+
+        $recap = $this->buildDailyRecap($start, $end, $sales);
+        $fileName = 'Rekap_Penjualan_Harian_ABS_Cafe_'.$start->format('Ymd').'-'.$end->format('Ymd').'.csv';
 
         $headers = [
             'Content-type' => 'text/csv; charset=UTF-8',
@@ -84,19 +102,92 @@ class ReportController extends Controller
             'Expires' => '0',
         ];
 
-        $rows = match ($tab) {
-            'keuangan' => $this->financeRows($sales),
-            default => $this->salesRows($sales),
-        };
-
-        return response()->stream(function () use ($rows) {
+        return response()->stream(function () use ($recap): void {
             $file = fopen('php://output', 'w');
             fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
-            foreach ($rows as $row) {
-                fputcsv($file, $row);
+            fputcsv($file, ['Tanggal', 'Hari', 'Jumlah Pesanan', 'Penjualan Kotor (Rp)', 'Diskon (Rp)', 'Total Penjualan (Rp)']);
+
+            foreach ($recap['rows'] as $row) {
+                fputcsv($file, [
+                    $row['date'],
+                    $row['day_name'],
+                    $row['orders'],
+                    (int) round($row['gross']),
+                    (int) round($row['discount']),
+                    (int) round($row['total']),
+                ]);
             }
+
+            fputcsv($file, [
+                'TOTAL',
+                '',
+                $recap['totals']['orders'],
+                (int) round($recap['totals']['gross']),
+                (int) round($recap['totals']['discount']),
+                (int) round($recap['totals']['total']),
+            ]);
+
             fclose($file);
         }, 200, $headers);
+    }
+
+    /**
+     * @return array{
+     *     rows: array<int, array{date: string, label: string, day_name: string, orders: int, gross: float, discount: float, total: float}>,
+     *     totals: array{orders: int, gross: float, discount: float, total: float}
+     * }
+     */
+    private function buildDailyRecap(Carbon $start, Carbon $end, $sales): array
+    {
+        $grouped = $sales->groupBy(fn ($order) => $order->created_at->toDateString());
+
+        $rows = [];
+        $totalOrders = 0;
+        $totalGross = 0.0;
+        $totalDiscount = 0.0;
+        $totalSales = 0.0;
+
+        $cursor = $start->copy()->startOfDay();
+        $endDay = $end->copy()->startOfDay();
+
+        while ($cursor->lte($endDay)) {
+            $dateKey = $cursor->toDateString();
+            $dayOrders = $grouped->get($dateKey, collect());
+
+            $count = $dayOrders->count();
+            $gross = (float) $dayOrders->sum('subtotal');
+            $discount = (float) $dayOrders->sum('discount');
+            $total = (float) $dayOrders->sum('total');
+
+            $rows[] = [
+                'date' => $dateKey,
+                'label' => $cursor->translatedFormat('d M Y'),
+                'day_name' => $cursor->translatedFormat('l'),
+                'orders' => $count,
+                'gross' => $gross,
+                'discount' => $discount,
+                'total' => $total,
+            ];
+
+            $totalOrders += $count;
+            $totalGross += $gross;
+            $totalDiscount += $discount;
+            $totalSales += $total;
+
+            $cursor->addDay();
+        }
+
+        $rows = array_reverse($rows);
+
+        return [
+            'rows' => $rows,
+            'totals' => [
+                'orders' => $totalOrders,
+                'gross' => $totalGross,
+                'discount' => $totalDiscount,
+                'total' => $totalSales,
+            ],
+        ];
     }
 
     public function print(Request $request)

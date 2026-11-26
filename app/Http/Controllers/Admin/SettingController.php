@@ -41,6 +41,8 @@ class SettingController extends Controller
             'banner_subtitle' => CafeSetting::get('banner_subtitle', 'Tempat berkumpul hangat dengan aroma kopi terbaik di Tulungagung'),
             'hours_weekday' => CafeSetting::get('hours_weekday', '09:00 - 23:00'),
             'hours_weekend' => CafeSetting::get('hours_weekend', '09:00 - 23:00'),
+            'cafe_manual_status' => CafeSetting::get('cafe_manual_status', 'otomatis'),
+            'cafe_closed_message' => CafeSetting::get('cafe_closed_message', ''),
             'qris_image' => CafeSetting::get('qris_image', 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=00020101021226590014ID.LINKAJA.WWW0118936009110021200000021500000000000005204581253033605802ID5908ABS CAFE6011TULUNGAGUNG61056623362070703A0163041234'),
         ];
 
@@ -104,6 +106,12 @@ class SettingController extends Controller
         }
         CafeSetting::set('hours_weekday', $request->input('hours_weekday'));
         CafeSetting::set('hours_weekend', $request->input('hours_weekend'));
+        if ($request->has('cafe_manual_status')) {
+            CafeSetting::set('cafe_manual_status', $request->input('cafe_manual_status', 'otomatis'));
+        }
+        if ($request->has('cafe_closed_message')) {
+            CafeSetting::set('cafe_closed_message', $request->input('cafe_closed_message'));
+        }
 
         LandingData::clearCache();
 

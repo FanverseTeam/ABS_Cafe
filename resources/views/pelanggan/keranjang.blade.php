@@ -88,6 +88,23 @@
         {{-- ============================================================= --}}
         {{-- STATE KETIKA KERANJANG KOSONG                                 --}}
         {{-- ============================================================= --}}
+
+        {{-- BANNER KAFE TUTUP --}}
+        @if(!($cafeSchedule['is_open'] ?? true))
+            <div class="rounded-2xl border-2 border-red-300/60 bg-red-50/80 p-4 sm:p-5 shadow-soft text-center space-y-2 my-2">
+                <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto">
+                    <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                    </svg>
+                </div>
+                <h3 class="font-serif text-sm sm:text-base font-bold text-red-800">Kafe Sedang Tutup</h3>
+                <p class="text-xs text-red-700/80">{{ $cafeSchedule['message'] }}</p>
+                <p class="text-[10px] text-red-600/60">Jam operasional hari ini: {{ $cafeSchedule['today_hours'] }}</p>
+            </div>
+        @endif
+
         <div x-show="cart.length === 0" x-cloak class="bg-[#F2F5E2] border border-[#E3DEA4] rounded-3xl p-8 sm:p-12 text-center space-y-4 my-8 shadow-soft">
             <div class="w-16 h-16 rounded-full bg-[#E3DEA4]/40 text-[#775533] flex items-center justify-center mx-auto">
                 <svg class="w-8 h-8 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="1.8">
@@ -373,6 +390,121 @@
                 </div>
             </div>
 
+            <!-- 3. PROMO & VOUCHER DISKON -->
+            <div class="bg-[#F2F5E2] p-4 sm:p-5 rounded-2xl border border-[#E3DEA4]/80 shadow-soft space-y-3.5">
+                <div class="pb-2 border-b border-[#E3DEA4]/60 flex items-center justify-between">
+                    <h2 class="font-serif text-sm sm:text-base font-bold text-[#290024] flex items-center gap-2">
+                        <svg class="w-4 h-4 stroke-[#775533]" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                        </svg>
+                        <span>Promo &amp; Diskon</span>
+                    </h2>
+                    <template x-if="activePromo">
+                        <span class="px-2.5 py-0.5 rounded-full bg-[#D4954D]/25 border border-[#D4954D]/50 text-[#290024] text-[10px] font-bold">
+                            Promo Terpakai
+                        </span>
+                    </template>
+                </div>
+
+                <!-- Input Kode Voucher Manual -->
+                <div class="space-y-1.5">
+                    <label class="block text-[11px] font-semibold text-[#290024]">Punya Kode Voucher / Promo?</label>
+                    <div class="flex gap-2">
+                        <input type="text"
+                               x-model="inputVoucherCode"
+                               placeholder="Masukkan kode promo..."
+                               class="flex-1 uppercase bg-[#F2F5E2]/80 text-xs p-2.5 rounded-xl border border-[#E3DEA4] focus:bg-[#F2F5E2] focus:border-[#290024] focus:outline-none text-[#290024] font-semibold">
+                        <button type="button"
+                                @click="applyManualVoucher()"
+                                class="px-4 py-2.5 rounded-xl bg-[#290024] text-[#F2F5E2] hover:bg-[#D4954D] hover:text-[#290024] text-xs font-bold transition-all shrink-0">
+                            Terapkan
+                        </button>
+                    </div>
+                    <div x-show="voucherMessage" class="text-[11px] font-medium" :class="voucherMessageSuccess ? 'text-green-700' : 'text-red-600'" x-text="voucherMessage"></div>
+                </div>
+
+                <!-- Status Promo Aktif Saat Ini -->
+                <template x-if="activePromo">
+                    <div class="p-3 rounded-xl bg-[#E3DEA4]/40 border border-[#D4954D]/40 flex items-center justify-between gap-3">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-bold text-xs text-[#290024]" x-text="activePromo.title"></span>
+                                <span x-show="activePromo.code" class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#290024] text-[#E3DEA4]" x-text="activePromo.code"></span>
+                            </div>
+                            <p class="text-[11px] text-[#775533] mt-0.5">
+                                Potongan: <strong class="text-[#290024]" x-text="formatRupiah(discount)"></strong>
+                                <span x-show="activePromo.min_spend > 0" class="text-[10px] opacity-80" x-text="'(Min. belanja ' + formatRupiah(activePromo.min_spend) + ')'"></span>
+                            </p>
+                        </div>
+                        <button type="button"
+                                @click="removePromo()"
+                                class="text-[11px] font-semibold text-red-700 hover:underline shrink-0">
+                            Hapus
+                        </button>
+                    </div>
+                </template>
+
+                <!-- Daftar Promo Tersedia / Otomatis -->
+                <div x-show="availablePromos.length > 0" class="space-y-2 pt-1">
+                    <label class="block text-[11px] font-bold text-[#775533] uppercase tracking-wider">Promo Yang Tersedia:</label>
+                    <div class="space-y-2">
+                        <template x-for="p in availablePromos" :key="p.id">
+                            <div class="p-3 rounded-xl border transition-all flex items-center justify-between gap-2"
+                                 :class="activePromo && activePromo.id === p.id
+                                    ? 'bg-[#E3DEA4]/50 border-[#290024] ring-1 ring-[#290024]'
+                                    : (isPromoEligible(p)
+                                        ? 'bg-white/80 border-[#E3DEA4] hover:border-[#D4954D]'
+                                        : 'bg-white/40 border-[#E3DEA4]/50 opacity-75')">
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <span class="font-bold text-xs text-[#290024]" x-text="p.title"></span>
+                                        <span x-show="p.code" class="text-[9px] font-mono px-1 rounded bg-[#E3DEA4] text-[#290024]" x-text="p.code"></span>
+                                        <template x-if="isPromoEligible(p)">
+                                            <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-green-100 text-green-800 font-semibold">
+                                                Syarat Terpenuhi
+                                            </span>
+                                        </template>
+                                    </div>
+                                    <p class="text-[10px] text-[#775533] mt-0.5" x-text="p.description || getPromoValueLabel(p)"></p>
+                                    <template x-if="!isPromoEligible(p) && p.min_spend > 0">
+                                        <p class="text-[10px] text-[#D4954D] font-medium mt-0.5"
+                                           x-text="'Min. belanja ' + formatRupiah(p.min_spend) + ' (Kurang ' + formatRupiah(p.min_spend - subtotal) + ')'"></p>
+                                    </template>
+                                </div>
+
+                                <div class="shrink-0">
+                                    <template x-if="activePromo && activePromo.id === p.id">
+                                        <span class="text-xs font-bold text-[#290024] flex items-center gap-1">
+                                            <svg class="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                            <span>Aktif</span>
+                                        </span>
+                                    </template>
+                                    <template x-if="(!activePromo || activePromo.id !== p.id) && isPromoEligible(p)">
+                                        <button type="button"
+                                                @click="selectPromo(p)"
+                                                class="px-3 py-1 rounded-full bg-[#290024] text-[#E3DEA4] hover:bg-[#D4954D] hover:text-[#290024] text-[11px] font-bold transition-colors">
+                                            Pakai
+                                        </button>
+                                    </template>
+                                    <template x-if="!isPromoEligible(p)">
+                                        <span class="text-[10px] text-[#775533]/70 font-medium italic">
+                                            Belum Cukup
+                                        </span>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div x-show="activePromos.length === 0" class="text-[11px] text-[#775533] italic">
+                    Belum ada promo aktif saat ini.
+                </div>
+            </div>
+
             <!-- Catatan Informasi Pembayaran Ringkas -->
             <div class="px-3 py-2 rounded-xl bg-[#E3DEA4]/30 border border-[#E3DEA4] text-[11px] text-[#775533] text-center">
                 * Pembayaran dilakukan di kasir saat mengambil atau setelah selesai santap (Tunai).
@@ -386,7 +518,12 @@
         <div class="mx-auto max-w-3xl lg:max-w-7xl">
             <div class="flex items-center justify-between gap-4 mb-3 lg:mb-0">
                 <div>
-                    <span class="text-[11px] text-[#775533] leading-none block">Total Pesanan</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[11px] text-[#775533] leading-none block">Total Pesanan</span>
+                        <template x-if="discount > 0">
+                            <span class="text-[10px] px-1.5 py-0.2 rounded-full bg-green-100 text-green-800 font-bold" x-text="'Hemat ' + formatRupiah(discount)"></span>
+                        </template>
+                    </div>
                     <span class="font-serif font-bold text-base sm:text-lg text-[#290024]" x-text="formatRupiah(total)"></span>
                 </div>
                 <div class="flex items-center gap-2">
@@ -469,9 +606,11 @@
                 <template x-if="step === 1">
                     <button type="button"
                             @click="goToStep(2)"
-                            class="px-6 sm:px-7 py-2.5 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] text-xs sm:text-sm font-bold tracking-wide transition-all shadow-md flex items-center gap-1.5">
-                        <span>Lanjut</span>
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            :disabled="!cafeIsOpen"
+                            :class="!cafeIsOpen ? 'opacity-50 cursor-not-allowed bg-[#E3DEA4] text-[#775533]' : 'bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] shadow-md'"
+                            class="px-6 sm:px-7 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition-all flex items-center gap-1.5">
+                        <span x-text="cafeIsOpen ? 'Lanjut' : 'Kafe Tutup'"></span>
+                        <svg x-show="cafeIsOpen" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
                         </svg>
@@ -482,8 +621,8 @@
                 <template x-if="step === 2">
                     <button type="button"
                             @click="submitOrder()"
-                            :disabled="isSubmitting || !customerName.trim()"
-                            :class="(!customerName.trim())
+                            :disabled="isSubmitting || !customerName.trim() || !cafeIsOpen"
+                            :class="(!customerName.trim() || !cafeIsOpen)
                                 ? 'opacity-50 cursor-not-allowed bg-[#E3DEA4] text-[#775533]'
                                 : 'bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] shadow-md'"
                             class="px-5 sm:px-7 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition-all flex items-center justify-center gap-1.5">
@@ -579,8 +718,17 @@
                     <span>Subtotal Menu</span>
                     <span class="font-bold text-[#290024]" x-text="formatRupiah(subtotal)"></span>
                 </div>
+                <template x-if="discount > 0">
+                    <div class="flex items-center justify-between text-green-700">
+                        <span class="flex items-center gap-1">
+                            <span>Diskon Promo</span>
+                            <span x-show="activePromo" class="text-[10px] px-1 rounded bg-green-200 text-green-900 font-semibold" x-text="activePromo ? activePromo.title : ''"></span>
+                        </span>
+                        <span class="font-bold" x-text="'-' + formatRupiah(discount)"></span>
+                    </div>
+                </template>
                 <div class="flex items-center justify-between text-[#775533]">
-                    <span>Pajak (PB1 10%)</span>
+                    <span>Pajak (PB1 <span x-text="taxPercent"></span>%)</span>
                     <span class="font-bold text-[#290024]" x-text="formatRupiah(tax)"></span>
                 </div>
                 <div class="pt-2 border-t border-[#E3DEA4] flex items-center justify-between font-bold text-sm text-[#290024]">
@@ -601,9 +749,11 @@
                 <template x-if="step === 1">
                     <button type="button"
                             @click="showDetails = false; goToStep(2)"
-                            class="px-6 py-2 rounded-full bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] text-xs font-bold tracking-wide transition-all shadow-md flex items-center gap-1.5">
-                        <span>Lanjut</span>
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            :disabled="!cafeIsOpen"
+                            :class="!cafeIsOpen ? 'opacity-50 cursor-not-allowed bg-[#E3DEA4] text-[#775533]' : 'bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] shadow-md'"
+                            class="px-6 py-2 rounded-full text-xs font-bold tracking-wide transition-all flex items-center gap-1.5">
+                        <span x-text="cafeIsOpen ? 'Lanjut' : 'Tutup'"></span>
+                        <svg x-show="cafeIsOpen" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
                         </svg>
@@ -613,13 +763,13 @@
                 <template x-if="step === 2">
                     <button type="button"
                             @click="showDetails = false; submitOrder()"
-                            :disabled="isSubmitting || !customerName.trim()"
-                            :class="(!customerName.trim())
+                            :disabled="isSubmitting || !customerName.trim() || !cafeIsOpen"
+                            :class="(!customerName.trim() || !cafeIsOpen)
                                 ? 'opacity-50 cursor-not-allowed bg-[#E3DEA4] text-[#775533]'
                                 : 'bg-[#290024] hover:bg-[#D4954D] hover:text-[#290024] text-[#F2F5E2] shadow-md'"
                             class="px-5 py-2 rounded-full text-xs font-bold tracking-wide transition-all flex items-center justify-center gap-1.5">
-                        <span>Pesan Sekarang</span>
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <span x-text="cafeIsOpen ? 'Pesan Sekarang' : 'Kafe Tutup'"></span>
+                        <svg x-show="cafeIsOpen" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
                         </svg>
@@ -652,6 +802,18 @@ function cartPage() {
         orderNotes: '',
         isSubmitting: false,
         showDetails: false, // State buka/tutup rincian harga
+
+        // Promo & Diskon State
+        activePromos: @json($activePromos ?? []),
+        menuCategories: @json($menuCategories ?? []),
+        taxPercent: {{ $taxPercent ?? 10 }},
+        cafeIsOpen: {{ json_encode($cafeSchedule['is_open'] ?? true) }},
+        selectedPromoId: null,
+        inputVoucherCode: '',
+        appliedVoucherCode: '',
+        voucherMessage: '',
+        voucherMessageSuccess: false,
+        noPromo: false,
 
         initCart() {
             this.loadCart();
@@ -752,12 +914,147 @@ function cartPage() {
             }, 0);
         },
 
+        // List promo yang memiliki diskon
+        get availablePromos() {
+            return this.activePromos.filter(p => p.type !== 'non_diskon');
+        },
+
+        isPromoEligible(p) {
+            if (!p || p.type === 'non_diskon') return false;
+            if (p.quota !== null && p.quota <= 0) return false;
+            const minSpend = parseFloat(p.min_spend) || 0;
+            if (this.subtotal < minSpend) return false;
+
+            if (p.target_menu_id) {
+                const hasMenu = this.cart.some(item => (item.menu_id || item.id) == p.target_menu_id);
+                if (!hasMenu) return false;
+            }
+
+            if (p.target_category_id) {
+                const hasCat = this.cart.some(item => {
+                    const mId = item.menu_id || item.id;
+                    return this.menuCategories && this.menuCategories[mId] == p.target_category_id;
+                });
+                if (!hasCat) return false;
+            }
+
+            return true;
+        },
+
+        getPromoValueLabel(p) {
+            if (!p) return '';
+            if (p.type === 'persen') return 'Diskon ' + p.value + '%';
+            if (p.type === 'nominal') return 'Potongan ' + this.formatRupiah(p.value);
+            if (p.type === 'buy_x_get_y') return 'Promo Hemat Porsi';
+            return 'Promo Spesial';
+        },
+
+        computeDiscountForPromo(p) {
+            if (!this.isPromoEligible(p)) return 0;
+            const sub = this.subtotal;
+            let val = parseFloat(p.value) || 0;
+            let disc = 0;
+
+            if (p.type === 'nominal') {
+                disc = Math.min(val, sub);
+            } else if (p.type === 'persen') {
+                disc = Math.min(sub, Math.round(sub * (val / 100)));
+            } else if (p.type === 'buy_x_get_y') {
+                disc = Math.min(val, sub);
+            }
+
+            return Math.max(0, disc);
+        },
+
+        get activePromo() {
+            if (this.noPromo) return null;
+
+            // Jika user memilih promo via ID tertentu
+            if (this.selectedPromoId) {
+                const chosen = this.activePromos.find(p => p.id === this.selectedPromoId);
+                if (chosen && this.isPromoEligible(chosen)) return chosen;
+            }
+
+            // Jika user memasukkan voucher manual
+            if (this.appliedVoucherCode) {
+                const chosen = this.activePromos.find(p => p.code && p.code.toUpperCase() === this.appliedVoucherCode.toUpperCase());
+                if (chosen && this.isPromoEligible(chosen)) return chosen;
+            }
+
+            // Otomatis pilih promo terbaik yang memenuhi syarat
+            let best = null;
+            let maxDisc = 0;
+            for (const p of this.availablePromos) {
+                const disc = this.computeDiscountForPromo(p);
+                if (disc > maxDisc) {
+                    maxDisc = disc;
+                    best = p;
+                }
+            }
+            return best;
+        },
+
+        get discount() {
+            return this.activePromo ? this.computeDiscountForPromo(this.activePromo) : 0;
+        },
+
         get tax() {
-            return Math.round(this.subtotal * 0.1);
+            const taxable = Math.max(0, this.subtotal - this.discount);
+            return Math.round(taxable * (this.taxPercent / 100));
         },
 
         get total() {
-            return this.subtotal + this.tax;
+            return Math.max(0, this.subtotal - this.discount) + this.tax;
+        },
+
+        selectPromo(p) {
+            this.noPromo = false;
+            this.selectedPromoId = p.id;
+            this.appliedVoucherCode = p.code || '';
+            this.inputVoucherCode = p.code || '';
+            this.voucherMessage = 'Promo ' + p.title + ' berhasil dipasang!';
+            this.voucherMessageSuccess = true;
+        },
+
+        removePromo() {
+            this.noPromo = true;
+            this.selectedPromoId = null;
+            this.appliedVoucherCode = '';
+            this.inputVoucherCode = '';
+            this.voucherMessage = 'Promo dilepas.';
+            this.voucherMessageSuccess = false;
+        },
+
+        applyManualVoucher() {
+            const code = this.inputVoucherCode.trim().toUpperCase();
+            if (!code) {
+                this.voucherMessage = 'Ketik kode promo terlebih dahulu.';
+                this.voucherMessageSuccess = false;
+                return;
+            }
+
+            const found = this.activePromos.find(p => p.code && p.code.toUpperCase() === code);
+            if (!found) {
+                this.voucherMessage = 'Kode promo tidak ditemukan atau sudah tidak aktif.';
+                this.voucherMessageSuccess = false;
+                return;
+            }
+
+            if (!this.isPromoEligible(found)) {
+                if (this.subtotal < (parseFloat(found.min_spend) || 0)) {
+                    this.voucherMessage = 'Belum memenuhi syarat minimal belanja ' + this.formatRupiah(found.min_spend) + '.';
+                } else {
+                    this.voucherMessage = 'Menu di keranjang belum memenuhi syarat promo ini.';
+                }
+                this.voucherMessageSuccess = false;
+                return;
+            }
+
+            this.noPromo = false;
+            this.selectedPromoId = found.id;
+            this.appliedVoucherCode = found.code;
+            this.voucherMessage = 'Kode promo ' + found.code + ' berhasil digunakan!';
+            this.voucherMessageSuccess = true;
         },
 
         formatRupiah(num) {
@@ -765,6 +1062,10 @@ function cartPage() {
         },
 
         async submitOrder() {
+            if (!this.cafeIsOpen) {
+                alert('Mohon maaf, kafe sedang tutup. Pemesanan tidak dapat dilakukan saat ini.');
+                return;
+            }
             if (!this.customerName.trim()) {
                 alert('Silakan masukkan nama Anda.');
                 return;
@@ -795,7 +1096,10 @@ function cartPage() {
                     order_type: this.orderType,
                     table_number: this.orderType === 'dine_in' ? (this.tableNumber ? parseInt(this.tableNumber) : null) : null,
                     notes: this.orderNotes ? this.orderNotes.trim() : null,
-                    items: this.cart
+                    items: this.cart,
+                    promo_id: this.activePromo ? this.activePromo.id : null,
+                    voucher_code: this.appliedVoucherCode || (this.activePromo ? this.activePromo.code : null),
+                    no_promo: this.noPromo ? 1 : 0
                 };
 
                 const response = await fetch("{{ route('pelanggan.pesanan.store') }}", {

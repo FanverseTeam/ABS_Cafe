@@ -9,6 +9,7 @@
     <div class="flex items-center justify-between gap-3">
         <div class="flex items-center gap-3 min-w-0">
             <a href="{{ $backUrl }}"
+               id="form-back-btn"
                class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-2xl bg-cafe-beige/60 text-cafe-dark hover:bg-cafe-beige transition-all active:scale-95 shrink-0"
                title="Kembali ke Daftar Promo">
                 <i data-lucide="arrow-left" class="w-4 h-4 sm:w-5 sm:h-5"></i>
@@ -92,13 +93,34 @@
             </div>
 
             <!-- 2. Diskon -->
+            @php
+                $hasDiscountChecked = (bool) old('has_discount', $promo->exists ? $promo->hasDiscount() : true);
+            @endphp
             <div class="space-y-4">
-                <div class="border-b border-cafe-beige/50 pb-2">
-                    <h3 class="font-serif font-bold text-sm sm:text-base text-cafe-dark">Diskon</h3>
-                    <p class="text-[11px] text-cafe-muted">Mekanisme potongan harga, nilai diskon, dan cakupan menu</p>
+                <div class="border-b border-cafe-beige/50 pb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div>
+                        <h3 class="font-serif font-bold text-sm sm:text-base text-cafe-dark">Diskon</h3>
+                        <p class="text-[11px] text-cafe-muted">Aktifkan jika promo memberikan potongan harga; matikan untuk promo non-diskon</p>
+                    </div>
+                    <label class="inline-flex items-center gap-2.5 cursor-pointer select-none shrink-0">
+                        <input type="hidden" name="has_discount" value="0">
+                        <input type="checkbox"
+                               name="has_discount"
+                               id="has_discount"
+                               value="1"
+                               {{ $hasDiscountChecked ? 'checked' : '' }}
+                               onchange="toggleDiscountSection()"
+                               class="sr-only peer">
+                        <div class="w-11 h-6 bg-cafe-beige/80 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cafe-gold/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-beige after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-beige after:border-olive/40 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cafe-success relative"></div>
+                        <span id="has-discount-label" class="font-semibold text-xs text-cafe-dark">{{ $hasDiscountChecked ? 'Diskon Aktif' : 'Diskon Nonaktif' }}</span>
+                    </label>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div id="discount-disabled-notice" class="{{ $hasDiscountChecked ? 'hidden' : '' }} p-3.5 rounded-xl bg-[#E3DEA4]/35 border border-cafe-beige text-xs text-cafe-muted">
+                    Diskon dimatikan. Promo ini akan disimpan sebagai promo non-diskon (event, informasi, atau penawaran lainnya) tanpa potongan harga.
+                </div>
+
+                <div id="discount-fields-container" class="{{ $hasDiscountChecked ? '' : 'hidden' }} grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <!-- Jenis Promo -->
                     <div class="space-y-1.5">
                         <label for="type" class="block text-xs font-semibold text-cafe-text">Jenis Promo <span class="text-cafe-danger">*</span></label>
@@ -345,6 +367,30 @@
     let isDirty = false;
     let isSubmitting = false;
 
+    function toggleDiscountSection() {
+        const toggle = document.getElementById('has_discount');
+        const container = document.getElementById('discount-fields-container');
+        const notice = document.getElementById('discount-disabled-notice');
+        const label = document.getElementById('has-discount-label');
+        const valueInput = document.getElementById('value');
+        const catSelect = document.getElementById('target_category_id');
+        if (!toggle || !container) return;
+
+        const enabled = toggle.checked;
+        container.classList.toggle('hidden', !enabled);
+        if (notice) notice.classList.toggle('hidden', enabled);
+        if (label) label.textContent = enabled ? 'Diskon Aktif' : 'Diskon Nonaktif';
+
+        if (enabled) {
+            if (valueInput) valueInput.setAttribute('required', 'required');
+            updateTypeFields();
+            updateAppliesToFields();
+        } else {
+            if (valueInput) valueInput.removeAttribute('required');
+            if (catSelect) catSelect.removeAttribute('required');
+        }
+    }
+
     function updateTypeFields() {
         const typeEl = document.getElementById('type');
         if (!typeEl) return;
@@ -413,6 +459,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        toggleDiscountSection();
         updateTypeFields();
         updateAppliesToFields();
         updateBannerPreview();

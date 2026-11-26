@@ -39,13 +39,34 @@ class ReportTest extends TestCase
             ->assertOk();
     }
 
-    public function test_report_can_be_exported_as_csv_for_each_tab(): void
+    public function test_report_can_be_exported_as_csv_with_date_range(): void
     {
-        foreach (['penjualan', 'keuangan'] as $tab) {
-            $response = $this->actingAsOwner()->get("/owner/laporan/export?tab={$tab}");
-            $response->assertOk();
-            $this->assertStringContainsString('text/csv', $response->headers->get('content-type'));
-        }
+        $start = now()->subDays(2)->toDateString();
+        $end = now()->toDateString();
+
+        Order::factory()->paid()->create([
+            'subtotal' => 120000,
+            'discount' => 20000,
+            'total' => 100000,
+            'created_at' => now()->subDays(2),
+        ]);
+
+        Order::factory()->paid()->create([
+            'subtotal' => 50000,
+            'discount' => 0,
+            'total' => 50000,
+            'created_at' => now(),
+        ]);
+
+        $response = $this->actingAsOwner()->get("/owner/laporan/export?mulai={$start}&selesai={$end}");
+        $response->assertOk();
+        $this->assertStringContainsString('text/csv', (string) $response->headers->get('content-type'));
+
+        $content = $response->streamedContent();
+        $this->assertStringContainsString('Tanggal,Hari,', $content);
+        $this->assertStringContainsString($start, $content);
+        $this->assertStringContainsString($end, $content);
+        $this->assertStringContainsString('TOTAL,,2,170000,20000,150000', $content);
     }
 
     public function test_report_print_view_loads(): void

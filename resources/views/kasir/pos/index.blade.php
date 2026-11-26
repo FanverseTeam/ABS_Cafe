@@ -466,7 +466,13 @@
                     <!-- Ringkasan Tagihan -->
                     <div class="rounded-2xl bg-[#F2F5E2] border border-[#E3DEA4]/80 p-3.5 space-y-1.5 text-xs">
                         <div class="flex justify-between text-[#775533]"><span>Subtotal</span><span id="sum-subtotal">Rp 0</span></div>
-                        <div class="flex justify-between text-[#775533]"><span>Diskon</span><span id="sum-discount" class="text-[#775533] font-medium">-Rp 0</span></div>
+                        <div class="flex justify-between text-[#775533]">
+                            <span class="flex items-center gap-1.5">
+                                <span>Diskon</span>
+                                <span id="promo-badge" class="hidden text-[10px] px-1.5 py-0.5 rounded-full bg-[#D4954D]/25 text-[#290024] font-bold border border-[#D4954D]/40"></span>
+                            </span>
+                            <span id="sum-discount" class="text-[#775533] font-medium">-Rp 0</span>
+                        </div>
                         <div class="flex justify-between text-[#775533]"><span>Pajak (10%)</span><span id="sum-tax">Rp 0</span></div>
                         <div class="flex justify-between text-[#775533]"><span>Service Charge</span><span id="sum-service">Rp 0</span></div>
                         <div class="flex justify-between border-t border-[#E3DEA4] pt-2 mt-1">
@@ -672,6 +678,8 @@ function refreshTotals() {
                     tax: d.tax,
                     service: d.service,
                     total: d.total,
+                    voucher: d.voucher || '',
+                    promo_title: d.promo_title || '',
                 };
                 updateTotalElements(currentTotals);
                 calcChange();
@@ -692,6 +700,17 @@ function updateTotalElements(t) {
     document.querySelectorAll('#sum-tax').forEach(el => el.textContent = taxStr);
     document.querySelectorAll('#sum-service').forEach(el => el.textContent = serviceStr);
     document.querySelectorAll('#sum-total').forEach(el => el.textContent = totalStr);
+
+    document.querySelectorAll('#promo-badge').forEach(badge => {
+        if (t.discount > 0 && (t.promo_title || t.voucher)) {
+            badge.textContent = t.promo_title || t.voucher;
+            badge.classList.remove('hidden');
+            badge.classList.add('inline-block');
+        } else {
+            badge.classList.add('hidden');
+            badge.classList.remove('inline-block');
+        }
+    });
     
     const catTotal = document.getElementById('catalog-cart-total');
     if (catTotal) catTotal.textContent = totalStr;

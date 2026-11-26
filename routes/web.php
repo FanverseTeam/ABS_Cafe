@@ -292,6 +292,7 @@ if (config('features.legacy_admin')) {
 Route::prefix('owner')->name('owner.')->middleware(['auth', 'role:owner', 'noindex.staf'])->group(function () {
     // 1. Dashboard Bisnis
     Route::get('/', [OwnerDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/rekap-harian/export', [OwnerDashboardController::class, 'exportDailyRecap'])->name('daily_recap.export');
 
     // 2. Laporan (Penjualan / Keuangan)
     Route::prefix('laporan')->name('reports.')->group(function () {
