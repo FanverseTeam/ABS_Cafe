@@ -146,8 +146,7 @@ class TransactionSeeder extends Seeder
                     }
                 }
 
-                $tax = round($subtotal * 0.10);
-                $total = max(0, $subtotal + $tax - $discount);
+                $total = max(0, $subtotal - $discount);
 
                 // Sebagian kecil pesanan hari ini belum lunas
                 $isPending = $isToday && mt_rand(1, 100) <= 20;
@@ -162,7 +161,7 @@ class TransactionSeeder extends Seeder
                     'table_number' => $tableNumber,
                     'order_type' => $orderType,
                     'subtotal' => $subtotal,
-                    'tax' => $tax,
+                    'tax' => 0,
                     'service_charge' => 0,
                     'discount' => $discount,
                     'promo_id' => $promoId,

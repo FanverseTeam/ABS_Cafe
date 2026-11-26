@@ -33,7 +33,7 @@ class PosTest extends TestCase
             ->assertOk();
     }
 
-    public function test_totals_endpoint_computes_tax(): void
+    public function test_totals_endpoint_computes_totals_without_tax(): void
     {
         $this->actingAsKasir();
         $this->openShift();
@@ -43,8 +43,7 @@ class PosTest extends TestCase
             ->assertOk()
             ->assertJsonPath('subtotal', fn ($v) => (float) $v === 20000.0)
             ->assertJsonPath('discount', fn ($v) => (float) $v === 0.0)
-            ->assertJsonPath('tax', fn ($v) => (float) $v === 2000.0)
-            ->assertJsonPath('total', fn ($v) => (float) $v === 22000.0);
+            ->assertJsonPath('total', fn ($v) => (float) $v === 20000.0);
     }
 
     public function test_totals_applies_percentage_voucher(): void
@@ -59,7 +58,7 @@ class PosTest extends TestCase
             'voucher' => 'diskon50',
         ])->assertOk()
             ->assertJsonPath('discount', fn ($v) => (float) $v === 10000.0)
-            ->assertJsonPath('total', fn ($v) => (float) $v === 11000.0);
+            ->assertJsonPath('total', fn ($v) => (float) $v === 10000.0);
     }
 
     public function test_totals_rejects_unknown_voucher(): void

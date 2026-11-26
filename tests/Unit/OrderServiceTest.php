@@ -203,8 +203,8 @@ class OrderServiceTest extends TestCase
         ], $cashier, null);
 
         $this->assertSame(20000.0, (float) $order->subtotal);
-        $this->assertSame(2000.0, (float) $order->tax);
-        $this->assertSame(22000.0, (float) $order->total);
+        $this->assertSame(0.0, (float) $order->tax);
+        $this->assertSame(20000.0, (float) $order->total);
         $this->assertSame('Pelanggan', $order->customer_name);
         $this->assertCount(1, $order->items);
         $this->assertDatabaseHas('pesanan_riwayat', ['order_id' => $order->id, 'status' => 'DIBUAT']);

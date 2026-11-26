@@ -152,7 +152,11 @@ return [
                     'label' => 'Staff',
                     'route' => 'owner.staff.index',
                     'icon' => 'users',
+<<<<<<< HEAD
                     'active' => ['owner.staff.*', 'owner.cashiers.*'],
+=======
+                    'active' => ['owner.cashiers.*', 'owner.staff.*'],
+>>>>>>> 5d6c777e0ebc0b951290e257619bf1c2303fa220
                 ],
                 [
                     'key' => 'promos',
@@ -211,31 +215,12 @@ return [
                     'active' => ['kasir.reservations.*'],
                 ],
                 [
-                    'key' => 'more',
-                    'label' => 'Lainnya',
-                    'type' => 'more',
-                    'icon' => 'menu',
+                    'key' => 'payments',
+                    'label' => 'Pembayaran',
+                    'route' => 'kasir.payments.index',
+                    'icon' => 'receipt',
                     'badge_key' => 'kasir_unpaid_orders',
-                    'children' => [
-                        [
-                            'label' => 'Reservasi & Meja',
-                            'route' => 'kasir.reservations.index',
-                            'icon' => 'calendar-days',
-                            'active' => [],
-                        ],
-                        [
-                            'label' => 'Pembayaran & Struk',
-                            'route' => 'kasir.payments.index',
-                            'icon' => 'receipt',
-                            'active' => ['kasir.payments.*'],
-                        ],
-                        [
-                            'label' => 'Buka/Tutup Shift & Rekap Kas',
-                            'route' => 'kasir.shift.index',
-                            'icon' => 'wallet',
-                            'active' => ['kasir.shift.*'],
-                        ],
-                    ],
+                    'active' => ['kasir.payments.*'],
                 ],
             ],
         ],

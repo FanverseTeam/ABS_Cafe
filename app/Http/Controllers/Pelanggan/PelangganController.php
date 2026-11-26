@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Pelanggan;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
-use App\Models\CafeSetting;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Order;
@@ -407,6 +406,11 @@ class PelangganController extends Controller
                     throw new \Exception('Keranjang belanja kosong atau menu tidak valid.');
                 }
 
+<<<<<<< HEAD
+=======
+                $total = round($subtotal, 2);
+
+>>>>>>> 5d6c777e0ebc0b951290e257619bf1c2303fa220
                 $orderService = app(OrderService::class);
                 $promo = null;
                 if (! empty($validated['voucher_code'])) {
@@ -434,7 +438,7 @@ class PelangganController extends Controller
                     'order_type' => $validated['order_type'],
                     'source' => 'web',
                     'subtotal' => $subtotal,
-                    'tax' => $tax,
+                    'tax' => 0,
                     'service_charge' => 0,
                     'discount' => $discount,
                     'promo_id' => $promo?->id,

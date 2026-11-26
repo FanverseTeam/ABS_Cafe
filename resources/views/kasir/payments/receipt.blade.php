@@ -105,7 +105,6 @@
 
             <div class="px-4 py-3 border-t border-dashed border-black/30 text-[11px] space-y-1">
                 <div class="flex justify-between"><span>Subtotal</span><span>Rp {{ number_format($order->subtotal, 0, ',', '.') }}</span></div>
-                <div class="flex justify-between"><span>Pajak</span><span>Rp {{ number_format($order->tax, 0, ',', '.') }}</span></div>
                 <div class="flex justify-between"><span>Service</span><span>Rp {{ number_format($order->service_charge, 0, ',', '.') }}</span></div>
                 @if((float)$order->discount > 0)
                     <div class="flex justify-between"><span>Diskon{{ $order->promo ? ' ('.$order->promo->code.')' : '' }}</span><span>-Rp {{ number_format($order->discount, 0, ',', '.') }}</span></div>

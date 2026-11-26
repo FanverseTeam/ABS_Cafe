@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
 use App\Models\CafeSetting;
+use App\Support\HeicConverter;
 use App\Support\LandingData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
 class SettingController extends Controller
@@ -28,7 +30,6 @@ class SettingController extends Controller
             'peta_lng' => CafeSetting::get('peta_lng', '111.9111798'),
             'cafe_hours' => CafeSetting::get('cafe_hours', 'Buka Setiap Hari 09.00 - 23.00 WIB'),
             'last_order' => CafeSetting::get('last_order', '22.00 WIB'),
-            'tax_percent' => CafeSetting::get('tax_percent', '10'),
             'service_charge_active' => CafeSetting::get('service_charge_active', '0'),
             'service_charge_percent' => CafeSetting::get('service_charge_percent', '5'),
             'payment_cash' => CafeSetting::get('payment_cash', '1'),
@@ -85,7 +86,27 @@ class SettingController extends Controller
 
         CafeSetting::set('cafe_name', $request->input('cafe_name'));
         CafeSetting::set('cafe_tagline', $request->input('cafe_tagline'));
-        CafeSetting::set('cafe_logo', $request->input('cafe_logo') ?: 'images/logo.png');
+
+        if ($request->hasFile('cafe_logo')) {
+            $file = HeicConverter::convertUploadedFile($request->file('cafe_logo'));
+            $ext = strtolower($file->getClientOriginalExtension() ?: 'png');
+            $filename = 'logo_'.time().'.'.$ext;
+            $targetDir = public_path('images/logo');
+            if (! File::isDirectory($targetDir)) {
+                File::makeDirectory($targetDir, 0755, true);
+            }
+            $file->move($targetDir, $filename);
+            $logoPath = 'images/logo/'.$filename;
+            CafeSetting::set('cafe_logo', $logoPath);
+
+            try {
+                @copy(public_path($logoPath), public_path('images/logo.png'));
+                @copy(public_path($logoPath), public_path('images/logo-badge.png'));
+            } catch (\Throwable $e) {
+                // Ignore copy errors
+            }
+        }
+
         CafeSetting::set('cafe_address', $request->input('cafe_address'));
         CafeSetting::set('cafe_phone', $request->input('cafe_phone'));
         CafeSetting::set('cafe_email', $request->input('cafe_email'));
@@ -128,19 +149,18 @@ class SettingController extends Controller
 
     public function updateTax(Request $request)
     {
-        CafeSetting::set('tax_percent', $request->input('tax_percent', 10));
         CafeSetting::set('service_charge_active', $request->has('service_charge_active') ? '1' : '0');
         CafeSetting::set('service_charge_percent', $request->input('service_charge_percent', 5));
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => 'Memperbarui Pengaturan Pajak & Service Charge',
+            'activity' => 'Memperbarui Pengaturan Service Charge',
             'activity_type' => 'sistem',
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.settings.index', ['tab' => 'pajak'])->with('success', 'Pengaturan Pajak & Biaya berhasil disimpan.');
+        return redirect()->route('admin.settings.index', ['tab' => 'pajak'])->with('success', 'Pengaturan Biaya Layanan berhasil disimpan.');
     }
 
     public function updatePayment(Request $request)

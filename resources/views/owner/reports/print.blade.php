@@ -143,7 +143,6 @@
         <div class="cards">
             <div class="card"><div class="label">Penjualan Kotor</div><div class="value">Rp {{ number_format($report['finance']['gross'], 0, ',', '.') }}</div></div>
             <div class="card"><div class="label">Total Diskon</div><div class="value">Rp {{ number_format($report['finance']['discount'], 0, ',', '.') }}</div></div>
-            <div class="card"><div class="label">Pajak</div><div class="value">Rp {{ number_format($report['finance']['tax'], 0, ',', '.') }}</div></div>
             <div class="card"><div class="label">Service Charge</div><div class="value">Rp {{ number_format($report['finance']['service'], 0, ',', '.') }}</div></div>
             <div class="card"><div class="label">Pendapatan Bersih</div><div class="value">Rp {{ number_format($report['finance']['net'], 0, ',', '.') }}</div></div>
         </div>

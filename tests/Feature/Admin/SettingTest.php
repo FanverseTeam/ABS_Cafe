@@ -41,16 +41,15 @@ class SettingTest extends TestCase
         $this->assertSame('ABS Cafe Baru', CafeSetting::get('cafe_name'));
     }
 
-    public function test_admin_can_update_tax_and_service_charge(): void
+    public function test_admin_can_update_service_charge(): void
     {
         $this->actingAsAdmin()->post('/admin/pengaturan/tax', [
-            'tax_percent' => 11,
             'service_charge_active' => '1',
             'service_charge_percent' => 5,
         ])->assertRedirect();
 
-        $this->assertSame('11', (string) CafeSetting::get('tax_percent'));
         $this->assertSame('1', CafeSetting::get('service_charge_active'));
+        $this->assertSame('5', (string) CafeSetting::get('service_charge_percent'));
     }
 
     public function test_admin_can_update_payment_settings(): void

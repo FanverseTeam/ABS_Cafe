@@ -17,7 +17,7 @@
     <!-- Page Header -->
     <div>
         <h2 class="font-serif text-2xl font-bold text-cafe-dark">Konfigurasi Sistem &amp; Kafe</h2>
-        <p class="text-xs text-cafe-muted mt-0.5">Kelola identitas kafe, pajak, dan akun admin</p>
+        <p class="text-xs text-cafe-muted mt-0.5">Kelola identitas kafe, biaya layanan, dan akun admin</p>
     </div>
 
     <!-- Tabs Navigation -->
@@ -26,7 +26,7 @@
             Profil Cafe
         </a>
         <a href="{{ route('admin.settings.index', ['tab' => 'pajak']) }}" class="px-4 py-2 rounded-full whitespace-nowrap transition-all {{ $tab === 'pajak' ? 'bg-cafe-dark text-cafe-cream shadow-xs' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/50' }}">
-            Pajak &amp; Biaya
+            Biaya Layanan
         </a>
         <a href="{{ route('admin.settings.index', ['tab' => 'akun']) }}" class="px-4 py-2 rounded-full whitespace-nowrap transition-all {{ $tab === 'akun' ? 'bg-cafe-dark text-cafe-cream shadow-xs' : 'text-cafe-muted hover:text-cafe-dark hover:bg-cafe-beige/50' }}">
             Akun Saya
@@ -39,7 +39,7 @@
             <h3 class="font-serif font-bold text-lg text-cafe-dark mb-1">Identitas &amp; Jam Operasional ABS Cafe</h3>
             <p class="text-xs text-cafe-muted mb-6">Informasi ini akan tertera pada struk pembelian, website katalog, dan dokumen resmi.</p>
 
-            <form action="{{ route('admin.settings.profile') }}" method="POST" class="space-y-4 text-xs">
+            <form action="{{ route('admin.settings.profile') }}" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs">
                 @csrf
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1">
@@ -53,12 +53,14 @@
                 </div>
 
                 <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Logo Website</label>
+                    <label class="font-semibold text-cafe-dark">Upload Logo Website dari Galeri</label>
                     <div class="flex flex-col gap-3 rounded-xl border border-cafe-beige bg-[#F2F5E2]/60 p-3 sm:flex-row sm:items-center">
                         <x-logo size="sm" :show-text="false" />
-                        <input type="text" name="cafe_logo" value="{{ $settings['cafe_logo'] }}" placeholder="images/logo.png" class="w-full bg-beige focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <div class="flex-1 space-y-1">
+                            <input type="file" name="cafe_logo" accept="image/*,.heic,.heif" class="w-full bg-beige focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none cursor-pointer file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cafe-dark file:text-cafe-cream">
+                            <p class="text-[10px] text-cafe-muted">Pilih gambar logo dari penyimpanan lokal/galeri (JPG, PNG, WebP, HEIC, SVG).</p>
+                        </div>
                     </div>
-                    <p class="text-[10px] text-cafe-muted">Path lokal atau URL gambar. Default: <span class="font-mono">images/logo.png</span>.</p>
                 </div>
 
                 <div class="space-y-1">
@@ -147,24 +149,15 @@
         </div>
     @endif
 
-    <!-- TAB 2: PAJAK & BIAYA -->
+    <!-- TAB 2: BIAYA LAYANAN -->
     @if($tab === 'pajak')
         <div class="bg-cafe-card rounded-2xl p-6 sm:p-8 shadow-soft border border-cafe-beige/40 max-w-2xl">
-            <h3 class="font-serif font-bold text-lg text-cafe-dark mb-1">Pengaturan Pajak Daerah &amp; Layanan</h3>
-            <p class="text-xs text-cafe-muted mb-6">Atur persentase PB1 resto dan biaya pelayanan kafe.</p>
+            <h3 class="font-serif font-bold text-lg text-cafe-dark mb-1">Pengaturan Biaya Layanan</h3>
+            <p class="text-xs text-cafe-muted mb-6">Atur biaya pelayanan kafe (service charge).</p>
 
             <form action="{{ route('admin.settings.tax') }}" method="POST" class="space-y-4 text-xs">
                 @csrf
-                <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Pajak Restoran / PB1 (%)</label>
-                    <div class="relative w-48">
-                        <input type="number" name="tax_percent" value="{{ $settings['tax_percent'] }}" min="0" max="100" class="w-full bg-[#E3DEA4]/40 focus:bg-beige text-xs p-3 pr-8 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
-                        <span class="absolute right-3 top-1/2 -translate-y-1/2 font-bold text-cafe-muted">%</span>
-                    </div>
-                    <p class="text-[10px] text-cafe-muted">Standar pajak restoran daerah Kabupaten Tulungagung adalah 10%.</p>
-                </div>
-
-                <div class="pt-2 border-t border-cafe-beige/40 space-y-3">
+                <div class="space-y-3">
                     <label class="flex items-center gap-2 cursor-pointer select-none">
                         <input type="checkbox" name="service_charge_active" value="1" {{ $settings['service_charge_active'] == '1' ? 'checked' : '' }} class="w-4 h-4 rounded text-cafe-dark accent-[#290024]">
                         <span class="font-semibold text-cafe-dark">Aktifkan Service Charge (Biaya Layanan)</span>
@@ -180,7 +173,7 @@
                 </div>
 
                 <div class="pt-4 border-t border-cafe-beige/60 flex justify-end">
-                    <button type="submit" class="px-6 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all">Simpan Pengaturan Pajak</button>
+                    <button type="submit" class="px-6 py-2.5 rounded-full bg-cafe-dark hover:bg-cafe-brown text-cafe-cream font-semibold text-xs shadow-md transition-all">Simpan Pengaturan</button>
                 </div>
             </form>
         </div>

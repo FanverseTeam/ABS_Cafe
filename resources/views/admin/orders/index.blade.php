@@ -337,10 +337,6 @@
                             <span class="text-cafe-muted">Subtotal:</span>
                             <span class="font-semibold text-cafe-dark">Rp ${Number(order.subtotal).toLocaleString('id-ID')}</span>
                         </div>
-                        <div class="flex justify-between text-xs">
-                            <span class="text-cafe-muted">Pajak (10%):</span>
-                            <span>Rp ${Number(order.tax).toLocaleString('id-ID')}</span>
-                        </div>
                         ${order.discount > 0 ? `
                             <div class="flex justify-between text-xs text-cafe-success">
                                 <span>Diskon:</span>
@@ -428,7 +424,6 @@
 
                 document.getElementById('receipt-totals').innerHTML = `
                     <div class="flex justify-between"><span>Subtotal:</span><span>Rp ${Number(order.subtotal).toLocaleString('id-ID')}</span></div>
-                    <div class="flex justify-between"><span>Pajak (10%):</span><span>Rp ${Number(order.tax).toLocaleString('id-ID')}</span></div>
                     ${order.discount > 0 ? `<div class="flex justify-between"><span>Diskon:</span><span>-Rp ${Number(order.discount).toLocaleString('id-ID')}</span></div>` : ''}
                     <div class="flex justify-between font-bold text-xs pt-1 border-t border-dotted border-midnight">
                         <span>TOTAL:</span><span>Rp ${Number(order.total).toLocaleString('id-ID')}</span>

@@ -247,7 +247,6 @@ class AdminWorkspaceTest extends TestCase
         $this->get(route('admin.website.index'))
             ->assertOk()
             ->assertSee('Profil Cafe')
-            ->assertSee('Pajak &amp; Biaya', false)
             ->assertSee('Akun Saya')
             ->assertDontSee('Metode Pembayaran &amp; QRIS', false)
             ->assertDontSee('Format Nota &amp; Struk', false)

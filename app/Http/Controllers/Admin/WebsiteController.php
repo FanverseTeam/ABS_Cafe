@@ -33,7 +33,6 @@ class WebsiteController extends Controller
             'last_order' => CafeSetting::get('last_order', '22.00 WIB'),
             'whatsapp_nomor' => CafeSetting::get('whatsapp_nomor', '6289620102010'),
             'whatsapp_pesan' => CafeSetting::get('whatsapp_pesan', 'Halo ABS Cafe, saya ingin bertanya.'),
-            'tax_percent' => CafeSetting::get('tax_percent', '10'),
             'service_charge_active' => CafeSetting::get('service_charge_active', '0'),
             'service_charge_percent' => CafeSetting::get('service_charge_percent', '5'),
             'payment_cash' => CafeSetting::get('payment_cash', '1'),
@@ -215,8 +214,6 @@ class WebsiteController extends Controller
             } catch (\Throwable $e) {
                 // Ignore copy errors
             }
-        } elseif ($request->filled('cafe_logo') && is_string($request->input('cafe_logo'))) {
-            CafeSetting::set('cafe_logo', $request->input('cafe_logo'));
         }
 
         CafeSetting::set('cafe_address', $request->input('cafe_address'));
@@ -266,19 +263,18 @@ class WebsiteController extends Controller
 
     public function updateTax(Request $request)
     {
-        CafeSetting::set('tax_percent', $request->input('tax_percent', 10));
         CafeSetting::set('service_charge_active', $request->has('service_charge_active') ? '1' : '0');
         CafeSetting::set('service_charge_percent', $request->input('service_charge_percent', 5));
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => 'Memperbarui Pengaturan Pajak & Service Charge',
+            'activity' => 'Memperbarui Pengaturan Service Charge',
             'activity_type' => 'sistem',
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.website.index', ['tab' => 'pajak'])->with('success', 'Pengaturan Pajak & Biaya berhasil disimpan.');
+        return redirect()->route('admin.website.index', ['tab' => 'pajak'])->with('success', 'Pengaturan Biaya Layanan berhasil disimpan.');
     }
 
     public function updatePayment(Request $request)

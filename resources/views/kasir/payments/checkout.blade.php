@@ -37,7 +37,6 @@
 
                 <div class="mt-4 rounded-2xl bg-cafe-card border border-cafe-beige/50 p-4 space-y-1.5 text-xs">
                     <div class="flex justify-between text-cafe-muted"><span>Subtotal</span><span>Rp {{ number_format($order->subtotal, 0, ',', '.') }}</span></div>
-                    <div class="flex justify-between text-cafe-muted"><span>Pajak</span><span>Rp {{ number_format($order->tax, 0, ',', '.') }}</span></div>
                     <div class="flex justify-between text-cafe-muted"><span>Service Charge</span><span>Rp {{ number_format($order->service_charge, 0, ',', '.') }}</span></div>
                     @if((float)$order->discount > 0)
                         <div class="flex justify-between text-cafe-danger">

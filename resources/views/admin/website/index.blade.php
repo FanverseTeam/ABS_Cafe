@@ -16,7 +16,7 @@
 
         <div>
             <h2 class="font-serif text-2xl font-bold text-cafe-dark">Pengaturan Website &amp; Operasional</h2>
-            <p class="text-xs text-cafe-muted mt-0.5">Kelola identitas kafe, pajak, dan akun admin</p>
+            <p class="text-xs text-cafe-muted mt-0.5">Kelola identitas kafe, biaya layanan, dan akun admin</p>
         </div>
     </div>
 

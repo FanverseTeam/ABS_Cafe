@@ -14,7 +14,7 @@ use Illuminate\Validation\Rules\Password;
 class SettingController extends Controller
 {
     /**
-     * Kunci pengaturan yang dikelola oleh Owner. Beberapa kunci (pajak, jam
+     * Kunci pengaturan yang dikelola oleh Owner. Beberapa kunci (jam
      * operasional, teks nota) sengaja berbagi sumber dengan modul Admin.
      *
      * @return array<string, string>
@@ -25,7 +25,6 @@ class SettingController extends Controller
             'target_daily_sales' => '2000000',
             'target_monthly_sales' => '45000000',
             'profit_margin_percent' => '40',
-            'tax_percent' => '10',
             'service_charge_active' => '0',
             'service_charge_percent' => '5',
             'price_rounding' => 'none',
@@ -69,7 +68,6 @@ class SettingController extends Controller
             'target_daily_sales' => 'nullable|numeric|min:0',
             'target_monthly_sales' => 'nullable|numeric|min:0',
             'profit_margin_percent' => 'nullable|numeric|min:0|max:100',
-            'tax_percent' => 'nullable|numeric|min:0|max:100',
             'service_charge_percent' => 'nullable|numeric|min:0|max:100',
             'price_rounding' => 'nullable|in:none,100,500,1000',
             'hours_weekday' => 'nullable|string|max:100',
@@ -84,7 +82,6 @@ class SettingController extends Controller
             'target_daily_sales',
             'target_monthly_sales',
             'profit_margin_percent',
-            'tax_percent',
             'service_charge_percent',
             'price_rounding',
             'hours_weekday',

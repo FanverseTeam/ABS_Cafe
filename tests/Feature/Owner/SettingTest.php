@@ -23,7 +23,6 @@ class SettingTest extends TestCase
             'target_daily_sales' => 3000000,
             'target_monthly_sales' => 60000000,
             'profit_margin_percent' => 35,
-            'tax_percent' => 11,
             'price_rounding' => '500',
             'service_charge_active' => '1',
             'receipt_show_logo' => '1',

@@ -466,6 +466,7 @@
                     <!-- Ringkasan Tagihan -->
                     <div class="rounded-2xl bg-[#F2F5E2] border border-[#E3DEA4]/80 p-3.5 space-y-1.5 text-xs">
                         <div class="flex justify-between text-[#775533]"><span>Subtotal</span><span id="sum-subtotal">Rp 0</span></div>
+<<<<<<< HEAD
                         <div class="flex justify-between text-[#775533]">
                             <span class="flex items-center gap-1.5">
                                 <span>Diskon</span>
@@ -474,6 +475,9 @@
                             <span id="sum-discount" class="text-[#775533] font-medium">-Rp 0</span>
                         </div>
                         <div class="flex justify-between text-[#775533]"><span>Pajak (10%)</span><span id="sum-tax">Rp 0</span></div>
+=======
+                        <div class="flex justify-between text-[#775533]"><span>Diskon</span><span id="sum-discount" class="text-[#775533] font-medium">-Rp 0</span></div>
+>>>>>>> 5d6c777e0ebc0b951290e257619bf1c2303fa220
                         <div class="flex justify-between text-[#775533]"><span>Service Charge</span><span id="sum-service">Rp 0</span></div>
                         <div class="flex justify-between border-t border-[#E3DEA4] pt-2 mt-1">
                             <span class="font-bold text-[#290024] text-sm">Total Tagihan</span>
@@ -606,7 +610,7 @@ let cart = [];
     ])->values()) !!};
 @endif
 let selectedMethod = 'tunai';
-let currentTotals = { subtotal: 0, discount: 0, tax: 0, service: 0, total: 0 };
+let currentTotals = { subtotal: 0, discount: 0, service: 0, total: 0 };
 
 // State detail sheet
 let currentMenuSheet = null;
@@ -668,14 +672,13 @@ function refreshTotals() {
             .then(r => r.json().then(d => ({ ok: r.ok, d })))
             .then(({ ok, d }) => {
                 if (! ok || ! d.ok) {
-                    currentTotals = { subtotal: 0, discount: 0, tax: 0, service: 0, total: 0 };
+                    currentTotals = { subtotal: 0, discount: 0, service: 0, total: 0 };
                     updateTotalElements(currentTotals);
                     return;
                 }
                 currentTotals = {
                     subtotal: d.subtotal,
                     discount: d.discount,
-                    tax: d.tax,
                     service: d.service,
                     total: d.total,
                     voucher: d.voucher || '',
@@ -691,13 +694,11 @@ function refreshTotals() {
 function updateTotalElements(t) {
     const subtotalStr = formatRupiah(t.subtotal);
     const discountStr = '-Rp ' + new Intl.NumberFormat('id-ID').format(Math.round(t.discount));
-    const taxStr = formatRupiah(t.tax);
     const serviceStr = formatRupiah(t.service);
     const totalStr = formatRupiah(t.total);
 
     document.querySelectorAll('#sum-subtotal').forEach(el => el.textContent = subtotalStr);
     document.querySelectorAll('#sum-discount').forEach(el => el.textContent = discountStr);
-    document.querySelectorAll('#sum-tax').forEach(el => el.textContent = taxStr);
     document.querySelectorAll('#sum-service').forEach(el => el.textContent = serviceStr);
     document.querySelectorAll('#sum-total').forEach(el => el.textContent = totalStr);
 

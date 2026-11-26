@@ -32,33 +32,35 @@
             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-cafe-muted absolute right-2.5 pointer-events-none"></i>
         </div>
 
-        {{-- Form Rentang Tanggal Terpisah --}}
-        <form action="{{ $baseUrl }}" method="GET" class="flex flex-wrap sm:flex-nowrap items-center gap-2 text-xs">
+        {{-- Form Rentang Tanggal Terpisah (Renggang full kiri sampai kanan) --}}
+        <form action="{{ $baseUrl }}" method="GET" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 text-xs w-full sm:w-auto">
             @foreach($preserve as $k => $v)
                 <input type="hidden" name="{{ $k }}" value="{{ $v }}">
             @endforeach
             <input type="hidden" name="periode" value="kustom">
 
-            {{-- Tanggal Awal Terpisah dengan Border --}}
-            <div class="flex items-center bg-cafe-card border border-cafe-beige rounded-full px-3 py-1.5 shadow-2xs">
-                <input type="date" name="mulai"
-                       value="{{ $period->key === 'kustom' ? $period->start->toDateString() : now()->subDays(6)->toDateString() }}"
-                       class="bg-transparent text-[11px] font-medium text-cafe-text focus:outline-none cursor-pointer">
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                {{-- Tanggal Awal Terpisah dengan Border (Full width di mobile) --}}
+                <div class="flex-1 sm:flex-initial flex items-center justify-center bg-cafe-card border border-cafe-beige rounded-full px-3 py-1.5 shadow-2xs">
+                    <input type="date" name="mulai"
+                           value="{{ $period->key === 'kustom' ? $period->start->toDateString() : now()->subDays(6)->toDateString() }}"
+                           class="w-full bg-transparent text-[11px] font-medium text-cafe-text text-center focus:outline-none cursor-pointer">
+                </div>
+
+                {{-- Strip Terpisah --}}
+                <span class="text-cafe-muted font-bold text-xs shrink-0">&ndash;</span>
+
+                {{-- Tanggal Akhir Terpisah dengan Border yang sama (Full width di mobile) --}}
+                <div class="flex-1 sm:flex-initial flex items-center justify-center bg-cafe-card border border-cafe-beige rounded-full px-3 py-1.5 shadow-2xs">
+                    <input type="date" name="selesai"
+                           value="{{ $period->key === 'kustom' ? $period->end->toDateString() : now()->toDateString() }}"
+                           class="w-full bg-transparent text-[11px] font-medium text-cafe-text text-center focus:outline-none cursor-pointer">
+                </div>
             </div>
 
-            {{-- Strip Terpisah --}}
-            <span class="text-cafe-muted font-bold text-xs px-0.5">&ndash;</span>
-
-            {{-- Tanggal Akhir Terpisah dengan Border yang sama --}}
-            <div class="flex items-center bg-cafe-card border border-cafe-beige rounded-full px-3 py-1.5 shadow-2xs">
-                <input type="date" name="selesai"
-                       value="{{ $period->key === 'kustom' ? $period->end->toDateString() : now()->toDateString() }}"
-                       class="bg-transparent text-[11px] font-medium text-cafe-text focus:outline-none cursor-pointer">
-            </div>
-
-            {{-- Tombol Terapkan Terpisah --}}
+            {{-- Tombol Terapkan Terpisah (Full width di mobile, inline di desktop) --}}
             <button type="submit"
-                    class="px-3.5 py-1.5 rounded-full bg-cafe-gold hover:bg-cafe-bronze text-[#290024] text-xs font-bold shadow-2xs transition-all active:scale-95 shrink-0">
+                    class="w-full sm:w-auto px-4 py-1.5 rounded-full bg-cafe-gold hover:bg-cafe-bronze text-[#290024] text-xs font-bold shadow-2xs transition-all active:scale-95 text-center shrink-0">
                 Terapkan
             </button>
         </form>

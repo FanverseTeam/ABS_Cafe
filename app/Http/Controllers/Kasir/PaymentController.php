@@ -116,7 +116,6 @@ class PaymentController extends Controller
             'cashier' => $order->cashier_name,
             'paid_at' => $order->paid_at?->format('d/m/Y H:i'),
             'subtotal' => (float) $order->subtotal,
-            'tax' => (float) $order->tax,
             'service' => (float) $order->service_charge,
             'discount' => (float) $order->discount,
             'promo' => $order->promo?->title,

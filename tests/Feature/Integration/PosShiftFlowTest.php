@@ -40,8 +40,8 @@ class PosShiftFlowTest extends TestCase
 
         $order = Order::where('cash_shift_id', $shift->id)->firstOrFail();
         $this->assertSame('lunas', $order->payment_status);
-        $this->assertSame(22000.0, (float) $order->total);
-        $this->assertDatabaseHas('pembayaran', ['order_id' => $order->id, 'method' => 'tunai', 'amount' => 22000]);
+        $this->assertSame(20000.0, (float) $order->total);
+        $this->assertDatabaseHas('pembayaran', ['order_id' => $order->id, 'method' => 'tunai', 'amount' => 20000]);
 
         $menu->refresh();
         $this->assertSame(1, $menu->sold_count);
@@ -53,9 +53,9 @@ class PosShiftFlowTest extends TestCase
 
         $shift->refresh();
         $this->assertSame('tutup', $shift->status);
-        $this->assertSame(122000.0, (float) $shift->expected_cash);
-        $this->assertSame(-2000.0, (float) $shift->cash_difference);
-        $this->assertSame(22000.0, (float) $shift->total_sales);
+        $this->assertSame(120000.0, (float) $shift->expected_cash);
+        $this->assertSame(0.0, (float) $shift->cash_difference);
+        $this->assertSame(20000.0, (float) $shift->total_sales);
         $this->assertSame(1, (int) $shift->total_transactions);
     }
 

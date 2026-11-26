@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Auth\CafeUserProvider;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::defaultView('vendor.pagination.cafe');
+
         if (request()->header('X-Forwarded-Proto') === 'https' || request()->isSecure() || str_contains((string) request()->header('Host'), 'trycloudflare.com') || str_contains((string) request()->header('Host'), 'ngrok')) {
             URL::forceScheme('https');
         }

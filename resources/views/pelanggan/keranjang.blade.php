@@ -712,12 +712,13 @@
                 </template>
             </div>
 
-            <!-- Rincian Perhitungan Subtotal, Pajak, Total -->
+            <!-- Rincian Perhitungan Subtotal & Total -->
             <div class="bg-[#E3DEA4]/30 p-3 rounded-xl border border-[#E3DEA4] space-y-1.5">
                 <div class="flex items-center justify-between text-[#775533]">
                     <span>Subtotal Menu</span>
                     <span class="font-bold text-[#290024]" x-text="formatRupiah(subtotal)"></span>
                 </div>
+<<<<<<< HEAD
                 <template x-if="discount > 0">
                     <div class="flex items-center justify-between text-green-700">
                         <span class="flex items-center gap-1">
@@ -731,6 +732,8 @@
                     <span>Pajak (PB1 <span x-text="taxPercent"></span>%)</span>
                     <span class="font-bold text-[#290024]" x-text="formatRupiah(tax)"></span>
                 </div>
+=======
+>>>>>>> 5d6c777e0ebc0b951290e257619bf1c2303fa220
                 <div class="pt-2 border-t border-[#E3DEA4] flex items-center justify-between font-bold text-sm text-[#290024]">
                     <span>Total Pesanan</span>
                     <span class="font-serif font-black text-base text-[#290024]" x-text="formatRupiah(total)"></span>
@@ -914,6 +917,7 @@ function cartPage() {
             }, 0);
         },
 
+<<<<<<< HEAD
         // List promo yang memiliki diskon
         get availablePromos() {
             return this.activePromos.filter(p => p.type !== 'non_diskon');
@@ -1055,6 +1059,10 @@ function cartPage() {
             this.appliedVoucherCode = found.code;
             this.voucherMessage = 'Kode promo ' + found.code + ' berhasil digunakan!';
             this.voucherMessageSuccess = true;
+=======
+        get total() {
+            return this.subtotal;
+>>>>>>> 5d6c777e0ebc0b951290e257619bf1c2303fa220
         },
 
         formatRupiah(num) {
