@@ -152,7 +152,7 @@ return [
                     'label' => 'Kasir',
                     'route' => 'owner.cashiers.index',
                     'icon' => 'users',
-                    'active' => ['owner.cashiers.*'],
+                    'active' => ['owner.cashiers.*', 'owner.staff.*'],
                 ],
                 [
                     'key' => 'promos',
