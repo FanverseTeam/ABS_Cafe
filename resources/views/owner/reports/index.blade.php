@@ -212,11 +212,10 @@
                 </x-responsive-table>
             </div>
         @else
-            <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 @foreach([
                     ['Penjualan Kotor', $rp($finance['gross']), 'wallet'],
                     ['Total Diskon', $rp($finance['discount']), 'badge-percent'],
-                    ['Pajak', $rp($finance['tax']), 'landmark'],
                     ['Service Charge', $rp($finance['service']), 'receipt'],
                     ['Pendapatan Bersih', $rp($finance['net']), 'banknote'],
                 ] as [$label, $value, $icon])

@@ -17,7 +17,6 @@ class OrderFactory extends Factory
         static $sequence = 0;
 
         $subtotal = fake()->numberBetween(20000, 120000);
-        $tax = round($subtotal * 0.1, 2);
 
         return [
             'order_code' => '#TST-'.str_pad((string) (++$sequence), 5, '0', STR_PAD_LEFT),
@@ -26,10 +25,10 @@ class OrderFactory extends Factory
             'order_type' => 'take_away',
             'source' => 'offline',
             'subtotal' => $subtotal,
-            'tax' => $tax,
+            'tax' => 0,
             'service_charge' => 0,
             'discount' => 0,
-            'total' => $subtotal + $tax,
+            'total' => $subtotal,
             'payment_method' => 'tunai',
             'payment_status' => 'menunggu_pembayaran',
             'order_status' => 'diproses',

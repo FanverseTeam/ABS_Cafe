@@ -46,7 +46,6 @@ class ReportController extends Controller
         $finance = [
             'gross' => (float) $sales->sum('subtotal'),
             'discount' => (float) $sales->sum('discount'),
-            'tax' => (float) $sales->sum('tax'),
             'service' => (float) $sales->sum('service_charge'),
             'net' => (float) $sales->sum('total'),
             'byMethod' => $this->perMethod($sales),
@@ -122,7 +121,6 @@ class ReportController extends Controller
             'finance' => [
                 'gross' => (float) $sales->sum('subtotal'),
                 'discount' => (float) $sales->sum('discount'),
-                'tax' => (float) $sales->sum('tax'),
                 'service' => (float) $sales->sum('service_charge'),
                 'net' => (float) $sales->sum('total'),
             ],
@@ -286,7 +284,6 @@ class ReportController extends Controller
             ['Ringkasan Keuangan'],
             ['Penjualan Kotor (Subtotal)', (float) $sales->sum('subtotal')],
             ['Total Diskon', (float) $sales->sum('discount')],
-            ['Pajak Terkumpul', (float) $sales->sum('tax')],
             ['Service Charge', (float) $sales->sum('service_charge')],
             ['Pendapatan Bersih', (float) $sales->sum('total')],
             [],

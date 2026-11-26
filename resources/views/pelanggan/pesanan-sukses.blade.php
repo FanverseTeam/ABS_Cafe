@@ -275,10 +275,6 @@
                     <span>Subtotal Menu</span>
                     <span class="font-semibold text-[#290024]">Rp {{ number_format($order->subtotal, 0, ',', '.') }}</span>
                 </div>
-                <div class="flex items-center justify-between">
-                    <span>Pajak (PB1 10%)</span>
-                    <span class="font-semibold text-[#290024]">Rp {{ number_format($order->tax, 0, ',', '.') }}</span>
-                </div>
                 @if($order->discount > 0)
                     <div class="flex items-center justify-between text-[#D4954D]">
                         <span>Diskon</span>

@@ -7,13 +7,13 @@
     <div class="space-y-6">
         <div>
             <h2 class="font-serif text-2xl sm:text-3xl font-bold text-cafe-dark">Pengaturan Bisnis</h2>
-            <p class="text-xs text-cafe-muted mt-1">Konfigurasi target, pajak, jam operasional, dan preferensi laporan ABS Cafe.</p>
+            <p class="text-xs text-cafe-muted mt-1">Konfigurasi target, biaya layanan, jam operasional, dan preferensi laporan ABS Cafe.</p>
         </div>
 
         <div class="p-4 rounded-2xl bg-cafe-gold/10 border border-cafe-gold/30 flex items-start gap-3">
             <i data-lucide="info" class="w-4 h-4 text-cafe-bronze shrink-0 mt-0.5"></i>
             <p class="text-xs text-cafe-brown leading-relaxed">
-                Beberapa pengaturan (pajak, service charge, jam operasional, dan format nota) terhubung dengan modul Admin.
+                Beberapa pengaturan (service charge, jam operasional, dan format nota) terhubung dengan modul Admin.
                 Perubahan di sini akan langsung memengaruhi data di kedua portal.
             </p>
         </div>
@@ -102,14 +102,10 @@
                     </div>
                 </div>
 
-                <!-- Tax & service -->
+                <!-- Service charge & rounding -->
                 <div class="bg-cafe-card rounded-3xl border border-cafe-beige/60 shadow-soft p-5 space-y-4">
-                    <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2"><i data-lucide="landmark" class="w-4 h-4 text-cafe-gold"></i> Pajak & Biaya Layanan</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-semibold text-cafe-text">Pajak (%)</label>
-                            <input type="number" step="0.1" min="0" max="100" name="tax_percent" value="{{ old('tax_percent', $settings['tax_percent']) }}" class="w-full bg-cafe-cream/60 focus:bg-beige text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">
-                        </div>
+                    <h3 class="font-serif font-bold text-cafe-dark flex items-center gap-2"><i data-lucide="landmark" class="w-4 h-4 text-cafe-gold"></i> Biaya Layanan & Pembulatan</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="space-y-1.5">
                             <label class="text-xs font-semibold text-cafe-text">Service Charge (%)</label>
                             <input type="number" step="0.1" min="0" max="100" name="service_charge_percent" value="{{ old('service_charge_percent', $settings['service_charge_percent']) }}" class="w-full bg-cafe-cream/60 focus:bg-beige text-sm px-4 py-2.5 rounded-2xl border border-cafe-beige focus:border-cafe-gold focus:outline-none transition-all">

@@ -129,7 +129,6 @@ class DatabaseSeeder extends Seeder
             'location_badge' => 'LOKASI',
             'location_title' => 'Temukan Kami',
             'social_title' => 'Ikuti Kami di Sosial Media',
-            'tax_percent' => '10',
             'service_charge_active' => '0',
             'service_charge_percent' => '5',
             'payment_cash' => '1',

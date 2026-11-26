@@ -573,15 +573,11 @@
                 </template>
             </div>
 
-            <!-- Rincian Perhitungan Subtotal, Pajak, Total -->
+            <!-- Rincian Perhitungan Subtotal & Total -->
             <div class="bg-[#E3DEA4]/30 p-3 rounded-xl border border-[#E3DEA4] space-y-1.5">
                 <div class="flex items-center justify-between text-[#775533]">
                     <span>Subtotal Menu</span>
                     <span class="font-bold text-[#290024]" x-text="formatRupiah(subtotal)"></span>
-                </div>
-                <div class="flex items-center justify-between text-[#775533]">
-                    <span>Pajak (PB1 10%)</span>
-                    <span class="font-bold text-[#290024]" x-text="formatRupiah(tax)"></span>
                 </div>
                 <div class="pt-2 border-t border-[#E3DEA4] flex items-center justify-between font-bold text-sm text-[#290024]">
                     <span>Total Pesanan</span>
@@ -752,12 +748,8 @@ function cartPage() {
             }, 0);
         },
 
-        get tax() {
-            return Math.round(this.subtotal * 0.1);
-        },
-
         get total() {
-            return this.subtotal + this.tax;
+            return this.subtotal;
         },
 
         formatRupiah(num) {

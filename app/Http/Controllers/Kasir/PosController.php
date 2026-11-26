@@ -69,16 +69,14 @@ class PosController extends Controller
             $promo = $this->orders->findPromo(trim($request->input('voucher', '')) ?: null);
             ['discount' => $discount] = $this->orders->calculateDiscount($promo, $built['items'], $built['subtotal']);
 
-            $tax = round(($built['subtotal'] - $discount) * (float) CafeSetting::get('tax_percent', 10) / 100, 2);
             $serviceActive = (bool) CafeSetting::get('service_charge_active', 0);
             $service = $serviceActive ? round(($built['subtotal'] - $discount) * (float) CafeSetting::get('service_charge_percent', 5) / 100, 2) : 0;
-            $total = round($built['subtotal'] + $tax + $service - $discount, 2);
+            $total = round($built['subtotal'] + $service - $discount, 2);
 
             return response()->json([
                 'ok' => true,
                 'subtotal' => $built['subtotal'],
                 'discount' => $discount,
-                'tax' => $tax,
                 'service' => $service,
                 'total' => $total,
                 'voucher' => $promo?->title,

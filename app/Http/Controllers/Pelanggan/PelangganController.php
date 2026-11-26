@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Pelanggan;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
-use App\Models\CafeSetting;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Order;
@@ -355,9 +354,7 @@ class PelangganController extends Controller
                     throw new \Exception('Keranjang belanja kosong atau menu tidak valid.');
                 }
 
-                $taxPercent = (float) CafeSetting::get('tax_percent', 10);
-                $tax = round($subtotal * $taxPercent / 100, 2);
-                $total = round($subtotal + $tax, 2);
+                $total = round($subtotal, 2);
 
                 $orderService = app(OrderService::class);
                 $orderCode = $orderService->generateCode();
@@ -370,7 +367,7 @@ class PelangganController extends Controller
                     'order_type' => $validated['order_type'],
                     'source' => 'web',
                     'subtotal' => $subtotal,
-                    'tax' => $tax,
+                    'tax' => 0,
                     'service_charge' => 0,
                     'discount' => 0,
                     'total' => $total,

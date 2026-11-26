@@ -308,7 +308,6 @@ function showOrder(id) {
 
                 <div class="rounded-2xl bg-cafe-card border border-cafe-beige/50 p-4 space-y-1.5 text-[11px]">
                     <div class="flex justify-between"><span class="text-cafe-muted">Subtotal</span><span>Rp ${Number(o.subtotal).toLocaleString('id-ID')}</span></div>
-                    <div class="flex justify-between"><span class="text-cafe-muted">Pajak</span><span>Rp ${Number(o.tax).toLocaleString('id-ID')}</span></div>
                     <div class="flex justify-between"><span class="text-cafe-muted">Service</span><span>Rp ${Number(o.service).toLocaleString('id-ID')}</span></div>
                     <div class="flex justify-between"><span class="text-cafe-muted">Diskon</span><span class="text-cafe-danger">-Rp ${Number(o.discount).toLocaleString('id-ID')}</span></div>
                     <div class="flex justify-between border-t border-cafe-beige/50 pt-1.5"><span class="font-bold text-cafe-dark">Total</span><span class="font-serif font-bold text-cafe-dark">Rp ${Number(o.total).toLocaleString('id-ID')}</span></div>

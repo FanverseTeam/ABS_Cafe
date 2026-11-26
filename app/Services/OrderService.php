@@ -187,13 +187,11 @@ class OrderService
             $promo = $this->findPromo($data['voucher'] ?? null);
             ['discount' => $discount] = $this->calculateDiscount($promo, $built['items'], $built['subtotal']);
 
-            $taxPercent = (float) CafeSetting::get('tax_percent', 10);
             $serviceActive = (bool) CafeSetting::get('service_charge_active', 0);
             $servicePercent = $serviceActive ? (float) CafeSetting::get('service_charge_percent', 5) : 0;
 
-            $tax = round(($built['subtotal'] - $discount) * $taxPercent / 100, 2);
             $service = round(($built['subtotal'] - $discount) * $servicePercent / 100, 2);
-            $total = round($built['subtotal'] + $tax + $service - $discount, 2);
+            $total = round($built['subtotal'] + $service - $discount, 2);
 
             $penjagaName = $data['cashier_name']
                 ?? session('active_penjaga_kasir')
@@ -216,7 +214,7 @@ class OrderService
                 'order_type' => $data['order_type'] ?? 'dine_in',
                 'source' => $data['source'] ?? 'offline',
                 'subtotal' => $built['subtotal'],
-                'tax' => $tax,
+                'tax' => 0,
                 'service_charge' => $service,
                 'discount' => $discount,
                 'promo_id' => $promo?->id,

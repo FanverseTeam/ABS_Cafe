@@ -61,7 +61,6 @@ class OrderController extends Controller
                 'status' => $order->orderStatusBadge(),
                 'payment' => $order->paymentStatusBadge(),
                 'subtotal' => (float) $order->subtotal,
-                'tax' => (float) $order->tax,
                 'service' => (float) $order->service_charge,
                 'discount' => (float) $order->discount,
                 'total' => (float) $order->total,

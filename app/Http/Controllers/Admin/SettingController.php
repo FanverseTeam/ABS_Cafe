@@ -28,7 +28,6 @@ class SettingController extends Controller
             'peta_lng' => CafeSetting::get('peta_lng', '111.9111798'),
             'cafe_hours' => CafeSetting::get('cafe_hours', 'Buka Setiap Hari 09.00 - 23.00 WIB'),
             'last_order' => CafeSetting::get('last_order', '22.00 WIB'),
-            'tax_percent' => CafeSetting::get('tax_percent', '10'),
             'service_charge_active' => CafeSetting::get('service_charge_active', '0'),
             'service_charge_percent' => CafeSetting::get('service_charge_percent', '5'),
             'payment_cash' => CafeSetting::get('payment_cash', '1'),
@@ -120,19 +119,18 @@ class SettingController extends Controller
 
     public function updateTax(Request $request)
     {
-        CafeSetting::set('tax_percent', $request->input('tax_percent', 10));
         CafeSetting::set('service_charge_active', $request->has('service_charge_active') ? '1' : '0');
         CafeSetting::set('service_charge_percent', $request->input('service_charge_percent', 5));
 
         ActivityLog::create([
             'user_name' => Auth::user()->name,
             'role' => Auth::user()->role,
-            'activity' => 'Memperbarui Pengaturan Pajak & Service Charge',
+            'activity' => 'Memperbarui Pengaturan Service Charge',
             'activity_type' => 'sistem',
             'ip_address' => $request->ip(),
         ]);
 
-        return redirect()->route('admin.settings.index', ['tab' => 'pajak'])->with('success', 'Pengaturan Pajak & Biaya berhasil disimpan.');
+        return redirect()->route('admin.settings.index', ['tab' => 'pajak'])->with('success', 'Pengaturan Biaya Layanan berhasil disimpan.');
     }
 
     public function updatePayment(Request $request)
