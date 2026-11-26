@@ -439,6 +439,480 @@
 </section>
 
 <!-- ======================================================================= -->
+<!-- 4a. SIGNATURE 3D DRINK SHOWCASE                                         -->
+<!-- ======================================================================= -->
+@php
+    $oreoImage = asset('images/pelanggan/menu landing/oreo-spanish-latte-3d.png');
+    $regalImage = asset('images/pelanggan/menu landing/spanish-regal-latte-3d.png');
+    $showcaseDrinks = [
+        ['name' => 'Oreo Spanish Latte', 'img' => $oreoImage],
+        ['name' => 'Spanish Regal Latte', 'img' => $regalImage],
+        ['name' => 'Oreo Spanish Latte', 'img' => $oreoImage],
+        ['name' => 'Spanish Regal Latte', 'img' => $regalImage],
+        ['name' => 'Oreo Spanish Latte', 'img' => $oreoImage],
+        ['name' => 'Spanish Regal Latte', 'img' => $regalImage],
+    ];
+@endphp
+<style>
+    .drink-carousel-stage {
+        position: relative;
+        width: 100%;
+        height: 310px;
+        perspective: 1100px;
+        transform-style: preserve-3d;
+        touch-action: pan-y;
+        cursor: grab;
+        user-select: none;
+    }
+
+    .drink-carousel-stage.is-dragging {
+        cursor: grabbing;
+    }
+
+    @media (min-width: 640px) {
+        .drink-carousel-stage {
+            height: 370px;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .drink-carousel-stage {
+            height: 400px;
+        }
+    }
+
+    .drink-carousel-item {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform-style: preserve-3d;
+        will-change: transform, opacity;
+        cursor: pointer;
+    }
+
+    .drink-carousel-item.is-active {
+        cursor: grab;
+    }
+
+    .drink-carousel-stage.is-dragging .drink-carousel-item {
+        cursor: grabbing;
+    }
+
+    .drink-3d {
+        --w: 145px;
+        --rx: 0deg;
+        --ry: 0deg;
+        --sx: 50%;
+        position: relative;
+        width: var(--w);
+        aspect-ratio: 465 / 865;
+        perspective: 900px;
+        pointer-events: none;
+    }
+
+    @media (min-width: 640px) {
+        .drink-3d {
+            --w: 175px;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .drink-3d {
+            --w: 190px;
+        }
+    }
+
+    .drink-3d__float {
+        position: absolute;
+        inset: 0;
+    }
+
+    .drink-carousel-item.is-active .drink-3d__float {
+        animation: drink-float 4s ease-in-out infinite;
+    }
+
+    .drink-3d__tilt {
+        position: absolute;
+        inset: 0;
+        transform: rotateX(var(--rx)) rotateY(var(--ry));
+        transform-style: preserve-3d;
+        will-change: transform;
+    }
+
+    .drink-3d__img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: contain;
+        user-select: none;
+        -webkit-user-drag: none;
+        filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.78));
+    }
+
+    /* Efek kilau & gelembung hanya muncul di dalam bentuk gelas */
+    .drink-3d__fx {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+        -webkit-mask: var(--img) center / contain no-repeat;
+                mask: var(--img) center / contain no-repeat;
+    }
+
+    .drink-carousel-item.is-active .drink-3d__fx {
+        opacity: 1;
+    }
+
+    .drink-3d__sheen {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(105deg,
+            transparent calc(var(--sx) - 18%),
+            rgba(255, 255, 255, 0.5) var(--sx),
+            transparent calc(var(--sx) + 18%));
+        mix-blend-mode: soft-light;
+    }
+
+    .drink-3d__bubble {
+        position: absolute;
+        bottom: 6%;
+        width: var(--s);
+        height: var(--s);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.55);
+        box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.15);
+        opacity: 0;
+        animation: drink-rise var(--d) linear var(--delay) infinite;
+    }
+
+    .drink-3d__shadow {
+        position: absolute;
+        left: 10%;
+        right: 10%;
+        bottom: -5%;
+        height: 7%;
+        border-radius: 50%;
+        background: radial-gradient(closest-side, rgba(212, 149, 77, 0.4), rgba(0, 0, 0, 0.65) 55%, transparent);
+        opacity: 0.45;
+        pointer-events: none;
+    }
+
+    .drink-carousel-item.is-active .drink-3d__shadow {
+        animation: drink-shadow 4s ease-in-out infinite;
+    }
+
+    @keyframes drink-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-9px); }
+    }
+
+    @keyframes drink-shadow {
+        0%, 100% { transform: scale(1); opacity: 0.9; }
+        50% { transform: scale(0.86); opacity: 0.55; }
+    }
+
+    @keyframes drink-rise {
+        0% { transform: translate(0, 0); opacity: 0; }
+        15% { opacity: 0.8; }
+        100% { transform: translate(var(--dx), -330px); opacity: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .drink-carousel-item.is-active .drink-3d__float,
+        .drink-carousel-item.is-active .drink-3d__shadow,
+        .drink-3d__bubble {
+            animation: none;
+        }
+    }
+</style>
+
+<section id="signature-showcase" class="relative py-16 sm:py-24 bg-[#000000] border-t border-[#A09B90]/30 overflow-hidden">
+    <!-- Studio Spotlight -->
+    <div class="pointer-events-none absolute inset-0"
+         style="background: radial-gradient(ellipse 65% 58% at 50% 52%, rgba(212, 149, 77, 0.14) 0%, rgba(41, 0, 36, 0.22) 44%, #000000 78%);"></div>
+
+    <div class="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center max-w-2xl mx-auto mb-6 sm:mb-8 reveal-on-scroll">
+            <span class="inline-block text-[11px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#D4954D] mb-2">
+                SIGNATURE SHOWCASE
+            </span>
+        </div>
+
+        <!-- 3D Swipeable Carousel Stage (Tanpa Panah) -->
+        <div id="drink-3d-stage" class="drink-carousel-stage mx-auto">
+            @foreach($showcaseDrinks as $idx => $drink)
+                <div class="drink-carousel-item"
+                     data-drink-index="{{ $idx }}"
+                     data-drink-name="{{ $drink['name'] }}">
+                    <div class="drink-3d" style="--img: url('{{ $drink['img'] }}');">
+                        <div class="drink-3d__shadow" aria-hidden="true"></div>
+                        <div class="drink-3d__float">
+                            <div class="drink-3d__tilt">
+                                <img class="drink-3d__img"
+                                     src="{{ $drink['img'] }}"
+                                     alt="{{ $drink['name'] }}"
+                                     loading="lazy"
+                                     draggable="false">
+                                <div class="drink-3d__fx" aria-hidden="true">
+                                    <div class="drink-3d__sheen"></div>
+                                    <span class="drink-3d__bubble" style="left:30%;--s:5px;--d:5s;--delay:0s;--dx:8px"></span>
+                                    <span class="drink-3d__bubble" style="left:52%;--s:4px;--d:6.5s;--delay:1.5s;--dx:-10px"></span>
+                                    <span class="drink-3d__bubble" style="left:68%;--s:6px;--d:7s;--delay:3s;--dx:6px"></span>
+                                    <span class="drink-3d__bubble" style="left:42%;--s:3px;--d:5.5s;--delay:4s;--dx:-6px"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <!-- Active Drink Info + Dots + CTA -->
+        <div class="text-center mt-4 sm:mt-6 space-y-3">
+            <div>
+                <h3 id="drink-3d-title" class="font-serif text-xl sm:text-2xl font-bold text-[#F2F5E2]">{{ $showcaseDrinks[2]['name'] ?? 'Oreo Spanish Latte' }}</h3>
+            </div>
+            <div id="drink-3d-dots" class="flex items-center justify-center gap-2 pt-1">
+                @foreach($showcaseDrinks as $idx => $drink)
+                    <button type="button"
+                            data-dot-index="{{ $idx }}"
+                            aria-label="Pilih minuman {{ $idx + 1 }}"
+                            class="h-1.5 rounded-full transition-all duration-300 bg-[#A09B90]/40 w-1.5"></button>
+                @endforeach
+            </div>
+            <div class="pt-1">
+                <a href="{{ route('pelanggan.menu') }}"
+                   class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#D4954D] hover:bg-[#E3DEA4] text-[#290024] font-bold text-xs sm:text-sm transition-all shadow-[0_6px_20px_rgba(212,149,77,0.3)] active:scale-95">
+                    <span>Lihat Semua Menu</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    (function () {
+        var stage = document.getElementById('drink-3d-stage');
+        if (!stage) return;
+
+        var items = Array.prototype.slice.call(stage.querySelectorAll('.drink-carousel-item'));
+        var dots = Array.prototype.slice.call(document.querySelectorAll('#drink-3d-dots [data-dot-index]'));
+        var titleEl = document.getElementById('drink-3d-title');
+        var total = items.length;
+        if (!total) return;
+
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var currentPos = Math.floor(total / 2);
+        var targetPos = currentPos;
+
+        // State untuk efek 3D tilt gelas aktif
+        var tx = 0, ty = 0, cx = 0, cy = 0;
+        var isHovering = false;
+        var isDragging = false;
+        var dragStartX = 0;
+        var dragStartPos = 0;
+        var dragMoved = false;
+        var lastPointerX = 0;
+        var velocity = 0;
+        var t0 = performance.now();
+        var autoTimer = null;
+
+        function mod(n, m) {
+            return ((n % m) + m) % m;
+        }
+
+        function getSpread() {
+            if (window.innerWidth < 640) return 125;
+            if (window.innerWidth < 1024) return 170;
+            return 205;
+        }
+
+        function updateDotsAndInfo(activeIdx) {
+            var activeItem = items[activeIdx];
+            if (activeItem && titleEl) {
+                titleEl.textContent = activeItem.getAttribute('data-drink-name') || '';
+            }
+            dots.forEach(function (dot, idx) {
+                if (idx === activeIdx) {
+                    dot.classList.add('w-6', 'bg-[#D4954D]');
+                    dot.classList.remove('w-1.5', 'bg-[#A09B90]/40');
+                } else {
+                    dot.classList.remove('w-6', 'bg-[#D4954D]');
+                    dot.classList.add('w-1.5', 'bg-[#A09B90]/40');
+                }
+            });
+        }
+
+        var lastActiveIdx = -1;
+
+        function renderCarousel(now) {
+            // Smooth spring/lerp posisi carousel
+            if (!isDragging) {
+                currentPos += (targetPos - currentPos) * 0.14;
+            }
+
+            var spreadX = getSpread();
+            var activeIdx = mod(Math.round(currentPos), total);
+
+            if (activeIdx !== lastActiveIdx) {
+                lastActiveIdx = activeIdx;
+                updateDotsAndInfo(activeIdx);
+            }
+
+            // Smooth tilt & sheen untuk gelas aktif
+            if (!isHovering && !isDragging && !reduce) {
+                var t = (now - t0) / 1000;
+                tx = Math.sin(t * 0.8) * 0.45;
+                ty = Math.cos(t * 0.6) * 0.15;
+            }
+            cx += (tx - cx) * 0.1;
+            cy += (ty - cy) * 0.1;
+
+            var maxTilt = 16;
+
+            items.forEach(function (item, idx) {
+                var offset = idx - currentPos;
+                // Wrap melingkar terpendek
+                offset = mod(offset + total / 2, total) - total / 2;
+
+                var abs = Math.abs(offset);
+                var translateX = offset * spreadX;
+                var translateZ = (1 - Math.min(abs, 2.5)) * 85 - abs * 65;
+                var rotateY = offset * -24;
+                var scale = Math.max(0.62, 1 - abs * 0.17);
+                var opacity = Math.max(0.28, 1 - abs * 0.34);
+                var brightness = Math.max(0.5, 1 - abs * 0.22);
+
+                item.style.transform =
+                    'translate(-50%, -50%) translate3d(' +
+                    translateX.toFixed(1) + 'px, 0px, ' +
+                    translateZ.toFixed(1) + 'px) rotateY(' +
+                    rotateY.toFixed(2) + 'deg) scale(' +
+                    scale.toFixed(3) + ')';
+                item.style.opacity = opacity.toFixed(3);
+                item.style.zIndex = Math.round(30 - abs * 5);
+                item.style.filter = abs > 0.25 ? 'brightness(' + brightness.toFixed(2) + ')' : 'none';
+
+                var isActive = idx === activeIdx && abs < 0.45;
+                item.classList.toggle('is-active', isActive);
+
+                var drinkEl = item.querySelector('.drink-3d');
+                if (drinkEl) {
+                    if (isActive) {
+                        drinkEl.style.setProperty('--ry', (cx * maxTilt).toFixed(2) + 'deg');
+                        drinkEl.style.setProperty('--rx', (-cy * maxTilt * 0.6).toFixed(2) + 'deg');
+                        drinkEl.style.setProperty('--sx', (50 + cx * 45).toFixed(1) + '%');
+                    } else {
+                        drinkEl.style.setProperty('--ry', '0deg');
+                        drinkEl.style.setProperty('--rx', '0deg');
+                        drinkEl.style.setProperty('--sx', '50%');
+                    }
+                }
+            });
+
+            requestAnimationFrame(renderCarousel);
+        }
+
+        function resetAutoRotate() {
+            if (autoTimer) clearInterval(autoTimer);
+            if (reduce) return;
+            autoTimer = setInterval(function () {
+                if (!isDragging && !isHovering) {
+                    targetPos = Math.round(targetPos) + 1;
+                }
+            }, 3500);
+        }
+
+        // Pointer drag (mouse & jari) + tilt saat hover
+        stage.addEventListener('pointerdown', function (e) {
+            if (e.button !== 0 && e.pointerType === 'mouse') return;
+            isDragging = true;
+            dragMoved = false;
+            dragStartX = e.clientX;
+            lastPointerX = e.clientX;
+            dragStartPos = currentPos;
+            velocity = 0;
+            stage.classList.add('is-dragging');
+            if (stage.setPointerCapture) {
+                stage.setPointerCapture(e.pointerId);
+            }
+            if (autoTimer) clearInterval(autoTimer);
+        });
+
+        stage.addEventListener('pointermove', function (e) {
+            var r = stage.getBoundingClientRect();
+            var nx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+            var ny = ((e.clientY - r.top) / r.height - 0.5) * 2;
+
+            if (isDragging) {
+                var dx = e.clientX - dragStartX;
+                if (Math.abs(dx) > 6) dragMoved = true;
+                velocity = e.clientX - lastPointerX;
+                lastPointerX = e.clientX;
+                var pxPerItem = getSpread();
+                currentPos = dragStartPos - dx / pxPerItem;
+                targetPos = currentPos;
+            } else if (e.pointerType === 'mouse') {
+                isHovering = true;
+                tx = Math.max(-1, Math.min(1, nx));
+                ty = Math.max(-1, Math.min(1, ny));
+            }
+        });
+
+        function endDrag(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            stage.classList.remove('is-dragging');
+
+            if (!dragMoved) {
+                // Klik pada salah satu item samping -> pindah ke item itu
+                var clickedItem = e.target && e.target.closest ? e.target.closest('.drink-carousel-item') : null;
+                if (clickedItem) {
+                    var clickedIdx = parseInt(clickedItem.getAttribute('data-drink-index'), 10);
+                    var offset = mod(clickedIdx - Math.round(currentPos) + total / 2, total) - total / 2;
+                    targetPos = Math.round(currentPos) + offset;
+                } else {
+                    targetPos = Math.round(currentPos);
+                }
+            } else {
+                // Momentum ringan saat swipe cepat
+                var flick = Math.max(-0.8, Math.min(0.8, -velocity * 0.02));
+                targetPos = Math.round(currentPos + flick);
+            }
+            resetAutoRotate();
+        }
+
+        stage.addEventListener('pointerup', endDrag);
+        stage.addEventListener('pointercancel', endDrag);
+
+        stage.addEventListener('pointerleave', function () {
+            isHovering = false;
+            if (!isDragging) {
+                tx = 0;
+                ty = 0;
+            }
+        });
+
+        // Klik dot indikator
+        dots.forEach(function (dot) {
+            dot.addEventListener('click', function () {
+                var dotIdx = parseInt(dot.getAttribute('data-dot-index'), 10);
+                var offset = mod(dotIdx - Math.round(currentPos) + total / 2, total) - total / 2;
+                targetPos = Math.round(currentPos) + offset;
+                resetAutoRotate();
+            });
+        });
+
+        requestAnimationFrame(renderCarousel);
+        resetAutoRotate();
+    })();
+</script>
+
+<!-- ======================================================================= -->
 <!-- 4b. MENU TERFAVORIT (BEST OF TASTE - 3 MENU PENJUALAN TERBANYAK)        -->
 <!-- ======================================================================= -->
 @if(isset($topFavorites) && $topFavorites->count() > 0)
