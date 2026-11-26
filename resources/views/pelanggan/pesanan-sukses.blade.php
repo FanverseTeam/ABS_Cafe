@@ -275,7 +275,6 @@
                     <span>Subtotal Menu</span>
                     <span class="font-semibold text-[#290024]">Rp {{ number_format($order->subtotal, 0, ',', '.') }}</span>
                 </div>
-<<<<<<< HEAD
                 @if($order->promo || $order->discount > 0)
                     <div class="flex items-center justify-between text-[#D4954D]">
                         <span>
@@ -287,18 +286,6 @@
                         <span class="font-semibold">- Rp {{ number_format($order->discount, 0, ',', '.') }}</span>
                     </div>
                 @endif
-                <div class="flex items-center justify-between">
-                    <span>Pajak (PB1 10%)</span>
-                    <span class="font-semibold text-[#290024]">Rp {{ number_format($order->tax, 0, ',', '.') }}</span>
-                </div>
-=======
-                @if($order->discount > 0)
-                    <div class="flex items-center justify-between text-[#D4954D]">
-                        <span>Diskon</span>
-                        <span class="font-semibold">- Rp {{ number_format($order->discount, 0, ',', '.') }}</span>
-                    </div>
-                @endif
->>>>>>> 5d6c777e0ebc0b951290e257619bf1c2303fa220
                 <div class="flex items-center justify-between pt-2.5 border-t border-[#E3DEA4] text-sm">
                     <span class="font-bold text-[#290024]">Total Tagihan</span>
                     <span class="font-serif font-black text-lg text-[#290024]">Rp {{ number_format($order->total, 0, ',', '.') }}</span>

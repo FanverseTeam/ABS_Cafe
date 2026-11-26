@@ -10,14 +10,9 @@
     <nav id="mobile-bottom-nav"
          aria-label="Navigasi utama {{ ucfirst($role) }}"
          class="lg:hidden fixed inset-x-0 bottom-0 z-40 bg-beige/95 backdrop-blur-md border-t border-custard shadow-[0_-4px_18px_rgba(41,0,36,0.08)] transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none">
-<<<<<<< HEAD
-        <div style="grid-template-columns: repeat({{ count($items) }}, minmax(0, 1fr));"
-             class="mx-auto grid min-h-16 max-w-lg sm:min-h-[4.25rem] sm:max-w-2xl landscape:min-h-12 sm:landscape:min-h-[3.25rem] items-stretch gap-0.5 sm:gap-1 px-1 sm:px-3 pt-1 landscape:pt-0.5 pb-[max(0.35rem,env(safe-area-inset-bottom))] landscape:pb-[max(0.15rem,env(safe-area-inset-bottom))]">
-=======
         @php $colCount = count($items); @endphp
         <div class="mx-auto grid min-h-16 w-full max-w-full sm:min-h-[4.25rem] landscape:min-h-12 sm:landscape:min-h-[3.25rem] items-stretch gap-1 sm:gap-2 px-2 sm:px-6 pt-1 landscape:pt-0.5 pb-[max(0.35rem,env(safe-area-inset-bottom))] landscape:pb-[max(0.15rem,env(safe-area-inset-bottom))]"
              style="grid-template-columns: repeat({{ $colCount }}, minmax(0, 1fr));">
->>>>>>> 5d6c777e0ebc0b951290e257619bf1c2303fa220
             @foreach($items as $item)
                 @php
                     $isActive = (bool) $item['active'];

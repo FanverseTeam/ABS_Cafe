@@ -333,7 +333,6 @@ class PelangganController extends Controller
             'allTables' => $allTables,
             'activePromos' => $activePromos,
             'menuCategories' => Menu::pluck('category_id', 'id'),
-            'taxPercent' => (float) CafeSetting::get('tax_percent', 10),
             'cafeSchedule' => CafeScheduleService::getSchedule(),
         ]);
     }
@@ -406,11 +405,6 @@ class PelangganController extends Controller
                     throw new \Exception('Keranjang belanja kosong atau menu tidak valid.');
                 }
 
-<<<<<<< HEAD
-=======
-                $total = round($subtotal, 2);
-
->>>>>>> 5d6c777e0ebc0b951290e257619bf1c2303fa220
                 $orderService = app(OrderService::class);
                 $promo = null;
                 if (! empty($validated['voucher_code'])) {
@@ -423,10 +417,7 @@ class PelangganController extends Controller
 
                 ['discount' => $discount] = $orderService->calculateDiscount($promo, $builtItems, $subtotal);
 
-                $taxPercent = (float) CafeSetting::get('tax_percent', 10);
-                $taxableBase = max(0, $subtotal - $discount);
-                $tax = round($taxableBase * $taxPercent / 100, 2);
-                $total = round($taxableBase + $tax, 2);
+                $total = round(max(0, $subtotal - $discount), 2);
 
                 $orderCode = $orderService->generateCode();
 

@@ -718,7 +718,6 @@
                     <span>Subtotal Menu</span>
                     <span class="font-bold text-[#290024]" x-text="formatRupiah(subtotal)"></span>
                 </div>
-<<<<<<< HEAD
                 <template x-if="discount > 0">
                     <div class="flex items-center justify-between text-green-700">
                         <span class="flex items-center gap-1">
@@ -728,12 +727,6 @@
                         <span class="font-bold" x-text="'-' + formatRupiah(discount)"></span>
                     </div>
                 </template>
-                <div class="flex items-center justify-between text-[#775533]">
-                    <span>Pajak (PB1 <span x-text="taxPercent"></span>%)</span>
-                    <span class="font-bold text-[#290024]" x-text="formatRupiah(tax)"></span>
-                </div>
-=======
->>>>>>> 5d6c777e0ebc0b951290e257619bf1c2303fa220
                 <div class="pt-2 border-t border-[#E3DEA4] flex items-center justify-between font-bold text-sm text-[#290024]">
                     <span>Total Pesanan</span>
                     <span class="font-serif font-black text-base text-[#290024]" x-text="formatRupiah(total)"></span>
@@ -809,7 +802,6 @@ function cartPage() {
         // Promo & Diskon State
         activePromos: @json($activePromos ?? []),
         menuCategories: @json($menuCategories ?? []),
-        taxPercent: {{ $taxPercent ?? 10 }},
         cafeIsOpen: {{ json_encode($cafeSchedule['is_open'] ?? true) }},
         selectedPromoId: null,
         inputVoucherCode: '',
@@ -917,7 +909,6 @@ function cartPage() {
             }, 0);
         },
 
-<<<<<<< HEAD
         // List promo yang memiliki diskon
         get availablePromos() {
             return this.activePromos.filter(p => p.type !== 'non_diskon');
@@ -1002,13 +993,8 @@ function cartPage() {
             return this.activePromo ? this.computeDiscountForPromo(this.activePromo) : 0;
         },
 
-        get tax() {
-            const taxable = Math.max(0, this.subtotal - this.discount);
-            return Math.round(taxable * (this.taxPercent / 100));
-        },
-
         get total() {
-            return Math.max(0, this.subtotal - this.discount) + this.tax;
+            return Math.max(0, this.subtotal - this.discount);
         },
 
         selectPromo(p) {
@@ -1059,10 +1045,6 @@ function cartPage() {
             this.appliedVoucherCode = found.code;
             this.voucherMessage = 'Kode promo ' + found.code + ' berhasil digunakan!';
             this.voucherMessageSuccess = true;
-=======
-        get total() {
-            return this.subtotal;
->>>>>>> 5d6c777e0ebc0b951290e257619bf1c2303fa220
         },
 
         formatRupiah(num) {

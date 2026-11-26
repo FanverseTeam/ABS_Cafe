@@ -152,11 +152,7 @@ return [
                     'label' => 'Staff',
                     'route' => 'owner.staff.index',
                     'icon' => 'users',
-<<<<<<< HEAD
                     'active' => ['owner.staff.*', 'owner.cashiers.*'],
-=======
-                    'active' => ['owner.cashiers.*', 'owner.staff.*'],
->>>>>>> 5d6c777e0ebc0b951290e257619bf1c2303fa220
                 ],
                 [
                     'key' => 'promos',

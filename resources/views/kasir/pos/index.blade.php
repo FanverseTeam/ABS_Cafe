@@ -466,7 +466,6 @@
                     <!-- Ringkasan Tagihan -->
                     <div class="rounded-2xl bg-[#F2F5E2] border border-[#E3DEA4]/80 p-3.5 space-y-1.5 text-xs">
                         <div class="flex justify-between text-[#775533]"><span>Subtotal</span><span id="sum-subtotal">Rp 0</span></div>
-<<<<<<< HEAD
                         <div class="flex justify-between text-[#775533]">
                             <span class="flex items-center gap-1.5">
                                 <span>Diskon</span>
@@ -474,10 +473,6 @@
                             </span>
                             <span id="sum-discount" class="text-[#775533] font-medium">-Rp 0</span>
                         </div>
-                        <div class="flex justify-between text-[#775533]"><span>Pajak (10%)</span><span id="sum-tax">Rp 0</span></div>
-=======
-                        <div class="flex justify-between text-[#775533]"><span>Diskon</span><span id="sum-discount" class="text-[#775533] font-medium">-Rp 0</span></div>
->>>>>>> 5d6c777e0ebc0b951290e257619bf1c2303fa220
                         <div class="flex justify-between text-[#775533]"><span>Service Charge</span><span id="sum-service">Rp 0</span></div>
                         <div class="flex justify-between border-t border-[#E3DEA4] pt-2 mt-1">
                             <span class="font-bold text-[#290024] text-sm">Total Tagihan</span>
