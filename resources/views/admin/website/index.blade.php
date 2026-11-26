@@ -937,7 +937,7 @@
         reader.onload = function(e) {
             const container = document.getElementById('website-logo-preview');
             if (container) {
-                container.innerHTML = '<span style="display:inline-flex;width:36px;height:36px;flex-shrink:0;align-items:center;justify-content:center;border-radius:9999px;background-color:#290024;padding:4px;"><img src="' + e.target.result + '" style="display:block;width:100%;height:100%;object-fit:contain;border-radius:9999px;"></span>';
+                container.innerHTML = '<span style="display:inline-flex;width:36px;height:36px;flex-shrink:0;align-items:center;justify-content:center;background-color:transparent;"><img src="' + e.target.result + '" style="display:block;width:100%;height:100%;object-fit:contain;"></span>';
             }
         };
         reader.readAsDataURL(file);

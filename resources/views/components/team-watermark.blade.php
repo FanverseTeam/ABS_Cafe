@@ -19,12 +19,12 @@
             'border-[#775533]/30 ring-black/5' => !$isDark,
         ])>
             <img src="{{ asset('images/logo-team.jpeg') }}"
-                 alt="Logo Favnverse Team"
+                 alt="Logo Fanverse Team"
                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                  loading="lazy">
         </div>
         <div class="flex items-center gap-1.5 tracking-normal">
-            <span class="text-[11px] sm:text-xs">By <strong class="font-semibold text-inherit">Favnverse team</strong></span>
+            <span class="text-[11px] sm:text-xs">By <strong class="font-semibold text-inherit">Fanverse Team</strong></span>
             <span class="text-[10px] sm:text-[11px] opacity-40">&bull;</span>
             <span @class([
                 'text-[10px] sm:text-[11px] font-medium',

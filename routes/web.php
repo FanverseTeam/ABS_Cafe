@@ -38,7 +38,7 @@ Route::middleware('noindex.staf')->group(function () {
             return redirect(LoginController::dashboardFor(auth()->user()));
         }
 
-        return view('staf.splash');
+        return redirect()->route('login');
     })->name('staf.landing');
 
     Route::get('/login', [LoginController::class, 'show'])->name('login');

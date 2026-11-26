@@ -6,10 +6,136 @@
 @section('body_style', 'background-color: #000000 !important; color: #F2F5E2 !important;')
 
 @section('content')
+@php
+    $introLogo = \App\Models\CafeSetting::get('cafe_logo', 'images/logo.png');
+    $introLogoUrl = \Illuminate\Support\Str::startsWith($introLogo, ['http://', 'https://']) ? $introLogo : asset(ltrim($introLogo, '/'));
+@endphp
+<style>
+    @keyframes absIntroLogoIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.78);
+        }
+        70% {
+            opacity: 1;
+            transform: scale(1.04);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes absIntroTextIn {
+        0% {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes absIntroRingDraw {
+        0% {
+            stroke-dashoffset: 290;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    #pelanggan-intro {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at center, rgba(212, 149, 77, 0.12) 0%, #000000 62%);
+        background-color: #000000;
+        transition: opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1), transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #pelanggan-intro.is-leaving {
+        opacity: 0;
+        transform: scale(1.03);
+        pointer-events: none;
+    }
+
+    #pelanggan-intro .abs-intro-logo {
+        animation: absIntroLogoIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    #pelanggan-intro .abs-intro-ring-progress {
+        stroke-dasharray: 290;
+        stroke-dashoffset: 290;
+        animation: absIntroRingDraw 1.85s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+    }
+
+    #pelanggan-intro .abs-intro-title {
+        animation: absIntroTextIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+    }
+</style>
+<div id="pelanggan-intro" aria-hidden="true">
+    <div class="abs-intro-logo relative flex items-center justify-center w-28 h-28 sm:w-32 sm:h-32 mb-4">
+        <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(212, 149, 77, 0.18)" stroke-width="2" />
+            <circle class="abs-intro-ring-progress" cx="50" cy="50" r="46" fill="none" stroke="#D4954D" stroke-width="2.5" stroke-linecap="round" />
+        </svg>
+        <img src="{{ $introLogoUrl }}"
+             alt="ABS Cafe"
+             class="w-16 h-16 sm:w-20 sm:h-20 object-contain">
+    </div>
+    <div class="abs-intro-title text-center">
+        <p class="font-serif text-2xl sm:text-3xl font-bold tracking-wide text-[#F2F5E2]">
+            {{ $landing['cafe']['name'] ?? 'ABS Cafe' }}
+        </p>
+    </div>
+    <div class="abs-intro-title absolute bottom-6 inset-x-0 flex justify-center px-4 opacity-80 scale-90 pointer-events-none">
+        <x-team-watermark theme="dark" class="py-0" />
+    </div>
+</div>
+<script>
+    (function () {
+        var intro = document.getElementById('pelanggan-intro');
+        if (!intro) return;
+
+        var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var alreadySeen = false;
+        try {
+            alreadySeen = sessionStorage.getItem('abs_pelanggan_intro_seen') === '1';
+        } catch (e) {}
+
+        if (reducedMotion || alreadySeen) {
+            intro.style.display = 'none';
+            return;
+        }
+
+        var dismissed = false;
+        function dismissIntro() {
+            if (dismissed) return;
+            dismissed = true;
+            try {
+                sessionStorage.setItem('abs_pelanggan_intro_seen', '1');
+            } catch (e) {}
+            intro.classList.add('is-leaving');
+            setTimeout(function () {
+                intro.style.display = 'none';
+            }, 440);
+        }
+
+        intro.addEventListener('click', dismissIntro);
+        setTimeout(dismissIntro, 2000);
+    })();
+</script>
+
 <!-- ======================================================================= -->
 <!-- 1. HERO SECTION                                                         -->
 <!-- ======================================================================= -->
-<section id="beranda" class="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center pt-24 sm:pt-28 pb-16 overflow-hidden bg-[#000000]">
+<section id="beranda" class="relative min-h-[84vh] sm:min-h-[92vh] flex items-center justify-center pt-24 sm:pt-28 pb-14 sm:pb-20 overflow-hidden bg-[#000000]">
     <!-- Foto Latar Hero dengan Overlay Gradasi Gelap -->
     <div class="absolute inset-0 z-0">
         @if(!empty($landing['hero']['bg_photo']['src']))
@@ -119,7 +245,7 @@
 <!-- ======================================================================= -->
 <!-- 2. TENTANG KAMI SECTION                                                 -->
 <!-- ======================================================================= -->
-<section id="tentang-kami" class="relative py-20 sm:py-28 bg-[#000000] overflow-hidden">
+<section id="tentang-kami" class="relative py-16 sm:py-24 bg-[#000000] overflow-hidden">
     <!-- Ornamen Daun Garis Halus di Latar Belakang (Inline SVG) -->
     <div class="pointer-events-none absolute -top-10 -left-10 w-48 h-48 opacity-15 text-[#D4954D]" aria-hidden="true">
         <svg viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -204,7 +330,7 @@
 <!-- ======================================================================= -->
 <!-- 3. EMPAT KEUNGGULAN SECTION                                             -->
 <!-- ======================================================================= -->
-<section class="relative py-14 sm:py-20 bg-[#000000] border-y border-[#A09B90]/30">
+<section class="relative py-16 sm:py-24 bg-[#000000] border-y border-[#A09B90]/30">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <!-- 2x2 di Mobile, 4 Kolom di Tablet & Desktop -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
@@ -261,7 +387,7 @@
 <!-- ======================================================================= -->
 <!-- 4. GALERI SUASANA SECTION (AUTO-SCROLL FILMSTRIP) -->
 <!-- ======================================================================= -->
-<section id="suasana" class="relative py-20 sm:py-28 bg-[#000000] overflow-hidden">
+<section id="suasana" class="relative py-16 sm:py-24 bg-[#000000] overflow-hidden">
     <!-- Header -->
     <div class="relative mx-auto max-w-3xl px-4 sm:px-6 text-center mb-10 sm:mb-14 reveal-on-scroll">
         @if(!empty($landing['gallery']['badge']))
@@ -316,7 +442,7 @@
 <!-- 4b. MENU TERFAVORIT (BEST OF TASTE - 3 MENU PENJUALAN TERBANYAK)        -->
 <!-- ======================================================================= -->
 @if(isset($topFavorites) && $topFavorites->count() > 0)
-<section id="favorit" class="relative py-20 sm:py-28 bg-[#000000] border-t border-[#A09B90]/30 overflow-hidden">
+<section id="favorit" class="relative py-16 sm:py-24 bg-[#000000] border-t border-[#A09B90]/30 overflow-hidden">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <!-- Header Section -->
         <div class="relative mx-auto max-w-3xl px-4 sm:px-6 text-center mb-12 sm:mb-16 reveal-on-scroll">
@@ -381,7 +507,7 @@
 <!-- ======================================================================= -->
 <!-- 5. LOKASI SECTION                                                       -->
 <!-- ======================================================================= -->
-<section id="lokasi" class="relative py-20 sm:py-28 bg-[#000000]">
+<section id="lokasi" class="relative py-16 sm:py-24 bg-[#000000]">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-14 items-center">
             <!-- Informasi Lokasi (Kiri) -->
@@ -519,7 +645,7 @@
 <!-- ======================================================================= -->
 <!-- 5b. RESERVASI MEJA REAL-TIME BANNER                                    -->
 <!-- ======================================================================= -->
-<section class="relative py-16 sm:py-20 bg-[#000000] border-t border-[#A09B90]/25 overflow-hidden">
+<section class="relative py-16 sm:py-24 bg-[#000000] border-t border-[#A09B90]/25 overflow-hidden">
     <div class="relative mx-auto max-w-4xl px-4 sm:px-6 reveal-on-scroll">
         <!-- Kotak Banner Reservasi Bergaya Elevated Card -->
         <div class="relative p-8 sm:p-12 md:p-14 rounded-3xl bg-[#050604] border border-[#A09B90]/40 shadow-[0_20px_50px_rgba(0,0,0,0.85)] text-center overflow-hidden">
@@ -563,7 +689,7 @@
 <!-- ======================================================================= -->
 <!-- 6. MEDIA SOSIAL SECTION                                                 -->
 <!-- ======================================================================= -->
-<section class="relative py-16 sm:py-20 bg-[#000000] border-t border-[#A09B90]/30">
+<section class="relative py-16 sm:py-24 bg-[#000000] border-t border-[#A09B90]/30">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 text-center reveal-on-scroll">
         <!-- Judul Bagian Sosial Media -->
         <h3 class="font-serif text-xl sm:text-2xl md:text-3xl font-bold text-[#F2F5E2] mb-6 sm:mb-8">

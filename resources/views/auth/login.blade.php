@@ -86,6 +86,7 @@
     </style>
 </head>
 <body class="antialiased min-h-screen bg-[#F2F5E2] lg:bg-[#120410] lg:bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] lg:from-[#2a0624] lg:via-[#160214] lg:to-[#0a0109] flex items-center justify-center p-0 sm:p-4 lg:p-8 xl:p-12 font-sans text-[#290024] selection:bg-[#D4954D] selection:text-[#290024] relative overflow-x-hidden">
+    @include('auth.partials.splash-overlay')
 
     <!-- Background Ambient Glow Halus untuk Desktop -->
     <div class="hidden lg:block fixed -top-32 -left-32 w-[480px] h-[480px] bg-[#D4954D]/15 rounded-full blur-[140px] pointer-events-none"></div>

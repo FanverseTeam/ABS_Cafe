@@ -55,11 +55,7 @@
         $logoSrc .= '?v=' . filemtime(public_path(ltrim($configuredLogo, '/')));
     }
 
-    $badgeBackground = $thermal ? '#000000' : '#290024';
-
-    $badgeStyle = $onDark
-        ? 'background-color:transparent;'
-        : "background-color:{$badgeBackground};padding:{$sizeConfig['padding']}px;-webkit-print-color-adjust:exact;print-color-adjust:exact;";
+    $badgeStyle = 'background-color:transparent;';
 
     $titleColor = $onDark ? '#F2F5E2' : '#290024';
     $subtitleColor = $onDark ? '#D4954D' : '#775533';
