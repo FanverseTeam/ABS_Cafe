@@ -214,8 +214,6 @@ class WebsiteController extends Controller
             } catch (\Throwable $e) {
                 // Ignore copy errors
             }
-        } elseif ($request->filled('cafe_logo') && is_string($request->input('cafe_logo'))) {
-            CafeSetting::set('cafe_logo', $request->input('cafe_logo'));
         }
 
         CafeSetting::set('cafe_address', $request->input('cafe_address'));

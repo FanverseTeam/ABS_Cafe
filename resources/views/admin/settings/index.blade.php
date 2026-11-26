@@ -39,7 +39,7 @@
             <h3 class="font-serif font-bold text-lg text-cafe-dark mb-1">Identitas &amp; Jam Operasional ABS Cafe</h3>
             <p class="text-xs text-cafe-muted mb-6">Informasi ini akan tertera pada struk pembelian, website katalog, dan dokumen resmi.</p>
 
-            <form action="{{ route('admin.settings.profile') }}" method="POST" class="space-y-4 text-xs">
+            <form action="{{ route('admin.settings.profile') }}" method="POST" enctype="multipart/form-data" class="space-y-4 text-xs">
                 @csrf
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1">
@@ -53,12 +53,14 @@
                 </div>
 
                 <div class="space-y-1">
-                    <label class="font-semibold text-cafe-dark">Logo Website</label>
+                    <label class="font-semibold text-cafe-dark">Upload Logo Website dari Galeri</label>
                     <div class="flex flex-col gap-3 rounded-xl border border-cafe-beige bg-[#F2F5E2]/60 p-3 sm:flex-row sm:items-center">
                         <x-logo size="sm" :show-text="false" />
-                        <input type="text" name="cafe_logo" value="{{ $settings['cafe_logo'] }}" placeholder="images/logo.png" class="w-full bg-beige focus:bg-beige text-xs p-3 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none">
+                        <div class="flex-1 space-y-1">
+                            <input type="file" name="cafe_logo" accept="image/*,.heic,.heif" class="w-full bg-beige focus:bg-beige text-xs p-2.5 rounded-xl border border-cafe-beige focus:border-cafe-gold focus:outline-none cursor-pointer file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cafe-dark file:text-cafe-cream">
+                            <p class="text-[10px] text-cafe-muted">Pilih gambar logo dari penyimpanan lokal/galeri (JPG, PNG, WebP, HEIC, SVG).</p>
+                        </div>
                     </div>
-                    <p class="text-[10px] text-cafe-muted">Path lokal atau URL gambar. Default: <span class="font-mono">images/logo.png</span>.</p>
                 </div>
 
                 <div class="space-y-1">
