@@ -444,13 +444,13 @@
 @php
     $oreoImage = asset('images/pelanggan/menu landing/oreo-spanish-latte-3d.png');
     $regalImage = asset('images/pelanggan/menu landing/spanish-regal-latte-3d.png');
+    $cappuccinoImage = asset('images/pelanggan/menu landing/cappuccino-3d.png');
+    $matchaImage = asset('images/pelanggan/menu landing/matcha-latte-3d.png');
     $showcaseDrinks = [
         ['name' => 'Oreo Spanish Latte', 'img' => $oreoImage],
+        ['name' => 'Cappuccino', 'img' => $cappuccinoImage],
         ['name' => 'Spanish Regal Latte', 'img' => $regalImage],
-        ['name' => 'Oreo Spanish Latte', 'img' => $oreoImage],
-        ['name' => 'Spanish Regal Latte', 'img' => $regalImage],
-        ['name' => 'Oreo Spanish Latte', 'img' => $oreoImage],
-        ['name' => 'Spanish Regal Latte', 'img' => $regalImage],
+        ['name' => 'Matcha Latte', 'img' => $matchaImage],
     ];
 @endphp
 <style>
