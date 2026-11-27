@@ -31,7 +31,7 @@ class PosController extends Controller
             ->get();
 
         $tables = Table::orderBy('number')->get();
-        $paymentMethods = PaymentMethod::active()->get();
+        $paymentMethods = PaymentMethod::active()->where('code', '!=', 'ewallet')->get();
         $promos = Promo::running()->get();
 
         // Pesanan yang ditahan hari ini: belum dibayar & belum selesai
@@ -104,7 +104,7 @@ class PosController extends Controller
             'cart' => 'required|string',
             'voucher' => 'nullable|string|max:50',
             'action' => 'required|in:save,pay',
-            'payment_method' => 'nullable|string|max:30',
+            'payment_method' => 'nullable|string|max:30|not_in:ewallet',
             'cash_received' => 'nullable|numeric|min:0',
             'reference' => 'nullable|string|max:100',
         ], [

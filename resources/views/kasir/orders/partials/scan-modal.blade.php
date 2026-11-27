@@ -12,10 +12,10 @@
         <div class="px-6 py-4 border-b border-[#E3DEA4]/70 flex items-center justify-between sticky top-0 bg-[#F2F5E2] z-10 shrink-0">
             <div class="flex items-center gap-2.5">
                 <div class="w-9 h-9 rounded-2xl bg-[#290024] text-cafe-gold flex items-center justify-center shadow-sm">
-                    <i data-lucide="scan" class="w-5 h-5 text-[#D4954D]"></i>
+                    <i data-lucide="camera" class="w-5 h-5 text-[#D4954D]"></i>
                 </div>
                 <div>
-                    <h3 class="font-serif font-bold text-base text-[#290024]">Scan QR Pesanan</h3>
+                    <h3 class="font-serif font-bold text-base text-[#290024]">Scan Pesanan</h3>
                     <p class="text-[11px] text-[#775533]">Verifikasi pesanan dan ubah status ke <strong>Sedang Diproses</strong></p>
                 </div>
             </div>
@@ -26,113 +26,10 @@
 
         <!-- Modal Content -->
         <div class="p-6 space-y-5 overflow-y-auto flex-1">
-            <!-- Pilihan Metode: Kamera (Utama) & Input Manual (Cadangan) -->
-            <div class="flex p-1 bg-[#E3DEA4]/40 rounded-2xl border border-[#E3DEA4]/80 text-xs font-bold text-[#775533]">
-                <button type="button" id="tab-btn-camera" onclick="switchScanTab('camera')" class="flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 bg-[#290024] text-[#F2F5E2] shadow-sm">
-                    <i data-lucide="camera" class="w-4 h-4 text-[#D4954D]"></i>
-                    <span>Kamera</span>
-                </button>
-                <button type="button" id="tab-btn-scanner" onclick="switchScanTab('scanner')" class="flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 hover:text-[#290024]">
-                    <i data-lucide="keyboard" class="w-4 h-4"></i>
-                    <span>Input Kode Manual</span>
-                </button>
-            </div>
-
-            <!-- Tab 1 (Utama): Kamera HP (Foto Langsung & Live Stream) -->
-            <div id="scan-tab-camera" class="space-y-4">
-                {{-- Input Kamera Bawaan HP (capture="environment") --}}
-                {{-- 100% Selalu bisa di HP tanpa hambatan izin HTTPS/HTTP --}}
-                <input type="file"
-                       id="native-camera-input"
-                       accept="image/*,.heic,.heif,.HEIC,.HEIF,image/heic,image/heif"
-                       capture="environment"
-                       class="hidden"
-                       onchange="handleNativeCameraFile(this)">
-
-                <div class="p-4 rounded-2xl bg-white border-2 border-[#D4954D] shadow-sm space-y-2.5 text-center">
-                    <div class="w-12 h-12 rounded-full bg-[#D4954D]/15 text-[#290024] flex items-center justify-center mx-auto">
-                        <i data-lucide="camera" class="w-6 h-6 text-[#D4954D]"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-xs text-[#290024]">Buka Kamera Bawaan HP</h4>
-                        <p class="text-[11px] text-[#775533] mt-0.5">
-                            Buka kamera ponsel Anda untuk memotret QR Code pesanan pelanggan secara langsung dan instan.
-                        </p>
-                    </div>
-                    <button type="button"
-                            onclick="triggerNativeCamera()"
-                            class="w-full py-3 px-4 rounded-full bg-[#D4954D] hover:bg-[#D4954D]/90 text-[#290024] font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95">
-                        <i data-lucide="aperture" class="w-4 h-4"></i>
-                        <span>Ambil Foto QR dengan Kamera HP</span>
-                    </button>
-                </div>
-
-                {{-- Opsi Live Camera Stream --}}
-                <div class="border-t border-[#E3DEA4] pt-3 space-y-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[11px] font-bold text-[#290024] flex items-center gap-1.5">
-                            <i data-lucide="video" class="w-3.5 h-3.5 text-[#D4954D]"></i>
-                            <span>Atau Kamera Video Langsung</span>
-                        </span>
-                        <button type="button" onclick="startCameraScanner(true)" class="text-[10px] font-bold text-[#D4954D] hover:underline flex items-center gap-1">
-                            <i data-lucide="refresh-cw" class="w-3 h-3"></i>
-                            <span>Minta Ulang Izin</span>
-                        </button>
-                    </div>
-
-                    <div id="insecure-context-notice" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900 space-y-1">
-                        <p class="font-bold flex items-center gap-1.5">
-                            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0"></i>
-                            <span>Koneksi HTTP Lokal (Bukan HTTPS)</span>
-                        </p>
-                        <p class="text-[10px] text-amber-800 leading-snug">
-                            Browser ponsel (Chrome/Safari) secara otomatis membatasi <em>video stream langsung</em> pada alamat IP lokal HTTP. Silakan gunakan tombol <strong>"Ambil Foto QR dengan Kamera HP"</strong> di atas karena bekerja 100% di semua ponsel.
-                        </p>
-                    </div>
-
-                    <!-- Area Kamera Video Langsung (Kotak Persegi Proporsional untuk QR Code) -->
-                    <div class="relative w-full rounded-2xl overflow-hidden bg-black/95 border-2 border-[#E3DEA4] shadow-inner">
-                        <div id="qr-camera-reader" class="w-full"></div>
-                        <div id="qr-camera-placeholder" class="text-white/80 p-8 text-center space-y-2 flex flex-col items-center justify-center min-h-[240px]">
-                            <i data-lucide="camera" class="w-10 h-10 mx-auto text-[#D4954D]"></i>
-                            <p class="text-xs">Klik "Nyalakan Kamera Langsung" di bawah untuk memulai stream video.</p>
-                        </div>
-                    </div>
-
-                    <p class="text-[11px] text-[#775533] text-center">
-                        Posisikan QR Code di dalam kotak target persegi agar terbaca otomatis.
-                    </p>
-
-                    <div class="flex items-center justify-between gap-2">
-                        <button type="button" onclick="toggleCameraScanning()" id="btn-camera-toggle" class="flex-1 py-2 px-3 rounded-full bg-[#290024] text-[#F2F5E2] text-xs font-bold hover:bg-[#775533] transition-colors flex items-center justify-center gap-1.5">
-                            <i data-lucide="video" class="w-3.5 h-3.5 text-[#D4954D]"></i>
-                            <span id="btn-camera-toggle-text">Nyalakan Kamera Langsung</span>
-                        </button>
-                        <button type="button" onclick="switchCameraFacing()" class="py-2 px-3 rounded-full bg-[#E3DEA4] text-[#290024] text-xs font-bold hover:bg-[#D4954D] transition-colors" title="Ganti Kamera">
-                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                        </button>
-                    </div>
-                </div>
-
-                {{-- Tombol Beralih ke Input Manual jika kamera trouble --}}
-                <div class="text-center pt-1 border-t border-[#E3DEA4]/60">
-                    <button type="button" onclick="switchScanTab('scanner')" class="text-[11px] text-[#775533] hover:text-[#290024] font-semibold underline flex items-center justify-center gap-1.5 mx-auto py-1">
-                        <i data-lucide="keyboard" class="w-3.5 h-3.5"></i>
-                        <span>Kamera bermasalah? Beralih ke Input Kode Manual</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Tab 2 (Cadangan): Input Manual / Scanner Barcode USB -->
-            <div id="scan-tab-scanner" class="hidden space-y-4">
-                <div class="p-3 bg-amber-50/80 border border-amber-200/80 rounded-2xl text-[11px] text-amber-900 flex items-start gap-2">
-                    <i data-lucide="shield-alert" class="w-4 h-4 text-amber-600 shrink-0 mt-0.5"></i>
-                    <div>
-                        <span class="font-bold">Opsi Cadangan</span>
-                        <p class="text-[10px] text-amber-800 mt-0.5">Gunakan form ini jika kamera ponsel mengalami kendala izin atau Anda menggunakan scanner barcode USB/Bluetooth kasir.</p>
-                    </div>
-                </div>
-
+            <!-- ============================================================ -->
+            <!-- BAGIAN 1 (ATAS): Input Manual / Scanner Barcode USB           -->
+            <!-- ============================================================ -->
+            <div id="scan-tab-scanner" class="space-y-4">
                 <form id="scan-qr-form" onsubmit="handleScanSubmit(event)" class="space-y-3">
                     @csrf
                     <div>
@@ -152,7 +49,7 @@
                         </div>
                         <p class="text-[11px] text-[#775533] mt-1.5 flex items-center gap-1">
                             <i data-lucide="info" class="w-3.5 h-3.5 text-[#D4954D] shrink-0"></i>
-                            <span>Kompatibel dengan 2D barcode scanner USB/Bluetooth (otomatis Enter).</span>
+                            <span>Kursor otomatis siap di sini &mdash; tembak langsung dengan scanner barcode kasir (otomatis Enter).</span>
                         </p>
                     </div>
 
@@ -160,16 +57,62 @@
                             id="scan-submit-btn"
                             class="w-full py-3 px-4 rounded-full bg-[#290024] hover:bg-[#775533] text-[#F2F5E2] font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md">
                         <i data-lucide="check-circle-2" class="w-4 h-4 text-[#D4954D]"></i>
-                        <span>Verifikasi &amp; Mulai Proses</span>
+                        <span>Verifikasi & Mulai Proses</span>
                     </button>
                 </form>
+            </div>
 
-                <div class="text-center pt-1 border-t border-[#E3DEA4]/60">
-                    <button type="button" onclick="switchScanTab('camera')" class="text-[11px] text-[#775533] hover:text-[#290024] font-semibold underline flex items-center justify-center gap-1.5 mx-auto py-1">
-                        <i data-lucide="camera" class="w-3.5 h-3.5"></i>
-                        <span>Kembali ke Pemindaian Kamera</span>
-                    </button>
+            <!-- ============================================================ -->
+            <!-- BAGIAN 2 (BAWAH): Kamera HP (Live Stream)     -->
+            <!-- ============================================================ -->
+            <div id="scan-tab-camera" class="space-y-4 pt-4 border-t border-[#E3DEA4]">
+                {{-- Opsi Live Camera Stream --}}
+                <div class="border-t border-[#E3DEA4] pt-3 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-[#290024] flex items-center gap-1.5">
+                            <i data-lucide="video" class="w-3.5 h-3.5 text-[#D4954D]"></i>
+                            <span>Kamera Video Langsung</span>
+                        </span>
+                        <button type="button" onclick="startCameraScanner(true)" class="text-[10px] font-bold text-[#D4954D] hover:underline flex items-center gap-1">
+                            <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                            <span>Minta Ulang Izin</span>
+                        </button>
+                    </div>
+
+                    <div id="insecure-context-notice" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900 space-y-1">
+                        <p class="font-bold flex items-center gap-1.5">
+                            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0"></i>
+                            <span>Koneksi HTTP Lokal (Bukan HTTPS)</span>
+                        </p>
+                        <p class="text-[10px] text-amber-800 leading-snug">
+                            Browser ponsel (Chrome/Safari) secara otomatis membatasi <em>video stream langsung</em> pada alamat IP lokal HTTP.
+                        </p>
+                    </div>
+
+                    <!-- Area Kamera Video Langsung (Kotak Persegi Proporsional untuk QR Code) -->
+                    <div class="relative w-full rounded-2xl overflow-hidden bg-black/95 border-2 border-[#E3DEA4] shadow-inner">
+                        <div id="qr-camera-reader" class="w-full"></div>
+                        <div id="qr-camera-placeholder" class="text-white/80 p-8 text-center space-y-2 flex flex-col items-center justify-center min-h-[240px]">
+                            <i data-lucide="camera" class="w-10 h-10 mx-auto text-[#D4954D]"></i>
+                            <p class="text-xs">Klik "Nyalakan Kamera Langsung" di bawah untuk memulai stream video.</p>
+                        </div>
+                    </div>
+
+                    <p class="text-[11px] text-[#775533] text-center">
+                        Posisikan <strong>barcode garis</strong> di dalam kotak target panjang agar terbaca otomatis.
+                    </p>
+
+                    <div class="flex items-center justify-between gap-2">
+                        <button type="button" onclick="toggleCameraScanning()" id="btn-camera-toggle" class="flex-1 py-2 px-3 rounded-full bg-[#290024] text-[#F2F5E2] text-xs font-bold hover:bg-[#775533] transition-colors flex items-center justify-center gap-1.5">
+                            <i data-lucide="video" class="w-3.5 h-3.5 text-[#D4954D]"></i>
+                            <span id="btn-camera-toggle-text">Nyalakan Kamera Langsung</span>
+                        </button>
+                        <button type="button" onclick="switchCameraFacing()" class="py-2 px-3 rounded-full bg-[#E3DEA4] text-[#290024] text-xs font-bold hover:bg-[#D4954D] transition-colors" title="Ganti Kamera">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
                 </div>
+
             </div>
 
             <!-- Alert / Status Result -->
@@ -178,7 +121,7 @@
     </div>
 </div>
 
-{{-- Script HTML5 QR Code library dari CDN --}}
+ {{-- Script HTML5 QR Code library dari CDN --}}
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
 <style>
@@ -201,7 +144,7 @@
         border-radius: 0.875rem !important;
     }
     #qr-camera-reader__scan_region {
-        min-height: 220px;
+        min-height: 160px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -209,6 +152,11 @@
     #qr-camera-reader__dashboard,
     #qr-camera-reader__status_span {
         display: none !important;
+    }
+    /* Koreksi bentuk kotak target dari persegi ke persegi panjang lebar (barcode 1D) */
+    #qr-camera-reader__scan_region_v2 video,
+    #qr-camera-reader video {
+        aspect-ratio: unset !important;
     }
 </style>
 
@@ -223,12 +171,12 @@ function getCameraConfig() {
     return {
         fps: 15,
         qrbox: function(viewfinderWidth, viewfinderHeight) {
-            // Selalu bujur sangkar (persegi kotak) 1:1 sempurna
-            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-            const boxSize = Math.max(180, Math.floor(minEdge * 0.72));
+            // Persegi panjang lebar (format barcode garis/1D, bukan kotak QR)
+            const boxWidth = Math.max(220, Math.floor(viewfinderWidth * 0.9));
+            const boxHeight = Math.max(90, Math.floor(viewfinderHeight * 0.35));
             return {
-                width: boxSize,
-                height: boxSize
+                width: boxWidth,
+                height: boxHeight
             };
         },
         experimentalFeatures: {
@@ -245,11 +193,28 @@ function openScanModal() {
 
     resetScanResult();
 
-    // Default: langsung membuka tab Kamera
-    switchScanTab('camera');
+    // Tampilkan semua bagian (input manual di atas + kamera di bawah)
+    const tabScanner = document.getElementById('scan-tab-scanner');
+    const tabCamera = document.getElementById('scan-tab-camera');
+    if (tabScanner) tabScanner.classList.remove('hidden');
+    if (tabCamera) tabCamera.classList.remove('hidden');
 
-    // Cek apakah konteks aman (HTTPS atau localhost)
+    // Kursor langsung fokus ke input manual di atas
+    setTimeout(() => {
+        const inp = document.getElementById('scan-qr-input');
+        if (inp) {
+            inp.focus();
+            inp.select();
+        }
+    }, 100);
+
+    // Kamera langsung menyala (jika konteks aman)
     checkSecureContext();
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const isSecure = window.isSecureContext || window.location.protocol === 'https:' || isLocalhost;
+    if (isSecure && !isCameraActive) {
+        startCameraScanner(false);
+    }
 
     lucide.createIcons();
 }
@@ -272,47 +237,8 @@ function clearScanInput() {
     resetScanResult();
 }
 
-function switchScanTab(tab) {
-    const tabScanner = document.getElementById('scan-tab-scanner');
-    const tabCamera = document.getElementById('scan-tab-camera');
-    const btnScanner = document.getElementById('tab-btn-scanner');
-    const btnCamera = document.getElementById('tab-btn-camera');
-
-    if (tab === 'scanner') {
-        // Pindah ke Input Manual (Cadangan)
-        tabScanner.classList.remove('hidden');
-        tabCamera.classList.add('hidden');
-
-        btnScanner.className = 'flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 bg-[#290024] text-[#F2F5E2] shadow-sm';
-        btnCamera.className = 'flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 hover:text-[#290024]';
-
-        stopCameraScanner();
-        setTimeout(() => {
-            const inp = document.getElementById('scan-qr-input');
-            if (inp) {
-                inp.focus();
-                inp.select();
-            }
-        }, 100);
-    } else {
-        // Pindah ke Kamera (Utama)
-        tabScanner.classList.add('hidden');
-        tabCamera.classList.remove('hidden');
-
-        btnCamera.className = 'flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 bg-[#290024] text-[#F2F5E2] shadow-sm';
-        btnScanner.className = 'flex-1 py-2 rounded-xl transition-all flex items-center justify-center gap-1.5 hover:text-[#290024]';
-
-        checkSecureContext();
-
-        // Coba nyalakan live stream kamera jika didukung
-        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const isSecure = window.isSecureContext || window.location.protocol === 'https:' || isLocalhost;
-        if (isSecure && !isCameraActive) {
-            startCameraScanner(false);
-        }
-    }
-    lucide.createIcons();
-}
+// Tab lama tidak dipakai lagi: input manual & kamera kini tampil bersamaan dalam 1 tampilan.
+// openScanModal() yang menangani fokus input manual + nyalakan kamera otomatis.
 
 function checkSecureContext() {
     const notice = document.getElementById('insecure-context-notice');
@@ -445,42 +371,6 @@ function playScanBeep() {
     } catch (e) {
         // Audio fallback
     }
-}
-
-// ==========================================================
-// 1. Kamera Bawaan HP via File Input (capture="environment")
-// 100% Selalu bisa di HP tanpa perlu HTTPS / izin rumit!
-// ==========================================================
-function triggerNativeCamera() {
-    const fileInput = document.getElementById('native-camera-input');
-    if (fileInput) {
-        fileInput.value = ''; // Reset file input
-        fileInput.click();
-    }
-}
-
-function handleNativeCameraFile(input) {
-    if (!input.files || input.files.length === 0) return;
-
-    const file = input.files[0];
-    showScanResult('loading', 'Membaca Foto QR...', 'Sedang memproses foto dari kamera HP...');
-
-    if (typeof Html5Qrcode === 'undefined') {
-        showScanResult('error', 'Pustaka Belum Siap', 'Pustaka pemindai belum termuat sempurna.');
-        return;
-    }
-
-    if (!html5QrScanner) {
-        html5QrScanner = new Html5Qrcode("qr-camera-reader");
-    }
-
-    html5QrScanner.scanFile(file, true)
-        .then(decodedText => {
-            processScanCode(decodedText);
-        })
-        .catch(err => {
-            showScanResult('error', 'QR Tidak Terdeteksi', 'QR Code tidak terbaca jelas pada foto. Pastikan kamera fokus ke QR Code lalu coba foto ulang.');
-        });
 }
 
 // ==========================================================

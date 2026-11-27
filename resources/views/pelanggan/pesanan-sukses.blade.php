@@ -44,7 +44,7 @@
                 </svg>
             </div>
             <div class="min-w-0 flex-1">
-                <h4 class="font-bold text-xs text-[#E3DEA4]">QR Code Berhasil Di-scan!</h4>
+                <h4 class="font-bold text-xs text-[#E3DEA4]">Barcode Berhasil Di-scan!</h4>
                 <p class="text-[11px] text-[#F2F5E2] leading-tight">Pesanan Anda kini masuk ke tahap <strong>Sedang Diproses</strong> oleh barista.</p>
             </div>
         </div>
@@ -70,31 +70,31 @@
                     Silakan Bayar di Kasir
                 </h1>
                 <p class="text-xs sm:text-sm text-[#775533] leading-relaxed max-w-sm mx-auto">
-                    Tunjukkan QR Code di bawah ini ke kasir. Begitu di-scan oleh kasir, pesanan Anda akan langsung masuk ke tahap <strong>Sedang Diproses</strong>.
+                    Tunjukkan Barcode di bawah ini ke kasir. Begitu di-scan oleh kasir, pesanan Anda akan langsung masuk ke tahap <strong>Sedang Diproses</strong>.
                 </p>
             </div>
 
-            {{-- QR Code Pesanan untuk Kasir --}}
-            <div class="p-4 bg-white rounded-2xl border-2 border-dashed border-[#D4954D]/80 shadow-sm inline-block mx-auto">
-                <img src="{{ $order->qrCodeApiUrl(260) }}"
-                     alt="QR Code Pesanan {{ $order->order_code }}"
-                     class="w-48 h-48 sm:w-52 sm:h-52 mx-auto object-contain">
+            {{-- Barcode Garis (1D) untuk Scanner Kasir --}}
+            <div class="p-4 bg-white rounded-2xl border-2 border-dashed border-[#D4954D]/80 shadow-sm inline-block mx-auto w-full max-w-xs">
+                <img src="https://barcodeapi.org/api/code128/{{ urlencode($order->order_code) }}"
+                     alt="Barcode Pesanan {{ $order->order_code }}"
+                     class="w-full h-24 object-contain">
                 <p class="text-[11px] font-bold text-[#290024] mt-2.5 flex items-center justify-center gap-1.5">
                     <svg class="w-4 h-4 text-[#D4954D]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                     </svg>
-                    <span>Tunjukkan QR Code ke Kasir</span>
+                    <span>Tunjukkan Barcode ini ke Kasir</span>
                 </p>
             </div>
 
-            <!-- Kode Pesanan Box (Tepat di Bawah QR Code) -->
+            <!-- Kode Pesanan Box (Tepat di Bawah Barcode) -->
             <div class="p-3.5 rounded-2xl bg-[#E3DEA4]/30 border border-[#E3DEA4] space-y-1">
                 <div class="text-[10px] font-bold uppercase tracking-wider text-[#775533]">Kode Pesanan Anda</div>
                 <div class="font-mono text-3xl font-black text-[#290024] tracking-widest select-all">
                     {{ $order->order_code }}
                 </div>
                 <p class="text-[10px] text-[#775533] font-medium">
-                    (Kasir dapat memindai QR code di atas atau sebutkan kode ini di meja kasir)
+                    (Kasir dapat memindai barcode garis di atas atau sebutkan kode ini di meja kasir)
                 </p>
             </div>
         </div>
@@ -120,7 +120,7 @@
                     Pesanan Sedang Dibuat
                 </h1>
                 <p class="text-xs sm:text-sm text-[#775533] leading-relaxed max-w-sm mx-auto">
-                    QR Code telah berhasil di-scan oleh kasir! Pesanan Anda saat ini sedang diracik oleh barista / dapur. Silakan selesaikan pembayaran di kasir.
+                    Barcode telah berhasil di-scan oleh kasir! Pesanan Anda saat ini sedang diracik oleh barista / dapur. Silakan selesaikan pembayaran di kasir.
                 </p>
             </div>
 

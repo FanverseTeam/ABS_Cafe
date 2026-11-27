@@ -178,13 +178,13 @@ class Order extends Model
     }
 
     /**
-     * Scope untuk pesanan yang masuk ke daftar kasir (hanya tampil setelah di-scan jika via web, atau pesanan offline/pos).
+     * Scope untuk pesanan yang masuk ke daftar kasir (semua pesanan offline/pos, dan pesanan web termasuk status 'baru').
      */
     public function scopeForKasir($query)
     {
         return $query->where(function ($q) {
             $q->where('source', '!=', 'web')
-                ->orWhere('order_status', '!=', 'baru');
+                ->orWhereIn('order_status', ['baru', 'diterima', 'diproses', 'siap', 'selesai']);
         });
     }
 

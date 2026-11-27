@@ -50,7 +50,7 @@ class PaymentController extends Controller
         }
 
         $order->load('items');
-        $paymentMethods = PaymentMethod::active()->get();
+        $paymentMethods = PaymentMethod::active()->where('code', '!=', 'ewallet')->get();
 
         return view('kasir.payments.checkout', compact('order', 'paymentMethods'));
     }
@@ -63,7 +63,7 @@ class PaymentController extends Controller
         }
 
         $data = $request->validate([
-            'method' => 'required|string|max:30',
+            'method' => 'required|string|max:30|not_in:ewallet',
             'cash_received' => 'nullable|numeric|min:0',
             'reference' => 'nullable|string|max:100',
         ]);
