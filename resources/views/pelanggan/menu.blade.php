@@ -107,7 +107,7 @@
                            x-model="searchQuery"
                            x-ref="searchInput"
                            placeholder="Cari menu kesukaan..."
-                           class="flex-1 bg-transparent text-xs sm:text-sm text-[#290024] placeholder-[#775533]/50 focus:outline-none py-1.5 px-2"
+                           class="min-w-0 flex-1 w-full bg-transparent text-xs sm:text-sm text-[#290024] placeholder-[#775533]/50 focus:outline-none py-1.5 px-2"
                            aria-label="Cari menu">
                     <button type="button"
                             x-show="searchQuery.length > 0"
