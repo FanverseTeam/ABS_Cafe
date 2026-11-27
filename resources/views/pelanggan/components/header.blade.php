@@ -7,7 +7,7 @@
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         <!-- Logo & Branding di Kiri -->
         <a href="{{ route('pelanggan.beranda') }}" class="group flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D] rounded-xl pr-2" aria-label="Beranda ABS Cafe">
-            <x-logo :show-text="false" size="sm" class="shrink-0 group-hover:scale-105 transition-transform" />
+            <x-logo on-dark :show-text="false" size="sm" class="shrink-0 group-hover:scale-105 transition-transform" />
             <div class="flex flex-col text-left">
                 <span class="font-serif text-base sm:text-lg font-bold tracking-wider text-[#F2F5E2] leading-tight">
                     {{ $landing['cafe']['name'] ?? 'ABS CAFE' }}
@@ -97,7 +97,7 @@
             <!-- Header Menu Samping: Brand & Tombol Tutup -->
             <div class="px-4 py-3.5 border-b border-[#775533]/25 flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <x-logo :show-text="false" size="sm" class="shrink-0 w-5 h-5" />
+                    <x-logo on-dark :show-text="false" size="sm" class="shrink-0 w-5 h-5" />
                     <span class="font-serif font-bold text-[#F2F5E2] text-xs sm:text-sm tracking-wider">
                         {{ $landing['cafe']['name'] ?? 'ABS CAFE' }}
                     </span>
