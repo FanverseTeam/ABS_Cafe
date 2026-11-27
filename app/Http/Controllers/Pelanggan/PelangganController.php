@@ -310,7 +310,6 @@ class PelangganController extends Controller
         $activePromos = Promo::running()
             ->where('type', '!=', 'non_diskon')
             ->get()
-            ->filter(fn (Promo $p) => $p->remainingQuota() === null || $p->remainingQuota() > 0)
             ->map(fn (Promo $p) => [
                 'id' => $p->id,
                 'title' => $p->title,
@@ -319,6 +318,7 @@ class PelangganController extends Controller
                 'type' => $p->type,
                 'value' => (float) $p->value,
                 'min_spend' => (float) $p->min_spend,
+                'quota' => $p->remainingQuota(),
                 'applies_to' => $p->applies_to,
                 'target_category_id' => $p->target_category_id,
                 'target_menu_id' => $p->target_menu_id,

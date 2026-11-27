@@ -467,17 +467,15 @@
                     </div>
                 </template>
 
-                <!-- Daftar Promo Tersedia / Otomatis -->
-                <div x-show="availablePromos.length > 0" class="space-y-2 pt-1">
+                <!-- Daftar Promo Tersedia / Otomatis (Hanya tampilkan yang belum terpakai agar tidak dobel) -->
+                <div x-show="unappliedPromos.length > 0" class="space-y-2 pt-1">
                     <label class="block text-[11px] font-bold text-[#775533] uppercase tracking-wider">Promo Yang Tersedia:</label>
                     <div class="space-y-2">
-                        <template x-for="p in availablePromos" :key="p.id">
+                        <template x-for="p in unappliedPromos" :key="p.id">
                             <div class="p-3 rounded-xl border transition-all flex items-center justify-between gap-2"
-                                 :class="activePromo && activePromo.id === p.id
-                                    ? 'bg-[#E3DEA4]/50 border-[#290024] ring-1 ring-[#290024]'
-                                    : (isPromoEligible(p)
-                                        ? 'bg-white/80 border-[#E3DEA4] hover:border-[#D4954D]'
-                                        : 'bg-white/40 border-[#E3DEA4]/50 opacity-75')">
+                                 :class="isPromoEligible(p)
+                                    ? 'bg-white/80 border-[#E3DEA4] hover:border-[#D4954D]'
+                                    : 'bg-white/40 border-[#E3DEA4]/50 opacity-75'">
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-1.5 flex-wrap">
                                         <span class="font-bold text-xs text-[#290024]" x-text="p.title"></span>
@@ -492,23 +490,15 @@
                                             </span>
                                         </template>
                                     </div>
-                                    <p class="text-[10px] text-[#775533] mt-0.5" x-text="p.description || getPromoValueLabel(p)"></p>
-                                    <template x-if="!isPromoEligible(p) && p.min_spend > 0">
-                                        <p class="text-[10px] text-[#D4954D] font-medium mt-0.5"
-                                           x-text="'Min. belanja ' + formatRupiah(p.min_spend) + ' (Kurang ' + formatRupiah(p.min_spend - subtotal) + ')'"></p>
+                                    <p class="text-[10px] text-[#775533] mt-0.5 break-words" x-text="p.description || getPromoValueLabel(p)"></p>
+                                    <template x-if="!isPromoEligible(p)">
+                                        <p class="text-[10px] text-[#D4954D] font-medium mt-0.5 break-words"
+                                           x-text="getPromoIneligibleReason(p)"></p>
                                     </template>
                                 </div>
 
                                 <div class="shrink-0">
-                                    <template x-if="activePromo && activePromo.id === p.id">
-                                        <span class="text-xs font-bold text-[#290024] flex items-center gap-1">
-                                            <svg class="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                                <polyline points="20 6 9 17 4 12"></polyline>
-                                            </svg>
-                                            <span>Aktif</span>
-                                        </span>
-                                    </template>
-                                    <template x-if="(!activePromo || activePromo.id !== p.id) && isPromoEligible(p)">
+                                    <template x-if="isPromoEligible(p)">
                                         <button type="button"
                                                 @click="selectPromo(p)"
                                                 class="px-3 py-1 rounded-full bg-[#290024] text-[#E3DEA4] hover:bg-[#D4954D] hover:text-[#290024] text-[11px] font-bold transition-colors">
@@ -517,7 +507,7 @@
                                     </template>
                                     <template x-if="!isPromoEligible(p)">
                                         <span class="text-[10px] text-[#775533]/70 font-medium italic">
-                                            Belum Cukup
+                                            Tidak Memenuhi
                                         </span>
                                     </template>
                                 </div>
@@ -936,14 +926,31 @@ function cartPage() {
             }, 0);
         },
 
-        // List promo yang memiliki diskon
+        // List semua promo & voucher: yang memenuhi syarat paling atas (diurutkan diskon terbesar), yang tidak memenuhi syarat di bawah
         get availablePromos() {
-            return this.activePromos.filter(p => p.type !== 'non_diskon');
+            const list = this.activePromos.filter(p => p.type !== 'non_diskon');
+            return list.slice().sort((a, b) => {
+                const aEligible = this.isPromoEligible(a) ? 1 : 0;
+                const bEligible = this.isPromoEligible(b) ? 1 : 0;
+                if (aEligible !== bEligible) {
+                    return bEligible - aEligible;
+                }
+                if (aEligible === 1) {
+                    return this.computeDiscountForPromo(b) - this.computeDiscountForPromo(a);
+                }
+                return (parseFloat(a.min_spend) || 0) - (parseFloat(b.min_spend) || 0);
+            });
+        },
+
+        // Daftar promo/voucher yang belum sedang dipakai (agar tidak dobel dengan box promo aktif di atas)
+        get unappliedPromos() {
+            const activeId = this.activePromo ? this.activePromo.id : null;
+            return this.availablePromos.filter(p => p.id !== activeId);
         },
 
         isPromoEligible(p) {
             if (!p || p.type === 'non_diskon') return false;
-            if (p.quota !== null && p.quota <= 0) return false;
+            if (p.quota !== null && p.quota !== undefined && p.quota <= 0) return false;
             const minSpend = parseFloat(p.min_spend) || 0;
             if (this.subtotal < minSpend) return false;
 
@@ -961,6 +968,21 @@ function cartPage() {
             }
 
             return true;
+        },
+
+        getPromoIneligibleReason(p) {
+            if (!p) return '';
+            if (p.quota !== null && p.quota !== undefined && p.quota <= 0) {
+                return 'Kuota promo sudah habis';
+            }
+            const minSpend = parseFloat(p.min_spend) || 0;
+            if (minSpend > 0 && this.subtotal < minSpend) {
+                return 'Min. belanja ' + this.formatRupiah(minSpend) + ' (Kurang ' + this.formatRupiah(minSpend - this.subtotal) + ')';
+            }
+            if (p.target_menu_id || p.target_category_id) {
+                return 'Khusus menu atau kategori tertentu';
+            }
+            return 'Belum memenuhi syarat promo';
         },
 
         getPromoValueLabel(p) {
