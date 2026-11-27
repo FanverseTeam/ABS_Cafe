@@ -36,6 +36,12 @@
                     <span>Diskon{{ $order->promo ? ' ('.($order->promo->title ?: $order->promo->code).')' : '' }}</span>
                     <span class="font-bold">-Rp {{ number_format($order->discount, 0, ',', '.') }}</span>
                 </div>
+                @if($order->promo && $order->promo->type === 'buy_x_get_y')
+                    <div class="flex items-center justify-between text-green-700 text-[10px]">
+                        <span>Bonus: Beli {{$order->promo->buy_qty}} Gratis {{$order->promo->get_qty}}</span>
+                        <span></span>
+                    </div>
+                @endif
             @endif
             <div class="pt-2 border-t border-[#E3DEA4]/60 flex items-center justify-between">
                 <span class="font-semibold text-[#290024]">Total Pembayaran</span>
@@ -108,6 +114,12 @@
                 <div class="flex justify-between"><span>Service</span><span>Rp {{ number_format($order->service_charge, 0, ',', '.') }}</span></div>
                 @if((float)$order->discount > 0)
                     <div class="flex justify-between"><span>Diskon{{ $order->promo ? ' ('.$order->promo->code.')' : '' }}</span><span>-Rp {{ number_format($order->discount, 0, ',', '.') }}</span></div>
+                    @if($order->promo && $order->promo->type === 'buy_x_get_y')
+                        <div class="flex justify-between text-green-700 text-[10px]">
+                            <span>Bonus: Beli {{$order->promo->buy_qty}} Gratis {{$order->promo->get_qty}}</span>
+                            <span></span>
+                        </div>
+                    @endif
                 @endif
                 <div class="flex justify-between font-bold border-t border-black/20 pt-1 text-sm">
                     <span>TOTAL</span><span>Rp {{ number_format($order->total, 0, ',', '.') }}</span>

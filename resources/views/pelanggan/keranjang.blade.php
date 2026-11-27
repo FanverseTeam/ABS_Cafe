@@ -390,7 +390,7 @@
                 </div>
             </div>
 
-            <!-- 3. PROMO & VOUCHER DISKON -->
+<!-- 3. PROMO & VOUCHER DISKON -->
             <div class="bg-[#F2F5E2] p-4 sm:p-5 rounded-2xl border border-[#E3DEA4]/80 shadow-soft space-y-3.5">
                 <div class="pb-2 border-b border-[#E3DEA4]/60 flex items-center justify-between">
                     <h2 class="font-serif text-sm sm:text-base font-bold text-[#290024] flex items-center gap-2">
@@ -398,13 +398,23 @@
                             <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
                             <line x1="7" y1="7" x2="7.01" y2="7"></line>
                         </svg>
-                        <span>Promo &amp; Diskon</span>
+                        <span>Promo & Diskon</span>
                     </h2>
-                    <template x-if="activePromo">
-                        <span class="px-2.5 py-0.5 rounded-full bg-[#D4954D]/25 border border-[#D4954D]/50 text-[#290024] text-[10px] font-bold">
-                            Promo Terpakai
-                        </span>
-                    </template>
+                    <div class="flex items-center gap-2">
+                        <template x-if="activePromo">
+                            <span class="px-2.5 py-0.5 rounded-full bg-[#D4954D]/25 border border-[#D4954D]/50 text-[#290024] text-[10px] font-bold">
+                                Promo Terpakai
+                            </span>
+                        </template>
+                        <!-- Toggle Promo On/Off -->
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox"
+                                   x-model="promoEnabled"
+                                   class="sr-only peer"
+                                   @change="promoEnabled = !promoEnabled; if (!promoEnabled) { noPromo = true; }">
+                            <div class="w-11 h-6 bg-[#E3DEA4] peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-[#D4954D] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[#E3DEA4] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4954D]"></div>
+                        </label>
+                    </div>
                 </div>
 
                 <!-- Input Kode Voucher Manual -->
@@ -428,9 +438,13 @@
                 <template x-if="activePromo">
                     <div class="p-3 rounded-xl bg-[#E3DEA4]/40 border border-[#D4954D]/40 flex items-center justify-between gap-3">
                         <div class="min-w-0">
-                            <div class="flex items-center gap-1.5">
+                            <div class="flex items-center gap-1.5 flex-wrap">
                                 <span class="font-bold text-xs text-[#290024]" x-text="activePromo.title"></span>
                                 <span x-show="activePromo.code" class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#290024] text-[#E3DEA4]" x-text="activePromo.code"></span>
+                                <template x-if="activePromo.type === 'buy_x_get_y' && activePromo.buy_qty && activePromo.get_qty">
+                                    <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-[#D4954D]/20 border border-[#D4954D]/40 text-[#D4954D] font-bold"
+                                          x-text="'Beli ' + activePromo.buy_qty + ' Gratis ' + activePromo.get_qty"></span>
+                                </template>
                             </div>
                             <p class="text-[11px] text-[#775533] mt-0.5">
                                 Potongan: <strong class="text-[#290024]" x-text="formatRupiah(discount)"></strong>
@@ -460,7 +474,11 @@
                                     <div class="flex items-center gap-1.5 flex-wrap">
                                         <span class="font-bold text-xs text-[#290024]" x-text="p.title"></span>
                                         <span x-show="p.code" class="text-[9px] font-mono px-1 rounded bg-[#E3DEA4] text-[#290024]" x-text="p.code"></span>
-                                        <template x-if="isPromoEligible(p)">
+                                        <template x-if="p.type === 'buy_x_get_y' && p.buy_qty && p.get_qty">
+                                            <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-[#D4954D]/20 border border-[#D4954D]/40 text-[#D4954D] font-bold"
+                                                  x-text="'Beli ' + p.buy_qty + ' Gratis ' + p.get_qty"></span>
+                                        </template>
+                                        <template x-if="isPromoEligible(p) && p.type !== 'buy_x_get_y'">
                                             <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-green-100 text-green-800 font-semibold">
                                                 Syarat Terpenuhi
                                             </span>
@@ -809,6 +827,7 @@ function cartPage() {
         voucherMessage: '',
         voucherMessageSuccess: false,
         noPromo: false,
+        promoEnabled: true, // Toggle untuk aktif/nonaktif promo
 
         initCart() {
             this.loadCart();
@@ -962,6 +981,8 @@ function cartPage() {
         },
 
         get activePromo() {
+            // Jika promo dinonaktifkan, kembalikan null
+            if (!this.promoEnabled) return null;
             if (this.noPromo) return null;
 
             // Jika user memilih promo via ID tertentu
@@ -1087,9 +1108,9 @@ function cartPage() {
                     table_number: this.orderType === 'dine_in' ? (this.tableNumber ? parseInt(this.tableNumber) : null) : null,
                     notes: this.orderNotes ? this.orderNotes.trim() : null,
                     items: this.cart,
-                    promo_id: this.activePromo ? this.activePromo.id : null,
-                    voucher_code: this.appliedVoucherCode || (this.activePromo ? this.activePromo.code : null),
-                    no_promo: this.noPromo ? 1 : 0
+                    promo_id: (this.promoEnabled && this.activePromo) ? this.activePromo.id : null,
+                    voucher_code: (this.promoEnabled && this.activePromo) ? (this.appliedVoucherCode || this.activePromo.code) : null,
+                    no_promo: (!this.promoEnabled || this.noPromo) ? 1 : 0
                 };
 
                 const response = await fetch("{{ route('pelanggan.pesanan.store') }}", {

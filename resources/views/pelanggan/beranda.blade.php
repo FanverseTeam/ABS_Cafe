@@ -243,9 +243,9 @@
 </section>
 
 <!-- ======================================================================= -->
-<!-- 2. TENTANG KAMI SECTION                                                 -->
-<!-- ======================================================================= -->
-<section id="tentang-kami" class="relative py-16 sm:py-24 bg-[#000000] overflow-hidden">
+    <!-- 2. TENTANG KAMI SECTION                                                 -->
+    <!-- ======================================================================= -->
+    <section id="tentang-kami" class="relative py-16 sm:py-24 bg-[#000000] overflow-hidden animate-fade-in-up">
     <!-- Ornamen Daun Garis Halus di Latar Belakang (Inline SVG) -->
     <div class="pointer-events-none absolute -top-10 -left-10 w-48 h-48 opacity-15 text-[#D4954D]" aria-hidden="true">
         <svg viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -328,9 +328,9 @@
 </section>
 
 <!-- ======================================================================= -->
-<!-- 3. EMPAT KEUNGGULAN SECTION                                             -->
-<!-- ======================================================================= -->
-<section class="relative py-16 sm:py-24 bg-[#000000] border-y border-[#A09B90]/30">
+    <!-- 3. EMPAT KEUNGGULAN SECTION                                             -->
+    <!-- ======================================================================= -->
+    <section class="relative py-16 sm:py-24 bg-[#000000] border-y border-[#A09B90]/30 animate-fade-in-up stagger-1">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <!-- 2x2 di Mobile, 4 Kolom di Tablet & Desktop -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
@@ -385,9 +385,9 @@
 </section>
 
 <!-- ======================================================================= -->
-<!-- 4. GALERI SUASANA SECTION (AUTO-SCROLL FILMSTRIP) -->
-<!-- ======================================================================= -->
-<section id="suasana" class="relative py-16 sm:py-24 bg-[#000000] overflow-hidden">
+    <!-- 4. GALERI SUASANA SECTION (AUTO-SCROLL FILMSTRIP) -->
+    <!-- ======================================================================= -->
+    <section id="suasana" class="relative py-16 sm:py-24 bg-[#000000] overflow-hidden animate-fade-in-up stagger-2">
     <!-- Header -->
     <div class="relative mx-auto max-w-3xl px-4 sm:px-6 text-center mb-10 sm:mb-14 reveal-on-scroll">
         @if(!empty($landing['gallery']['badge']))
@@ -628,7 +628,7 @@
     }
 </style>
 
-<section id="signature-showcase" class="relative py-16 sm:py-24 bg-[#000000] border-t border-[#A09B90]/30 overflow-hidden">
+<section id="signature-showcase" class="relative py-16 sm:py-24 bg-[#000000] border-t border-[#A09B90]/30 overflow-hidden animate-fade-in-up stagger-3">
     <!-- Studio Spotlight -->
     <div class="pointer-events-none absolute inset-0"
          style="background: radial-gradient(ellipse 65% 58% at 50% 52%, rgba(212, 149, 77, 0.14) 0%, rgba(41, 0, 36, 0.22) 44%, #000000 78%);"></div>
@@ -916,7 +916,7 @@
 <!-- 4b. MENU TERFAVORIT (BEST OF TASTE - 3 MENU PENJUALAN TERBANYAK)        -->
 <!-- ======================================================================= -->
 @if(isset($topFavorites) && $topFavorites->count() > 0)
-<section id="favorit" class="relative py-16 sm:py-24 bg-[#000000] border-t border-[#A09B90]/30 overflow-hidden">
+<section id="favorit" class="relative py-16 sm:py-24 bg-[#000000] border-t border-[#A09B90]/30 overflow-hidden animate-fade-in-up stagger-4">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <!-- Header Section -->
         <div class="relative mx-auto max-w-3xl px-4 sm:px-6 text-center mb-12 sm:mb-16 reveal-on-scroll">
@@ -979,9 +979,9 @@
 @endif
 
 <!-- ======================================================================= -->
-<!-- 5. LOKASI SECTION                                                       -->
-<!-- ======================================================================= -->
-<section id="lokasi" class="relative py-16 sm:py-24 bg-[#000000]">
+    <!-- 5. LOKASI SECTION                                                       -->
+    <!-- ======================================================================= -->
+    <section id="lokasi" class="relative py-16 sm:py-24 bg-[#000000] animate-fade-in-up stagger-5">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-14 items-center">
             <!-- Informasi Lokasi (Kiri) -->
@@ -1117,9 +1117,9 @@
 </section>
 
 <!-- ======================================================================= -->
-<!-- 5b. RESERVASI MEJA REAL-TIME BANNER                                    -->
-<!-- ======================================================================= -->
-<section class="relative py-16 sm:py-24 bg-[#000000] border-t border-[#A09B90]/25 overflow-hidden">
+    <!-- 5b. RESERVASI MEJA REAL-TIME BANNER                                    -->
+    <!-- ======================================================================= -->
+    <section class="relative py-16 sm:py-24 bg-[#000000] border-t border-[#A09B90]/25 overflow-hidden animate-fade-in-up stagger-6">
     <div class="relative mx-auto max-w-4xl px-4 sm:px-6 reveal-on-scroll">
         <!-- Kotak Banner Reservasi Bergaya Elevated Card -->
         <div class="relative p-8 sm:p-12 md:p-14 rounded-3xl bg-[#050604] border border-[#A09B90]/40 shadow-[0_20px_50px_rgba(0,0,0,0.85)] text-center overflow-hidden">
