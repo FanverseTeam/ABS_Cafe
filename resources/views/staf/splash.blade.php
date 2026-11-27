@@ -421,7 +421,7 @@
                             fill="none" stroke="#D4954D" stroke-width="2" />
                 </svg>
                 <div class="splash-logo-inner">
-                    <x-logo size="lg" :show-text="false" loading="eager" />
+                    <x-logo on-dark size="lg" :show-text="false" loading="eager" />
                 </div>
             </div>
 

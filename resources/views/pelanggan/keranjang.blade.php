@@ -25,13 +25,13 @@
 <header x-data
         class="sticky top-0 inset-x-0 z-30 bg-[#F2F5E2]/95 backdrop-blur-md border-b border-[#E3DEA4]/80 shadow-xs"
         style="background-color: #F2F5E2 !important;">
-    <div class="mx-auto max-w-3xl px-4 sm:px-6 h-14 flex items-center justify-between gap-2">
+    <div class="mx-auto max-w-3xl lg:max-w-7xl px-3 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-2">
         <!-- Sisi Kiri: Tombol Kembali Sesuai Step -->
-        <div class="w-24 flex items-center justify-start">
+        <div class="shrink-0 sm:w-28 flex items-center justify-start">
             <!-- Saat di Step 1: Kembali ke Menu -->
             <a x-show="!$store.checkout || $store.checkout.step === 1"
                href="{{ route('pelanggan.menu', array_filter(['meja' => $tableNumber])) }}"
-               class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#290024] hover:text-[#775533] py-1.5 px-2 -ml-2 rounded-xl hover:bg-[#E3DEA4]/40 transition-colors"
+               class="inline-flex items-center gap-1 text-xs font-semibold text-[#290024] hover:text-[#775533] py-1.5 px-2 -ml-1 sm:-ml-2 rounded-xl hover:bg-[#E3DEA4]/40 transition-colors whitespace-nowrap"
                aria-label="Kembali ke Menu">
                 <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -45,7 +45,7 @@
                     x-cloak
                     type="button"
                     @click="$store.checkout.step = 1; window.scrollTo({ top: 0, behavior: 'smooth' })"
-                    class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#290024] hover:text-[#775533] py-1.5 px-2 -ml-2 rounded-xl hover:bg-[#E3DEA4]/40 transition-colors"
+                    class="inline-flex items-center gap-1 text-xs font-semibold text-[#290024] hover:text-[#775533] py-1.5 px-2 -ml-1 sm:-ml-2 rounded-xl hover:bg-[#E3DEA4]/40 transition-colors whitespace-nowrap"
                     aria-label="Kembali ke Detail Pesanan">
                 <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -55,17 +55,17 @@
             </button>
         </div>
 
-        <!-- Judul Header di Tengah (Tepat di Tengah & Tidak Berantakan) -->
-        <h1 class="flex-1 text-center font-serif text-sm sm:text-base font-bold text-[#290024] tracking-tight">
+        <!-- Judul Header di Tengah (Tepat di Tengah & Tidak Terpotong di Layar Kecil) -->
+        <h1 class="min-w-0 flex-1 text-center font-serif text-xs sm:text-base font-bold text-[#290024] tracking-tight truncate px-1">
             <span x-show="!$store.checkout || $store.checkout.step === 1">Detail Pesanan</span>
-            <span x-show="$store.checkout && $store.checkout.step === 2" x-cloak>Isi Data Pelanggan</span>
+            <span x-show="$store.checkout && $store.checkout.step === 2" x-cloak>Data Pelanggan</span>
         </h1>
 
         <!-- Sisi Kanan: Nomor Meja & Logo Cafe -->
-        <div class="w-32 flex items-center justify-end gap-2">
+        <div class="shrink-0 sm:w-32 flex items-center justify-end gap-1.5 sm:gap-2">
             <template x-if="tableNumber && orderType === 'dine_in'">
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#290024] text-[#E3DEA4] text-[11px] font-bold shadow-xs">
-                    <span class="w-1.5 h-1.5 rounded-full bg-[#D4954D] animate-pulse"></span>
+                <div class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-[#290024] text-[#E3DEA4] text-[10px] sm:text-[11px] font-bold shadow-xs whitespace-nowrap">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#D4954D] animate-pulse shrink-0"></span>
                     <span x-text="'Meja #' + tableNumber"></span>
                 </div>
             </template>
@@ -81,7 +81,7 @@
 <div x-data="cartPage()"
      x-init="initCart()"
      style="background-color: #F2F5E2 !important;"
-     class="min-h-screen bg-[#F2F5E2] pb-32">
+     class="min-h-screen bg-[#F2F5E2] pb-32 overflow-x-hidden">
 
         <div class="mx-auto max-w-3xl lg:max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6 pt-4 sm:pt-6 lg:pt-10 lg:space-y-10">
 
@@ -362,15 +362,15 @@
 
                 <!-- Indikator / Pilihan Meja Otomatis saat Dine In -->
                 <div x-show="orderType === 'dine_in'" x-transition class="mt-2.5 p-3 rounded-2xl bg-white/90 border border-[#E3DEA4] space-y-2 shadow-2xs">
-                    <div class="flex items-center justify-between gap-3">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#D4954D] animate-pulse"></span>
+                    <div class="flex items-center justify-between gap-2 flex-wrap">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#D4954D] animate-pulse shrink-0"></span>
                             <span class="text-xs font-semibold text-[#290024]">
                                 Nomor Meja: <strong class="font-bold text-[#290024]" x-text="tableNumber ? 'Meja #' + tableNumber : 'Belum Memilih Meja'"></strong>
                             </span>
                         </div>
                         <template x-if="tableNumber">
-                            <span class="px-2.5 py-0.5 rounded-full bg-[#290024] text-[#E3DEA4] text-[10px] font-bold">
+                            <span class="px-2.5 py-0.5 rounded-full bg-[#290024] text-[#E3DEA4] text-[10px] font-bold shrink-0 whitespace-nowrap">
                                 Otomatis Terpilih
                             </span>
                         </template>
@@ -420,14 +420,14 @@
                 <!-- Input Kode Voucher Manual -->
                 <div class="space-y-1.5">
                     <label class="block text-[11px] font-semibold text-[#290024]">Punya Kode Voucher / Promo?</label>
-                    <div class="flex gap-2">
+                    <div class="flex items-stretch gap-2 w-full">
                         <input type="text"
                                x-model="inputVoucherCode"
                                placeholder="Masukkan kode promo..."
-                               class="flex-1 uppercase bg-[#F2F5E2]/80 text-xs p-2.5 rounded-xl border border-[#E3DEA4] focus:bg-[#F2F5E2] focus:border-[#290024] focus:outline-none text-[#290024] font-semibold">
+                               class="min-w-0 flex-1 w-full uppercase bg-[#F2F5E2]/80 text-xs px-3 py-2.5 rounded-xl border border-[#E3DEA4] focus:bg-[#F2F5E2] focus:border-[#290024] focus:outline-none text-[#290024] font-semibold">
                         <button type="button"
                                 @click="applyManualVoucher()"
-                                class="px-4 py-2.5 rounded-xl bg-[#290024] text-[#F2F5E2] hover:bg-[#D4954D] hover:text-[#290024] text-xs font-bold transition-all shrink-0">
+                                class="px-3.5 sm:px-4 py-2.5 rounded-xl bg-[#290024] text-[#F2F5E2] hover:bg-[#D4954D] hover:text-[#290024] text-xs font-bold transition-all shrink-0 whitespace-nowrap">
                             Terapkan
                         </button>
                     </div>
@@ -436,6 +436,7 @@
 
                 <!-- Status Promo Aktif Saat Ini -->
                 <template x-if="activePromo">
+<<<<<<< HEAD
                     <div class="p-3 rounded-xl bg-[#E3DEA4]/40 border border-[#D4954D]/40 flex items-center justify-between gap-3">
                         <div class="min-w-0">
                             <div class="flex items-center gap-1.5 flex-wrap">
@@ -445,8 +446,15 @@
                                     <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-[#D4954D]/20 border border-[#D4954D]/40 text-[#D4954D] font-bold"
                                           x-text="'Beli ' + activePromo.buy_qty + ' Gratis ' + activePromo.get_qty"></span>
                                 </template>
+=======
+                    <div class="p-3 rounded-xl bg-[#E3DEA4]/40 border border-[#D4954D]/40 flex items-center justify-between gap-2.5">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="font-bold text-xs text-[#290024] break-words" x-text="activePromo.title"></span>
+                                <span x-show="activePromo.code" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#290024] text-[#E3DEA4] break-all" x-text="activePromo.code"></span>
+>>>>>>> 5454ea51725d292968c88843d5e1804174975230
                             </div>
-                            <p class="text-[11px] text-[#775533] mt-0.5">
+                            <p class="text-[11px] text-[#775533] mt-0.5 break-words">
                                 Potongan: <strong class="text-[#290024]" x-text="formatRupiah(discount)"></strong>
                                 <span x-show="activePromo.min_spend > 0" class="text-[10px] opacity-80" x-text="'(Min. belanja ' + formatRupiah(activePromo.min_spend) + ')'"></span>
                             </p>

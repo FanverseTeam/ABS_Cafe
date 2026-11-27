@@ -24,7 +24,7 @@
     <div class="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
         <!-- Logo Kecil & Tagline -->
         <a href="{{ route('pelanggan.beranda') }}" class="group flex flex-col items-center gap-2 mb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4954D] rounded-2xl p-2" aria-label="Beranda ABS Cafe">
-            <x-logo :show-text="false" size="sm" class="group-hover:scale-105 transition-transform" />
+            <x-logo on-dark :show-text="false" size="sm" class="group-hover:scale-105 transition-transform" />
             <span class="font-serif text-lg font-bold tracking-wider text-[#F2F5E2]">
                 {{ $landing['cafe']['name'] ?? 'ABS CAFE' }}
             </span>

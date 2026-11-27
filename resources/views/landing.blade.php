@@ -454,7 +454,8 @@
             <div class="landing-card landing-reveal-card landing-copy">
                 <!-- Brand Logo Ring -->
                 <div class="landing-logo-ring">
-                    <x-logo size="lg"
+                    <x-logo on-dark
+                            size="lg"
                             :show-text="false"
                             loading="eager"
                             class="drop-shadow-[0_4px_12px_rgba(41,0,36,0.6)]" />

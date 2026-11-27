@@ -464,7 +464,7 @@
             </p>
             <form action="{{ route('pelanggan.reservasi.check') }}" method="GET" class="flex gap-2">
                 <input type="text" name="q" value="{{ $searchCode }}" placeholder="Kode RSV-... atau No. WA"
-                       class="flex-1 px-3.5 py-2 rounded-xl bg-[#F2F5E2]/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:outline-none">
+                       class="min-w-0 flex-1 w-full px-3.5 py-2 rounded-xl bg-[#F2F5E2]/80 border border-[#E3DEA4] text-xs text-[#290024] placeholder-[#775533]/50 focus:border-[#290024] focus:outline-none">
                 <button type="submit" class="px-4 py-2 rounded-xl bg-[#290024] text-[#F2F5E2] text-xs font-semibold hover:bg-[#290024]/90 transition-colors shrink-0">
                     Cek
                 </button>
