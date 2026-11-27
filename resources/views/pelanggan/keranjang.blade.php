@@ -25,19 +25,18 @@
 <header x-data
         class="sticky top-0 inset-x-0 z-30 bg-[#F2F5E2]/95 backdrop-blur-md border-b border-[#E3DEA4]/80 shadow-xs"
         style="background-color: #F2F5E2 !important;">
-    <div class="mx-auto max-w-3xl lg:max-w-7xl px-3 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-2">
-        <!-- Sisi Kiri: Tombol Kembali Sesuai Step -->
-        <div class="shrink-0 sm:w-28 flex items-center justify-start">
+    <div class="relative mx-auto max-w-3xl lg:max-w-7xl px-3 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-2">
+        <!-- Sisi Kiri: Tombol Kembali Sesuai Step (hanya ikon panah) -->
+        <div class="w-10 shrink-0 flex items-center justify-start">
             <!-- Saat di Step 1: Kembali ke Menu -->
             <a x-show="!$store.checkout || $store.checkout.step === 1"
                href="{{ route('pelanggan.menu', array_filter(['meja' => $tableNumber])) }}"
-               class="inline-flex items-center gap-1 text-xs font-semibold text-[#290024] hover:text-[#775533] py-1.5 px-2 -ml-1 sm:-ml-2 rounded-xl hover:bg-[#E3DEA4]/40 transition-colors whitespace-nowrap"
+               class="w-9 h-9 inline-flex items-center justify-center rounded-xl text-[#290024] hover:text-[#775533] hover:bg-[#E3DEA4]/40 transition-colors"
                aria-label="Kembali ke Menu">
-                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
                     <polyline points="12 19 5 12 12 5"></polyline>
                 </svg>
-                <span>Menu</span>
             </a>
 
             <!-- Saat di Step 2: Kembali ke Detail Pesanan (Step 1) -->
@@ -45,24 +44,23 @@
                     x-cloak
                     type="button"
                     @click="$store.checkout.step = 1; window.scrollTo({ top: 0, behavior: 'smooth' })"
-                    class="inline-flex items-center gap-1 text-xs font-semibold text-[#290024] hover:text-[#775533] py-1.5 px-2 -ml-1 sm:-ml-2 rounded-xl hover:bg-[#E3DEA4]/40 transition-colors whitespace-nowrap"
+                    class="w-9 h-9 inline-flex items-center justify-center rounded-xl text-[#290024] hover:text-[#775533] hover:bg-[#E3DEA4]/40 transition-colors"
                     aria-label="Kembali ke Detail Pesanan">
-                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
                     <polyline points="12 19 5 12 12 5"></polyline>
                 </svg>
-                <span>Kembali</span>
             </button>
         </div>
 
-        <!-- Judul Header di Tengah (Tepat di Tengah & Tidak Terpotong di Layar Kecil) -->
-        <h1 class="min-w-0 flex-1 text-center font-serif text-xs sm:text-base font-bold text-[#290024] tracking-tight truncate px-1">
+        <!-- Judul Header di Tengah (Absolute center tidak terpengaruh kiri/kanan) -->
+        <h1 class="absolute inset-x-0 text-center pointer-events-none font-serif text-xs sm:text-base font-bold text-[#290024] tracking-tight px-16">
             <span x-show="!$store.checkout || $store.checkout.step === 1">Detail Pesanan</span>
             <span x-show="$store.checkout && $store.checkout.step === 2" x-cloak>Data Pelanggan</span>
         </h1>
 
         <!-- Sisi Kanan: Nomor Meja & Logo Cafe -->
-        <div class="shrink-0 sm:w-32 flex items-center justify-end gap-1.5 sm:gap-2">
+        <div class="shrink-0 flex items-center justify-end gap-1.5 sm:gap-2">
             <template x-if="tableNumber && orderType === 'dine_in'">
                 <div class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-[#290024] text-[#E3DEA4] text-[10px] sm:text-[11px] font-bold shadow-xs whitespace-nowrap">
                     <span class="w-1.5 h-1.5 rounded-full bg-[#D4954D] animate-pulse shrink-0"></span>
@@ -400,21 +398,11 @@
                         </svg>
                         <span>Promo & Diskon</span>
                     </h2>
-                    <div class="flex items-center gap-2">
-                        <template x-if="activePromo">
-                            <span class="px-2.5 py-0.5 rounded-full bg-[#D4954D]/25 border border-[#D4954D]/50 text-[#290024] text-[10px] font-bold">
-                                Promo Terpakai
-                            </span>
-                        </template>
-                        <!-- Toggle Promo On/Off -->
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox"
-                                   x-model="promoEnabled"
-                                   class="sr-only peer"
-                                   @change="promoEnabled = !promoEnabled; if (!promoEnabled) { noPromo = true; }">
-                            <div class="w-11 h-6 bg-[#E3DEA4] peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-[#D4954D] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[#E3DEA4] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4954D]"></div>
-                        </label>
-                    </div>
+                    <template x-if="activePromo">
+                        <span class="px-2.5 py-0.5 rounded-full bg-[#D4954D]/25 border border-[#D4954D]/50 text-[#290024] text-[10px] font-bold">
+                            Promo Terpakai
+                        </span>
+                    </template>
                 </div>
 
                 <!-- Input Kode Voucher Manual -->
@@ -436,23 +424,15 @@
 
                 <!-- Status Promo Aktif Saat Ini -->
                 <template x-if="activePromo">
-<<<<<<< HEAD
-                    <div class="p-3 rounded-xl bg-[#E3DEA4]/40 border border-[#D4954D]/40 flex items-center justify-between gap-3">
-                        <div class="min-w-0">
-                            <div class="flex items-center gap-1.5 flex-wrap">
-                                <span class="font-bold text-xs text-[#290024]" x-text="activePromo.title"></span>
-                                <span x-show="activePromo.code" class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#290024] text-[#E3DEA4]" x-text="activePromo.code"></span>
-                                <template x-if="activePromo.type === 'buy_x_get_y' && activePromo.buy_qty && activePromo.get_qty">
-                                    <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-[#D4954D]/20 border border-[#D4954D]/40 text-[#D4954D] font-bold"
-                                          x-text="'Beli ' + activePromo.buy_qty + ' Gratis ' + activePromo.get_qty"></span>
-                                </template>
-=======
                     <div class="p-3 rounded-xl bg-[#E3DEA4]/40 border border-[#D4954D]/40 flex items-center justify-between gap-2.5">
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-1.5 flex-wrap">
                                 <span class="font-bold text-xs text-[#290024] break-words" x-text="activePromo.title"></span>
                                 <span x-show="activePromo.code" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#290024] text-[#E3DEA4] break-all" x-text="activePromo.code"></span>
->>>>>>> 5454ea51725d292968c88843d5e1804174975230
+                                <template x-if="activePromo.type === 'buy_x_get_y' && activePromo.buy_qty && activePromo.get_qty">
+                                    <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-[#D4954D]/20 border border-[#D4954D]/40 text-[#D4954D] font-bold"
+                                          x-text="'Beli ' + activePromo.buy_qty + ' Gratis ' + activePromo.get_qty"></span>
+                                </template>
                             </div>
                             <p class="text-[11px] text-[#775533] mt-0.5 break-words">
                                 Potongan: <strong class="text-[#290024]" x-text="formatRupiah(discount)"></strong>
@@ -535,12 +515,12 @@
             <div class="flex items-center justify-between gap-4 mb-3 lg:mb-0">
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="text-[11px] text-[#775533] leading-none block">Total Pesanan</span>
-                        <template x-if="discount > 0">
+                        <span class="text-[11px] text-[#775533] leading-none block" x-text="step === 1 ? 'Estimasi Total' : 'Total Pesanan'"></span>
+                        <template x-if="discount > 0 && step === 2">
                             <span class="text-[10px] px-1.5 py-0.2 rounded-full bg-green-100 text-green-800 font-bold" x-text="'Hemat ' + formatRupiah(discount)"></span>
                         </template>
                     </div>
-                    <span class="font-serif font-bold text-base sm:text-lg text-[#290024]" x-text="formatRupiah(total)"></span>
+                    <span class="font-serif font-bold text-base sm:text-lg text-[#290024]" x-text="formatRupiah(step === 1 ? subtotal : total)"></span>
                 </div>
                 <div class="flex items-center gap-2">
                     <template x-if="step === 1">
@@ -612,7 +592,7 @@
                     </div>
                     <div class="font-serif font-bold text-base sm:text-lg text-[#290024] leading-tight cursor-pointer"
                          @click="showDetails = !showDetails"
-                         x-text="formatRupiah(total)"></div>
+                         x-text="formatRupiah(step === 1 ? subtotal : total)"></div>
                 </div>
             </div>
 
@@ -734,7 +714,7 @@
                     <span>Subtotal Menu</span>
                     <span class="font-bold text-[#290024]" x-text="formatRupiah(subtotal)"></span>
                 </div>
-                <template x-if="discount > 0">
+                <template x-if="discount > 0 && step === 2">
                     <div class="flex items-center justify-between text-green-700">
                         <span class="flex items-center gap-1">
                             <span>Diskon Promo</span>
@@ -744,8 +724,8 @@
                     </div>
                 </template>
                 <div class="pt-2 border-t border-[#E3DEA4] flex items-center justify-between font-bold text-sm text-[#290024]">
-                    <span>Total Pesanan</span>
-                    <span class="font-serif font-black text-base text-[#290024]" x-text="formatRupiah(total)"></span>
+                    <span x-text="step === 1 ? 'Estimasi Total' : 'Total Pesanan'"></span>
+                    <span class="font-serif font-black text-base text-[#290024]" x-text="formatRupiah(step === 1 ? subtotal : total)"></span>
                 </div>
             </div>
         </div>
@@ -753,8 +733,8 @@
         <!-- Bagian Bawah Drawer: Total & Tombol Lanjut / Pesan Sekarang -->
         <div class="p-4 border-t border-[#E3DEA4] bg-[#F2F5E2] flex items-center justify-between gap-3">
             <div>
-                <span class="text-[10px] text-[#775533] block leading-none">Total:</span>
-                <span class="font-serif font-bold text-base text-[#290024]" x-text="formatRupiah(total)"></span>
+                <span class="text-[10px] text-[#775533] block leading-none" x-text="step === 1 ? 'Estimasi Total' : 'Total'"></span>
+                <span class="font-serif font-bold text-base text-[#290024]" x-text="formatRupiah(step === 1 ? subtotal : total)"></span>
             </div>
 
             <div>
